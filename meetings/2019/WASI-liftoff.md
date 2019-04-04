@@ -1,0 +1,64 @@
+![WebAssembly logo](/images/WebAssembly.png)
+
+## Agenda for the first video call of WebAssembly's Community Group
+
+- **Where**: zoom.us
+- **When**: to be determined
+- **Location**: *link on calendar invite*
+- **Contact**:
+    - Name: Dan Gohman
+    - Email: sunfish@mozilla.com
+
+### Registration
+
+None required if you've attended before. Email Dan Gohman to sign up if it's
+your first time. The meeting is open to CG members only.
+
+## Logistics
+
+The meeting will be on a zoom.us video conference.
+Installation is required, see the calendar invite.
+
+## Agenda items
+
+1. Opening, welcome and roll call
+    1. Opening of the meeting
+    1. Introduction of attendees
+1. Find volunteers for note taking (acting chair to volunteer)
+1. Adoption of the agenda
+1. Proposals and discussions
+    1. Review of action items from prior meeting.
+    1. Overall introduction, overview of meetings and processes
+    1. Proposed [High-Level Goals] for WASI
+    1. Form a plan for organizing open ideas and suggestions.
+        * Currently we have issues and ideas spread across a few different places:
+           - https://github.com/WebAssembly/WASI/issues
+           - https://github.com/CraneStation/wasmtime/issues?q=is%3Aissue+is%3Aopen+label%3AWASI
+           - https://github.com/CraneStation/wasmtime/blob/master/docs/WASI-some-possible-changes.md
+           - https://github.com/CraneStation/wasmtime/blob/master/docs/WASI-possible-future-features.md
+        * In future meetings we can go through the issues and decide which
+          milestones to assign them to.
+    1. Subgroup activities
+        * The MVP
+           - Discuss what needs to be done for the MVP
+           - Build documentation, testsuite, tools
+        * WASI libc, in https://github.com/WebAssembly/reference-sysroot/pull/11
+        * Discussion of future features
+    1. How often should we have video-call meetings? When should we schedule them?
+    1. Should we have an official adjunct meeting at the WebAssembly CG
+       in-person meeting [in June](https://github.com/WebAssembly/meetings/blob/master/2019/CG-06.md)?
+1. Closure
+
+[High-Level Goals]: https://github.com/WebAssembly/WASI/blob/high-level-goals/docs/HighLevelGoals.md
+
+## Agenda items for future meetings
+
+*None*
+
+### Schedule constraints
+
+*None*
+
+## Meeting Notes
+
+Posted after meeting.
