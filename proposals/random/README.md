@@ -8,7 +8,7 @@ deliverables of the group. The repository may contain meeting notes, reports,
 documentation, specifications and/or software produced by the group (although
 larger projects may also have their own repositories).
 
-[WebAssembly Community Group](https://www.w3.org/community/webassembly/)
+[WebAssembly Community Group]: https://www.w3.org/community/webassembly/
 [Charter]: Charter.md
 
 We'll be adding more content here before long, but for now, check out these:
