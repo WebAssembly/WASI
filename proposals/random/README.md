@@ -20,6 +20,5 @@ We'll be adding more content here before long, but for now, check out these:
 The issue tracker is the place to ask questions, make suggestions, and start
 discussions.
 
-As a W3C CG Subgroup, we'll also be having [meetings](meetings/README.md).
-A tentative agenda for the first meeting is [here](https://github.com/WebAssembly/WASI/blob/master/meetings/2019/WASI-liftoff.md).
-Once we have a date and time, we'll post that here also.
+Schedules and agendas for video conference and in-person meetings are posted
+[here](meetings/README.md).
