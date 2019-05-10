@@ -7,9 +7,8 @@
    interact with the outside world, that preserves the essential sandboxed
    nature of WebAssembly through a [Capability-based] API design.
 2. Specify and implement incrementally:
-    * Start with a Minimum Viable Product (MVP) for the standard, covering I/O
-      streams, filesystems, randomness, clocks, and program startup and
-      shutdown.
+    * Start with a Minimum Viable Product (MVP) for the standard, covering
+      basic API versioning, feature detection, and namespacing.
     * Then add additional features, prioritized by feedback and experience.
 3. Supplement API designs with documentation and tests, and, when feasible,
    reference implementations which can be shared between wasm engines.
