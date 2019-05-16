@@ -5,9 +5,7 @@ Meetings of the WASI Subgroup of the W3C WebAssembly Community Group (CG) follow
 
 ## Meetings
 
-<details open>
-<summary>2019</summary>
+### 2019
 
-   * [WASI May 2nd video call](2019/WASI-05-02.md)
-
-</details>
+ * [WASI May 2nd video call](2019/WASI-05-02.md)
+ * [WASI May 16nd video call](2019/WASI-05-16.md)
