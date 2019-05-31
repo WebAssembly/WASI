@@ -32,6 +32,6 @@ Planned Stable ABI
 
 There is ongoing discussion about what the stable ABI might look like:
 
-- #13
-- #19
-- #24
+- https://github.com/WebAssembly/WASI/issues/13
+- https://github.com/WebAssembly/WASI/issues/19
+- https://github.com/WebAssembly/WASI/issues/24
