@@ -6,27 +6,32 @@ are also certain expectations that the WASI runtime places on an application
 that wishes to be portable across WASI implementations.
 
 This document describes how a conforming WASI application is expected to behave
-in terms of lifecycle (startup, shutdown, etc) and imports and exports the that
+in terms of lifecycle (startup, shutdown, etc) and any exports the that
 it is expected to include.
 
-Lifecycle
----------
+Current Unstable ABI
+--------------------
 
-A WASI program may contain any number exports, but the embedded attributes
-specific meaning the following optional function exports:
+The current WASI unstable ABI specifies only two exports from a WASI
+application:
 
-- `__wasi_init` - Called after WebAssemembly instantiation but before any other
-  functions.
-- `__wasi_main` - Runs the programs main entry points.  May be omitted, for
-  example, in the case of a library.
-- `__wasi_term` - The logical inverse of `__wasi_init`.  Optionally called
-  before module destruction.  No other functions within program will be called
-  after this one.
+- `_start` - the program entry point
+- `memory` - linear memory used by the program
 
-Linear Memory
--------------
+The `_start` start export must be WebAssembly function and will be used as the
+program entry point.  This is the default name used by `lld` when linking
+WebAssembly modules.  The embedder is expected to call this function once the
+module is instantiated.
 
-All WASI programs are expected to share a linear memory with the embedder.  The
-memory can either be imported from the embedder or exports to the embedder.  If
-exported the memory must be named `__wasi_memory`.  If imported the import must
-be named `memory` from a module names `wasi`.
+Many of current WASI unstable APIs require a sharing of linear memory between
+the application and the embedder.  In order to use any such APIs the WASI module
+is expected to export its linear memory under the name `memory`.
+
+Planned Stable ABI
+------------------
+
+There is ongoing discussion about what the stable ABI might look like:
+
+- #13
+- #19
+- #24
