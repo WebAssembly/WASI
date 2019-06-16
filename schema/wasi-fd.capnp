@@ -206,7 +206,7 @@ interface File extends (FileDescriptor) {
   # Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
   # Note: This is similar to ftruncate in POSIX.
   filestatSetSize @1 (
-    st_size :Filesize # The desired file size.
+    stSize :Filesize # The desired file size.
   ) -> (
     error :Errno
   );
@@ -319,7 +319,7 @@ interface Directory extends (FileDescriptor) {
   # When successful, the contents of the output buffer consist of a sequence of directory entries. Each directory entry consists of a __wasi_dirent_t object, followed by __wasi_dirent_t::d_namlen bytes holding the name of the directory entry.
   # This function fills the output buffer as much as possible, potentially truncating the last directory entry. This allows the caller to grow its read buffer size in case it's too small to fit a single large directory entry, or skip the oversized directory entry.
   readdir @0 (
-    buf_len :Size, # the number of bytes to read
+    bufLen :Size, # the number of bytes to read
     cookie :Dircookie, # The location within the directory to start reading. 
   ) -> (
     error :Errno,
@@ -387,7 +387,7 @@ interface Directory extends (FileDescriptor) {
   # Note: This is similar to readlinkat in POSIX.
   pathReadlink @6 (
     path :Text, # The path of the symbolic link from which to read.
-    buf_len :Size
+    bufLen :Size
   ) -> (
     error :Errno,
     buf :Text, # The buffer to which to write the contents of the symbolic link.
@@ -457,22 +457,22 @@ interface Socket extends (FileDescriptor) {
   # Receive a message from a socket.
   # Note: This is similar to recv in POSIX, though it also supports reading the data into multiple buffers in the manner of readv.
   sockRecv @0 (
-    ri_data_len :Size, 
-    ri_flags :Riflags # Message flags.
+    riDataLen :Size, 
+    riFlags :Riflags # Message flags.
   ) -> (
     error :Errno,
-    ri_data :List(Iovec), # List of scatter/gather vectors to which store the data.
-    ro_flags :RoFlags # Message flags.
+    riData :List(Iovec), # List of scatter/gather vectors to which store the data.
+    roFlags :RoFlags # Message flags.
   );
 
   # Send a message on a socket.
   # Note: This is similar to send in POSIX, though it also supports writing the data from multiple buffers in the manner of writev.
   sockSend @1 (
-    si_data :List(Iovec), # List of scatter/gather vectors to which to retrieve data
-    si_flags :Siflags, # Message flags.
+    siData :List(Iovec), # List of scatter/gather vectors to which to retrieve data
+    siFlags :Siflags, # Message flags.
   ) -> (
     error :Errno,
-    so_datalen :Size # Number of bytes transmitted.  
+    soDataLen :Size # Number of bytes transmitted.  
   );
    
   # Shut down socket send and receive channels.

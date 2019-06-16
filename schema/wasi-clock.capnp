@@ -30,7 +30,7 @@ interface Clock {
   # Return the time value of a clock.
   # Note: This is similar to clock_gettime in POSIX.
   timeGet @1 (
-    clock_id :ClockId, # The clock for which to return the time.
+    clockId :ClockId, # The clock for which to return the time.
     precision :Timestamp, # The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
   ) -> (
     error :Errno,
