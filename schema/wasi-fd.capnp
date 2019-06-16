@@ -118,7 +118,6 @@ interface FileDescriptor {
   # Atomically replace a file descriptor by renumbering another file descriptor.
   # Due to the strong focus on thread safety, this environment does not provide a mechanism to duplicate or renumber a file descriptor to an arbitrary number, like dup2(). This would be prone to race conditions, as an actual file descriptor with the same number could be allocated by a different thread at the same time.
   # This function provides a way to atomically renumber file descriptors, which would disappear if dup2() were to be removed entirely.
-  # NOTE: does this make sense??
   renumber @3 (
     to :FileDescriptor # The file descriptor to overwrite.  
   ) -> (
@@ -127,7 +126,6 @@ interface FileDescriptor {
 
   # Get the attributes of a file descriptor.
   # Note: This returns similar flags to fsync(fd, F_GETFL) in POSIX, as well as additional fields.
-  # WNOTE: can this be combined with  filestat_get and fd_prestat_get?
   fdstatGet @4 () -> (
     buf :FdStat, # The buffer where the file descriptor's attributes are stored.
     error :Errno
@@ -144,8 +142,8 @@ interface FileDescriptor {
   # Adjust the rights associated with a file descriptor.
   # This can only be used to remove rights, and returns __WASI_ENOTCAPABLE if called in a way that would attempt to add rights.
   fdstatSetRights @6 (
-    fs_rights_base :Rights, # The desired rights of the file descriptor. 
-    fs_rights_inheriting :Rights
+    fsRightsBase :Rights, # The desired rights of the file descriptor. 
+    fsRightsInheriting :Rights
   ) -> (
     error :Errno
   );
@@ -320,7 +318,6 @@ interface Directory extends (FileDescriptor) {
   # Read directory entries from a directory.
   # When successful, the contents of the output buffer consist of a sequence of directory entries. Each directory entry consists of a __wasi_dirent_t object, followed by __wasi_dirent_t::d_namlen bytes holding the name of the directory entry.
   # This function fills the output buffer as much as possible, potentially truncating the last directory entry. This allows the caller to grow its read buffer size in case it's too small to fit a single large directory entry, or skip the oversized directory entry.
-  # WNOTE: could we simplify? also figure out pointers
   readdir @0 (
     buf_len :Size, # the number of bytes to read
     cookie :Dircookie, # The location within the directory to start reading. 
@@ -374,7 +371,6 @@ interface Directory extends (FileDescriptor) {
   # Open a file or directory.
   # The returned file descriptor is not guaranteed to be the lowest-numbered file descriptor not currently open; it is randomized to prevent applications from depending on making assumptions about indexes, since this is error-prone in multi-threaded contexts. The returned file descriptor is guaranteed to be less than 231.
   # Note: This is similar to openat in POSIX.
-  # WNOTE: consider making filedesciptor generic
   pathOpen @5 (
     dirflags :LookupFlags, # Flags determining the method of how the path is resolved.
     path :Text, # The relative path of the file or directory to open, relative to the dirfd directory.
@@ -389,7 +385,6 @@ interface Directory extends (FileDescriptor) {
 
   # Read the contents of a symbolic link.
   # Note: This is similar to readlinkat in POSIX.
-  # WNOTE: returns buf
   pathReadlink @6 (
     path :Text, # The path of the symbolic link from which to read.
     buf_len :Size
@@ -437,7 +432,6 @@ interface Directory extends (FileDescriptor) {
   );
 
 interface Socket extends (FileDescriptor) {
-
   # Flags provided to __wasi_sock_recv().
   struct Riflags {
     sockRecvPeek @0 :Bool; # Returns the message without removing it from the socket's receive queue.
@@ -463,7 +457,7 @@ interface Socket extends (FileDescriptor) {
   # Receive a message from a socket.
   # Note: This is similar to recv in POSIX, though it also supports reading the data into multiple buffers in the manner of readv.
   sockRecv @0 (
-    ri_data_len :Size,  # WNOTE: fix
+    ri_data_len :Size, 
     ri_flags :Riflags # Message flags.
   ) -> (
     error :Errno,
