@@ -32,7 +32,7 @@ Would get compiled to the following signature
 ```
 (func $returnTwoInts 
   (param $someInput i64)
-  (param $ptr_fist i32)
+  (param $ptr_first i32)
   (param $ptr_second i32)
 )
 ```
