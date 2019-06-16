@@ -37,3 +37,4 @@ interface Clock {
     time :Timestamp # The time value of the clock.
   );
 }
+

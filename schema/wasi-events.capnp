@@ -64,4 +64,5 @@ interface Events {
     nevents :Size, # The number of events stored.
     out :Event # The events that have occurred.
   );
-} 
+}
+
