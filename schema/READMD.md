@@ -1,4 +1,4 @@
-## WASI Inteface Definitions
+## WASI Interface Definitions
 
 The interface definition are written in [Capn Proto schema](https://capnproto.org/language.html).
 
@@ -38,7 +38,7 @@ Would get compiled to the following signature
 ```
 
 ## Returned Text
-Text as an return value is turned into two arguments a pointer to write the text and an i32 repesenting the lenght of memory allocated for storaging the text.
+Text as an return value is turned into two arguments a pointer to write the text and an i32 representing the length of memory allocated for storing the text.
 
 ```
 returnString @0 (
