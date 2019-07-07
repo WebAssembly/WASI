@@ -44,7 +44,7 @@
 	(type $clockid_t 
 		(enum
 			;; The store-wide monotonic clock, which is defined as a clock measuring real time, whose value cannot be adjusted and which cannot have negative clock jumps.
-      ;; The epoch of this clock is undefined. The absolute time value of this clock therefore has no meaning.
+			;; The epoch of this clock is undefined. The absolute time value of this clock therefore has no meaning.
 			$CLOCK_MONOTONIC
 			;; The CPU-time clock associated with the current process.
 			$CLOCK_PROCESS_CPUTIME_ID
@@ -76,7 +76,7 @@
 	)
 
 	;; Error codes returned by functions.
-  ;; Not all of these error codes are returned by the functions provided by this API; some are used in higher-level library layers, and others are provided merely for alignment with POSIX.
+	;; Not all of these error codes are returned by the functions provided by this API; some are used in higher-level library layers, and others are provided merely for alignment with POSIX.
 	(type $errno_t
 		(enum
 			;; No error occurred. System call completed successfully.
@@ -811,7 +811,7 @@
 	)
 
 	;; Synchronize the data and metadata of a file to disk.
-  ;; Note: This is similar to fsync in POSIX.
+	;; Note: This is similar to `fsync` in POSIX.
 	(func (export "sync"))
 
 	;; Return the current offset of a file descriptor.
@@ -862,7 +862,7 @@
 	)
 
 	;; Return the attributes of a file or directory.
-  ;; Note: This is similar to stat in POSIX.
+	;; Note: This is similar to stat in POSIX.
 	(func (export "filestat_get")
 		;; Flags determining the method of how the path is resolved.
 		(param $flags $lookupflags_t)
@@ -873,7 +873,7 @@
 	)
 
 	;; Adjust the timestamps of a file or directory.
-  ;; Note: This is similar to utimensat in POSIX.
+	;; Note: This is similar to utimensat in POSIX.
 	(func (export "filestat_set_times")
 		;; Flags determining the method of how the path is resolved.
 		(param $flags $lookupflags_t)
@@ -930,8 +930,8 @@
 	)
 
 	;; Remove a directory.
-  ;; Return `__WASI_ENOTEMPTY` if the directory is not empty.
-  ;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
+	;; Return `__WASI_ENOTEMPTY` if the directory is not empty.
+	;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 	(func (export "remove_directory")
 		;; The path to a directory to remove.
 		(param $path string)
@@ -949,7 +949,7 @@
 	)
 
 	;; Create a symbolic link.
-  ;; Note: This is similar to symlinkat in POSIX.
+	;; Note: This is similar to symlinkat in POSIX.
 	(func (export "symlink")
 		;; The contents of the symbolic link.
 		(param $old_path string)
@@ -996,7 +996,7 @@
 	)
 
 	;; Temporarily yield execution of the calling thread.
-  ;; Note: This is similar to `sched_yield` in POSIX.
+	;; Note: This is similar to `sched_yield` in POSIX.
 	(static func (export "sched_yield"))
 )
 
@@ -1057,7 +1057,7 @@
 	)
 
 	;; Send a message on a socket.
-  ;; Note: This is similar to `send` in POSIX, though it also supports writing the data from multiple buffers in the manner of `writev`.
+	;; Note: This is similar to `send` in POSIX, though it also supports writing the data from multiple buffers in the manner of `writev`.
 	(func (export "send")
 		;; List of scatter/gather vectors to which to retrieve data
 		(param $si_data $wasi.ciovec_t_array)
