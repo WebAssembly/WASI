@@ -24,19 +24,19 @@ The syntax for these follows the [gc proposals](https://github.com/WebAssembly/g
 
 ```
 (type $drinks
-	(enum
-		$coffee
-		$juice
-		$water
-		$wine
-	)
+  (enum
+    $coffee
+    $juice
+    $water
+    $wine
+  )
 )
 
 (type $baz
-	(struct
-		(field $foo $drinks)
-		(field $bar bool)
-	)
+  (struct
+    (field $foo $drinks)
+    (field $bar bool)
+  )
 )
 ```
 
@@ -46,10 +46,10 @@ instead of having "module"s WatIDL has "interfaces" which has nearly the same sy
 
 ```
 (interface $a
-	;; the module using this interface must export "memory"
-	(import "memory" (memory)) 
-	(global $a (export "a_global") (mut i32) (i32.const -2))
-	(func (export "a_func"))
+  ;; the module using this interface must export "memory"
+  (import "memory" (memory)) 
+  (global $a (export "a_global") (mut i32) (i32.const -2))
+  (func (export "a_func"))
 )
 ```
 
@@ -57,8 +57,8 @@ instead of having "module"s WatIDL has "interfaces" which has nearly the same sy
 watidl can have multiple results and results can be labeled
 ```
 (func (export "multi-vale")
-	(result $result1 u64)
-	(result $result2 f32)
+  (result $result1 u64)
+  (result $result2 f32)
 )
 ```
 
@@ -69,9 +69,9 @@ An interface is also a first class type
 (interface $b)
 
 (interface $a
-	(func (export "factory")
-		(result $the_result $b)
-	)
+  (func (export "factory")
+    (result $the_result $b)
+  )
 )
 ```
 
@@ -80,17 +80,17 @@ An interface can extend a base interface inheriting its imports and exports
 
 ```
 (interface $b
-	(func (export "add")
-		(param u64 u64)
-		(result u64)
-	)
+  (func (export "add")
+    (param u64 u64)
+    (result u64)
+  )
 )
 
 (interface $a extends $b
-	(func (export "sub")
-		(param u64 u64)
-		(result u64)
-	)
+  (func (export "sub")
+    (param u64 u64)
+    (result u64)
+  )
 )
 ```
 ### static
@@ -99,13 +99,13 @@ A static function is one that does has no associated context. All non static fun
 for example the following interface
 ```
 (interface $a
-	(static func (export "static")
-		(result u64)
-	)
+  (static func (export "static")
+    (result u64)
+  )
 
-	(func (export "not-static")
-		(result u64)
-	)
+  (func (export "not-static")
+    (result u64)
+  )
 )
 ```
 may have bindings that result in the following imports
@@ -116,5 +116,3 @@ may have bindings that result in the following imports
 
 ## Bindings
 Watidl reuse the core of [webidl bindings](https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md) to specify how to interact with the various complex types. 
-
-
