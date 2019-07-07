@@ -1,12 +1,13 @@
-# WatIDL
+# WatIDL :duck:
 
-WatIDL is an IDL for webassembly. Its goal is to be able to fully describe the import and export capabilities of webassembly modules while being intuitive to read and reason about. It inherits the webassembly text formats syntax and attempts to closely follow and fit into the webassembly ecosystem. WatIDL should used as a simple syntax for describing the interfaces along with WebIDL bindings to describe how the different data structures are formed and received by a Wasm module.
+
+WatIDL (`/ˈwädl/`) is an IDL for webassembly. Its goal is to be able to fully describe the import and export capabilities of Webassembly modules while being intuitive to read and reason about. It inherits the Webassembly text format's syntax and attempts to closely follow and fit into the Webassembly ecosystem. WatIDL should used as a simple syntax for describing the interfaces along with WebIDL bindings to describe how the different data structures are formed and received by Wasm modules.
 
 # Differences from WAT
 While WatIDL follow close to WAT there are some differences
 
 ## Types
-WatIDL uses the following primal types
+WatIDL uses the following primitive types
 
 ```
 intType := "i8" | "i6" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64";
@@ -42,7 +43,7 @@ The syntax for these follows the [gc proposals](https://github.com/WebAssembly/g
 
 ## Interface and Functions
 ### Imports and Exports
-instead of having "module"s WatIDL has "interfaces" which has nearly the same syntax as [modules](https://webassembly.github.io/spec/core/text/modules.html). An interfaces "exports" are to be imported by a module using the interface and the interfaces "imports" are to be exported by the module using the interface. Since imports are to be provided by the module using the interface the have no module namespace associated with them.  
+Instead of having "module"s WatIDL has "interfaces" which has nearly the same syntax as [modules](https://webassembly.github.io/spec/core/text/modules.html). An interfaces "exports" are to be imported by a module using the interface and the interfaces "imports" are to be exported by the module using the interface. Since imports are to be provided by the module using the interface the have no module namespace associated with them.  
 
 ```
 (interface $a
