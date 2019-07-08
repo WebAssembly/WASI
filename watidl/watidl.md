@@ -10,7 +10,7 @@ While WatIDL follow close to WAT there are some differences
 WatIDL uses the following primitive types
 
 ```
-intType := "i8" | "i6" | "i32" | "i64" | "u8" | "u16" | "u32" | "u64";
+intType := "s8" | "s6" | "s32" | "s64" | "u8" | "u16" | "u32" | "u64";
 floatType ::= "f32" | "f64" 
 primType ::= "null" | "bool" | "string" | "data" | intTypes | floatType;
 ```
@@ -49,7 +49,7 @@ Instead of having "module"s WatIDL has "interfaces" which has nearly the same sy
 (interface $a
   ;; the module using this interface must export "memory"
   (import "memory" (memory)) 
-  (global $a (export "a_global") (mut i32) (i32.const -2))
+  (global $a (export "a_global") (mut s32) (s32.const -2))
   (func (export "a_func"))
 )
 ```
@@ -111,8 +111,8 @@ for example the following interface
 ```
 may have bindings that result in the following imports
 ```
-(import "a" "static" (func (result i64)))
-(import "a" "non-static" (func (param $this i32) (result i64)))
+(import "a" "static" (func (result s64)))
+(import "a" "non-static" (func (param $this s32) (result s64)))
 ```
 
 ## Bindings

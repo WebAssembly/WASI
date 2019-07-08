@@ -1,5 +1,5 @@
 (type $size_t u64)
-(type $string_arrary (array string))
+(type $string_array (array string))
 
 (interface $wasi (export "__wasi")
 	(type $iovec_t_array (array $iovec_t))
@@ -650,7 +650,7 @@
 
 (interface $fd extends $wasi
 	;; Relative offset within a file.
-	(type $filedelta_t i64)
+	(type $filedelta_t s64)
 
 	;; The position relative to which to set the offset of the file descriptor.
 	(type $whence_t
