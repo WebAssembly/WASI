@@ -12,7 +12,7 @@ WatIDL uses the following primitive types
 ```
 intType := "s8" | "s6" | "s32" | "s64" | "u8" | "u16" | "u32" | "u64";
 floatType ::= "f32" | "f64" 
-primType ::= "null" | "bool" | "string" | "data" | intTypes | floatType;
+primType ::= "null" | "bool" | "string" | "data" | intType | floatType;
 ```
 
 In addition new types can also be created using
@@ -95,7 +95,7 @@ An interface can extend a base interface inheriting its imports and exports
 )
 ```
 ### static
-A static function is one that does has no associated context. All non static function must bind to a context 
+A static function is one that has no associated context. All non static function must bind to a context 
 
 for example the following interface
 ```
@@ -104,7 +104,7 @@ for example the following interface
     (result u64)
   )
 
-  (func (export "not-static")
+  (func (export "non-static")
     (result u64)
   )
 )
