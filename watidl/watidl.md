@@ -82,19 +82,5 @@ An interface can extend a base interface inheriting its imports, functions and t
 )
 ```
 
-### Method
-The method parameter type signifies that the function expects a "this" value. A function definition can only have one `method` parameter. In the future this will enable us to have OO style bindings.
-
-for example the following interface
-```
-(interface $a
-  (func (export "foo")
-    (method anyRef)
-    (param i32)
-    (result u64)
-  )
-)
-```
-
 ## Bindings
 Watidl reuse the core of [webidl bindings](https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md) to specify how to interact with the various complex types. 
