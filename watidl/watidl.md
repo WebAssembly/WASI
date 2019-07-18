@@ -63,19 +63,6 @@ watidl can have multiple results and results can be labeled
 )
 ```
 
-### Object Oriented
-An interface is also a first class type
-
-```
-(interface $b)
-
-(interface $a
-  (func (export "factory")
-    (result $the_result $b)
-  )
-)
-```
-
 ### Inheritance
 An interface can extend a base interface inheriting its imports, functions and types
 
