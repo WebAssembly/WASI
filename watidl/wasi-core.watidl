@@ -308,7 +308,7 @@
     ;; The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
     (param $precision $timestamp_t)
     ;; The time value of the clock.
-    (result $time $wasi.timestamp_t)
+    (result $time $timestamp_t)
   ) 
 )
 
@@ -460,7 +460,7 @@
   ;; Provide file advisory information on a file descriptor.
   ;; Note: This is similar to posix_fadvise in POSIX.
   (func (export "advise")
-    (param $this $fd_ref)
+    (method $fd_ref)
     (param $offset $filesize_t) ;; The offset within the file to which the advisory applies.
     (param $len $filesize_t) ;; The length of the region to which the advisory applies.
     (param $advice $advice_t) ;; The advice.
@@ -502,7 +502,7 @@
   (func (export "fdstat_set_flags")
     (method $fd_ref) 
     ;; The desired values of the file descriptor flags.
-    (param $flags $wasi.fdflags)
+    (param $flags $fdflags)
   )
 
   ;;  Adjust the rights associated with a file descriptor.
@@ -510,15 +510,15 @@
   (func (export "fdstat_set_rights") 
     (method $fd_ref) 
     ;; The desired rights of the file descriptor.
-    (param $fs_rights_base $wasi.rights_t)
-    (param $fs_rights_inheriting $wasi.rights_t)
+    (param $fs_rights_base $rights_t)
+    (param $fs_rights_inheriting $rights_t)
   )
 
   ;; Return the attributes of an open file.
   (func (export "filestat_get")
     (method $fd_ref) 
     ;; The buffer where the file's attributes are stored.
-    (result $fs_rights_base $wasi.rights_t)
+    (result $fs_rights_base $rights_t)
   )
 
   ;; Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
@@ -534,11 +534,11 @@
   (func (export "filestat_set_times")
     (method $fd_ref) 
     ;; The desired values of the data access timestamp.
-    (param $st_atim $wasi.timestamp_t)
+    (param $st_atim $timestamp_t)
     ;; The desired values of the data modification timestamp.
-    (param $st_mtim $wasi.timestamp_t)
+    (param $st_mtim $timestamp_t)
     ;; A bitmask indicating which timestamps to adjust.
-    (param $fst_flags $wasi.fstflags_t)
+    (param $fst_flags $fstflags_t)
   )
 
   ;; Read from a file descriptor, without using and updating the file descriptor's offset.
@@ -1100,7 +1100,7 @@
   (func (export "send")
     (method $fd_ref)
     ;; List of scatter/gather vectors to which to retrieve data
-    (param $si_data $wasi.ciovec_t_array)
+    (param $si_data $ciovec_t_array)
     ;; Message flags.
     (param $si_flags $siflags_t)
     ;; Number of bytes transmitted.

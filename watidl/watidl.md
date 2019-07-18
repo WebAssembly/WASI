@@ -1,6 +1,5 @@
 # WatIDL :duck:
 
-
 WatIDL (`/ˈwädl/`) is an IDL for webassembly. Its goal is to be able to fully describe the import and export capabilities of Webassembly modules while being intuitive to read and reason about. It inherits the Webassembly text format's syntax and attempts to closely follow and fit into the Webassembly ecosystem. WatIDL should used as a simple syntax for describing the interfaces along with WebIDL bindings to describe how the different data structures are formed and received by Wasm modules.
 
 # Differences from WAT
@@ -10,9 +9,10 @@ While WatIDL follow close to WAT there are some differences
 WatIDL uses the following primitive types
 
 ```
+refTypes := "anyRef" | "funcRef"
 intType := "s8" | "s6" | "s32" | "s64" | "u8" | "u16" | "u32" | "u64";
 floatType ::= "f32" | "f64" 
-primType ::= "null" | "bool" | "string" | "data" | intType | floatType;
+primType ::= "null" | "bool" | "string" | "data" | intType | floatType | refTypes;
 ```
 
 In addition new types can also be created using
@@ -77,7 +77,7 @@ An interface is also a first class type
 ```
 
 ### inheritance
-An interface can extend a base interface inheriting its imports and exports
+An interface can extend a base interface inheriting its imports, functions and types
 
 ```
 (interface $b
@@ -94,25 +94,19 @@ An interface can extend a base interface inheriting its imports and exports
   )
 )
 ```
-### static
-A static function is one that has no associated context. All non static function must bind to a context 
+
+### Method
+The method parameter type signifies that the function expects a "this" value. A function definition can only have one `method` parameter. In the future this will enable us to have OO style bindings.
 
 for example the following interface
 ```
 (interface $a
-  (static func (export "static")
-    (result u64)
-  )
-
-  (func (export "non-static")
+  (func (export "foo")
+    (method anyRef)
+    (param i32)
     (result u64)
   )
 )
-```
-may have bindings that result in the following imports
-```
-(import "a" "static" (func (result s64)))
-(import "a" "non-static" (func (param $this s32) (result s64)))
 ```
 
 ## Bindings
