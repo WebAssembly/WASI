@@ -76,7 +76,7 @@ An interface is also a first class type
 )
 ```
 
-### inheritance
+### Inheritance
 An interface can extend a base interface inheriting its imports, functions and types
 
 ```
