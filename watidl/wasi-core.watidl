@@ -1,27 +1,12 @@
-
 (interface $wasi
   (type $size_t u64)
   (type $string_array (array string))
-  (type $iovec_t_array (array $iovec_t))
-  (type $ciovec_t_array (array $ciovec_t))
 
-  ;; A region of memory for scatter/gather reads.
-  (type $iovec_t
-    (struct
-      ;; The address and length of the buffer to be filled.
-      (field $buf data)
-      (field $buf_len data)
-    )
-  )
-
-  ;; A region of memory for scatter/gather writes.
-  (type $ciovec_t
-    (struct
-      ;; The address and length of the buffer to be written.
-      (field $buf data)
-      (field $buf_len data)
-    )
-  )
+  ;; Non-negative file size or length of a region within a file.
+  (type $filesize_t u64)
+  
+  ;; Timestamp in nanoseconds.
+  (type $timestamp_t u64) 
 
   ;;Identifiers for clocks.
   (type $clockid_t 
@@ -199,245 +184,6 @@
     )
   )
 
-
-  ;; File descriptor flags.
-  (type $fdflags_t
-    (struct
-      ;; Append mode: Data written to the file is always appended to the file's end.
-      (field $FDFLAG_APPEND Bool)
-      ;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
-      (field $FDFLAG_DSYNC Bool)
-      ;; Non-blocking mode.
-      (field $FDFLAG_NONBLOCK Bool)
-      ;; Synchronized read I/O operations.
-      (field $FDFLAG_RSYNC Bool)
-      ;; Write according to synchronized I/O file integrity completion. In addition to synchronizing the data stored in the file, the implementation may also synchronously update the file's metadata.
-      (field $FDFLAG_SYNC Bool)
-    )
-  )
-
-  ;; File descriptor attributes.
-  (type $fdstat_t 
-    ;; File type.
-    (field $fs_filetype $filetype_t)
-    ;; File descriptor flags.
-    (field $fs_flags $fdflags_t)
-    ;; Rights that apply to this file descriptor.
-    (field $fs_rights_base $rights_t)
-    ;; Maximum set of rights that may be installed on new file descriptors that are created through this file descriptor, e.g., through __wasi_path_open().
-    (field $fs_rights_inheriting $rights_t)
-  )
-
-  ;; Non-negative file size or length of a region within a file.
-  (type $filesize_t u64)
-
-  ;; Identifier for a device containing a file system. Can be used in combination with __wasi_inode_t to uniquely identify a file or directory in the filesystem.
-  (type $device_t u64)
-
-  ;; File attributes.
-  (type $filestat_t
-    (struct
-      ;; Device ID of device containing the file.
-      (field $st_dev $device_t)
-      ;; File serial number.
-      (field $st_ino $inode_t)
-      ;; File type.
-      (field $st_filetype $filetype_t)
-      ;; Number of hard links to the file.
-      (field $st_nlink $linkcount_t)
-      ;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
-      (field $st_size $filesize_t)
-      ;; Last data access timestamp.
-      (field $st_atim $timestamp_t)
-      ;; Last data modification timestamp.
-      (field $st_mtim $timestamp_t)
-      ;; Last file status change timestamp.
-      (field $st_ctim $timestamp_t)
-    )
-  )
-
-  ;; The type of a file descriptor or file.
-  (type $filetype_t
-    (enum
-      ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
-      $FILETYPE_UNKNOWN
-      ;; The file descriptor or file refers to a block device inode.
-      $FILETYPE_BLOCK_DEVICE
-      ;; The file descriptor or file refers to a character device inode.
-      $FILETYPE_CHARACTER_DEVICE
-      ;; The file descriptor or file refers to a directory inode.
-      $FILETYPE_DIRECTORY
-      ;; The file descriptor or file refers to a regular file inode.
-      $FILETYPE_REGULAR_FILE
-      ;; The file descriptor or file refers to a datagram socket.
-      $FILETYPE_SOCKET_DGRAM
-      ;; The file descriptor or file refers to a byte-stream socket.
-      $FILETYPE_SOCKET_STREAM
-      ;; The file refers to a symbolic link inode.
-      $FILETYPE_SYMBOLIC_LINK
-    )
-  )
-
-  ;; Which file time attributes to adjust.
-  (type $fstflags_t
-    (struct 
-      ;; Adjust the last data access timestamp to the value stored in __wasi_filestat_t::st_atim.
-      (field $FILESTAT_SET_ATIM Bool)
-      ;; Adjust the last data access timestamp to the time of clock __WASI_CLOCK_REALTIME.
-      (field $FILESTAT_SET_ATIM_NOW Bool)
-      ;; Adjust the last data modification timestamp to the value stored in __wasi_filestat_t::st_mtim.
-      (field $FILESTAT_SET_MTIM Bool)
-      ;; Adjust the last data modification timestamp to the time of clock __WASI_CLOCK_REALTIME.
-      (field $FILESTAT_SET_MTIM_NOW Bool)
-    )
-  )
-
-  ;; File serial number that is unique within its file system.
-  (type $inode_t u64)
-
-  ;; Number of hard links to an inode.
-  (type $linkcount_t u32)
-
-  ;; Signal condition.
-  (type $signal_t
-    (enum
-      ;; Process abort signal.
-      ;; Action: Terminates the process.
-      $SIGABRT
-      ;; Alarm clock.
-      ;; Action: Terminates the process.
-      $SIGALRM
-      ;; Access to an undefined portion of a memory object.
-      ;; Action: Terminates the process.
-      $SIGBUS
-      ;; Child process terminated, stopped, or continued.
-      ;; Action: Ignored.
-      $SIGCHLD
-      ;; Continue executing, if stopped.
-      ;; Action: Continues executing, if stopped.
-      $SIGCONT
-      ;; Erroneous arithmetic operation.
-      ;; Action: Terminates the process.
-      $SIGFPE
-      ;; Hangup.
-      ;; Action: Terminates the process.
-      $SIGHUP
-      ;; Illegal instruction.
-      ;; Action: Terminates the process.
-      $SIGILL
-      ;; Terminate interrupt signal.
-      ;; Action: Terminates the process.
-      $SIGINT
-      ;; Kill.
-      ;; Action: Terminates the process.
-      $SIGKILL
-      ;; Write on a pipe with no one to read it.
-      ;; Action: Ignored.
-      $SIGPIPE
-      ;; Terminal quit signal.
-      ;; Action: Terminates the process.
-      $SIGQUIT
-      ;; Invalid memory reference.
-      ;; Action: Terminates the process.
-      $SIGSEGV
-      ;; Stop executing.
-      ;; Action: Stops executing.
-      $SIGSTOP
-      ;; Bad system call.
-      ;; Action: Terminates the process.
-      $SIGSYS
-      ;; Termination signal.
-      ;; Action: Terminates the process.
-      $SIGTERM
-      ;; Trace/breakpoint trap.
-      ;; Action: Terminates the process.
-      $SIGTRAP
-      ;; Terminal stop signal.
-      ;; Action: Stops executing.
-      $SIGTSTP
-      ;; Background process attempting read.
-      ;; Action: Stops executing.
-      $SIGTTIN
-      ;; Background process attempting write.
-      ;; Action: Stops executing.
-      $SIGTTOU
-      ;; High bandwidth data is available at a socket.
-      ;; Action: Ignored.
-      $SIGURG
-      ;; User-defined signal 1.
-      ;; Action: Terminates the process.
-      $SIGUSR1
-      ;; User-defined signal 2.
-      ;; Action: Terminates the process.
-      $SIGUSR2
-      ;; Virtual timer expired.
-      ;; Action: Terminates the process.
-      $SIGVTALRM
-      ;; CPU time limit exceeded.
-      ;; Action: Terminates the process.
-      $SIGXCPU
-      ;; File size limit exceeded.
-      ;; Action: Terminates the process.
-      $SIGXFSZ
-    )
-  )
-
-  ;; Flags determining how to interpret the timestamp provided in __wasi_subscription_t::u.clock.timeout.
-  (type $subclockflags_t
-    (struct
-      ;; If set, treat the timestamp provided in __wasi_subscription_t::u.clock.timeout as an absolute timestamp of clock __wasi_subscription_t::u.clock.clock_id.
-      ;; If clear, treat the timestamp provided in __wasi_subscription_t::u.clock.timeout relative to the current time value of clock __wasi_subscription_t::u.clock.clock_id.
-      (field $SUBSCRIPTION_CLOCK_ABSTIME Bool)
-    )
-  )
-
-  ;; Subscription to an event.
-  (type $subscription_t
-    (struct
-      ;; User-provided value that is attached to the subscription in the implementation and returned through __wasi_event_t::userdata.
-      (field $userdata $userdata_t)
-      ;; The type of the event to which to subscribe.
-      (field $type $eventtype_t)
-      (field 
-        (type
-          (union
-            ;; When type is __WASI_EVENTTYPE_CLOCK
-            (field $clock
-              (type 
-                (struct
-                  ;; The user-defined unique identifier of the clock.
-                  (field $identifier $userdata_t)
-                  ;; The clock against which to compare the timestamp.
-                  (field $clock_id $clockid_t)
-                  ;; The absolute or relative timestamp.
-                  (field $timeout $timestamp_t)
-                  ;; The amount of time that the implementation may wait additionally to coalesce with other events.
-                  ;; Flags specifying whether the timeout is absolute or relative
-                  (field $precision $timestamp_t)
-                )
-              )
-            )
-            ;; When type is __WASI_EVENTTYPE_FD_READ or __WASI_EVENTTYPE_FD_WRITE:
-            (field $fd_readwrite
-              (type
-                (struct
-                  ;; The file descriptor on which to wait for it to become ready for reading or writing.
-                  (field $file_descriptor $fd_ref)
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  )
-
-  ;; Timestamp in nanoseconds.
-  (type $timestamp_t u64) 
-
-  ;; User-provided value that may be attached to objects that is retained when extracted from the implementation.
-  (type $userdata_t u64)
-
   ;; File descriptor rights, determining which actions may be performed.
   (type $rights_t
     (struct
@@ -550,17 +296,17 @@
   ;; Note: This is similar to clock_getres in POSIX.
   (func (export "res_get")
     ;; The clock for which to return the resolution.
-    (param $clock_id $wasi.clockid_t)
+    (param $clock_id $clockid_t)
     ;; The resolution of the clock.
-    (result $resolution $wasi.timestamp_t)
+    (result $resolution $timestamp_t)
   ) 
   ;; Return the time value of a clock.
   ;; Note: This is similar to clock_gettime in POSIX.
   (func (export "time_get")
     ;; The clock for which to return the time.
-    (param $clock_id $wasi.clockid_t)
+    (param $clock_id $clockid_t)
     ;; The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
-    (param $precision $wasi.timestamp_t)
+    (param $precision $timestamp_t)
     ;; The time value of the clock.
     (result $time $wasi.timestamp_t)
   ) 
@@ -569,6 +315,27 @@
 (interface $fd extends $wasi
   ;; a reference to a file descriptor
   (type $fd_ref anyref)
+
+  (type $iovec_t_array (array $iovec_t))
+  (type $ciovec_t_array (array $ciovec_t))
+
+  ;; A region of memory for scatter/gather reads.
+  (type $iovec_t
+    (struct
+      ;; The address and length of the buffer to be filled.
+      (field $buf data)
+      (field $buf_len data)
+    )
+  )
+
+  ;; A region of memory for scatter/gather writes.
+  (type $ciovec_t
+    (struct
+      ;; The address and length of the buffer to be written.
+      (field $buf data)
+      (field $buf_len data)
+    )
+  )
 
   ;; Relative offset within a file.
   (type $filedelta_t s64)
@@ -620,7 +387,75 @@
     )
   )
 
+  ;; File descriptor flags.
+  (type $fdflags_t
+    (struct
+      ;; Append mode: Data written to the file is always appended to the file's end.
+      (field $FDFLAG_APPEND Bool)
+      ;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
+      (field $FDFLAG_DSYNC Bool)
+      ;; Non-blocking mode.
+      (field $FDFLAG_NONBLOCK Bool)
+      ;; Synchronized read I/O operations.
+      (field $FDFLAG_RSYNC Bool)
+      ;; Write according to synchronized I/O file integrity completion. In addition to synchronizing the data stored in the file, the implementation may also synchronously update the file's metadata.
+      (field $FDFLAG_SYNC Bool)
+    )
+  )
 
+  ;; File descriptor attributes.
+  (type $fdstat_t 
+    ;; File type.
+    (field $fs_filetype $filetype_t)
+    ;; File descriptor flags.
+    (field $fs_flags $fdflags_t)
+    ;; Rights that apply to this file descriptor.
+    (field $fs_rights_base $rights_t)
+    ;; Maximum set of rights that may be installed on new file descriptors that are created through this file descriptor, e.g., through __wasi_path_open().
+    (field $fs_rights_inheriting $rights_t)
+  )
+
+  ;; Identifier for a device containing a file system. Can be used in combination with __wasi_inode_t to uniquely identify a file or directory in the filesystem.
+  (type $device_t u64)
+
+  ;; The type of a file descriptor or file.
+  (type $filetype_t
+    (enum
+      ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
+      $FILETYPE_UNKNOWN
+      ;; The file descriptor or file refers to a block device inode.
+      $FILETYPE_BLOCK_DEVICE
+      ;; The file descriptor or file refers to a character device inode.
+      $FILETYPE_CHARACTER_DEVICE
+      ;; The file descriptor or file refers to a directory inode.
+      $FILETYPE_DIRECTORY
+      ;; The file descriptor or file refers to a regular file inode.
+      $FILETYPE_REGULAR_FILE
+      ;; The file descriptor or file refers to a datagram socket.
+      $FILETYPE_SOCKET_DGRAM
+      ;; The file descriptor or file refers to a byte-stream socket.
+      $FILETYPE_SOCKET_STREAM
+      ;; The file refers to a symbolic link inode.
+      $FILETYPE_SYMBOLIC_LINK
+    )
+  )
+
+  ;; Which file time attributes to adjust.
+  (type $fstflags_t
+    (struct 
+      ;; Adjust the last data access timestamp to the value stored in __wasi_filestat_t::st_atim.
+      (field $FILESTAT_SET_ATIM Bool)
+      ;; Adjust the last data access timestamp to the time of clock __WASI_CLOCK_REALTIME.
+      (field $FILESTAT_SET_ATIM_NOW Bool)
+      ;; Adjust the last data modification timestamp to the value stored in __wasi_filestat_t::st_mtim.
+      (field $FILESTAT_SET_MTIM Bool)
+      ;; Adjust the last data modification timestamp to the time of clock __WASI_CLOCK_REALTIME.
+      (field $FILESTAT_SET_MTIM_NOW Bool)
+    )
+  )
+
+  ;; File serial number that is unique within its file system.
+  (type $inode_t u64)
 
   ;; Provide file advisory information on a file descriptor.
   ;; Note: This is similar to posix_fadvise in POSIX.
@@ -637,9 +472,9 @@
   (func (export "allocate")
     (method $fd_ref) 
     ;; The offset at which to start the allocation.
-    (param $offset $wasi.filesize_t) 
+    (param $offset $filesize_t) 
     ;; The length of the area that is allocated.
-    (param $len $wasi.filesize_t)
+    (param $len $filesize_t)
   )
 
   ;; Close a file descriptor.
@@ -659,7 +494,7 @@
   (func (export "fdstat_get")
     (method $fd_ref) 
     ;; The buffer where the file descriptor's attributes are stored.
-    (result $wasi.fdstat_t) 
+    (result $fdstat_t) 
   )
 
   ;; Adjust the flags associated with a file descriptor.
@@ -691,7 +526,7 @@
   (func (export "filestat_set_size")
     (method $fd_ref) 
     ;; The desired file size.
-    (param $st_size $wasi.filesize_t)
+    (param $st_size $filesize_t)
   )
 
   ;; Adjust the timestamps of an open file or directory.
@@ -836,6 +671,31 @@
     )
   )
 
+  ;; Number of hard links to an inode.
+  (type $linkcount_t u32)
+
+  ;; File attributes.
+  (type $filestat_t
+    (struct
+      ;; Device ID of device containing the file.
+      (field $st_dev $device_t)
+      ;; File serial number.
+      (field $st_ino $inode_t)
+      ;; File type.
+      (field $st_filetype $filetype_t)
+      ;; Number of hard links to the file.
+      (field $st_nlink $linkcount_t)
+      ;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+      (field $st_size $filesize_t)
+      ;; Last data access timestamp.
+      (field $st_atim $timestamp_t)
+      ;; Last data modification timestamp.
+      (field $st_mtim $timestamp_t)
+      ;; Last file status change timestamp.
+      (field $st_ctim $timestamp_t)
+    )
+  )
+
   ;; Create a directory.
   ;; Note: This is similar to `mkdirat` in POSIX.
   (func (export "create_directory")
@@ -960,6 +820,9 @@
 ) 
 
 (interface $poll
+  ;; User-provided value that may be attached to objects that is retained when extracted from the implementation.
+  (type $userdata_t u64)
+
   ;; An event that occurred.
   (type $event_t
     (struct
@@ -1006,10 +869,60 @@
     )
   )
 
+  ;; Flags determining how to interpret the timestamp provided in __wasi_subscription_t::u.clock.timeout.
+  (type $subclockflags_t
+    (struct
+      ;; If set, treat the timestamp provided in __wasi_subscription_t::u.clock.timeout as an absolute timestamp of clock __wasi_subscription_t::u.clock.clock_id.
+      ;; If clear, treat the timestamp provided in __wasi_subscription_t::u.clock.timeout relative to the current time value of clock __wasi_subscription_t::u.clock.clock_id.
+      (field $SUBSCRIPTION_CLOCK_ABSTIME Bool)
+    )
+  )
+
+  ;; Subscription to an event.
+  (type $subscription_t
+    (struct
+      ;; User-provided value that is attached to the subscription in the implementation and returned through __wasi_event_t::userdata.
+      (field $userdata $userdata_t)
+      ;; The type of the event to which to subscribe.
+      (field $type $eventtype_t)
+      (field 
+        (type
+          (union
+            ;; When type is __WASI_EVENTTYPE_CLOCK
+            (field $clock
+              (type 
+                (struct
+                  ;; The user-defined unique identifier of the clock.
+                  (field $identifier $userdata_t)
+                  ;; The clock against which to compare the timestamp.
+                  (field $clock_id $clockid_t)
+                  ;; The absolute or relative timestamp.
+                  (field $timeout $timestamp_t)
+                  ;; The amount of time that the implementation may wait additionally to coalesce with other events.
+                  ;; Flags specifying whether the timeout is absolute or relative
+                  (field $precision $timestamp_t)
+                )
+              )
+            )
+            ;; When type is __WASI_EVENTTYPE_FD_READ or __WASI_EVENTTYPE_FD_WRITE:
+            (field $fd_readwrite
+              (type
+                (struct
+                  ;; The file descriptor on which to wait for it to become ready for reading or writing.
+                  (field $file_descriptor $fd_ref)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+
   ;; Concurrently poll for the occurrence of a set of events.
   (func (export "oneoff")
     ;; The events to which to subscribe.
-    (param $in $wasi.subscription_t)
+    (param $in $subscription_t)
     ;; The events that have occurred.
     (param $out $wasi.event_t)
     ;; Both the number of subscriptions and events.
@@ -1022,6 +935,91 @@
 (interface $proc extends $wasi
   ;; Exit code generated by a process when exiting.
   (type $exitcode_t u32)
+
+  ;; Signal condition.
+  (type $signal_t
+    (enum
+      ;; Process abort signal.
+      ;; Action: Terminates the process.
+      $SIGABRT
+      ;; Alarm clock.
+      ;; Action: Terminates the process.
+      $SIGALRM
+      ;; Access to an undefined portion of a memory object.
+      ;; Action: Terminates the process.
+      $SIGBUS
+      ;; Child process terminated, stopped, or continued.
+      ;; Action: Ignored.
+      $SIGCHLD
+      ;; Continue executing, if stopped.
+      ;; Action: Continues executing, if stopped.
+      $SIGCONT
+      ;; Erroneous arithmetic operation.
+      ;; Action: Terminates the process.
+      $SIGFPE
+      ;; Hangup.
+      ;; Action: Terminates the process.
+      $SIGHUP
+      ;; Illegal instruction.
+      ;; Action: Terminates the process.
+      $SIGILL
+      ;; Terminate interrupt signal.
+      ;; Action: Terminates the process.
+      $SIGINT
+      ;; Kill.
+      ;; Action: Terminates the process.
+      $SIGKILL
+      ;; Write on a pipe with no one to read it.
+      ;; Action: Ignored.
+      $SIGPIPE
+      ;; Terminal quit signal.
+      ;; Action: Terminates the process.
+      $SIGQUIT
+      ;; Invalid memory reference.
+      ;; Action: Terminates the process.
+      $SIGSEGV
+      ;; Stop executing.
+      ;; Action: Stops executing.
+      $SIGSTOP
+      ;; Bad system call.
+      ;; Action: Terminates the process.
+      $SIGSYS
+      ;; Termination signal.
+      ;; Action: Terminates the process.
+      $SIGTERM
+      ;; Trace/breakpoint trap.
+      ;; Action: Terminates the process.
+      $SIGTRAP
+      ;; Terminal stop signal.
+      ;; Action: Stops executing.
+      $SIGTSTP
+      ;; Background process attempting read.
+      ;; Action: Stops executing.
+      $SIGTTIN
+      ;; Background process attempting write.
+      ;; Action: Stops executing.
+      $SIGTTOU
+      ;; High bandwidth data is available at a socket.
+      ;; Action: Ignored.
+      $SIGURG
+      ;; User-defined signal 1.
+      ;; Action: Terminates the process.
+      $SIGUSR1
+      ;; User-defined signal 2.
+      ;; Action: Terminates the process.
+      $SIGUSR2
+      ;; Virtual timer expired.
+      ;; Action: Terminates the process.
+      $SIGVTALRM
+      ;; CPU time limit exceeded.
+      ;; Action: Terminates the process.
+      $SIGXCPU
+      ;; File size limit exceeded.
+      ;; Action: Terminates the process.
+      $SIGXFSZ
+    )
+  )
+
 
   ;; Terminate the process normally. An exit code of 0 indicates successful termination of the program. The meanings of other values is dependent on the environment.
   (func (export "exit")
@@ -1082,7 +1080,6 @@
       (field $SHUT_WR Bool)
     )
   )
-
 
   ;; Receive a message from a socket.
   ;; Note: This is similar to recv in POSIX, though it also supports reading the data into multiple buffers in the manner of readv.
