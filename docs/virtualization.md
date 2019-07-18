@@ -1,113 +1,62 @@
-# WatIDL :duck:
+# Virtualization
 
-WatIDL (`/ˈwädl/`) is an IDL for webassembly. Its goal is to be able to fully describe the import and export capabilities of Webassembly modules while being intuitive to read and reason about. It inherits the Webassembly text format's syntax and attempts to closely follow and fit into the Webassembly ecosystem. WatIDL should used as a simple syntax for describing the interfaces along with WebIDL bindings to describe how the different data structures are formed and received by Wasm modules.
+Virtualization in the context of WASI interfaces is the ability for a Webassembly module to implement a given interface and consumer module to be able to use that implement transparently. 
 
-# Differences from WAT
-While WatIDL follow close to WAT there are some differences
+Furthermore there are two classes of virtualization; static and dynamic. Static virtualization is done before the initialization of a Wasm store and dynamic at runtime.  
 
-## Types
-WatIDL uses the following primitive types
+## Usecase
+
+Roughly taken from [here](https://pdfs.semanticscholar.org/4cce/9abb177cc58c199e13b82d498f37010c2bfc.pdf). Lets say a user wants to encrypt a text file they are editing. One way this could be accomplished is by having composable services. An encryption module could export the interface for a directory that would encrypt any file written to it. Lets consider how this could be done with in the framework of WASI. At runtime the encryption module would given a root directory file descriptor in which it would write encrypted text to, it would also would return a wrapped file descriptor of a directory  that would be given to the text editor to write in. This means any WASI `fd` related calls that the text editor makes would handled by the encryption module which would then interact base system. Lets look next at a WASI program might accomplish virtualizing the file descriptor interface.
+
+## Virtualization with GC
+
+The one possibility would be to use an object oriented approach. This is relies on the [function references](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md) and [GC](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md) proposals.  
+
+We might have the following type definition for a `fd` and its related functions.
+```
+(type $open_func (func (param i32) (param i32) ... ))
+(type $close_func)
+...
+
+(type $fd (struct 
+  (field $open (ref $open_func))
+  (field $close (ref $close_func))
+))
 
 ```
-refTypes := "anyRef" | "funcRef"
-intType := "s8" | "s6" | "s32" | "s64" | "u8" | "u16" | "u32" | "u64";
-floatType ::= "f32" | "f64" 
-primType ::= "null" | "bool" | "string" | "data" | intType | floatType | refTypes;
-```
 
-In addition new types can also be created using
-- struct
-- array
-- union
-- enum
-
-The syntax for these follows the [gc proposals](https://github.com/WebAssembly/gc/blob/master/proposals/gc/Overview.md) syntax when possible.
+`func.bind` from function references proposals would be used by the programs implementing the interface to create proxy functions.
 
 ```
-(type $drinks
-  (enum
-    $coffee
-    $juice
-    $water
-    $wine
+(func $fd-open-proxy (param $_fd (ref $fd)) (param i32) (param i32) ... )
+  (local $open_ref (ref $open_func))
+   ...
+  (call_ref
+    ... ;; other params 
+    (get_field $open_func $open (get_local $_fd)
   )
+  
 )
 
-(type $baz
-  (struct
-    (field $foo $drinks)
-    (field $bar bool)
-  )
+(func mk-fd-open-proxy (param (ref $fd) (result (ref $open_func)))
+  (func.bind $open_func (local.get 0) (func.ref $fd-open-proxy))
 )
 ```
 
-## Interface and Functions
-### Imports and Exports
-Instead of having "module"s WatIDL has "interfaces" which has nearly the same syntax as [modules](https://webassembly.github.io/spec/core/text/modules.html). An interfaces "exports" are to be imported by a module using the interface and the interfaces "imports" are to be exported by the module using the interface. Since imports are to be provided by the module using the interface the have no module namespace associated with them.  
+In this scenario no functions are imported, only types. While this is one possible future we don't currently have this functionality. While it maybe be possible to polyfill things like `func.bind` using tables, other things such as full GC would more complicated and may create overhead.
+
+### Dynamic Dispatching - Without GC 
+
+Assuming the function reference proposal, another way to implement dynamic dispatching currently would be to create a primitive polyfill for structs. An `fd` would then be represented as a stuct who's fields contained all the associated functions
 
 ```
-(interface $a
-  ;; the module using this interface must export "memory"
-  (import "memory" (memory)) 
-  (global $a (export "a_global") (mut s32) (s32.const -2))
-  (func (export "a_func"))
-)
+struct.create(fields: u32) -> anyRef
 ```
 
-### Results
-watidl can have multiple results and results can be labeled
 ```
-(func (export "multi-vale")
-  (result $result1 u64)
-  (result $result2 f32)
-)
+struct.set(index: i32, func: funcRef)
 ```
 
-### Object Oriented
-An interface is also a first class type
-
 ```
-(interface $b)
-
-(interface $a
-  (func (export "factory")
-    (result $the_result $b)
-  )
-)
+struct.get(stuct_ref: anyRef, index: u32) -> funcRef
 ```
-
-### inheritance
-An interface can extend a base interface inheriting its imports, functions and types
-
-```
-(interface $b
-  (func (export "add")
-    (param u64 u64)
-    (result u64)
-  )
-)
-
-(interface $a extends $b
-  (func (export "sub")
-    (param u64 u64)
-    (result u64)
-  )
-)
-```
-
-### Method
-The method parameter type signifies that the function expects a "this" value. A function definition can only have one `method` parameter. In the future this will enable us to have OO style bindings.
-
-for example the following interface
-```
-(interface $a
-  (func (export "foo")
-    (method anyRef)
-    (param i32)
-    (result u64)
-  )
-)
-```
-
-## Bindings
-Watidl reuse the core of [webidl bindings](https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md) to specify how to interact with the various complex types. 
