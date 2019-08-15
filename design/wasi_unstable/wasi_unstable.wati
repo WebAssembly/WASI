@@ -230,9 +230,11 @@
     (flag $RIGHT_PATH_CREATE_DIRECTORY)
     ;; If `__WASI_RIGHT_PATH_OPEN` is set, the right to invoke `__wasi_path_open()` with `__WASI_O_CREAT`.
     (flag $RIGHT_PATH_CREATE_FILE)
-    ;; The right to invoke `__wasi_path_link()` with the file descriptor as the source directory.
+    ;; The right to invoke `__wasi_path_link()` with the file descriptor as the
+    ;; source directory.
     (flag $RIGHT_PATH_LINK_SOURCE)
-    ;; The right to invoke `__wasi_path_link()` with the file descriptor as the target directory.
+    ;; The right to invoke `__wasi_path_link()` with the file descriptor as the
+    ;; target directory.
     (flag $RIGHT_PATH_LINK_TARGET)
     ;; The right to invoke `__wasi_path_open()`.
     (flag $RIGHT_PATH_OPEN)
@@ -473,7 +475,8 @@
   )
 )
 
-;; User-provided value that may be attached to objects that is retained when extracted from the implementation.
+;; User-provided value that may be attached to objects that is retained when
+;; extracted from the implementation.
 (typename $userdata_t u64)
 
 ;; An event that occurred.
@@ -501,7 +504,8 @@
   )
 )
 
-;; The state of the file descriptor subscribed to with `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`.
+;; The state of the file descriptor subscribed to with
+;; `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`.
 (typename $eventrwflags_t
   (flags u16
     ;; The peer of this socket has closed or disconnected.
@@ -512,16 +516,20 @@
 ;; Type of a subscription to an event or its occurrence.
 (typename $eventtype_t
   (flags u8
-    ;; The time value of clock __wasi_subscription_t::u.clock.clock_id has reached timestamp __wasi_subscription_t::u.clock.timeout.
+    ;; The time value of clock __wasi_subscription_t::u.clock.clock_id has
+    ;; reached timestamp __wasi_subscription_t::u.clock.timeout.
     (flag $EVENTTYPE_CLOCK)
-    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has data available for reading. This event always triggers for regular files.
+    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has data
+    ;; available for reading. This event always triggers for regular files.
     (flag $EVENTTYPE_FD_READ)
-    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has capacity available for writing. This event always triggers for regular files.
+    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has capacity
+    ;; available for writing. This event always triggers for regular files.
     (flag $EVENTTYPE_FD_WRITE)
   )
 )
 
-;; Flags determining how to interpret the timestamp provided in __wasi_subscription_t::u.clock.timeout.
+;; Flags determining how to interpret the timestamp provided in
+;; __wasi_subscription_t::u.clock.timeout.
 (typename $subclockflags_t
   (flags u16
     ;; If set, treat the timestamp provided in
@@ -536,7 +544,8 @@
 ;; Subscription to an event.
 (typename $subscription_t
   (struct
-    ;; User-provided value that is attached to the subscription in the implementation and returned through __wasi_event_t::userdata.
+    ;; User-provided value that is attached to the subscription in the
+    ;; implementation and returned through __wasi_event_t::userdata.
     (field $userdata $userdata_t)
     ;; The type of the event to which to subscribe.
     (field $type $eventtype_t)
@@ -551,7 +560,9 @@
             (field $clock_id $clockid_t)
             ;; The absolute or relative timestamp.
             (field $timeout $timestamp_t)
-            ;; The amount of time that the implementation may wait additionally to coalesce with other events.
+            ;; The amount of time that the implementation may wait additionally
+            ;; to coalesce with other events.
+            ;;
             ;; Flags specifying whether the timeout is absolute or relative
             (field $precision $timestamp_t)
           )
@@ -673,7 +684,8 @@
   )
 )
 
-;; Flags provided to `__wasi_sock_send()`. As there are currently no flags defined, it must be set to zero.
+;; Flags provided to `__wasi_sock_send()`. As there are currently no flags
+;; defined, it must be set to zero.
 (typename $siflags_t u16)
 
 ;; Which channels on a socket to shut down.
@@ -918,8 +930,15 @@
   )
 
   ;; Atomically replace a file descriptor by renumbering another file descriptor.
-  ;; Due to the strong focus on thread safety, this environment does not provide a mechanism to duplicate or renumber a file descriptor to an arbitrary number, like `dup2()`. This would be prone to race conditions, as an actual file descriptor with the same number could be allocated by a different thread at the same time.
-  ;; This function provides a way to atomically renumber file descriptors, which would disappear if `dup2()` were to be removed entirely.
+  ;;
+  ;; Due to the strong focus on thread safety, this environment does not provide
+  ;; a mechanism to duplicate or renumber a file descriptor to an arbitrary
+  ;; number, like `dup2()`. This would be prone to race conditions, as an actual
+  ;; file descriptor with the same number could be allocated by a different
+  ;; thread at the same time.
+  ;;
+  ;; This function provides a way to atomically renumber file descriptors, which
+  ;; would disappear if `dup2()` were to be removed entirely.
   (func (export "fd_renumber")
     (param $self $fd_t)
     ;; The file descriptor to overwrite.
