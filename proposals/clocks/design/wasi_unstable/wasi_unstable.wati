@@ -3,6 +3,7 @@
 ;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 
 (typename $size_t u32)
+(typename $uintptr_t u32)
 (typename $string_array (array string))
 
 ;; Non-negative file size or length of a region within a file.
@@ -280,8 +281,8 @@
 (typename $iovec_t
   (struct
     ;; The address and length of the buffer to be filled.
-    (field $buf data)
-    (field $buf_len data)
+    (field $buf $uintptr_t)
+    (field $buf_len $size_t)
   )
 )
 
@@ -289,8 +290,8 @@
 (typename $ciovec_t
   (struct
     ;; The address and length of the buffer to be written.
-    (field $buf data)
-    (field $buf_len data)
+    (field $buf $uintptr_t)
+    (field $buf_len $size_t)
   )
 )
 
