@@ -1,0 +1,1206 @@
+;; The wasi_unstable module type.
+;;
+;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
+
+(typename $size_t u32)
+(typename $string_array (array string))
+
+;; Non-negative file size or length of a region within a file.
+(typename $filesize_t u64)
+
+;; Timestamp in nanoseconds.
+(typename $timestamp_t u64)
+
+;; Identifiers for clocks.
+(typename $clockid_t
+  (enum u32
+    ;; The store-wide monotonic clock, which is defined as a clock measuring
+    ;; real time, whose value cannot be adjusted and which cannot have negative
+    ;; clock jumps. The epoch of this clock is undefined. The absolute time
+    ;; value of this clock therefore has no meaning.
+    $CLOCK_MONOTONIC
+    ;; The CPU-time clock associated with the current process.
+    $CLOCK_PROCESS_CPUTIME_ID
+    ;; The clock measuring real time. Time value zero corresponds with
+    ;; 1970-01-01T00:00:00Z.
+    $CLOCK_REALTIME
+    ;; The CPU-time clock associated with the current thread.
+    $CLOCK_THREAD_CPUTIME_ID
+  )
+)
+
+;; Error codes returned by functions.
+;; Not all of these error codes are returned by the functions provided by this
+;; API; some are used in higher-level library layers, and others are provided
+;; merely for alignment with POSIX.
+(typename $errno_t
+  (enum u16
+    ;; No error occurred. System call completed successfully.
+    $ESUCCESS
+    ;; Argument list too long.
+    $E2BIG
+    ;; Permission denied.
+    $EACCES
+    ;; Address in use.
+    $EADDRINUSE
+    ;; Address not available.
+    $EADDRNOTAVAIL
+    ;; Address family not supported.
+    $EAFNOSUPPORT
+    ;; Resource unavailable, or operation would block.
+    $EAGAIN
+    ;; Connection already in progress.
+    $EALREADY
+    ;; Bad file descriptor.
+    $EBADF
+    ;; Bad message.
+    $EBADMSG
+    ;; Device or resource busy.
+    $EBUSY
+    ;; Operation canceled.
+    $ECANCELED
+    ;; No child processes.
+    $ECHILD
+    ;; Connection aborted.
+    $ECONNABORTED
+    ;; Connection refused.
+    $ECONNREFUSED
+    ;; Connection reset.
+    $ECONNRESET
+    ;; Resource deadlock would occur.
+    $EDEADLK
+    ;; Destination address required.
+    $EDESTADDRREQ
+    ;; Mathematics argument out of domain of function.
+    $EDOM
+    ;; Reserved.
+    $EDQUOT
+    ;; File exists.
+    $EEXIST
+    ;; Bad address.
+    $EFAULT
+    ;; File too large.
+    $EFBIG
+    ;; Host is unreachable.
+    $EHOSTUNREACH
+    ;; Identifier removed.
+    $EIDRM
+    ;; Illegal byte sequence.
+    $EILSEQ
+    ;; Operation in progress.
+    $EINPROGRESS
+    ;; Interrupted function.
+    $EINTR
+    ;; Invalid argument.
+    $EINVAL
+    ;; I/O error.
+    $EIO
+    ;; Socket is connected.
+    $EISCONN
+    ;; Is a directory.
+    $EISDIR
+    ;; Too many levels of symbolic links.
+    $ELOOP
+    ;; File descriptor value too large.
+    $EMFILE
+    ;; Too many links.
+    $EMLINK
+    ;; Message too large.
+    $EMSGSIZE
+    ;; Reserved.
+    $EMULTIHOP
+    ;; Filename too long.
+    $ENAMETOOLONG
+    ;; Network is down.
+    $ENETDOWN
+    ;; Connection aborted by network.
+    $ENETRESET
+    ;; Network unreachable.
+    $ENETUNREACH
+    ;; Too many files open in system.
+    $ENFILE
+    ;; No buffer space available.
+    $ENOBUFS
+    ;; No such device.
+    $ENODEV
+    ;; No such file or directory.
+    $ENOENT
+    ;; Executable file format error.
+    $ENOEXEC
+    ;; No locks available.
+    $ENOLCK
+    ;; Reserved.
+    $ENOLINK
+    ;; Not enough space.
+    $ENOMEM
+    ;; No message of the desired type.
+    $ENOMSG
+    ;; Protocol not available.
+    $ENOPROTOOPT
+    ;; No space left on device.
+    $ENOSPC
+    ;; Function not supported.
+    $ENOSYS
+    ;; The socket is not connected.
+    $ENOTCONN
+    ;; Not a directory or a symbolic link to a directory.
+    $ENOTDIR
+    ;; Directory not empty.
+    $ENOTEMPTY
+    ;; State not recoverable.
+    $ENOTRECOVERABLE
+    ;; Not a socket.
+    $ENOTSOCK
+    ;; Not supported, or operation not supported on socket.
+    $ENOTSUP
+    ;; Inappropriate I/O control operation.
+    $ENOTTY
+    ;; No such device or address.
+    $ENXIO
+    ;; Value too large to be stored in data type.
+    $EOVERFLOW
+    ;; Previous owner died.
+    $EOWNERDEAD
+    ;; Operation not permitted.
+    $EPERM
+    ;; Broken pipe.
+    $EPIPE
+    ;; Protocol error.
+    $EPROTO
+    ;; Protocol not supported.
+    $EPROTONOSUPPORT
+    ;; Protocol wrong type for socket.
+    $EPROTOTYPE
+    ;; Result too large.
+    $ERANGE
+    ;; Read-only file system.
+    $EROFS
+    ;; Invalid seek.
+    $ESPIPE
+    ;; No such process.
+    $ESRCH
+    ;; Reserved.
+    $ESTALE
+    ;; Connection timed out.
+    $ETIMEDOUT
+    ;; Text file busy.
+    $ETXTBSY
+    ;; Cross-device link.
+    $EXDEV
+    ;; Extension: Capabilities insufficient.
+    $ENOTCAPABLE
+  )
+)
+
+;; File descriptor rights, determining which actions may be performed.
+(typename $rights_t
+  (flags u64
+    ;; The right to invoke __wasi_fd_datasync().
+    ;;
+    ;; If __WASI_RIGHT_PATH_OPEN is set, includes the right to invoke
+    ;` __wasi_path_open() with __WASI_FDFLAG_DSYNC.
+    (flag $RIGHT_FD_DATASYNC)
+    ;; The right to invoke __wasi_fd_read() and __wasi_sock_recv().
+    ;;
+    ;; If __WASI_RIGHT_FD_SEEK is set, includes the right to invoke
+    ;; __wasi_fd_pread().
+    (flag $RIGHT_FD_READ)
+    ;; The right to invoke __wasi_fd_seek(). This flag implies __WASI_RIGHT_FD_TELL.
+    (flag $RIGHT_FD_SEEK)
+    ;; The right to invoke __wasi_fd_fdstat_set_flags().
+    (flag $RIGHT_FD_FDSTAT_SET_FLAGS)
+    ;; The right to invoke __wasi_fd_sync().
+    ;;
+    ;; If __WASI_RIGHT_PATH_OPEN is set, includes the right to invoke
+    ;; __wasi_path_open() with __WASI_FDFLAG_RSYNC and __WASI_FDFLAG_DSYNC.
+    (flag $RIGHT_FD_SYNC)
+    ;; The right to invoke __wasi_fd_seek() in such a way that the file offset
+    ;; remains unaltered (i.e., __WASI_WHENCE_CUR with offset zero), or to
+    ;; invoke __wasi_fd_tell().
+    (flag $RIGHT_FD_TELL)
+    ;; The right to invoke __wasi_fd_write() and __wasi_sock_send().
+    ;; If __WASI_RIGHT_FD_SEEK is set, includes the right to invoke __wasi_fd_pwrite().
+    (flag $RIGHT_FD_WRITE)
+    ;; The right to invoke __wasi_fd_advise().
+    (flag $RIGHT_FD_ADVISE)
+    ;; The right to invoke __wasi_fd_allocate().
+    (flag $RIGHT_FD_ALLOCATE)
+    ;; The right to invoke __wasi_path_create_directory().
+    (flag $RIGHT_PATH_CREATE_DIRECTORY)
+    ;; If __WASI_RIGHT_PATH_OPEN is set, the right to invoke __wasi_path_open() with __WASI_O_CREAT.
+    (flag $RIGHT_PATH_CREATE_FILE)
+    ;; The right to invoke __wasi_path_link() with the file descriptor as the source directory.
+    (flag $RIGHT_PATH_LINK_SOURCE)
+    ;; The right to invoke __wasi_path_link() with the file descriptor as the target directory.
+    (flag $RIGHT_PATH_LINK_TARGET)
+    ;; The right to invoke __wasi_path_open().
+    (flag $RIGHT_PATH_OPEN)
+    ;; The right to invoke __wasi_fd_readdir().
+    (flag $RIGHT_FD_READDIR)
+    ;; The right to invoke __wasi_path_readlink().
+    (flag $RIGHT_PATH_READLINK)
+    ;; The right to invoke __wasi_path_rename() with the file descriptor as the source directory.
+    (flag $RIGHT_PATH_RENAME_SOURCE)
+    ;; The right to invoke __wasi_path_rename() with the file descriptor as the target directory.
+    (flag $RIGHT_PATH_RENAME_TARGET)
+    ;; The right to invoke __wasi_path_filestat_get().
+    (flag $RIGHT_PATH_FILESTAT_GET)
+    ;; The right to change a file's size (there is no __wasi_path_filestat_set_size()).
+    ;; If __WASI_RIGHT_PATH_OPEN is set, includes the right to invoke __wasi_path_open() with __WASI_O_TRUNC.
+    (flag $RIGHT_PATH_FILESTAT_SET_SIZE)
+    ;; The right to invoke __wasi_path_filestat_set_times().
+    (flag $RIGHT_PATH_FILESTAT_SET_TIMES)
+    ;; The right to invoke __wasi_fd_filestat_get().
+    (flag $RIGHT_FD_FILESTAT_GET)
+    ;; The right to invoke __wasi_fd_filestat_set_size().
+    (flag $RIGHT_FD_FILESTAT_SET_SIZE)
+    ;; The right to invoke __wasi_fd_filestat_set_times().
+    (flag $RIGHT_FD_FILESTAT_SET_TIMES)
+    ;; The right to invoke __wasi_path_symlink().
+    (flag $RIGHT_PATH_SYMLINK)
+    ;; The right to invoke __wasi_path_unlink_file().
+    (flag $RIGHT_PATH_UNLINK_FILE)
+    ;; The right to invoke __wasi_path_remove_directory().
+    (flag $RIGHT_PATH_REMOVE_DIRECTORY)
+    ;; If __WASI_RIGHT_FD_READ is set, includes the right to invoke __wasi_poll_oneoff() to subscribe to __WASI_EVENTTYPE_FD_READ.
+    ;; If __WASI_RIGHT_FD_WRITE is set, includes the right to invoke __wasi_poll_oneoff() to subscribe to __WASI_EVENTTYPE_FD_WRITE.
+    (flag $RIGHT_POLL_FD_READWRITE)
+    ;; The right to invoke __wasi_sock_shutdown().
+    (flag $RIGHT_SOCK_SHUTDOWN)
+  )
+)
+
+;; a file descriptor index
+(typename $fd_t u32)
+
+(typename $iovec_t_array (array $iovec_t))
+(typename $ciovec_t_array (array $ciovec_t))
+
+;; A region of memory for scatter/gather reads.
+(typename $iovec_t
+  (struct
+    ;; The address and length of the buffer to be filled.
+    (field $buf data)
+    (field $buf_len data)
+  )
+)
+
+;; A region of memory for scatter/gather writes.
+(typename $ciovec_t
+  (struct
+    ;; The address and length of the buffer to be written.
+    (field $buf data)
+    (field $buf_len data)
+  )
+)
+
+;; Relative offset within a file.
+(typename $filedelta_t s64)
+
+;; The position relative to which to set the offset of the file descriptor.
+(typename $whence_t
+  (enum u8
+    ;; Seek relative to current position.
+    $WHENCE_CUR
+    ;; Seek relative to end-of-file.
+    $WHENCE_END
+    ;; Seek relative to start-of-file.
+    $WHENCE_SET
+  )
+)
+
+;; A reference to the offset of a directory entry.
+(typename $dircookie_t u64)
+
+;; The type for the $d_namelen field of $dirent_t.
+(typename $dirnamlen_t u32)
+
+;; A directory entry.
+(typename $dirent_t
+  (struct
+    ;; The offset of the next directory entry stored in this directory.
+    (field $d_next $dircookie_t)
+    ;; The serial number of the file referred to by this directory entry.
+    (field $d_ino $inode_t)
+    ;; The length of the name of the directory entry.
+    (field $d_namlen $dirnamelen_t)
+    ;; The type of the file referred to by this directory entry.
+    (field $d_type $filetype_t)
+  )
+)
+
+;; File or memory access pattern advisory information.
+(typename $advice_t
+  (enum u8
+    ;; The application expects that it will not access the specified data in the near future.
+    $ADVICE_DONTNEED
+    ;; The application expects to access the specified data once and then not reuse it thereafter.
+    $ADVICE_NOREUSE
+    ;; The application has no advice to give on its behavior with respect to the specified data.
+    $ADVICE_NORMAL
+    ;; The application expects to access the specified data in a random order.
+    $ADVICE_RANDOM
+    ;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
+    $ADVICE_SEQUENTIAL
+    ;; The application expects to access the specified data in the near future.
+    $ADVICE_WILLNEED
+  )
+)
+
+;; File descriptor flags.
+(typename $fdflags_t
+  (flags u16
+    ;; Append mode: Data written to the file is always appended to the file's end.
+    (flag $FDFLAG_APPEND)
+    ;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
+    (flag $FDFLAG_DSYNC)
+    ;; Non-blocking mode.
+    (flag $FDFLAG_NONBLOCK)
+    ;; Synchronized read I/O operations.
+    (flag $FDFLAG_RSYNC)
+    ;; Write according to synchronized I/O file integrity completion. In
+    ;; addition to synchronizing the data stored in the file, the implementation
+    ;; may also synchronously update the file's metadata.
+    (flag $FDFLAG_SYNC)
+  )
+)
+
+;; File descriptor attributes.
+(typename $fdstat_t
+  (struct
+    ;; File type.
+    (field $fs_filetype $filetype_t)
+    ;; File descriptor flags.
+    (field $fs_flags $fdflags_t)
+    ;; Rights that apply to this file descriptor.
+    (field $fs_rights_base $rights_t)
+    ;; Maximum set of rights that may be installed on new file descriptors that
+    ;; are created through this file descriptor, e.g., through
+    ;; __wasi_path_open().
+    (field $fs_rights_inheriting $rights_t)
+  )
+)
+
+;; Identifier for a device containing a file system. Can be used in combination
+;; with __wasi_inode_t to uniquely identify a file or directory in the
+;; filesystem.
+(typename $device_t u64)
+
+;; The type of a file descriptor or file.
+(typename $filetype_t
+  (enum u8
+    ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
+    $FILETYPE_UNKNOWN
+    ;; The file descriptor or file refers to a block device inode.
+    $FILETYPE_BLOCK_DEVICE
+    ;; The file descriptor or file refers to a character device inode.
+    $FILETYPE_CHARACTER_DEVICE
+    ;; The file descriptor or file refers to a directory inode.
+    $FILETYPE_DIRECTORY
+    ;; The file descriptor or file refers to a regular file inode.
+    $FILETYPE_REGULAR_FILE
+    ;; The file descriptor or file refers to a datagram socket.
+    $FILETYPE_SOCKET_DGRAM
+    ;; The file descriptor or file refers to a byte-stream socket.
+    $FILETYPE_SOCKET_STREAM
+    ;; The file refers to a symbolic link inode.
+    $FILETYPE_SYMBOLIC_LINK
+  )
+)
+
+;; Which file time attributes to adjust.
+(typename $fstflags_t
+  (flags u16
+    ;; Adjust the last data access timestamp to the value stored in __wasi_filestat_t::st_atim.
+    (flag $FILESTAT_SET_ATIM)
+    ;; Adjust the last data access timestamp to the time of clock __WASI_CLOCK_REALTIME.
+    (flag $FILESTAT_SET_ATIM_NOW)
+    ;; Adjust the last data modification timestamp to the value stored in __wasi_filestat_t::st_mtim.
+    (flag $FILESTAT_SET_MTIM)
+    ;; Adjust the last data modification timestamp to the time of clock __WASI_CLOCK_REALTIME.
+    (flag $FILESTAT_SET_MTIM_NOW)
+  )
+)
+
+;; File serial number that is unique within its file system.
+(typename $inode_t u64)
+
+;; Flags determining the method of how paths are resolved.
+(typename $lookupflags_t
+  (flags u32
+    ;; As long as the resolved path corresponds to a symbolic link, it is expanded.
+    (flag $LOOKUP_SYMLINK_FOLLOW)
+  )
+)
+
+;; Open flags used by __wasi_path_open().
+(typename $oflags_t
+  (flags u16
+    ;; Create file if it does not exist.
+    (flag $O_CREAT)
+    ;; Fail if not a directory.
+    (flag $O_DIRECTORY)
+    ;; Fail if file already exists.
+    (flag $O_EXCL)
+    ;; Truncate file to size 0.
+    (flag $O_TRUNC)
+  )
+)
+
+;; Number of hard links to an inode.
+(typename $linkcount_t u32)
+
+;; File attributes.
+(typename $filestat_t
+  (struct
+    ;; Device ID of device containing the file.
+    (field $st_dev $device_t)
+    ;; File serial number.
+    (field $st_ino $inode_t)
+    ;; File type.
+    (field $st_filetype $filetype_t)
+    ;; Number of hard links to the file.
+    (field $st_nlink $linkcount_t)
+    ;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+    (field $st_size $filesize_t)
+    ;; Last data access timestamp.
+    (field $st_atim $timestamp_t)
+    ;; Last data modification timestamp.
+    (field $st_mtim $timestamp_t)
+    ;; Last file status change timestamp.
+    (field $st_ctim $timestamp_t)
+  )
+)
+
+;; User-provided value that may be attached to objects that is retained when extracted from the implementation.
+(typename $userdata_t u64)
+
+;; An event that occurred.
+(typename $event_t
+  (struct
+    ;; User-provided value that got attached to __wasi_subscription_t::userdata.
+    (field $userdata $userdata_t)
+    ;; If non-zero, an error that occurred while processing the subscription request.
+    (field $error $errno_t)
+    ;; The type of the event that occurred.
+    (field $type $eventtype_t)
+    (field $u
+      (typename union
+        ;; When type is __WASI_EVENTTYPE_FD_READ or __WASI_EVENTTYPE_FD_WRITE:
+        (field $fd_readwrite
+          (typename stuct
+            ;; The number of bytes available for reading or writing.
+            (field $nbytes $filesize_t)
+            ;; The state of the file descriptor.
+            (field $flags $eventrwflags_t)
+          )
+        )
+        (field $else Null)
+      )
+    )
+  )
+)
+
+;; The state of the file descriptor subscribed to with __WASI_EVENTTYPE_FD_READ or __WASI_EVENTTYPE_FD_WRITE.
+(typename $eventrwflags_t
+  (flags u16
+    ;; The peer of this socket has closed or disconnected.
+    (flag $EVENT_FD_READWRITE_HANGUP)
+  )
+)
+
+;; Type of a subscription to an event or its occurrence.
+(typename $eventtype_t
+  (flags u8
+    ;; The time value of clock __wasi_subscription_t::u.clock.clock_id has reached timestamp __wasi_subscription_t::u.clock.timeout.
+    (flag $EVENTTYPE_CLOCK)
+    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has data available for reading. This event always triggers for regular files.
+    (flag $EVENTTYPE_FD_READ)
+    ;; File descriptor __wasi_subscription_t::u.fd_readwrite.fd has capacity available for writing. This event always triggers for regular files.
+    (flag $EVENTTYPE_FD_WRITE)
+  )
+)
+
+;; Flags determining how to interpret the timestamp provided in __wasi_subscription_t::u.clock.timeout.
+(typename $subclockflags_t
+  (flags u16
+    ;; If set, treat the timestamp provided in
+    ;; __wasi_subscription_t::u.clock.timeout as an absolute timestamp of clock
+    ;; __wasi_subscription_t::u.clock.clock_id. If clear, treat the timestamp
+    ;; provided in __wasi_subscription_t::u.clock.timeout relative to the
+    ;; current time value of clock __wasi_subscription_t::u.clock.clock_id.
+    (flag $SUBSCRIPTION_CLOCK_ABSTIME)
+  )
+)
+
+;; Subscription to an event.
+(typename $subscription_t
+  (struct
+    ;; User-provided value that is attached to the subscription in the implementation and returned through __wasi_event_t::userdata.
+    (field $userdata $userdata_t)
+    ;; The type of the event to which to subscribe.
+    (field $type $eventtype_t)
+    (field
+      (type
+        (union
+          ;; When type is __WASI_EVENTTYPE_CLOCK
+          (field $clock
+            (typename
+              (struct
+                ;; The user-defined unique identifier of the clock.
+                (field $identifier $userdata_t)
+                ;; The clock against which to compare the timestamp.
+                (field $clock_id $clockid_t)
+                ;; The absolute or relative timestamp.
+                (field $timeout $timestamp_t)
+                ;; The amount of time that the implementation may wait additionally to coalesce with other events.
+                ;; Flags specifying whether the timeout is absolute or relative
+                (field $precision $timestamp_t)
+              )
+            )
+          )
+          ;; When type is __WASI_EVENTTYPE_FD_READ or __WASI_EVENTTYPE_FD_WRITE:
+          (field $fd_readwrite
+            (type
+              (struct
+                ;; The file descriptor on which to wait for it to become ready for reading or writing.
+                (field $file_descriptor $fd_t)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+;; Exit code generated by a process when exiting.
+(typename $exitcode_t u32)
+
+;; Signal condition.
+(typename $signal_t
+  (enum u8
+    ;; Process abort signal.
+    ;; Action: Terminates the process.
+    $SIGABRT
+    ;; Alarm clock.
+    ;; Action: Terminates the process.
+    $SIGALRM
+    ;; Access to an undefined portion of a memory object.
+    ;; Action: Terminates the process.
+    $SIGBUS
+    ;; Child process terminated, stopped, or continued.
+    ;; Action: Ignored.
+    $SIGCHLD
+    ;; Continue executing, if stopped.
+    ;; Action: Continues executing, if stopped.
+    $SIGCONT
+    ;; Erroneous arithmetic operation.
+    ;; Action: Terminates the process.
+    $SIGFPE
+    ;; Hangup.
+    ;; Action: Terminates the process.
+    $SIGHUP
+    ;; Illegal instruction.
+    ;; Action: Terminates the process.
+    $SIGILL
+    ;; Terminate interrupt signal.
+    ;; Action: Terminates the process.
+    $SIGINT
+    ;; Kill.
+    ;; Action: Terminates the process.
+    $SIGKILL
+    ;; Write on a pipe with no one to read it.
+    ;; Action: Ignored.
+    $SIGPIPE
+    ;; Terminal quit signal.
+    ;; Action: Terminates the process.
+    $SIGQUIT
+    ;; Invalid memory reference.
+    ;; Action: Terminates the process.
+    $SIGSEGV
+    ;; Stop executing.
+    ;; Action: Stops executing.
+    $SIGSTOP
+    ;; Bad system call.
+    ;; Action: Terminates the process.
+    $SIGSYS
+    ;; Termination signal.
+    ;; Action: Terminates the process.
+    $SIGTERM
+    ;; Trace/breakpoint trap.
+    ;; Action: Terminates the process.
+    $SIGTRAP
+    ;; Terminal stop signal.
+    ;; Action: Stops executing.
+    $SIGTSTP
+    ;; Background process attempting read.
+    ;; Action: Stops executing.
+    $SIGTTIN
+    ;; Background process attempting write.
+    ;; Action: Stops executing.
+    $SIGTTOU
+    ;; High bandwidth data is available at a socket.
+    ;; Action: Ignored.
+    $SIGURG
+    ;; User-defined signal 1.
+    ;; Action: Terminates the process.
+    $SIGUSR1
+    ;; User-defined signal 2.
+    ;; Action: Terminates the process.
+    $SIGUSR2
+    ;; Virtual timer expired.
+    ;; Action: Terminates the process.
+    $SIGVTALRM
+    ;; CPU time limit exceeded.
+    ;; Action: Terminates the process.
+    $SIGXCPU
+    ;; File size limit exceeded.
+    ;; Action: Terminates the process.
+    $SIGXFSZ
+  )
+)
+
+;; Flags provided to __wasi_sock_recv().
+(typename $riflags_t
+  (flags u16
+    ;; Returns the message without removing it from the socket's receive queue.
+    (flag $SOCK_RECV_PEEK)
+    ;; On byte-stream sockets, block until the full amount of data can be returned.
+    (flag $SOCK_RECV_WAITALL)
+  )
+)
+
+;; Flags returned by __wasi_sock_recv().
+(typename $roflags_t
+  (flags u16
+    ;; Returned by __wasi_sock_recv(): Message data has been truncated.
+    (flag $SOCK_RECV_DATA_TRUNCATED)
+  )
+)
+
+;; Flags provided to __wasi_sock_send(). As there are currently no flags defined, it must be set to zero.
+(typename $siflags_t u16)
+
+;; Which channels on a socket to shut down.
+(typename $sdflags_t
+  (flags u8
+    ;; Disables further receive operations.
+    (flag $SHUT_RD)
+    ;; Disables further send operations.
+    (flag $SHUT_WR)
+  )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; The wasi_unstable moduletype.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(moduletype $wasi_unstable
+  ;; Linear memory used by the program.
+  (import "memory" (memory))
+
+  ;; The program entry point.
+  (import "_start" (func))
+
+  ;; Read command-line argument data.
+  ;; The size of the array should match that returned by `wasi_args_sizes_get()`
+  (func (export "args_get")
+    (result $error $errno_t)
+    (result $argv $string_array)
+  )
+  ;; Return command-line argument data sizes.
+  (func (export "args_sizes_get")
+    (result $error $errno_t)
+    ;; The number of arguments.
+    (result $argc $size_t)
+    ;; The size of the argument string data.
+    (result $argv_buf_size $size_t)
+  )
+
+  ;; Read environment variable data.
+  ;; The sizes of the buffers should match that returned by `environ.sizes_get()`.
+  (func (export "environ_get")
+    (result $error $errno_t)
+    (result $argv $string_array)
+  )
+  ;; Return command-line argument data sizes.
+  (func (export "environ_sizes_get")
+    ;; The number of arguments.
+    (result $argc $size_t)
+    ;; The size of the argument string data.
+    (result $argv_buf_size $size_t)
+  )
+
+  ;; Return the resolution of a clock.
+  ;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks, return `WASI_EINVAL`
+  ;; Note: This is similar to `clock_getres` in POSIX.
+  (func (export "clock_res_get")
+    (result $error $errno_t)
+    ;; The clock for which to return the resolution.
+    (param $clock_id $clockid_t)
+    ;; The resolution of the clock.
+    (result $resolution $timestamp_t)
+  )
+  ;; Return the time value of a clock.
+  ;; Note: This is similar to `clock_gettime` in POSIX.
+  (func (export "clock_time_get")
+    ;; The clock for which to return the time.
+    (param $clock_id $clockid_t)
+    ;; The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
+    (param $precision $timestamp_t)
+    (result $error $errno_t)
+    ;; The time value of the clock.
+    (result $time $timestamp_t)
+  )
+
+  ;; Provide file advisory information on a file descriptor.
+  ;; Note: This is similar to `posix_fadvise` in POSIX.
+  (func (export "fd_advise")
+    (param $self $fd_t)
+    (param $offset $filesize_t) ;; The offset within the file to which the advisory applies.
+    (param $len $filesize_t) ;; The length of the region to which the advisory applies.
+    (param $advice $advice_t) ;; The advice.
+    (result $error $errno_t)
+  )
+
+  ;; Force the allocation of space in a file.
+  ;; Note: This is similar to `posix_fallocate` in POSIX.
+  (func (export "fd_allocate")
+    (param $self $fd_t)
+    ;; The offset at which to start the allocation.
+    (param $offset $filesize_t)
+    ;; The length of the area that is allocated.
+    (param $len $filesize_t)
+    (result $error $errno_t)
+  )
+
+  ;; Close a file descriptor.
+  ;; Note: This is similar to `close` in POSIX.
+  (func (export "fd_close")
+    (param $self $fd_t)
+    (result $error $errno_t)
+  )
+
+  ;; Synchronize the data of a file to disk.
+  ;; Note: This is similar to `fdatasync` in POSIX.
+  (func (export "fd_datasync")
+    (param $self $fd_t)
+    (result $error $errno_t)
+  )
+
+  ;; Get the attributes of a file descriptor.
+  ;; Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well as additional fields.
+  (func (export "fd_fdstat_get")
+    (param $self $fd_t)
+    (result $error $errno_t)
+    ;; The buffer where the file descriptor's attributes are stored.
+    (result $fdstat_t)
+  )
+
+  ;; Adjust the flags associated with a file descriptor.
+  ;; Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
+  (func (export "fd_fdstat_set_flags")
+    (param $self $fd_t)
+    ;; The desired values of the file descriptor flags.
+    (param $flags $fdflags)
+    (result $error $errno_t)
+  )
+
+  ;;  Adjust the rights associated with a file descriptor.
+  ;; This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
+  (func (export "fd_fdstat_set_rights")
+    (param $self $fd_t)
+    ;; The desired rights of the file descriptor.
+    (param $fs_rights_base $rights_t)
+    (param $fs_rights_inheriting $rights_t)
+    (result $error $errno_t)
+  )
+
+  ;; Return the attributes of an open file.
+  (func (export "fd_filestat_get")
+    (param $self $fd_t)
+    (result $error $errno_t)
+    ;; The buffer where the file's attributes are stored.
+    (result $fs_rights_base $rights_t)
+  )
+
+  ;; Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
+  ;; Note: This is similar to `ftruncate` in POSIX.
+  (func (export "fd_filestat_set_size")
+    (param $self $fd_t)
+    ;; The desired file size.
+    (param $st_size $filesize_t)
+    (result $error $errno_t)
+  )
+
+  ;; Adjust the timestamps of an open file or directory.
+  ;; Note: This is similar to `futimens` in POSIX.
+  (func (export "fd_filestat_set_times")
+    (param $self $fd_t)
+    ;; The desired values of the data access timestamp.
+    (param $st_atim $timestamp_t)
+    ;; The desired values of the data modification timestamp.
+    (param $st_mtim $timestamp_t)
+    ;; A bitmask indicating which timestamps to adjust.
+    (param $fst_flags $fstflags_t)
+    (result $error $errno_t)
+  )
+
+  ;; Read from a file descriptor, without using and updating the file descriptor's offset.
+  ;; Note: This is similar to `preadv` in POSIX.
+  (func (export "fd_pread")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors in which to store data.
+    (param $iovs $iovec_t_array)
+    ;; The offset within the file at which to read.
+    (param $offset $filesize_t)
+    (result $error $errno_t)
+    ;; The number of bytes read.
+    (result $nread $size_t)
+  )
+
+  ;; Return a description of the given preopened file descriptor.
+  (func (export "fd_prestat_get")
+    (param $self $fd_t)
+    (result $error $errno_t)
+    ;; The buffer where the description is stored.
+    (result $buf $prestat_t)
+  )
+
+  ;; Return a description of the given preopened file descriptor.
+  (func (export "fd_prestat_dir_name")
+    (param $self $fd_t)
+    ;; A buffer into which to write the preopened directory name.
+    (param $path string)
+    (result $error $errno_t)
+  )
+
+  ;; Write to a file descriptor, without using and updating the file descriptor's offset.
+  ;; Note: This is similar to `pwritev` in POSIX.
+  (func (export "fd_pwrite")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors from which to retrieve data.
+    (param $iovs $iovec_t_array)
+    ;; The offset within the file at which to write.
+    (param $offset $filesize_t)
+    (result $error $errno_t)
+    ;; The number of bytes written.
+    (result $nwritten $size_t)
+  )
+
+  ;; Read from a file descriptor.
+  ;; Note: This is similar to `readv` in POSIX.
+  (func (export "fd_read")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors to which to store data.
+    (param $iovs $iovec_t_array)
+    (result $error $errno_t)
+    ;; The number of bytes read.
+    (result $nread $size_t)
+  )
+
+  ;; Read directory entries from a directory.
+  ;; When successful, the contents of the output buffer consist of a sequence of
+  ;; directory entries. Each directory entry consists of a dirent_t object,
+  ;; followed by dirent_t::d_namlen bytes holding the name of the directory
+  ;; entry.
+  ;;
+  ;; This function fills the output buffer as much as possible, potentially
+  ;; truncating the last directory entry. This allows the caller to grow its
+  ;; read buffer size in case it's too small to fit a single large directory
+  ;; entry, or skip the oversized directory entry.
+  (func (export "fd_readdir")
+    (param $self $fd_t)
+    ;; The buffer where directory entries are stored
+    (param $buf data)
+    ;; The location within the directory to start reading
+    (param $cookie $dircookie_t)
+    (result $error $errno_t)
+    ;; The number of bytes stored in the read buffer. If less than the size of the read buffer, the end of the directory has been reached.
+    (result $bufused $size_t)
+  )
+
+  ;; Atomically replace a file descriptor by renumbering another file descriptor.
+  ;; Due to the strong focus on thread safety, this environment does not provide a mechanism to duplicate or renumber a file descriptor to an arbitrary number, like dup2(). This would be prone to race conditions, as an actual file descriptor with the same number could be allocated by a different thread at the same time.
+  ;; This function provides a way to atomically renumber file descriptors, which would disappear if dup2() were to be removed entirely.
+  (func (export "fd_renumber")
+    (param $self $fd_t)
+    ;; The file descriptor to overwrite.
+    (param $to $fd_t)
+    (result $error $errno_t)
+  )
+
+  ;; Move the offset of a file descriptor.
+  ;; Note: This is similar to `lseek` in POSIX.
+  (func (export "fd_seek")
+    (param $self $fd_t)
+    ;; The number of bytes to move.
+    (param $offset $filedelta_t)
+    ;; The base from which the offset is relative.
+    (param $whence $whence_t)
+    (result $error $errno_t)
+    ;; The new offset of the file descriptor, relative to the start of the file.
+    (result $newoffset $filesize_t)
+  )
+
+  ;; Synchronize the data and metadata of a file to disk.
+  ;; Note: This is similar to `fsync` in POSIX.
+  (func (export "fd_sync")
+    (param $self $fd_t)
+    (result $error $errno_t)
+  )
+
+  ;; Return the current offset of a file descriptor.
+  ;; Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
+  (func (export "fd_tell")
+    (param $self $fd_t)
+    (result $error $errno_t)
+    ;; The current offset of the file descriptor, relative to the start of the file.
+    (result $offset $filesize_t)
+  )
+
+  ;; Write to a file descriptor.
+  ;; Note: This is similar to `writev` in POSIX.
+  (func (export "fd_write")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors from which to retrieve data.
+    (param $iovs $iovec_t_array)
+    (result $error $errno_t)
+    ;; The number of bytes written.
+    (result $nwritten $size_t)
+  )
+
+  ;; Create a directory.
+  ;; Note: This is similar to `mkdirat` in POSIX.
+  (func (export "path_create_directory")
+    (param $self $fd_t)
+    ;; The path at which to create the directory.
+    (param $path string)
+    (result $error $errno_t)
+  )
+
+  ;; Return the attributes of a file or directory.
+  ;; Note: This is similar to `stat` in POSIX.
+  (func (export "path_filestat_get")
+    (param $self $fd_t)
+    ;; Flags determining the method of how the path is resolved.
+    (param $flags $lookupflags_t)
+    ;; The path of the file or directory to inspect.
+    (param $path string)
+    (result $error $errno_t)
+    ;; The buffer where the file's attributes are stored.
+    (result $buf $filestat_t)
+  )
+
+  ;; Adjust the timestamps of a file or directory.
+  ;; Note: This is similar to `utimensat` in POSIX.
+  (func (export "path_filestat_set_times")
+    (param $self $fd_t)
+    ;; Flags determining the method of how the path is resolved.
+    (param $flags $lookupflags_t)
+    ;; The path of the file or directory to operate on.
+    (param $path string)
+    ;; The desired values of the data access timestamp.
+    (param $st_atim $timestamp_t)
+    ;; The desired values of the data modification timestamp.
+    (param $st_mtim $timestamp_t)
+    ;; A bitmask indicating which timestamps to adjust.
+    (param $fst_flags $fstflags_t)
+    (result $error $errno_t)
+  )
+
+  ;; Create a hard link.
+  ;; Note: This is similar to `linkat` in POSIX.
+  (func (export "path_link")
+    (param $self $fd_t)
+    ;; Flags determining the method of how the path is resolved.
+    (param $old_flags $lookupflags_t)
+    ;; The source path from which to link.
+    (param $old_path string)
+    ;; The working directory at which the resolution of the new path starts.
+    (param $new_fd $path)
+    ;; The destination path at which to create the hard link.
+    (param $new_path string)
+    (result $error $errno_t)
+  )
+
+  ;; Open a file or directory.
+  ;;
+  ;; The returned file descriptor is not guaranteed to be the lowest-numbered
+  ;; file descriptor not currently open; it is randomized to prevent
+  ;; applications from depending on making assumptions about indexes, since this
+  ;; is error-prone in multi-threaded contexts. The returned file descriptor is
+  ;; guaranteed to be less than 231.
+  ;;
+  ;; Note: This is similar to `openat` in POSIX.
+  (func (export "path_open")
+    (param $self $fd_t)
+    ;; Flags determining the method of how the path is resolved.
+    (param $dirflags $lookupflags_t)
+    ;; The relative path of the file or directory to open, relative to the
+    ;; `dirfd` directory.
+    (param $path string)
+    ;; The method by which to open the file.
+    (param $o_flags $oflags_t)
+    ;; The initial rights of the newly created file descriptor. The
+    ;; implementation is allowed to return a file descriptor with fewer rights
+    ;; than specified, if and only if those rights do not apply to the type of
+    ;; file being opened.
+    ;;
+    ;; The base rights are rights that will apply to operations using the file
+    ;; descriptor itself, while the inheriting rights are rights that apply to
+    ;; file descriptors derived from it.
+    (param $fs_rights_base $rights_t)
+    (param $fs_rights_inherting $rights_t)
+    (result $error $errno_t)
+    ;; The file descriptor of the file that has been opened.
+    (result $opened_fd $fd_t)
+  )
+
+  ;; Read the contents of a symbolic link.
+  ;; Note: This is similar to `readlinkat` in POSIX.
+  (func (export "path_readlink")
+    (param $self $fd_t)
+    ;; The path of the symbolic link from which to read.
+    (param $path)
+    ;; The buffer to which to write the contents of the symbolic link.
+    (param $buf string)
+    (result $error $errno_t)
+    ;; The number of bytes placed in the buffer.
+    (result $bufused $size_t)
+  )
+
+  ;; Remove a directory.
+  ;; Return `__WASI_ENOTEMPTY` if the directory is not empty.
+  ;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
+  (func (export "path_remove_directory")
+    (param $self $fd_t)
+    ;; The path to a directory to remove.
+    (param $path string)
+    (result $error $errno_t)
+  )
+
+  ;; Rename a file or directory.
+  ;; Note: This is similar to `renameat` in POSIX.
+  (func (export "path_rename")
+    (param $self $fd_t)
+    ;; The source path of the file or directory to rename.
+    (param $old_path string)
+    ;; The working directory at which the resolution of the new path starts.
+    (param $new_fd $fd)
+    ;; The destination path to which to rename the file or directory.
+    (param $new_path string)
+    (result $error $errno_t)
+  )
+
+  ;; Create a symbolic link.
+  ;; Note: This is similar to `symlinkat` in POSIX.
+  (func (export "path_symlink")
+    (param $self $fd_t)
+    ;; The contents of the symbolic link.
+    (param $old_path string)
+    ;; The destination path at which to create the symbolic link.
+    (param $new_path string)
+    (result $error $errno_t)
+  )
+
+
+  ;; Unlink a file.
+  ;; Return __WASI_EISDIR if the path refers to a directory.
+  ;; Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
+  (func (export "path_unlink_file")
+    (param $self $fd_t)
+    ;; The path to a file to unlink.
+    (param $path string)
+    (result $error $errno_t)
+  )
+
+  ;; Concurrently poll for the occurrence of a set of events.
+  (func (export "poll_oneoff")
+    ;; The events to which to subscribe.
+    (param $in $subscription_t)
+    ;; The events that have occurred.
+    (param $out $event_t)
+    ;; Both the number of subscriptions and events.
+    (param $nsubscriptions $size_t)
+    (result $error $errno_t)
+    ;; The number of events stored.
+    (result $nevents $size_t)
+  )
+
+  ;; Terminate the process normally. An exit code of 0 indicates successful
+  ;; termination of the program. The meanings of other values is dependent on
+  ;; the environment.
+  (func (export "proc_exit")
+    ;; The exit code returned by the process.
+    (param $rval $exitcode_t)
+  )
+
+  ;; Send a signal to the process of the calling thread.
+  ;; Note: This is similar to `raise` in POSIX.
+  (func (export "proc_raise")
+    ;; The signal condition to trigger.
+    (param $sig $signal_t)
+    (result $error $errno_t)
+  )
+
+  ;; Temporarily yield execution of the calling thread.
+  ;; Note: This is similar to `sched_yield` in POSIX.
+  (func (export "proc_sched_yield")
+    (result $error $errno_t)
+  )
+
+  ;; Write high-quality random data into a buffer.
+  ;; This function blocks when the implementation is unable to immediately
+  ;; provide sufficient high-quality random data.
+  ;; This function may execute slowly, so when large mounts of random data are
+  ;; required, it's advisable to use this function to seed a pseudo-random
+  ;; number generator, rather than to provide the random data directly.
+  (func (export "random_get")
+    ;; The buffer to fill with random data.
+    (param $buf data)
+    (result $error $errno_t)
+  )
+
+  ;; Receive a message from a socket.
+  ;; Note: This is similar to `recv` in POSIX, though it also supports reading
+  ;; the data into multiple buffers in the manner of `readv`.
+  (func (export "sock_recv")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors to which to store data.
+    (param $ri_data $iovec_t_array)
+    ;; Message flags.
+    (param $ri_flags $riflags_t)
+    (result $error $errno_t)
+    ;; Number of bytes stored in ri_data.
+    (result $ro_datalen $size_t)
+    ;; Message flags.
+    (result $ro_flags $roflags_t)
+  )
+
+  ;; Send a message on a socket.
+  ;; Note: This is similar to `send` in POSIX, though it also supports writing
+  ;; the data from multiple buffers in the manner of `writev`.
+  (func (export "sock_send")
+    (param $self $fd_t)
+    ;; List of scatter/gather vectors to which to retrieve data
+    (param $si_data $ciovec_t_array)
+    ;; Message flags.
+    (param $si_flags $siflags_t)
+    (result $error $errno_t)
+    ;; Number of bytes transmitted.
+    (result $so_datalen $size_t)
+  )
+
+  ;; Shut down socket send and receive channels.
+  ;; Note: This is similar to `shutdown` in POSIX.
+  (func (export "sock_shutdown")
+    (param $self $fd_t)
+    ;; Which channels on the socket to shut down.
+    (param $how $sdflags_t)
+    (result $error $errno_t)
+  )
+)
