@@ -549,7 +549,7 @@
     (field $userdata $userdata_t)
     ;; The type of the event to which to subscribe.
     (field $type $eventtype_t)
-    (field
+    (field $u
       (union
         ;; When type is `__WASI_EVENTTYPE_CLOCK`:
         (field $clock
