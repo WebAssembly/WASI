@@ -486,10 +486,10 @@
     ;; The type of the event that occurred.
     (field $type $eventtype_t)
     (field $u
-      (typename union
+      (union
         ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
         (field $fd_readwrite
-          (typename stuct
+          (struct
             ;; The number of bytes available for reading or writing.
             (field $nbytes $filesize_t)
             ;; The state of the file descriptor.
@@ -541,32 +541,26 @@
     ;; The type of the event to which to subscribe.
     (field $type $eventtype_t)
     (field
-      (type
-        (union
-          ;; When type is `__WASI_EVENTTYPE_CLOCK`:
-          (field $clock
-            (typename
-              (struct
-                ;; The user-defined unique identifier of the clock.
-                (field $identifier $userdata_t)
-                ;; The clock against which to compare the timestamp.
-                (field $clock_id $clockid_t)
-                ;; The absolute or relative timestamp.
-                (field $timeout $timestamp_t)
-                ;; The amount of time that the implementation may wait additionally to coalesce with other events.
-                ;; Flags specifying whether the timeout is absolute or relative
-                (field $precision $timestamp_t)
-              )
-            )
+      (union
+        ;; When type is `__WASI_EVENTTYPE_CLOCK`:
+        (field $clock
+          (struct
+            ;; The user-defined unique identifier of the clock.
+            (field $identifier $userdata_t)
+            ;; The clock against which to compare the timestamp.
+            (field $clock_id $clockid_t)
+            ;; The absolute or relative timestamp.
+            (field $timeout $timestamp_t)
+            ;; The amount of time that the implementation may wait additionally to coalesce with other events.
+            ;; Flags specifying whether the timeout is absolute or relative
+            (field $precision $timestamp_t)
           )
-          ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
-          (field $fd_readwrite
-            (type
-              (struct
-                ;; The file descriptor on which to wait for it to become ready for reading or writing.
-                (field $file_descriptor $fd_t)
-              )
-            )
+        )
+        ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
+        (field $fd_readwrite
+          (struct
+            ;; The file descriptor on which to wait for it to become ready for reading or writing.
+            (field $file_descriptor $fd_t)
           )
         )
       )
