@@ -1046,7 +1046,7 @@
   ;; file descriptor not currently open; it is randomized to prevent
   ;; applications from depending on making assumptions about indexes, since this
   ;; is error-prone in multi-threaded contexts. The returned file descriptor is
-  ;; guaranteed to be less than 231.
+  ;; guaranteed to be less than 2**31.
   ;;
   ;; Note: This is similar to `openat` in POSIX.
   (func (export "path_open")
