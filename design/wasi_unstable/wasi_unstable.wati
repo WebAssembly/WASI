@@ -496,7 +496,6 @@
             (field $flags $eventrwflags_t)
           )
         )
-        (field $else Null)
       )
     )
   )
