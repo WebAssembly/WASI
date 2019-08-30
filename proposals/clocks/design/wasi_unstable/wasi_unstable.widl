@@ -2,7 +2,7 @@
 ;;
 ;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 
-(import "typenames.wid")
+(use "typenames.wid")
 
 (module $wasi_unstable
   ;; Linear memory used by the program.
