@@ -62,7 +62,7 @@
   ;; Provide file advisory information on a file descriptor.
   ;; Note: This is similar to `posix_fadvise` in POSIX.
   (@interface func (export "fd_advise")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (param $offset $filesize_t) ;; The offset within the file to which the advisory applies.
     (param $len $filesize_t) ;; The length of the region to which the advisory applies.
     (param $advice $advice_t) ;; The advice.
@@ -72,7 +72,7 @@
   ;; Force the allocation of space in a file.
   ;; Note: This is similar to `posix_fallocate` in POSIX.
   (@interface func (export "fd_allocate")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The offset at which to start the allocation.
     (param $offset $filesize_t)
     ;; The length of the area that is allocated.
@@ -83,21 +83,21 @@
   ;; Close a file descriptor.
   ;; Note: This is similar to `close` in POSIX.
   (@interface func (export "fd_close")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
   )
 
   ;; Synchronize the data of a file to disk.
   ;; Note: This is similar to `fdatasync` in POSIX.
   (@interface func (export "fd_datasync")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
   )
 
   ;; Get the attributes of a file descriptor.
   ;; Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well as additional fields.
   (@interface func (export "fd_fdstat_get")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
     ;; The buffer where the file descriptor's attributes are stored.
     (result $fdstat_t)
@@ -106,7 +106,7 @@
   ;; Adjust the flags associated with a file descriptor.
   ;; Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
   (@interface func (export "fd_fdstat_set_flags")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The desired values of the file descriptor flags.
     (param $flags $fdflags)
     (result $error $errno_t)
@@ -115,7 +115,7 @@
   ;;  Adjust the rights associated with a file descriptor.
   ;; This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
   (@interface func (export "fd_fdstat_set_rights")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The desired rights of the file descriptor.
     (param $fs_rights_base $rights_t)
     (param $fs_rights_inheriting $rights_t)
@@ -124,7 +124,7 @@
 
   ;; Return the attributes of an open file.
   (@interface func (export "fd_filestat_get")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
     ;; The buffer where the file's attributes are stored.
     (result $fs_rights_base $rights_t)
@@ -133,7 +133,7 @@
   ;; Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
   ;; Note: This is similar to `ftruncate` in POSIX.
   (@interface func (export "fd_filestat_set_size")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The desired file size.
     (param $st_size $filesize_t)
     (result $error $errno_t)
@@ -142,7 +142,7 @@
   ;; Adjust the timestamps of an open file or directory.
   ;; Note: This is similar to `futimens` in POSIX.
   (@interface func (export "fd_filestat_set_times")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The desired values of the data access timestamp.
     (param $st_atim $timestamp_t)
     ;; The desired values of the data modification timestamp.
@@ -155,7 +155,7 @@
   ;; Read from a file descriptor, without using and updating the file descriptor's offset.
   ;; Note: This is similar to `preadv` in POSIX.
   (@interface func (export "fd_pread")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors in which to store data.
     (param $iovs $iovec_t_array)
     ;; The offset within the file at which to read.
@@ -167,7 +167,7 @@
 
   ;; Return a description of the given preopened file descriptor.
   (@interface func (export "fd_prestat_get")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
     ;; The buffer where the description is stored.
     (result $buf $prestat_t)
@@ -175,7 +175,7 @@
 
   ;; Return a description of the given preopened file descriptor.
   (@interface func (export "fd_prestat_dir_name")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; A buffer into which to write the preopened directory name.
     (param $path string)
     (result $error $errno_t)
@@ -184,7 +184,7 @@
   ;; Write to a file descriptor, without using and updating the file descriptor's offset.
   ;; Note: This is similar to `pwritev` in POSIX.
   (@interface func (export "fd_pwrite")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors from which to retrieve data.
     (param $iovs $iovec_t_array)
     ;; The offset within the file at which to write.
@@ -197,7 +197,7 @@
   ;; Read from a file descriptor.
   ;; Note: This is similar to `readv` in POSIX.
   (@interface func (export "fd_read")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors to which to store data.
     (param $iovs $iovec_t_array)
     (result $error $errno_t)
@@ -216,7 +216,7 @@
   ;; read buffer size in case it's too small to fit a single large directory
   ;; entry, or skip the oversized directory entry.
   (@interface func (export "fd_readdir")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The buffer where directory entries are stored
     (param $buf data)
     ;; The location within the directory to start reading
@@ -237,7 +237,7 @@
   ;; This function provides a way to atomically renumber file descriptors, which
   ;; would disappear if `dup2()` were to be removed entirely.
   (@interface func (export "fd_renumber")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The file descriptor to overwrite.
     (param $to $fd_t)
     (result $error $errno_t)
@@ -246,7 +246,7 @@
   ;; Move the offset of a file descriptor.
   ;; Note: This is similar to `lseek` in POSIX.
   (@interface func (export "fd_seek")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The number of bytes to move.
     (param $offset $filedelta_t)
     ;; The base from which the offset is relative.
@@ -259,14 +259,14 @@
   ;; Synchronize the data and metadata of a file to disk.
   ;; Note: This is similar to `fsync` in POSIX.
   (@interface func (export "fd_sync")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
   )
 
   ;; Return the current offset of a file descriptor.
   ;; Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
   (@interface func (export "fd_tell")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     (result $error $errno_t)
     ;; The current offset of the file descriptor, relative to the start of the file.
     (result $offset $filesize_t)
@@ -275,7 +275,7 @@
   ;; Write to a file descriptor.
   ;; Note: This is similar to `writev` in POSIX.
   (@interface func (export "fd_write")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors from which to retrieve data.
     (param $iovs $iovec_t_array)
     (result $error $errno_t)
@@ -286,7 +286,7 @@
   ;; Create a directory.
   ;; Note: This is similar to `mkdirat` in POSIX.
   (@interface func (export "path_create_directory")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The path at which to create the directory.
     (param $path string)
     (result $error $errno_t)
@@ -295,7 +295,7 @@
   ;; Return the attributes of a file or directory.
   ;; Note: This is similar to `stat` in POSIX.
   (@interface func (export "path_filestat_get")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; Flags determining the method of how the path is resolved.
     (param $flags $lookupflags_t)
     ;; The path of the file or directory to inspect.
@@ -308,7 +308,7 @@
   ;; Adjust the timestamps of a file or directory.
   ;; Note: This is similar to `utimensat` in POSIX.
   (@interface func (export "path_filestat_set_times")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; Flags determining the method of how the path is resolved.
     (param $flags $lookupflags_t)
     ;; The path of the file or directory to operate on.
@@ -325,7 +325,7 @@
   ;; Create a hard link.
   ;; Note: This is similar to `linkat` in POSIX.
   (@interface func (export "path_link")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; Flags determining the method of how the path is resolved.
     (param $old_flags $lookupflags_t)
     ;; The source path from which to link.
@@ -347,7 +347,7 @@
   ;;
   ;; Note: This is similar to `openat` in POSIX.
   (@interface func (export "path_open")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; Flags determining the method of how the path is resolved.
     (param $dirflags $lookupflags_t)
     ;; The relative path of the file or directory to open, relative to the
@@ -373,7 +373,7 @@
   ;; Read the contents of a symbolic link.
   ;; Note: This is similar to `readlinkat` in POSIX.
   (@interface func (export "path_readlink")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The path of the symbolic link from which to read.
     (param $path)
     ;; The buffer to which to write the contents of the symbolic link.
@@ -387,7 +387,7 @@
   ;; Return `__WASI_ENOTEMPTY` if the directory is not empty.
   ;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
   (@interface func (export "path_remove_directory")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The path to a directory to remove.
     (param $path string)
     (result $error $errno_t)
@@ -396,7 +396,7 @@
   ;; Rename a file or directory.
   ;; Note: This is similar to `renameat` in POSIX.
   (@interface func (export "path_rename")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The source path of the file or directory to rename.
     (param $old_path string)
     ;; The working directory at which the resolution of the new path starts.
@@ -409,7 +409,7 @@
   ;; Create a symbolic link.
   ;; Note: This is similar to `symlinkat` in POSIX.
   (@interface func (export "path_symlink")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The contents of the symbolic link.
     (param $old_path string)
     ;; The destination path at which to create the symbolic link.
@@ -422,7 +422,7 @@
   ;; Return `__WASI_EISDIR` if the path refers to a directory.
   ;; Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
   (@interface func (export "path_unlink_file")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; The path to a file to unlink.
     (param $path string)
     (result $error $errno_t)
@@ -479,7 +479,7 @@
   ;; Note: This is similar to `recv` in POSIX, though it also supports reading
   ;; the data into multiple buffers in the manner of `readv`.
   (@interface func (export "sock_recv")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors to which to store data.
     (param $ri_data $iovec_t_array)
     ;; Message flags.
@@ -495,7 +495,7 @@
   ;; Note: This is similar to `send` in POSIX, though it also supports writing
   ;; the data from multiple buffers in the manner of `writev`.
   (@interface func (export "sock_send")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; List of scatter/gather vectors to which to retrieve data
     (param $si_data $ciovec_t_array)
     ;; Message flags.
@@ -508,7 +508,7 @@
   ;; Shut down socket send and receive channels.
   ;; Note: This is similar to `shutdown` in POSIX.
   (@interface func (export "sock_shutdown")
-    (param $self $fd_t)
+    (param $fd $fd_t)
     ;; Which channels on the socket to shut down.
     (param $how $sdflags_t)
     (result $error $errno_t)
