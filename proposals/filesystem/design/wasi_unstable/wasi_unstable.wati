@@ -198,7 +198,7 @@
     ;; The right to invoke __wasi_fd_datasync().
     ;;
     ;; If __WASI_RIGHT_PATH_OPEN is set, includes the right to invoke
-    ;` __wasi_path_open() with __WASI_FDFLAG_DSYNC.
+    ;; __wasi_path_open() with __WASI_FDFLAG_DSYNC.
     (flag $RIGHT_FD_DATASYNC)
     ;; The right to invoke __wasi_fd_read() and __wasi_sock_recv().
     ;;
