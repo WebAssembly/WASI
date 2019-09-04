@@ -488,17 +488,21 @@
     (field $error $errno_t)
     ;; The type of the event that occurred.
     (field $type $eventtype_t)
-    (field $u
-      (union
-        ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
-        (field $fd_readwrite
-          (struct
-            ;; The number of bytes available for reading or writing.
-            (field $nbytes $filesize_t)
-            ;; The state of the file descriptor.
-            (field $flags $eventrwflags_t)
-          )
-        )
+    ;; The contents of the event.
+    (field $u $event_u))
+  )
+)
+
+;; The contents of an $event_t.
+(typename $event_u
+  (union
+    ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
+    (field $fd_readwrite
+      (struct
+        ;; The number of bytes available for reading or writing.
+        (field $nbytes $filesize_t)
+        ;; The state of the file descriptor.
+        (field $flags $eventrwflags_t)
       )
     )
   )
@@ -549,31 +553,35 @@
     (field $userdata $userdata_t)
     ;; The type of the event to which to subscribe.
     (field $type $eventtype_t)
-    (field $u
-      (union
-        ;; When type is `__WASI_EVENTTYPE_CLOCK`:
-        (field $clock
-          (struct
-            ;; The user-defined unique identifier of the clock.
-            (field $identifier $userdata_t)
-            ;; The clock against which to compare the timestamp.
-            (field $clock_id $clockid_t)
-            ;; The absolute or relative timestamp.
-            (field $timeout $timestamp_t)
-            ;; The amount of time that the implementation may wait additionally
-            ;; to coalesce with other events.
-            ;;
-            ;; Flags specifying whether the timeout is absolute or relative
-            (field $precision $timestamp_t)
-          )
-        )
-        ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
-        (field $fd_readwrite
-          (struct
-            ;; The file descriptor on which to wait for it to become ready for reading or writing.
-            (field $file_descriptor $fd_t)
-          )
-        )
+    ;; The contents of the subscription.
+    (field $u $subscription_u)
+  )
+)
+
+;; The contents of a $subscription_t.
+(typename $subscription_u
+  (union
+    ;; When type is `__WASI_EVENTTYPE_CLOCK`:
+    (field $clock
+      (struct
+        ;; The user-defined unique identifier of the clock.
+        (field $identifier $userdata_t)
+        ;; The clock against which to compare the timestamp.
+        (field $clock_id $clockid_t)
+        ;; The absolute or relative timestamp.
+        (field $timeout $timestamp_t)
+        ;; The amount of time that the implementation may wait additionally
+        ;; to coalesce with other events.
+        ;;
+        ;; Flags specifying whether the timeout is absolute or relative
+        (field $precision $timestamp_t)
+      )
+    )
+    ;; When type is `__WASI_EVENTTYPE_FD_READ` or `__WASI_EVENTTYPE_FD_WRITE`:
+    (field $fd_readwrite
+      (struct
+        ;; The file descriptor on which to wait for it to become ready for reading or writing.
+        (field $file_descriptor $fd_t)
       )
     )
   )
