@@ -5,11 +5,8 @@
 (use "typenames.wid")
 
 (module $wasi_unstable
-  ;; Linear memory used by the program.
+  ;; Linear memory to be accessed by WASI functions that need it.
   (import "memory" (memory))
-
-  ;; The program entry point.
-  (import "_start" (func))
 
   ;; Read command-line argument data.
   ;; The size of the array should match that returned by `wasi_args_sizes_get()`
