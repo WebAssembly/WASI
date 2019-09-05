@@ -436,7 +436,7 @@
   ;; Concurrently poll for the occurrence of a set of events.
   (@interface func (export "poll_oneoff")
     ;; The events to which to subscribe.
-    (param $in (const_pointer $subscription_t))
+    (param $in (@witx const_pointer $subscription_t))
     ;; The events that have occurred.
     (param $out (@witx pointer $event_t))
     ;; Both the number of subscriptions and events.
