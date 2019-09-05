@@ -489,7 +489,7 @@
     ;; The type of the event that occurred.
     (field $type $eventtype_t)
     ;; The contents of the event.
-    (field $u $event_u))
+    (field $u $event_u)
   )
 )
 
