@@ -186,7 +186,7 @@
   (@interface func (export "fd_pwrite")
     (param $fd $fd_t)
     ;; List of scatter/gather vectors from which to retrieve data.
-    (param $iovs $iovec_t_array)
+    (param $iovs $ciovec_t_array)
     ;; The offset within the file at which to write.
     (param $offset $filesize_t)
     (result $error $errno_t)
@@ -277,7 +277,7 @@
   (@interface func (export "fd_write")
     (param $fd $fd_t)
     ;; List of scatter/gather vectors from which to retrieve data.
-    (param $iovs $iovec_t_array)
+    (param $iovs $ciovec_t_array)
     (result $error $errno_t)
     ;; The number of bytes written.
     (result $nwritten $size_t)
