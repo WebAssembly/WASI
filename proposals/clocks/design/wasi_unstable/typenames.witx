@@ -280,8 +280,9 @@
 ;; A region of memory for scatter/gather reads.
 (typename $iovec_t
   (struct
-    ;; The address and length of the buffer to be filled.
+    ;; The address of the buffer to be filled.
     (field $buf (@witx pointer u8))
+    ;; The length of the buffer to be filled.
     (field $buf_len $size_t)
   )
 )
@@ -289,8 +290,9 @@
 ;; A region of memory for scatter/gather writes.
 (typename $ciovec_t
   (struct
-    ;; The address and length of the buffer to be written.
+    ;; The address of the buffer to be written.
     (field $buf (@witx const_pointer u8))
+    ;; The length of the buffer to be written.
     (field $buf_len $size_t)
   )
 )
