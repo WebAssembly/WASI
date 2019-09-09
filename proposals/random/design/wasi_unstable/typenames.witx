@@ -719,3 +719,37 @@
     (flag $SHUT_WR)
   )
 )
+
+;; Information about a pre-opened capability.
+(typename $prestat_t
+  (struct
+    ;; The type of the pre-opened capability.
+    (field $pr_type $preopentype_t)
+    ;; The contents of the information.
+    (field $u $prestat_u)
+  )
+)
+
+;; Identifiers for preopened capabilities.
+(typename preopentype_t
+  (enum u8
+    ;; A pre-opened directory.
+    $PREOPENTYPE_DIR
+  )
+)
+
+;; The contents of an $prestat_t.
+(typename $prestat_u
+  (union
+    ;; When type is `PREOPENTYPE_DIR`:
+    (field $dir $prestat_dir)
+  )
+)
+
+;; The contents of a $prestat_t when type is `PREOPENTYPE_DIR`.
+(typename $prestat_dir
+  (struct
+    ;; The length of the directory name for use with `fd_prestat_dir_name`.
+    (field $pr_name_len $size_t)
+  )
+)
