@@ -392,7 +392,7 @@
   )
 
   ;; Remove a directory.
-  ;; Return `__WASI_ENOTEMPTY` if the directory is not empty.
+  ;; Return `ENOTEMPTY` if the directory is not empty.
   ;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
   (@interface func (export "path_remove_directory")
     (param $fd $fd_t)
@@ -427,7 +427,7 @@
 
 
   ;; Unlink a file.
-  ;; Return `__WASI_EISDIR` if the path refers to a directory.
+  ;; Return `EISDIR` if the path refers to a directory.
   ;; Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
   (@interface func (export "path_unlink_file")
     (param $fd $fd_t)
