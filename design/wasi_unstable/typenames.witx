@@ -276,9 +276,6 @@
 ;; A file descriptor index.
 (typename $fd_t u32)
 
-(typename $iovec_t_array (array $iovec_t))
-(typename $ciovec_t_array (array $ciovec_t))
-
 ;; A region of memory for scatter/gather reads.
 (typename $iovec_t
   (struct
@@ -299,6 +296,9 @@
   )
 )
 
+(typename $iovec_t_array (array $iovec_t))
+(typename $ciovec_t_array (array $ciovec_t))
+
 ;; Relative offset within a file.
 (typename $filedelta_t s64)
 
@@ -317,8 +317,33 @@
 ;; A reference to the offset of a directory entry.
 (typename $dircookie_t u64)
 
-;; The type for the $d_namelen field of $dirent_t.
+;; The type for the $d_namlen field of $dirent_t.
 (typename $dirnamlen_t u32)
+
+;; File serial number that is unique within its file system.
+(typename $inode_t u64)
+
+;; The type of a file descriptor or file.
+(typename $filetype_t
+  (enum u8
+    ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
+    $FILETYPE_UNKNOWN
+    ;; The file descriptor or file refers to a block device inode.
+    $FILETYPE_BLOCK_DEVICE
+    ;; The file descriptor or file refers to a character device inode.
+    $FILETYPE_CHARACTER_DEVICE
+    ;; The file descriptor or file refers to a directory inode.
+    $FILETYPE_DIRECTORY
+    ;; The file descriptor or file refers to a regular file inode.
+    $FILETYPE_REGULAR_FILE
+    ;; The file descriptor or file refers to a datagram socket.
+    $FILETYPE_SOCKET_DGRAM
+    ;; The file descriptor or file refers to a byte-stream socket.
+    $FILETYPE_SOCKET_STREAM
+    ;; The file refers to a symbolic link inode.
+    $FILETYPE_SYMBOLIC_LINK
+  )
+)
 
 ;; A directory entry.
 (typename $dirent_t
@@ -328,7 +353,7 @@
     ;; The serial number of the file referred to by this directory entry.
     (field $d_ino $inode_t)
     ;; The length of the name of the directory entry.
-    (field $d_namlen $dirnamelen_t)
+    (field $d_namlen $dirnamlen_t)
     ;; The type of the file referred to by this directory entry.
     (field $d_type $filetype_t)
   )
@@ -389,28 +414,6 @@
 ;; with `inode_t` to uniquely identify a file or directory in the filesystem.
 (typename $device_t u64)
 
-;; The type of a file descriptor or file.
-(typename $filetype_t
-  (enum u8
-    ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
-    $FILETYPE_UNKNOWN
-    ;; The file descriptor or file refers to a block device inode.
-    $FILETYPE_BLOCK_DEVICE
-    ;; The file descriptor or file refers to a character device inode.
-    $FILETYPE_CHARACTER_DEVICE
-    ;; The file descriptor or file refers to a directory inode.
-    $FILETYPE_DIRECTORY
-    ;; The file descriptor or file refers to a regular file inode.
-    $FILETYPE_REGULAR_FILE
-    ;; The file descriptor or file refers to a datagram socket.
-    $FILETYPE_SOCKET_DGRAM
-    ;; The file descriptor or file refers to a byte-stream socket.
-    $FILETYPE_SOCKET_STREAM
-    ;; The file refers to a symbolic link inode.
-    $FILETYPE_SYMBOLIC_LINK
-  )
-)
-
 ;; Which file time attributes to adjust.
 (typename $fstflags_t
   (flags u16
@@ -424,9 +427,6 @@
     (flag $FILESTAT_SET_MTIM_NOW)
   )
 )
-
-;; File serial number that is unique within its file system.
-(typename $inode_t u64)
 
 ;; Flags determining the method of how paths are resolved.
 (typename $lookupflags_t
@@ -479,48 +479,6 @@
 ;; extracted from the implementation.
 (typename $userdata_t u64)
 
-;; An event that occurred.
-(typename $event_t
-  (struct
-    ;; User-provided value that got attached to `subscription_t::userdata`.
-    (field $userdata $userdata_t)
-    ;; If non-zero, an error that occurred while processing the subscription request.
-    (field $error $errno_t)
-    ;; The type of the event that occurred.
-    (field $type $eventtype_t)
-    ;; The contents of the event.
-    (field $u $event_u)
-  )
-)
-
-;; The contents of an $event_t.
-(typename $event_u
-  (union
-    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
-    (field $fd_readwrite $event_fd_readwrite_t)
-  )
-)
-
-;; The contents of an $event_t when type is `EVENTTYPE_FD_READ` or
-;; `EVENTTYPE_FD_WRITE`.
-(typename $event_fd_readwrite_t
-  (struct
-    ;; The number of bytes available for reading or writing.
-    (field $nbytes $filesize_t)
-    ;; The state of the file descriptor.
-    (field $flags $eventrwflags_t)
-  )
-)
-
-;; The state of the file descriptor subscribed to with
-;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
-(typename $eventrwflags_t
-  (flags u16
-    ;; The peer of this socket has closed or disconnected.
-    (flag $EVENT_FD_READWRITE_HANGUP)
-  )
-)
-
 ;; Type of a subscription to an event or its occurrence.
 (typename $eventtype_t
   (flags u8
@@ -536,6 +494,48 @@
   )
 )
 
+;; The state of the file descriptor subscribed to with
+;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
+(typename $eventrwflags_t
+  (flags u16
+    ;; The peer of this socket has closed or disconnected.
+    (flag $EVENT_FD_READWRITE_HANGUP)
+  )
+)
+
+;; The contents of an $event_t when type is `EVENTTYPE_FD_READ` or
+;; `EVENTTYPE_FD_WRITE`.
+(typename $event_fd_readwrite_t
+  (struct
+    ;; The number of bytes available for reading or writing.
+    (field $nbytes $filesize_t)
+    ;; The state of the file descriptor.
+    (field $flags $eventrwflags_t)
+  )
+)
+
+;; The contents of an $event_t.
+(typename $event_u
+  (union
+    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
+    (field $fd_readwrite $event_fd_readwrite_t)
+  )
+)
+
+;; An event that occurred.
+(typename $event_t
+  (struct
+    ;; User-provided value that got attached to `subscription_t::userdata`.
+    (field $userdata $userdata_t)
+    ;; If non-zero, an error that occurred while processing the subscription request.
+    (field $error $errno_t)
+    ;; The type of the event that occurred.
+    (field $type $eventtype_t)
+    ;; The contents of the event.
+    (field $u $event_u)
+  )
+)
+
 ;; Flags determining how to interpret the timestamp provided in
 ;; `subscription_t::u.clock.timeout.`
 (typename $subclockflags_t
@@ -546,29 +546,6 @@
     ;; provided in `subscription_t::u.clock.timeout` relative to the
     ;; current time value of clock `subscription_t::u.clock.clock_id.`
     (flag $SUBSCRIPTION_CLOCK_ABSTIME)
-  )
-)
-
-;; Subscription to an event.
-(typename $subscription_t
-  (struct
-    ;; User-provided value that is attached to the subscription in the
-    ;; implementation and returned through `event_t::userdata`.
-    (field $userdata $userdata_t)
-    ;; The type of the event to which to subscribe.
-    (field $type $eventtype_t)
-    ;; The contents of the subscription.
-    (field $u $subscription_u)
-  )
-)
-
-;; The contents of a $subscription_t.
-(typename $subscription_u
-  (union
-    ;; When type is `EVENTTYPE_CLOCK`:
-    (field $clock $subscription_clock_t)
-    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
-    (field $fd_readwrite $subscription_fd_readwrite_t)
   )
 )
 
@@ -595,6 +572,29 @@
   (struct
     ;; The file descriptor on which to wait for it to become ready for reading or writing.
     (field $file_descriptor $fd_t)
+  )
+)
+
+;; The contents of a $subscription_t.
+(typename $subscription_u
+  (union
+    ;; When type is `EVENTTYPE_CLOCK`:
+    (field $clock $subscription_clock_t)
+    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
+    (field $fd_readwrite $subscription_fd_readwrite_t)
+  )
+)
+
+;; Subscription to an event.
+(typename $subscription_t
+  (struct
+    ;; User-provided value that is attached to the subscription in the
+    ;; implementation and returned through `event_t::userdata`.
+    (field $userdata $userdata_t)
+    ;; The type of the event to which to subscribe.
+    (field $type $eventtype_t)
+    ;; The contents of the subscription.
+    (field $u $subscription_u)
   )
 )
 
@@ -717,21 +717,19 @@
   )
 )
 
-;; Information about a pre-opened capability.
-(typename $prestat_t
-  (struct
-    ;; The type of the pre-opened capability.
-    (field $pr_type $preopentype_t)
-    ;; The contents of the information.
-    (field $u $prestat_u)
-  )
-)
-
 ;; Identifiers for preopened capabilities.
 (typename preopentype_t
   (enum u8
     ;; A pre-opened directory.
     $PREOPENTYPE_DIR
+  )
+)
+
+;; The contents of a $prestat_t when type is `PREOPENTYPE_DIR`.
+(typename $prestat_dir
+  (struct
+    ;; The length of the directory name for use with `fd_prestat_dir_name`.
+    (field $pr_name_len $size_t)
   )
 )
 
@@ -743,10 +741,12 @@
   )
 )
 
-;; The contents of a $prestat_t when type is `PREOPENTYPE_DIR`.
-(typename $prestat_dir
+;; Information about a pre-opened capability.
+(typename $prestat_t
   (struct
-    ;; The length of the directory name for use with `fd_prestat_dir_name`.
-    (field $pr_name_len $size_t)
+    ;; The type of the pre-opened capability.
+    (field $pr_type $preopentype_t)
+    ;; The contents of the information.
+    (field $u $prestat_u)
   )
 )
