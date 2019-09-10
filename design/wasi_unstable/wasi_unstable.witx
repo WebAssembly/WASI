@@ -5,7 +5,7 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use "typenames.wid")
+(use "typenames.witx")
 
 (module $wasi_unstable
   ;; Linear memory to be accessed by WASI functions that need it.
@@ -105,7 +105,7 @@
     (param $fd $fd_t)
     (result $error $errno_t)
     ;; The buffer where the file descriptor's attributes are stored.
-    (result $fdstat_t)
+    (result $stat $fdstat_t)
   )
 
   ;; Adjust the flags associated with a file descriptor.
@@ -113,7 +113,7 @@
   (@interface func (export "fd_fdstat_set_flags")
     (param $fd $fd_t)
     ;; The desired values of the file descriptor flags.
-    (param $flags $fdflags)
+    (param $flags $fdflags_t)
     (result $error $errno_t)
   )
 
@@ -332,13 +332,13 @@
   ;; Create a hard link.
   ;; Note: This is similar to `linkat` in POSIX.
   (@interface func (export "path_link")
-    (param $fd $fd_t)
+    (param $old_fd $fd_t)
     ;; Flags determining the method of how the path is resolved.
     (param $old_flags $lookupflags_t)
     ;; The source path from which to link.
     (param $old_path string)
     ;; The working directory at which the resolution of the new path starts.
-    (param $new_fd $path)
+    (param $new_fd $fd_t)
     ;; The destination path at which to create the hard link.
     (param $new_path string)
     (result $error $errno_t)
@@ -382,7 +382,7 @@
   (@interface func (export "path_readlink")
     (param $fd $fd_t)
     ;; The path of the symbolic link from which to read.
-    (param $path)
+    (param $path string)
     ;; The buffer to which to write the contents of the symbolic link.
     (param $buf (@witx pointer u8))
     (param $buf_len $size_t)
@@ -408,7 +408,7 @@
     ;; The source path of the file or directory to rename.
     (param $old_path string)
     ;; The working directory at which the resolution of the new path starts.
-    (param $new_fd $fd)
+    (param $new_fd $fd_t)
     ;; The destination path to which to rename the file or directory.
     (param $new_path string)
     (result $error $errno_t)
