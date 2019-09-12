@@ -1,0 +1,21 @@
+[package]
+name = "witx-frontend"
+version = "0.1.0"
+description = "Parse and validate witx file format"
+homepage = "https://github.com/webassembly/wasi"
+repository = "https://github.com/webassembly/wasi"
+license = "Apache-2.0 WITH LLVM-exception"
+categories = ["wasm"]
+authors = ["Pat Hickey <phickey@fastly.com>"]
+edition = "2018"
+
+[lib]
+crate-type=["rlib"]
+
+[[bin]]
+name = "witx-validate"
+path = "src/main.rs"
+
+[dependencies]
+clap = "2"
+failure = "0.1"
