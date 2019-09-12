@@ -86,7 +86,8 @@ fn resolve_uses(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::witx::Location;
+    use crate::parser::*;
+    use crate::Location;
     use std::collections::HashMap;
 
     struct MockFs {
@@ -141,7 +142,6 @@ mod test {
 
     #[test]
     fn multi_use() {
-        use crate::witx::parser::*;
         assert_eq!(
             parse_witx_with(
                 &Path::new("/a"),
@@ -181,7 +181,6 @@ mod test {
 
     #[test]
     fn diamond_dependency() {
-        use crate::witx::parser::*;
         assert_eq!(
             parse_witx_with(
                 &Path::new("/a"),
