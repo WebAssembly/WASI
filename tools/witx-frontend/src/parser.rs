@@ -22,6 +22,12 @@ pub struct ParseError {
     pub location: Location,
 }
 
+impl ParseError {
+    pub fn report(&self) -> String {
+        format!("{}\n{}", self.location.highlight_source(), self.message)
+    }
+}
+
 macro_rules! parse_err {
     ($loc:expr, $msg:expr) => {
         ParseError { message: $msg.to_string(), location: $loc.clone() }

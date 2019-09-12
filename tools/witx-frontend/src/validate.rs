@@ -41,6 +41,28 @@ pub enum ValidationError {
     },
 }
 
+impl ValidationError {
+    pub fn report(&self) -> String {
+        use ValidationError::*;
+        match self {
+            UnknownName { location, .. }
+            | WrongKindName { location, .. }
+            | Recursive { location, .. }
+            | InvalidRepr { location, .. } => format!("{}\n{}", location.highlight_source(), &self),
+            NameAlreadyExists {
+                at_location,
+                previous_location,
+                ..
+            } => format!(
+                "{}\n{}\nOriginally defined at:\n{}",
+                at_location.highlight_source(),
+                &self,
+                previous_location.highlight_source(),
+            ),
+        }
+    }
+}
+
 pub fn validate_document(decls: &[DeclSyntax]) -> Result<Document, ValidationError> {
     let mut validator = DocValidation::new();
     let mut definitions = Vec::new();

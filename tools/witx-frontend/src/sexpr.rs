@@ -32,12 +32,23 @@ impl<'a> SExpr<'a> {
 
 #[derive(Debug, PartialEq, Eq, Clone, Fail)]
 pub enum SExprParseError {
-    #[fail(display = "Lexical error at {:?}: {}", _1, _0)]
+    #[fail(display = "Lexical error: {}", _0)]
     Lex(LexError, Location),
-    #[fail(display = "Unexpected ')' at {:?}", _0)]
+    #[fail(display = "Unexpected ')'")]
     UnexpectedCloseParen(Location),
     #[fail(display = "Unexpected end of input in {:?}", _0)]
     UnexpectedEof(PathBuf),
+}
+
+impl SExprParseError {
+    pub fn report(&self) -> String {
+        use SExprParseError::*;
+        match self {
+            Lex(lex_err, loc) => format!("{}\n{}", loc.highlight_source(), lex_err),
+            UnexpectedCloseParen(loc) => format!("{}\n{}", loc.highlight_source(), self),
+            UnexpectedEof(_path) => format!("{}", self),
+        }
+    }
 }
 
 pub struct SExprParser<'a> {

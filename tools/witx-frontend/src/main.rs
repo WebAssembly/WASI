@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use std::path::Path;
-use std::process;
 use witx_frontend::load;
+use std::process;
 
 pub fn main() {
     let app = App::new("witx-validate")
@@ -28,11 +28,11 @@ pub fn main() {
             }
         }
         Err(e) => {
-            eprintln!("{}", e);
+            println!("{}", e.report());
             if app.is_present("verbose") {
-                eprintln!("{:?}", e);
+                println!("{:?}", e);
             }
-            process::exit(1);
+            process::exit(1)
         }
     }
 }
