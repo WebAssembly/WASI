@@ -188,6 +188,12 @@ impl DocValidation {
             DatatypeIdentSyntax::Array(a) => Ok(DatatypeIdent::Array(Box::new(
                 self.validate_datatype_ident(&a)?,
             ))),
+            DatatypeIdentSyntax::Pointer(a) => Ok(DatatypeIdent::Pointer(Box::new(
+                self.validate_datatype_ident(&a)?,
+            ))),
+            DatatypeIdentSyntax::ConstPointer(a) => Ok(DatatypeIdent::ConstPointer(Box::new(
+                self.validate_datatype_ident(&a)?,
+            ))),
             DatatypeIdentSyntax::Ident(i) => {
                 let id = self.scope.get(i)?;
                 match self.entries.get(&id) {

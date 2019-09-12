@@ -109,6 +109,8 @@ impl BuiltinType {
 pub enum DatatypeIdentSyntax {
     Builtin(BuiltinType),
     Array(Box<DatatypeIdentSyntax>),
+    Pointer(Box<DatatypeIdentSyntax>),
+    ConstPointer(Box<DatatypeIdentSyntax>),
     Ident(IdentSyntax),
 }
 
@@ -119,6 +121,8 @@ impl DatatypeIdentSyntax {
                 SExpr::Ident(_, _) => true,
                 SExpr::Vec(v, _) => match (v.get(0), v.get(1)) {
                     (Some(SExpr::Word("array", _)), Some(_)) => true,
+                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("pointer", _))) => true,
+                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("const_pointer", _))) => true,
                     _ => false,
                 },
                 _ => false,
@@ -131,9 +135,15 @@ impl DatatypeIdentSyntax {
         } else {
             match sexpr {
                 SExpr::Ident(i, loc) => Ok(DatatypeIdentSyntax::Ident(id!(i, loc))),
-                SExpr::Vec(v, loc) => match (v.get(0), v.get(1)) {
-                    (Some(SExpr::Word("array", _loc)), Some(expr)) => Ok(
+                SExpr::Vec(v, loc) => match (v.get(0), v.get(1), v.get(2)) {
+                    (Some(SExpr::Word("array", _)), Some(expr), None) => Ok(
                         DatatypeIdentSyntax::Array(Box::new(DatatypeIdentSyntax::parse(expr)?)),
+                    ),
+                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("pointer", _)), Some(expr)) => Ok(
+                        DatatypeIdentSyntax::Pointer(Box::new(DatatypeIdentSyntax::parse(expr)?)),
+                    ),
+                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("const_pointer", _)), Some(expr)) => Ok(
+                        DatatypeIdentSyntax::ConstPointer(Box::new(DatatypeIdentSyntax::parse(expr)?)),
                     ),
                     _ => Err(parse_err!(loc, "expected type identifier")),
                 },
@@ -215,7 +225,8 @@ impl TypenameSyntax {
     pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<TypenameSyntax, ParseError> {
         let ident = match sexpr.get(0) {
             Some(SExpr::Ident(i, loc)) => id!(i, loc),
-            _ => Err(parse_err!(loc, "expected typename identifier"))?,
+            Some(s) => Err(parse_err!(s.location(), "expected typename identifier"))?,
+            None => Err(parse_err!(loc, "expected typename identifier"))?,
         };
         let def = match sexpr.get(1) {
             Some(expr) => TypedefSyntax::parse(expr)?,

@@ -47,6 +47,8 @@ impl Entry {
 pub enum DatatypeIdent {
     Builtin(BuiltinType),
     Array(Box<DatatypeIdent>),
+    Pointer(Box<DatatypeIdent>),
+    ConstPointer(Box<DatatypeIdent>),
     Ident(Rc<Datatype>),
 }
 
