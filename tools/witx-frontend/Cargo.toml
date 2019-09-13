@@ -2,9 +2,9 @@
 name = "witx-frontend"
 version = "0.1.0"
 description = "Parse and validate witx file format"
-homepage = "https://github.com/webassembly/wasi"
-repository = "https://github.com/webassembly/wasi"
-license = "Apache-2.0 WITH LLVM-exception"
+homepage = "https://github.com/WebAssembly/WASI"
+repository = "https://github.com/WebAssembly/WASI"
+license = "Apache-2.0"
 categories = ["wasm"]
 authors = ["Pat Hickey <phickey@fastly.com>"]
 edition = "2018"
