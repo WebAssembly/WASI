@@ -1,10 +1,10 @@
 use clap::{App, Arg};
 use std::path::Path;
-use witx_frontend::load;
 use std::process;
+use witx::load;
 
 pub fn main() {
-    let app = App::new("witx-validate")
+    let app = App::new("witx")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Validate witx file format")
         .arg(

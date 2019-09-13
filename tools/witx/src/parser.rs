@@ -139,12 +139,20 @@ impl DatatypeIdentSyntax {
                     (Some(SExpr::Word("array", _)), Some(expr), None) => Ok(
                         DatatypeIdentSyntax::Array(Box::new(DatatypeIdentSyntax::parse(expr)?)),
                     ),
-                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("pointer", _)), Some(expr)) => Ok(
-                        DatatypeIdentSyntax::Pointer(Box::new(DatatypeIdentSyntax::parse(expr)?)),
-                    ),
-                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("const_pointer", _)), Some(expr)) => Ok(
-                        DatatypeIdentSyntax::ConstPointer(Box::new(DatatypeIdentSyntax::parse(expr)?)),
-                    ),
+                    (
+                        Some(SExpr::Annot("witx", _)),
+                        Some(SExpr::Word("pointer", _)),
+                        Some(expr),
+                    ) => Ok(DatatypeIdentSyntax::Pointer(Box::new(
+                        DatatypeIdentSyntax::parse(expr)?,
+                    ))),
+                    (
+                        Some(SExpr::Annot("witx", _)),
+                        Some(SExpr::Word("const_pointer", _)),
+                        Some(expr),
+                    ) => Ok(DatatypeIdentSyntax::ConstPointer(Box::new(
+                        DatatypeIdentSyntax::parse(expr)?,
+                    ))),
                     _ => Err(parse_err!(loc, "expected type identifier")),
                 },
                 _ => Err(parse_err!(sexpr.location(), "expected type identifier")),

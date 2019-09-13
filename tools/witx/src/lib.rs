@@ -41,7 +41,6 @@ pub struct Location {
     pub column: usize,
 }
 
-
 #[derive(Debug, Fail)]
 pub enum WitxError {
     #[fail(display = "{}", _0)]
