@@ -718,7 +718,7 @@
 )
 
 ;; Identifiers for preopened capabilities.
-(typename preopentype_t
+(typename $preopentype_t
   (enum u8
     ;; A pre-opened directory.
     $PREOPENTYPE_DIR
