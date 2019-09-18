@@ -1,4 +1,5 @@
-;; The wasi_unstable module type.
+;; WASI Preview. This is an evolution of the API that WASI initially
+;; launched with.
 ;;
 ;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 ;;
@@ -7,7 +8,7 @@
 
 (use "typenames.witx")
 
-(module $wasi_unstable
+(module $wasi_unstable_preview0
   ;; Linear memory to be accessed by WASI functions that need it.
   (import "memory" (memory))
 
