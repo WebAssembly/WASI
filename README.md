@@ -22,3 +22,5 @@ discussions.
 
 Schedules and agendas for video conference and in-person meetings are posted
 [here](meetings/README.md).
+
+API specification proposals are [here](phases/README.md).

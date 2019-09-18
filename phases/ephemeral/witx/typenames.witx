@@ -1,4 +1,4 @@
-;; Type names used by the wasi_unstable module type.
+;; Type names used by low-level WASI interfaces.
 ;;
 ;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 ;;
