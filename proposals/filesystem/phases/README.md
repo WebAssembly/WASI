@@ -18,7 +18,7 @@
   that:
    - Move any superseded files out of `unstable` into `old`.
    - Optionally add polyfills for superseded APIs using `unstable` APIs.
-   - Move all files supporting the APIs out of `ephemeral into `unstable`.
+   - Move all files supporting the APIs out of `ephemeral` into `unstable`.
    - Rename the API modules from `wasi_ephemeral_` to `wasi_unstable_`
      and append a version number.
 
