@@ -70,10 +70,7 @@ pub fn validate_document(decls: &[DeclSyntax]) -> Result<Document, ValidationErr
         definitions.push(validator.validate_decl(&d)?);
     }
 
-    Ok(Document {
-        entries: validator.entries,
-        definitions,
-    })
+    Ok(Document::new(definitions, validator.entries))
 }
 
 struct IdentValidation {
@@ -167,11 +164,11 @@ impl DocValidation {
                     .map(|d| module_validator.validate_decl(&d))
                     .collect::<Result<Vec<_>, _>>()?;
 
-                let rc_module = Rc::new(Module {
-                    name: name.clone(),
+                let rc_module = Rc::new(Module::new(
+                    name.clone(),
                     definitions,
-                    entries: module_validator.entries,
-                });
+                    module_validator.entries,
+                ));
                 self.entries
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
                 Ok(Definition::Module(rc_module))

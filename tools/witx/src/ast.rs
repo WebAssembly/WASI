@@ -18,8 +18,41 @@ impl Id {
 
 #[derive(Debug, Clone)]
 pub struct Document {
-    pub definitions: Vec<Definition>,
-    pub entries: HashMap<Id, Entry>,
+    definitions: Vec<Definition>,
+    entries: HashMap<Id, Entry>,
+}
+
+impl Document {
+    pub(crate) fn new(definitions: Vec<Definition>, entries: HashMap<Id, Entry>) -> Self {
+        Document {
+            definitions,
+            entries,
+        }
+    }
+    pub fn datatype(&self, name: &Id) -> Option<Rc<Datatype>> {
+        self.entries.get(name).and_then(|e| match e {
+            Entry::Datatype(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            _ => None,
+        })
+    }
+    pub fn datatypes<'a>(&'a self) -> impl Iterator<Item = Rc<Datatype>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            Definition::Datatype(d) => Some(d.clone()),
+            _ => None,
+        })
+    }
+    pub fn module(&self, name: &Id) -> Option<Rc<Module>> {
+        self.entries.get(&name).and_then(|e| match e {
+            Entry::Module(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            _ => None,
+        })
+    }
+    pub fn modules<'a>(&'a self) -> impl Iterator<Item = Rc<Module>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            Definition::Module(d) => Some(d.clone()),
+            _ => None,
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -122,8 +155,46 @@ pub struct UnionVariant {
 #[derive(Debug, Clone)]
 pub struct Module {
     pub name: Id,
-    pub definitions: Vec<ModuleDefinition>,
-    pub entries: HashMap<Id, ModuleEntry>,
+    definitions: Vec<ModuleDefinition>,
+    entries: HashMap<Id, ModuleEntry>,
+}
+
+impl Module {
+    pub(crate) fn new(
+        name: Id,
+        definitions: Vec<ModuleDefinition>,
+        entries: HashMap<Id, ModuleEntry>,
+    ) -> Self {
+        Module {
+            name,
+            definitions,
+            entries,
+        }
+    }
+    pub fn import(&self, name: &str) -> Option<Rc<ModuleImport>> {
+        self.entries.get(&Id::new(name)).and_then(|e| match e {
+            ModuleEntry::Import(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            _ => None,
+        })
+    }
+    pub fn imports<'a>(&'a self) -> impl Iterator<Item = Rc<ModuleImport>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            ModuleDefinition::Import(d) => Some(d.clone()),
+            _ => None,
+        })
+    }
+    pub fn func(&self, name: &Id) -> Option<Rc<InterfaceFunc>> {
+        self.entries.get(name).and_then(|e| match e {
+            ModuleEntry::Func(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            _ => None,
+        })
+    }
+    pub fn funcs<'a>(&'a self) -> impl Iterator<Item = Rc<InterfaceFunc>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            ModuleDefinition::Func(d) => Some(d.clone()),
+            _ => None,
+        })
+    }
 }
 
 #[derive(Debug, Clone)]
