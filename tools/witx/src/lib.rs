@@ -1,9 +1,13 @@
 /// Types describing a validated witx document
 mod ast;
+/// Interface for filesystem or mock IO
+mod io;
 /// Lexer text into tokens
 mod lexer;
 /// Witx syntax parsing from SExprs
 mod parser;
+/// Render ast to text
+mod render;
 /// SExpr parsing from tokens
 mod sexpr;
 /// Resolve toplevel `use` declarations across files
@@ -17,19 +21,28 @@ pub use ast::{
     ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
     UnionDatatype, UnionVariant,
 };
+pub use io::{Filesystem, MockFs, WitxIo};
 pub use lexer::LexError;
 pub use parser::{DeclSyntax, ParseError};
+pub use render::{Render, SExpr as RenderSExpr};
 pub use sexpr::SExprParseError;
 pub use validate::ValidationError;
 
 use failure::Fail;
-use std::io;
 use std::path::{Path, PathBuf};
 
 pub fn load<P: AsRef<Path>>(path: P) -> Result<Document, WitxError> {
     use toplevel::parse_witx;
     use validate::validate_document;
     let parsed_decls = parse_witx(path)?;
+    validate_document(&parsed_decls).map_err(WitxError::Validation)
+}
+
+pub fn parse(source: &str) -> Result<Document, WitxError> {
+    use toplevel::parse_witx_with;
+    use validate::validate_document;
+    let mockfs = MockFs::new(&[("-", source)]);
+    let parsed_decls = parse_witx_with(Path::new("-"), &mockfs)?;
     validate_document(&parsed_decls).map_err(WitxError::Validation)
 }
 
@@ -45,8 +58,8 @@ pub struct Location {
 pub enum WitxError {
     #[fail(display = "{}", _0)]
     SExpr(#[cause] SExprParseError),
-    #[fail(display = "when resolving use declaration for {:?}: {}", _0, _1)]
-    UseResolution(PathBuf, #[cause] io::Error),
+    #[fail(display = "with file {:?}: {}", _0, _1)]
+    Io(PathBuf, #[cause] ::std::io::Error),
     #[fail(display = "{}", _0)]
     Parse(#[cause] ParseError),
     #[fail(display = "{}", _0)]
@@ -54,20 +67,24 @@ pub enum WitxError {
 }
 
 impl WitxError {
-    pub fn report(&self) -> String {
+    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
         use WitxError::*;
         match self {
-            SExpr(sexpr) => sexpr.report(),
-            UseResolution(path, ioerr) => format!("when resolving `use {:?}`: {}", path, ioerr),
-            Parse(parse) => parse.report(),
-            Validation(validation) => validation.report(),
+            SExpr(sexpr) => sexpr.report_with(witxio),
+            Io(path, ioerr) => format!("with file {:?}: {}", path, ioerr),
+            Parse(parse) => parse.report_with(witxio),
+            Validation(validation) => validation.report_with(witxio),
         }
     }
+    pub fn report(&self) -> String {
+        self.report_with(&Filesystem)
+    }
 }
+
 impl Location {
-    pub fn highlight_source(&self) -> String {
+    pub fn highlight_source_with(&self, witxio: &dyn WitxIo) -> String {
         let mut msg = format!("in {:?}:\n", self.path);
-        if let Ok(src_line) = self.source_line() {
+        if let Ok(src_line) = witxio.fget_line(&self.path, self.line) {
             msg += &format!(
                 "{line_num: >5} | {src_line}\n{blank: >5}    {caret: >column$}",
                 line_num = self.line,
@@ -79,15 +96,7 @@ impl Location {
         }
         msg
     }
-    pub fn source_line(&self) -> Result<String, io::Error> {
-        use std::fs::File;
-        use std::io::{BufRead, BufReader};
-        let f = BufReader::new(File::open(&self.path)?);
-        let l = f
-            .lines()
-            .skip(self.line - 1)
-            .next()
-            .unwrap_or_else(|| Err(io::Error::new(io::ErrorKind::Other, "TODO")))?;
-        Ok(l)
+    pub fn highlight_source(&self) -> String {
+        self.highlight_source_with(&Filesystem)
     }
 }

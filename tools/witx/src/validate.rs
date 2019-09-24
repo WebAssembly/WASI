@@ -1,4 +1,5 @@
 use crate::{
+    io::{Filesystem, WitxIo},
     parser::{
         DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, IdentSyntax, ImportTypeSyntax,
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
@@ -42,24 +43,29 @@ pub enum ValidationError {
 }
 
 impl ValidationError {
-    pub fn report(&self) -> String {
+    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
         use ValidationError::*;
         match self {
             UnknownName { location, .. }
             | WrongKindName { location, .. }
             | Recursive { location, .. }
-            | InvalidRepr { location, .. } => format!("{}\n{}", location.highlight_source(), &self),
+            | InvalidRepr { location, .. } => {
+                format!("{}\n{}", location.highlight_source_with(witxio), &self)
+            }
             NameAlreadyExists {
                 at_location,
                 previous_location,
                 ..
             } => format!(
                 "{}\n{}\nOriginally defined at:\n{}",
-                at_location.highlight_source(),
+                at_location.highlight_source_with(witxio),
                 &self,
-                previous_location.highlight_source(),
+                previous_location.highlight_source_with(witxio),
             ),
         }
+    }
+    pub fn report(&self) -> String {
+        self.report_with(&Filesystem)
     }
 }
 

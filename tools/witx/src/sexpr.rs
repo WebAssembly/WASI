@@ -1,3 +1,4 @@
+use crate::io::{Filesystem, WitxIo};
 pub use crate::lexer::LexError;
 use crate::lexer::{Lexer, LocatedError, LocatedToken, Token};
 use crate::Location;
@@ -41,13 +42,16 @@ pub enum SExprParseError {
 }
 
 impl SExprParseError {
-    pub fn report(&self) -> String {
+    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
         use SExprParseError::*;
         match self {
-            Lex(lex_err, loc) => format!("{}\n{}", loc.highlight_source(), lex_err),
-            UnexpectedCloseParen(loc) => format!("{}\n{}", loc.highlight_source(), self),
+            Lex(lex_err, loc) => format!("{}\n{}", loc.highlight_source_with(witxio), lex_err),
+            UnexpectedCloseParen(loc) => format!("{}\n{}", loc.highlight_source_with(witxio), self),
             UnexpectedEof(_path) => format!("{}", self),
         }
+    }
+    pub fn report(&self) -> String {
+        self.report_with(&Filesystem)
     }
 }
 

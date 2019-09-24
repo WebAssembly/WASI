@@ -1,32 +1,15 @@
+use crate::io::{Filesystem, WitxIo};
 use crate::parser::{DeclSyntax, ParseError, TopLevelSyntax};
 use crate::sexpr::SExprParser;
 use crate::WitxError;
 use std::collections::HashSet;
-use std::fs;
 use std::path::{Path, PathBuf};
-
-trait WitxIo {
-    fn fgets(&self, path: &Path) -> Result<String, WitxError>;
-    fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError>;
-}
-
-struct Filesystem;
-
-impl WitxIo for Filesystem {
-    fn fgets(&self, path: &Path) -> Result<String, WitxError> {
-        fs::read_to_string(path).map_err(|e| WitxError::UseResolution(path.to_path_buf(), e))
-    }
-    fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError> {
-        path.canonicalize()
-            .map_err(|e| WitxError::UseResolution(path.to_path_buf(), e))
-    }
-}
 
 pub fn parse_witx<P: AsRef<Path>>(i: P) -> Result<Vec<DeclSyntax>, WitxError> {
     parse_witx_with(i, &Filesystem)
 }
 
-fn parse_witx_with<P: AsRef<Path>>(
+pub fn parse_witx_with<P: AsRef<Path>>(
     i: P,
     witxio: &dyn WitxIo,
 ) -> Result<Vec<DeclSyntax>, WitxError> {
@@ -86,44 +69,14 @@ fn resolve_uses(
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::io::MockFs;
     use crate::parser::*;
     use crate::Location;
-    use std::collections::HashMap;
-
-    struct MockFs {
-        map: HashMap<&'static str, &'static str>,
-    }
-
-    impl MockFs {
-        pub fn new(strings: Vec<(&'static str, &'static str)>) -> Self {
-            MockFs {
-                map: strings.into_iter().collect(),
-            }
-        }
-    }
-
-    impl WitxIo for MockFs {
-        fn fgets(&self, path: &Path) -> Result<String, WitxError> {
-            if let Some(entry) = self.map.get(path.to_str().unwrap()) {
-                Ok(entry.to_string())
-            } else {
-                use std::io::{Error, ErrorKind};
-                Err(WitxError::UseResolution(
-                    path.to_path_buf(),
-                    Error::new(ErrorKind::Other, "mock fs: file not found"),
-                ))
-            }
-        }
-        fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError> {
-            Ok(PathBuf::from(path))
-        }
-    }
 
     #[test]
     fn empty() {
         assert_eq!(
-            parse_witx_with(&Path::new("/a"), &MockFs::new(vec![("/a", ";; empty")]))
-                .expect("parse"),
+            parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", ";; empty")])).expect("parse"),
             Vec::new(),
         );
     }
@@ -133,7 +86,7 @@ mod test {
         assert_eq!(
             parse_witx_with(
                 &Path::new("/a"),
-                &MockFs::new(vec![("/a", "(use \"b\")"), ("/b", ";; empty")])
+                &MockFs::new(&[("/a", "(use \"b\")"), ("/b", ";; empty")])
             )
             .expect("parse"),
             Vec::new(),
@@ -145,7 +98,7 @@ mod test {
         assert_eq!(
             parse_witx_with(
                 &Path::new("/a"),
-                &MockFs::new(vec![
+                &MockFs::new(&[
                     ("/a", "(use \"b\")"),
                     ("/b", "(use \"c\")\n(typename $b_float f64)"),
                     ("/c", "(typename $c_int u32)")
@@ -184,7 +137,7 @@ mod test {
         assert_eq!(
             parse_witx_with(
                 &Path::new("/a"),
-                &MockFs::new(vec![
+                &MockFs::new(&[
                     ("/a", "(use \"b\")\n(use \"c\")"),
                     ("/b", "(use \"d\")"),
                     ("/c", "(use \"d\")"),
@@ -208,23 +161,20 @@ mod test {
 
     #[test]
     fn use_not_found() {
-        match parse_witx_with(&Path::new("/a"), &MockFs::new(vec![("/a", "(use \"b\")")]))
+        match parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", "(use \"b\")")]))
             .err()
             .unwrap()
         {
-            WitxError::UseResolution(path, _error) => assert_eq!(path, PathBuf::from("/b")),
+            WitxError::Io(path, _error) => assert_eq!(path, PathBuf::from("/b")),
             e => panic!("wrong error: {:?}", e),
         }
     }
 
     #[test]
     fn use_invalid() {
-        match parse_witx_with(
-            &Path::new("/a"),
-            &MockFs::new(vec![("/a", "(use bbbbbbb)")]),
-        )
-        .err()
-        .unwrap()
+        match parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", "(use bbbbbbb)")]))
+            .err()
+            .unwrap()
         {
             WitxError::Parse(e) => {
                 assert_eq!(e.message, "invalid use declaration");
