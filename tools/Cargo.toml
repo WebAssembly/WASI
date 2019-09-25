@@ -1,5 +1,5 @@
 [workspace]
 members = [
   "witx",
-  "wasi",
+  "wasi-spec",
 ]
