@@ -19,11 +19,11 @@ jobs:
         echo "##[add-path]$HOME/.cargo/bin"
       if: matrix.os == 'macos-latest'
     - run: cargo fetch
-      working-directory: tools/witx
+      working-directory: tools
     - run: cargo build
-      working-directory: tools/witx
+      working-directory: tools
     - run: cargo test
-      working-directory: tools/witx
+      working-directory: tools
 
   rustfmt:
     name: Rustfmt
@@ -33,4 +33,4 @@ jobs:
     - name: Install Rust
       run: rustup update stable && rustup default stable && rustup component add rustfmt
     - run: cargo fmt -- --check
-      working-directory: tools/witx
+      working-directory: tools
