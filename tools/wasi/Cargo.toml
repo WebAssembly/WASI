@@ -1,0 +1,20 @@
+[package]
+name = "wasi"
+version = "0.1.0"
+description = "Describe WASI interface using witx"
+homepage = "https://github.com/WebAssembly/WASI"
+repository = "https://github.com/WebAssembly/WASI"
+license = "Apache-2.0"
+categories = ["wasm"]
+authors = ["Pat Hickey <phickey@fastly.com>"]
+edition = "2018"
+build = "build.rs"
+
+[lib]
+crate-type=["rlib"]
+
+[dependencies]
+witx = { path = "../witx", version = "0.1.0" }
+
+[build-dependencies]
+witx = { path = "../witx", version = "0.1.0" }
