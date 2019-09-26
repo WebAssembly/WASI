@@ -1,3 +1,4 @@
+use crate::io::{Filesystem, WitxIo};
 use crate::sexpr::SExpr;
 use crate::Location;
 use failure::Fail;
@@ -23,8 +24,15 @@ pub struct ParseError {
 }
 
 impl ParseError {
+    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
+        format!(
+            "{}\n{}",
+            self.location.highlight_source_with(witxio),
+            self.message
+        )
+    }
     pub fn report(&self) -> String {
-        format!("{}\n{}", self.location.highlight_source(), self.message)
+        self.report_with(&Filesystem)
     }
 }
 
