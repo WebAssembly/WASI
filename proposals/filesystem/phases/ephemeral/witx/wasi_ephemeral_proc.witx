@@ -1,0 +1,18 @@
+;; WASI Process API.
+;;
+;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
+;;
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; for an explanation of what that means.
+
+(use "typenames.witx")
+
+(module $wasi_ephemeral_proc
+  ;;; Terminate the process normally. An exit code of 0 indicates successful
+  ;;; termination of the program. The meanings of other values is dependent on
+  ;;; the environment.
+  (@interface func (export "exit")
+    ;;; The exit code returned by the process.
+    (param $rval $exitcode)
+  )
+)
