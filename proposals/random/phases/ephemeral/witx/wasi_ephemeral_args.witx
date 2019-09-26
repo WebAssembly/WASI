@@ -1,0 +1,28 @@
+;; WASI Command-line Arguments.
+;;
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; for an explanation of what that means.
+
+(use "typenames.witx")
+
+(module $wasi_ephemeral_args
+  ;;; Linear memory to be accessed by WASI functions that need it.
+  (import "memory" (memory))
+
+  ;;; Read command-line argument data.
+  ;;; The size of the array should match that returned by `sizes_get`
+  (@interface func (export "get")
+    (param $argv (@witx pointer (@witx pointer u8)))
+    (param $argv_buf (@witx pointer u8))
+    (result $error $errno)
+  )
+
+  ;;; Return command-line argument data sizes.
+  (@interface func (export "sizes_get")
+    (result $error $errno)
+    ;;; The number of arguments.
+    (result $argc $size)
+    ;;; The size of the argument string data.
+    (result $argv_buf_size $size)
+  )
+)
