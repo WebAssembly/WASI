@@ -311,10 +311,10 @@ impl DocValidation {
 
 fn validate_int_repr(type_: &BuiltinType, location: &Location) -> Result<IntRepr, ValidationError> {
     match type_ {
-        BuiltinType::U8 => Ok(IntRepr::I8),
-        BuiltinType::U16 => Ok(IntRepr::I16),
-        BuiltinType::U32 => Ok(IntRepr::I32),
-        BuiltinType::U64 => Ok(IntRepr::I64),
+        BuiltinType::U8 => Ok(IntRepr::U8),
+        BuiltinType::U16 => Ok(IntRepr::U16),
+        BuiltinType::U32 => Ok(IntRepr::U32),
+        BuiltinType::U64 => Ok(IntRepr::U64),
         _ => Err(ValidationError::InvalidRepr {
             repr: type_.clone(),
             location: location.clone(),

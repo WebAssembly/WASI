@@ -5,8 +5,11 @@ use std::io::{BufRead, BufReader, Error, ErrorKind};
 use std::path::{Path, PathBuf};
 
 pub trait WitxIo {
+    /// Read the entire file into a String. Used to resolve `use` declarations.
     fn fgets(&self, path: &Path) -> Result<String, WitxError>;
+    /// Read a line of a file into a String. Used for error reporting.
     fn fget_line(&self, path: &Path, line_num: usize) -> Result<String, WitxError>;
+    /// Return the canonical (non-symlinked) path of a file. Used to resolve `use` declarations.
     fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError>;
 }
 

@@ -196,10 +196,10 @@ impl Render for UnionDatatype {
 impl Render for IntRepr {
     fn to_sexpr(&self) -> SExpr {
         match self {
-            IntRepr::I8 => SExpr::word("u8"),
-            IntRepr::I16 => SExpr::word("u16"),
-            IntRepr::I32 => SExpr::word("u32"),
-            IntRepr::I64 => SExpr::word("u64"),
+            IntRepr::U8 => SExpr::word("u8"),
+            IntRepr::U16 => SExpr::word("u16"),
+            IntRepr::U32 => SExpr::word("u32"),
+            IntRepr::U64 => SExpr::word("u64"),
         }
     }
 }

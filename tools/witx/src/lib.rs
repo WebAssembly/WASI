@@ -31,6 +31,7 @@ pub use validate::ValidationError;
 use failure::Fail;
 use std::path::{Path, PathBuf};
 
+/// Load a witx document from the filesystem
 pub fn load<P: AsRef<Path>>(path: P) -> Result<Document, WitxError> {
     use toplevel::parse_witx;
     use validate::validate_document;
@@ -38,6 +39,7 @@ pub fn load<P: AsRef<Path>>(path: P) -> Result<Document, WitxError> {
     validate_document(&parsed_decls).map_err(WitxError::Validation)
 }
 
+/// Parse a witx document from a str. `(use ...)` directives are not permitted.
 pub fn parse(source: &str) -> Result<Document, WitxError> {
     use toplevel::parse_witx_with;
     use validate::validate_document;
