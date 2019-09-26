@@ -1,4 +1,5 @@
 use crate::{
+    io::{Filesystem, WitxIo},
     parser::{
         DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, IdentSyntax, ImportTypeSyntax,
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
@@ -42,24 +43,29 @@ pub enum ValidationError {
 }
 
 impl ValidationError {
-    pub fn report(&self) -> String {
+    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
         use ValidationError::*;
         match self {
             UnknownName { location, .. }
             | WrongKindName { location, .. }
             | Recursive { location, .. }
-            | InvalidRepr { location, .. } => format!("{}\n{}", location.highlight_source(), &self),
+            | InvalidRepr { location, .. } => {
+                format!("{}\n{}", location.highlight_source_with(witxio), &self)
+            }
             NameAlreadyExists {
                 at_location,
                 previous_location,
                 ..
             } => format!(
                 "{}\n{}\nOriginally defined at:\n{}",
-                at_location.highlight_source(),
+                at_location.highlight_source_with(witxio),
                 &self,
-                previous_location.highlight_source(),
+                previous_location.highlight_source_with(witxio),
             ),
         }
+    }
+    pub fn report(&self) -> String {
+        self.report_with(&Filesystem)
     }
 }
 
@@ -70,10 +76,7 @@ pub fn validate_document(decls: &[DeclSyntax]) -> Result<Document, ValidationErr
         definitions.push(validator.validate_decl(&d)?);
     }
 
-    Ok(Document {
-        entries: validator.entries,
-        definitions,
-    })
+    Ok(Document::new(definitions, validator.entries))
 }
 
 struct IdentValidation {
@@ -167,11 +170,11 @@ impl DocValidation {
                     .map(|d| module_validator.validate_decl(&d))
                     .collect::<Result<Vec<_>, _>>()?;
 
-                let rc_module = Rc::new(Module {
-                    name: name.clone(),
+                let rc_module = Rc::new(Module::new(
+                    name.clone(),
                     definitions,
-                    entries: module_validator.entries,
-                });
+                    module_validator.entries,
+                ));
                 self.entries
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
                 Ok(Definition::Module(rc_module))
@@ -308,10 +311,10 @@ impl DocValidation {
 
 fn validate_int_repr(type_: &BuiltinType, location: &Location) -> Result<IntRepr, ValidationError> {
     match type_ {
-        BuiltinType::U8 => Ok(IntRepr::I8),
-        BuiltinType::U16 => Ok(IntRepr::I16),
-        BuiltinType::U32 => Ok(IntRepr::I32),
-        BuiltinType::U64 => Ok(IntRepr::I64),
+        BuiltinType::U8 => Ok(IntRepr::U8),
+        BuiltinType::U16 => Ok(IntRepr::U16),
+        BuiltinType::U32 => Ok(IntRepr::U32),
+        BuiltinType::U64 => Ok(IntRepr::U64),
         _ => Err(ValidationError::InvalidRepr {
             repr: type_.clone(),
             location: location.clone(),
