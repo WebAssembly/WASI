@@ -57,28 +57,9 @@ impl Document {
 
 impl PartialEq for Document {
     fn eq(&self, rhs: &Document) -> bool {
-        if self.definitions.len() != rhs.definitions.len() {
-            return false;
-        }
-        for d in self.datatypes() {
-            if let Some(d_rhs) = rhs.datatype(&d.name) {
-                if d != d_rhs {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        for m in self.modules() {
-            if let Some(m_rhs) = rhs.module(&m.name) {
-                if m != m_rhs {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        true
+        // For equality, we don't care about the ordering of definitions,
+        // so we only need to check that the entries map is equal
+        self.entries == rhs.entries
     }
 }
 impl Eq for Document {}
@@ -100,6 +81,28 @@ impl Entry {
         match self {
             Entry::Datatype { .. } => "datatype",
             Entry::Module { .. } => "module",
+        }
+    }
+}
+
+impl PartialEq for Entry {
+    fn eq(&self, rhs: &Entry) -> bool {
+        match (self, rhs) {
+            (Entry::Datatype(d), Entry::Datatype(d_rhs)) => {
+                d.upgrade()
+                    .expect("possible to upgrade entry when part of document")
+                    == d_rhs
+                        .upgrade()
+                        .expect("possible to upgrade entry when part of document")
+            }
+            (Entry::Module(m), Entry::Module(m_rhs)) => {
+                m.upgrade()
+                    .expect("possible to upgrade entry when part of document")
+                    == m_rhs
+                        .upgrade()
+                        .expect("possible to upgrade entry when part of document")
+            }
+            _ => false,
         }
     }
 }
@@ -227,28 +230,9 @@ impl Module {
 
 impl PartialEq for Module {
     fn eq(&self, rhs: &Module) -> bool {
-        if self.definitions.len() != rhs.definitions.len() {
-            return false;
-        }
-        for i in self.imports() {
-            if let Some(i_rhs) = rhs.import(&i.name) {
-                if i != i_rhs {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        for f in self.funcs() {
-            if let Some(f_rhs) = rhs.func(&f.name) {
-                if f != f_rhs {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        true
+        // For equality, we don't care about the ordering of definitions,
+        // so we only need to check that the entries map is equal
+        self.entries == rhs.entries
     }
 }
 impl Eq for Module {}
@@ -263,6 +247,28 @@ pub enum ModuleDefinition {
 pub enum ModuleEntry {
     Import(Weak<ModuleImport>),
     Func(Weak<InterfaceFunc>),
+}
+
+impl PartialEq for ModuleEntry {
+    fn eq(&self, rhs: &ModuleEntry) -> bool {
+        match (self, rhs) {
+            (ModuleEntry::Import(i), ModuleEntry::Import(i_rhs)) => {
+                i.upgrade()
+                    .expect("always possible to upgrade moduleentry when part of module")
+                    == i_rhs
+                        .upgrade()
+                        .expect("always possible to upgrade moduleentry when part of module")
+            }
+            (ModuleEntry::Func(i), ModuleEntry::Func(i_rhs)) => {
+                i.upgrade()
+                    .expect("always possible to upgrade moduleentry when part of module")
+                    == i_rhs
+                        .upgrade()
+                        .expect("always possible to upgrade moduleentry when part of module")
+            }
+            _ => false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
