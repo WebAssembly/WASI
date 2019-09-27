@@ -4,10 +4,11 @@ use crate::{
         DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, IdentSyntax, ImportTypeSyntax,
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
-    AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypeVariant, Definition, Document,
-    Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, Location,
-    Module, ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype,
-    StructMember, UnionDatatype, UnionVariant,
+    AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
+    Definition, Document, Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
+    ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember, UnionDatatype,
+    UnionVariant,
 };
 use failure::Fail;
 use std::collections::HashMap;
@@ -40,6 +41,8 @@ pub enum ValidationError {
         repr: BuiltinType,
         location: Location,
     },
+    #[fail(display = "First result type must be pass-by-value")]
+    InvalidFirstResultType { location: Location },
 }
 
 impl ValidationError {
@@ -49,7 +52,8 @@ impl ValidationError {
             UnknownName { location, .. }
             | WrongKindName { location, .. }
             | Recursive { location, .. }
-            | InvalidRepr { location, .. } => {
+            | InvalidRepr { location, .. }
+            | InvalidFirstResultType { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -361,20 +365,33 @@ impl<'a> ModuleValidation<'a> {
                 let params = syntax
                     .params
                     .iter()
-                    .map(|f| {
+                    .enumerate()
+                    .map(|(ix, f)| {
                         Ok(InterfaceFuncParam {
                             name: argnames.introduce(&f.name)?,
                             type_: self.doc.validate_datatype_ident(&f.type_)?,
+                            position: InterfaceFuncParamPosition::Param(ix),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
                 let results = syntax
                     .results
                     .iter()
-                    .map(|f| {
+                    .enumerate()
+                    .map(|(ix, f)| {
+                        let type_ = self.doc.validate_datatype_ident(&f.type_)?;
+                        if ix == 0 {
+                            match type_.passed_by() {
+                                DatatypePassedBy::Value(_) => {}
+                                _ => Err(ValidationError::InvalidFirstResultType {
+                                    location: f.name.location.clone(),
+                                })?,
+                            }
+                        }
                         Ok(InterfaceFuncParam {
                             name: argnames.introduce(&f.name)?,
-                            type_: self.doc.validate_datatype_ident(&f.type_)?,
+                            type_,
+                            position: InterfaceFuncParamPosition::Result(ix),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;

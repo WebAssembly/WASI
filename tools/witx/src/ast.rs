@@ -137,7 +137,7 @@ pub struct AliasDatatype {
     pub to: DatatypeIdent,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum IntRepr {
     U8,
     U16,
@@ -293,4 +293,11 @@ pub struct InterfaceFunc {
 pub struct InterfaceFuncParam {
     pub name: Id,
     pub type_: DatatypeIdent,
+    pub position: InterfaceFuncParamPosition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum InterfaceFuncParamPosition {
+    Param(usize),
+    Result(usize),
 }
