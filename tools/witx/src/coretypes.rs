@@ -3,7 +3,7 @@ use crate::{
 };
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-/// Enumerates the types permitted for function arguments in a WebAssembly module
+/// Enumerates the types permitted for function arguments in the WebAssembly spec
 pub enum AtomType {
     I32,
     I64,
@@ -64,74 +64,74 @@ impl DatatypeIdent {
     }
 }
 
-/// A parameter in the module type of a function.
+/// A parameter in the WebAssembly type of a function.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ModuleParamType {
+pub struct CoreParamType {
     /// The interface function parameter to which this
     pub param: InterfaceFuncParam,
-    /// The relationship of the module type parameter to the function interface parameter
-    pub signifies: ModuleParamSignifies,
+    /// The relationship of the WebAssembly parameter to the function interface parameter
+    pub signifies: CoreParamSignifies,
 }
 
-impl ModuleParamType {
-    /// Representation of the module type parameter. This is the type that will appear
-    /// in the function's module type signature.
+impl CoreParamType {
+    /// Representation of the WebAssembly parameter. This is the type that will appear
+    /// in the function's WebAssembly type signature.
     pub fn repr(&self) -> AtomType {
         self.signifies.repr()
     }
 }
 
-/// Enumerates the sort of relationship an module type parameter to an interface function
+/// Enumerates the sort of relationship an WebAssembly parameter to an interface function
 /// parameter.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ModuleParamSignifies {
-    /// Module type represents the value using an AtomType
+pub enum CoreParamSignifies {
+    /// Core type represents the value using an AtomType
     Value(AtomType),
-    /// Module type represents a pointer into linear memory
+    /// Core type represents a pointer into linear memory
     PointerTo,
-    /// Module type represents a length of a region of linear memory
+    /// Core type represents a length of a region of linear memory
     LengthOf,
 }
 
-impl ModuleParamSignifies {
-    /// Representation of the module type parameter.
+impl CoreParamSignifies {
+    /// Representation of the WebAssembly parameter.
     pub fn repr(&self) -> AtomType {
         match self {
-            ModuleParamSignifies::Value(a) => *a,
-            ModuleParamSignifies::PointerTo | ModuleParamSignifies::LengthOf => AtomType::I32,
+            CoreParamSignifies::Value(a) => *a,
+            CoreParamSignifies::PointerTo | CoreParamSignifies::LengthOf => AtomType::I32,
         }
     }
 }
 
 impl InterfaceFuncParam {
-    /// Gives the module type that corresponds to passing this interface func parameter by value.
+    /// Gives the WebAssembly type that corresponds to passing this interface func parameter by value.
     /// Not all types can be passed by value: those which cannot return None
-    pub fn pass_by_value(&self) -> Option<ModuleParamType> {
+    pub fn pass_by_value(&self) -> Option<CoreParamType> {
         match self.type_.passed_by() {
-            DatatypePassedBy::Value(atom) => Some(ModuleParamType {
-                signifies: ModuleParamSignifies::Value(atom),
+            DatatypePassedBy::Value(atom) => Some(CoreParamType {
+                signifies: CoreParamSignifies::Value(atom),
                 param: self.clone(),
             }),
             DatatypePassedBy::Pointer | DatatypePassedBy::PointerLengthPair => None,
         }
     }
 
-    /// Gives the module types that correspond to passing this interface func parameter
+    /// Gives the WebAssembly types that correspond to passing this interface func parameter
     /// by reference. Some types are passed by reference using a single pointer, others
     /// require both a pointer and length.
-    pub fn pass_by_reference(&self) -> Vec<ModuleParamType> {
+    pub fn pass_by_reference(&self) -> Vec<CoreParamType> {
         match self.type_.passed_by() {
-            DatatypePassedBy::Value(_) | DatatypePassedBy::Pointer => vec![ModuleParamType {
-                signifies: ModuleParamSignifies::PointerTo,
+            DatatypePassedBy::Value(_) | DatatypePassedBy::Pointer => vec![CoreParamType {
+                signifies: CoreParamSignifies::PointerTo,
                 param: self.clone(),
             }],
             DatatypePassedBy::PointerLengthPair => vec![
-                ModuleParamType {
-                    signifies: ModuleParamSignifies::PointerTo,
+                CoreParamType {
+                    signifies: CoreParamSignifies::PointerTo,
                     param: self.clone(),
                 },
-                ModuleParamType {
-                    signifies: ModuleParamSignifies::LengthOf,
+                CoreParamType {
+                    signifies: CoreParamSignifies::LengthOf,
                     param: self.clone(),
                 },
             ],
@@ -139,16 +139,16 @@ impl InterfaceFuncParam {
     }
 }
 
-/// Describes the module type signature of a function
+/// Describes the WebAssembly signature of a function
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ModuleFuncType {
-    pub args: Vec<ModuleParamType>,
-    pub ret: Option<ModuleParamType>,
+pub struct CoreFuncType {
+    pub args: Vec<CoreParamType>,
+    pub ret: Option<CoreParamType>,
 }
 
 impl InterfaceFunc {
-    /// Get the module type signature for this interface function
-    pub fn module_type(&self) -> ModuleFuncType {
+    /// Get the WebAssembly type signature for this interface function
+    pub fn core_type(&self) -> CoreFuncType {
         let mut results = self.results.iter();
         // The ret value is the first result (if there is one), passed
         // by value.
@@ -171,6 +171,6 @@ impl InterfaceFunc {
             // Then, the remaining results are passed by reference.
             .chain(results.flat_map(|param| param.pass_by_reference()))
             .collect();
-        ModuleFuncType { args, ret }
+        CoreFuncType { args, ret }
     }
 }

@@ -1,11 +1,11 @@
 /// Types describing a validated witx document
 mod ast;
+/// Map witx types to core (wasm standard) types
+mod coretypes;
 /// Interface for filesystem or mock IO
 mod io;
 /// Lexer text into tokens
 mod lexer;
-/// Determine module type of function
-mod moduletype;
 /// Witx syntax parsing from SExprs
 mod parser;
 /// Render ast to text
@@ -23,11 +23,9 @@ pub use ast::{
     InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry, ModuleImport,
     ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
 };
+pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use lexer::LexError;
-pub use moduletype::{
-    AtomType, DatatypePassedBy, ModuleFuncType, ModuleParamSignifies, ModuleParamType,
-};
 pub use parser::{DeclSyntax, ParseError};
 pub use render::{Render, SExpr as RenderSExpr};
 pub use sexpr::SExprParseError;
