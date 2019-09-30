@@ -79,7 +79,6 @@ impl BuiltinType {
     pub fn starts_parsing(sexpr: &SExpr) -> bool {
         match sexpr {
             SExpr::Word("string", _)
-            | SExpr::Word("data", _)
             | SExpr::Word("u8", _)
             | SExpr::Word("u16", _)
             | SExpr::Word("u32", _)
