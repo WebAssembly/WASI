@@ -37,6 +37,7 @@
   )
   ;; Return command-line argument data sizes.
   (@interface func (export "environ_sizes_get")
+    (result $error $errno_t)
     ;; The number of arguments.
     (result $argc $size_t)
     ;; The size of the argument string data.
@@ -373,6 +374,7 @@
     ;; file descriptors derived from it.
     (param $fs_rights_base $rights_t)
     (param $fs_rights_inherting $rights_t)
+    (param $flags $fdflags_t)
     (result $error $errno_t)
     ;; The file descriptor of the file that has been opened.
     (result $opened_fd $fd_t)
@@ -468,7 +470,7 @@
 
   ;; Temporarily yield execution of the calling thread.
   ;; Note: This is similar to `sched_yield` in POSIX.
-  (@interface func (export "proc_sched_yield")
+  (@interface func (export "sched_yield")
     (result $error $errno_t)
   )
 
