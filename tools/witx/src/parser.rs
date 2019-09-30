@@ -63,7 +63,6 @@ macro_rules! id {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BuiltinType {
     String,
-    Data,
     U8,
     U16,
     U32,
@@ -97,7 +96,6 @@ impl BuiltinType {
     pub fn parse(sexpr: &SExpr) -> Result<Self, ParseError> {
         match sexpr {
             SExpr::Word("string", _loc) => Ok(BuiltinType::String),
-            SExpr::Word("data", _loc) => Ok(BuiltinType::Data),
             SExpr::Word("u8", _loc) => Ok(BuiltinType::U8),
             SExpr::Word("u16", _loc) => Ok(BuiltinType::U16),
             SExpr::Word("u32", _loc) => Ok(BuiltinType::U32),
