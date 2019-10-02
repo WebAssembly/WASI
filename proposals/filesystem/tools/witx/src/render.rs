@@ -72,7 +72,6 @@ impl Render for BuiltinType {
     fn to_sexpr(&self) -> SExpr {
         match self {
             BuiltinType::String => SExpr::word("string"),
-            BuiltinType::Data => SExpr::word("data"),
             BuiltinType::U8 => SExpr::word("u8"),
             BuiltinType::U16 => SExpr::word("u16"),
             BuiltinType::U32 => SExpr::word("u32"),
