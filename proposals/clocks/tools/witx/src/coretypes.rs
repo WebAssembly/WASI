@@ -37,7 +37,7 @@ impl DatatypeIdent {
     pub fn passed_by(&self) -> DatatypePassedBy {
         match &self {
             DatatypeIdent::Builtin(b) => match b {
-                BuiltinType::String | BuiltinType::Data => DatatypePassedBy::PointerLengthPair,
+                BuiltinType::String => DatatypePassedBy::PointerLengthPair,
                 BuiltinType::U8
                 | BuiltinType::U16
                 | BuiltinType::U32
