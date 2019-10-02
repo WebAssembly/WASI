@@ -1,5 +1,7 @@
 /// Types describing a validated witx document
 mod ast;
+/// Map witx types to core (wasm standard) types
+mod coretypes;
 /// Interface for filesystem or mock IO
 mod io;
 /// Lexer text into tokens
@@ -17,10 +19,11 @@ mod validate;
 
 pub use ast::{
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypeVariant, Definition, Document,
-    Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, Module,
-    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
-    UnionDatatype, UnionVariant,
+    Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
+    InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry, ModuleImport,
+    ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
 };
+pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use lexer::LexError;
 pub use parser::{DeclSyntax, ParseError};
