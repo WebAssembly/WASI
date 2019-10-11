@@ -305,12 +305,12 @@
 ;; The position relative to which to set the offset of the file descriptor.
 (typename $whence_t
   (enum u8
+    ;; Seek relative to start-of-file.
+    $WHENCE_SET
     ;; Seek relative to current position.
     $WHENCE_CUR
     ;; Seek relative to end-of-file.
     $WHENCE_END
-    ;; Seek relative to start-of-file.
-    $WHENCE_SET
   )
 )
 
