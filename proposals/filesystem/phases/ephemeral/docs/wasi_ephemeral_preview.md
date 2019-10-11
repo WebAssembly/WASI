@@ -2305,6 +2305,10 @@ Used by [`__wasi_fd_seek()`](#fd_seek).
 
 Possible values:
 
+- <a href="#whence.set" name="whence.set"></a>**`__WASI_WHENCE_SET`**
+
+    Seek relative to start-of-file.
+
 - <a href="#whence.cur" name="whence.cur"></a>**`__WASI_WHENCE_CUR`**
 
     Seek relative to current position.
@@ -2312,8 +2316,4 @@ Possible values:
 - <a href="#whence.end" name="whence.end"></a>**`__WASI_WHENCE_END`**
 
     Seek relative to end-of-file.
-
-- <a href="#whence.set" name="whence.set"></a>**`__WASI_WHENCE_SET`**
-
-    Seek relative to start-of-file.
 
