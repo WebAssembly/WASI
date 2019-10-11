@@ -1113,6 +1113,11 @@ Used by [`__wasi_subscription_t`](#subscription), [`__wasi_clock_res_get()`](#cl
 
 Possible values:
 
+- <a href="#clockid.realtime" name="clockid.realtime"></a>**`__WASI_CLOCK_REALTIME`**
+
+    The clock measuring real time. Time value
+    zero corresponds with 1970-01-01T00:00:00Z.
+
 - <a href="#clockid.monotonic" name="clockid.monotonic"></a>**`__WASI_CLOCK_MONOTONIC`**
 
     The store-wide monotonic clock, which is defined as a
@@ -1126,11 +1131,6 @@ Possible values:
 
     The CPU-time clock associated with the current
     process.
-
-- <a href="#clockid.realtime" name="clockid.realtime"></a>**`__WASI_CLOCK_REALTIME`**
-
-    The clock measuring real time. Time value
-    zero corresponds with 1970-01-01T00:00:00Z.
 
 - <a href="#clockid.thread_cputime_id" name="clockid.thread_cputime_id"></a>**`__WASI_CLOCK_THREAD_CPUTIME_ID`**
 
