@@ -10,9 +10,9 @@ fn validate_wasi_unstable_preview0() {
 }
 
 #[test]
-fn validate_wasi_ephemeral_preview0() {
+fn validate_wasi_ephemeral_preview() {
     witx::load(Path::new(
-        "../../phases/ephemeral/witx/wasi_ephemeral_preview0.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_preview.witx",
     ))
     .unwrap();
 }
