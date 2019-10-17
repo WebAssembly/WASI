@@ -8,7 +8,7 @@
 
 (use "typenames.witx")
 
-(module $wasi_ephemeral_preview0
+(module $wasi_ephemeral_preview
   ;; Linear memory to be accessed by WASI functions that need it.
   (import "memory" (memory))
 
