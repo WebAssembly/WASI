@@ -1,17 +1,17 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, IdentSyntax, ImportTypeSyntax,
+        DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, ImportTypeSyntax,
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
-    Definition, Document, Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc,
-    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
-    ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember, UnionDatatype,
-    UnionVariant,
+    Definition, Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
+    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
+    ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
 };
 use failure::Fail;
 use std::collections::HashMap;
+use std::path::Path;
 use std::rc::Rc;
 
 #[derive(Debug, Fail)]
@@ -73,16 +73,6 @@ impl ValidationError {
     }
 }
 
-pub fn validate_document(decls: &[DeclSyntax]) -> Result<Document, ValidationError> {
-    let mut validator = DocValidation::new();
-    let mut definitions = Vec::new();
-    for d in decls {
-        definitions.push(validator.validate_decl(&d)?);
-    }
-
-    Ok(Document::new(definitions, validator.entries))
-}
-
 struct IdentValidation {
     names: HashMap<String, Location>,
 }
@@ -93,49 +83,84 @@ impl IdentValidation {
             names: HashMap::new(),
         }
     }
-    fn introduce(&mut self, syntax: &IdentSyntax) -> Result<Id, ValidationError> {
-        if let Some(introduced) = self.names.get(&syntax.name) {
+
+    fn introduce(&mut self, syntax: &str, location: Location) -> Result<Id, ValidationError> {
+        if let Some(introduced) = self.names.get(syntax) {
             Err(ValidationError::NameAlreadyExists {
-                name: syntax.name.clone(),
-                at_location: syntax.location.clone(),
+                name: syntax.to_string(),
+                at_location: location,
                 previous_location: introduced.clone(),
             })
         } else {
-            self.names
-                .insert(syntax.name.clone(), syntax.location.clone());
-            Ok(Id::new(&syntax.name))
+            self.names.insert(syntax.to_string(), location);
+            Ok(Id::new(syntax))
         }
     }
 
-    fn get(&self, syntax: &IdentSyntax) -> Result<Id, ValidationError> {
-        if self.names.get(&syntax.name).is_some() {
-            Ok(Id::new(&syntax.name))
+    fn get(&self, syntax: &str, location: Location) -> Result<Id, ValidationError> {
+        if self.names.get(syntax).is_some() {
+            Ok(Id::new(syntax))
         } else {
             Err(ValidationError::UnknownName {
-                name: syntax.name.clone(),
-                location: syntax.location.clone(),
+                name: syntax.to_string(),
+                location,
             })
         }
     }
 }
 
-struct DocValidation {
+pub struct DocValidation {
     scope: IdentValidation,
     pub entries: HashMap<Id, Entry>,
 }
 
+pub struct DocValidationScope<'a> {
+    doc: &'a mut DocValidation,
+    text: &'a str,
+    path: &'a Path,
+}
+
 impl DocValidation {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             scope: IdentValidation::new(),
             entries: HashMap::new(),
         }
     }
 
-    fn validate_decl(&mut self, decl: &DeclSyntax) -> Result<Definition, ValidationError> {
+    pub fn scope<'a>(&'a mut self, text: &'a str, path: &'a Path) -> DocValidationScope<'a> {
+        DocValidationScope {
+            doc: self,
+            text,
+            path,
+        }
+    }
+}
+
+impl DocValidationScope<'_> {
+    fn location(&self, span: wast::Span) -> Location {
+        let (line, column) = span.linecol_in(self.text);
+        Location {
+            line,
+            column,
+            path: self.path.to_path_buf(),
+        }
+    }
+
+    fn introduce(&mut self, name: &wast::Id<'_>) -> Result<Id, ValidationError> {
+        let loc = self.location(name.span());
+        self.doc.scope.introduce(name.name(), loc)
+    }
+
+    fn get(&self, name: &wast::Id<'_>) -> Result<Id, ValidationError> {
+        let loc = self.location(name.span());
+        self.doc.scope.get(name.name(), loc)
+    }
+
+    pub fn validate_decl(&mut self, decl: &DeclSyntax) -> Result<Definition, ValidationError> {
         match decl {
             DeclSyntax::Typename(decl) => {
-                let name = self.scope.introduce(&decl.ident)?;
+                let name = self.introduce(&decl.ident)?;
                 let variant =
                     match &decl.def {
                         TypedefSyntax::Ident(syntax) => DatatypeVariant::Alias(AliasDatatype {
@@ -145,28 +170,29 @@ impl DocValidation {
                         TypedefSyntax::Enum(syntax) => DatatypeVariant::Enum(self.validate_enum(
                             &name,
                             &syntax,
-                            &decl.ident.location,
+                            decl.ident.span(),
                         )?),
                         TypedefSyntax::Flags(syntax) => DatatypeVariant::Flags(
-                            self.validate_flags(&name, &syntax, &decl.ident.location)?,
+                            self.validate_flags(&name, &syntax, decl.ident.span())?,
                         ),
                         TypedefSyntax::Struct(syntax) => DatatypeVariant::Struct(
-                            self.validate_struct(&name, &syntax, &decl.ident.location)?,
+                            self.validate_struct(&name, &syntax, decl.ident.span())?,
                         ),
                         TypedefSyntax::Union(syntax) => DatatypeVariant::Union(
-                            self.validate_union(&name, &syntax, &decl.ident.location)?,
+                            self.validate_union(&name, &syntax, decl.ident.span())?,
                         ),
                     };
                 let rc_datatype = Rc::new(Datatype {
                     name: name.clone(),
                     variant,
                 });
-                self.entries
+                self.doc
+                    .entries
                     .insert(name, Entry::Datatype(Rc::downgrade(&rc_datatype)));
                 Ok(Definition::Datatype(rc_datatype))
             }
             DeclSyntax::Module(syntax) => {
-                let name = self.scope.introduce(&syntax.name)?;
+                let name = self.introduce(&syntax.name)?;
                 let mut module_validator = ModuleValidation::new(self);
                 let definitions = syntax
                     .decls
@@ -179,7 +205,8 @@ impl DocValidation {
                     definitions,
                     module_validator.entries,
                 ));
-                self.entries
+                self.doc
+                    .entries
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
                 Ok(Definition::Module(rc_module))
             }
@@ -202,20 +229,20 @@ impl DocValidation {
                 self.validate_datatype_ident(&a)?,
             ))),
             DatatypeIdentSyntax::Ident(i) => {
-                let id = self.scope.get(i)?;
-                match self.entries.get(&id) {
+                let id = self.get(i)?;
+                match self.doc.entries.get(&id) {
                     Some(Entry::Datatype(weak_d)) => Ok(DatatypeIdent::Ident(
                         weak_d.upgrade().expect("weak backref to defined type"),
                     )),
                     Some(e) => Err(ValidationError::WrongKindName {
-                        name: i.name.clone(),
-                        location: i.location.clone(),
+                        name: i.name().to_string(),
+                        location: self.location(i.span()),
                         expected: "datatype",
                         got: e.kind(),
                     }),
                     None => Err(ValidationError::Recursive {
-                        name: i.name.clone(),
-                        location: i.location.clone(),
+                        name: i.name().to_string(),
+                        location: self.location(i.span()),
                     }),
                 }
             }
@@ -226,14 +253,14 @@ impl DocValidation {
         &self,
         name: &Id,
         syntax: &EnumSyntax,
-        location: &Location,
+        span: wast::Span,
     ) -> Result<EnumDatatype, ValidationError> {
         let mut enum_scope = IdentValidation::new();
-        let repr = validate_int_repr(&syntax.repr, location)?;
+        let repr = self.validate_int_repr(&syntax.repr, span)?;
         let variants = syntax
             .members
             .iter()
-            .map(|i| enum_scope.introduce(i))
+            .map(|i| enum_scope.introduce(i.name(), self.location(i.span())))
             .collect::<Result<Vec<Id>, _>>()?;
 
         Ok(EnumDatatype {
@@ -247,14 +274,14 @@ impl DocValidation {
         &self,
         name: &Id,
         syntax: &FlagsSyntax,
-        location: &Location,
+        span: wast::Span,
     ) -> Result<FlagsDatatype, ValidationError> {
         let mut flags_scope = IdentValidation::new();
-        let repr = validate_int_repr(&syntax.repr, location)?;
+        let repr = self.validate_int_repr(&syntax.repr, span)?;
         let flags = syntax
             .flags
             .iter()
-            .map(|i| flags_scope.introduce(i))
+            .map(|i| flags_scope.introduce(i.name(), self.location(i.span())))
             .collect::<Result<Vec<Id>, _>>()?;
 
         Ok(FlagsDatatype {
@@ -268,7 +295,7 @@ impl DocValidation {
         &self,
         name: &Id,
         syntax: &StructSyntax,
-        _location: &Location,
+        _span: wast::Span,
     ) -> Result<StructDatatype, ValidationError> {
         let mut member_scope = IdentValidation::new();
         let members = syntax
@@ -276,7 +303,7 @@ impl DocValidation {
             .iter()
             .map(|f| {
                 Ok(StructMember {
-                    name: member_scope.introduce(&f.name)?,
+                    name: member_scope.introduce(f.name.name(), self.location(f.name.span()))?,
                     type_: self.validate_datatype_ident(&f.type_)?,
                 })
             })
@@ -292,7 +319,7 @@ impl DocValidation {
         &self,
         name: &Id,
         syntax: &UnionSyntax,
-        _location: &Location,
+        _span: wast::Span,
     ) -> Result<UnionDatatype, ValidationError> {
         let mut variant_scope = IdentValidation::new();
         let variants = syntax
@@ -300,7 +327,7 @@ impl DocValidation {
             .iter()
             .map(|f| {
                 Ok(UnionVariant {
-                    name: variant_scope.introduce(&f.name)?,
+                    name: variant_scope.introduce(f.name.name(), self.location(f.name.span()))?,
                     type_: self.validate_datatype_ident(&f.type_)?,
                 })
             })
@@ -311,29 +338,33 @@ impl DocValidation {
             variants,
         })
     }
-}
 
-fn validate_int_repr(type_: &BuiltinType, location: &Location) -> Result<IntRepr, ValidationError> {
-    match type_ {
-        BuiltinType::U8 => Ok(IntRepr::U8),
-        BuiltinType::U16 => Ok(IntRepr::U16),
-        BuiltinType::U32 => Ok(IntRepr::U32),
-        BuiltinType::U64 => Ok(IntRepr::U64),
-        _ => Err(ValidationError::InvalidRepr {
-            repr: type_.clone(),
-            location: location.clone(),
-        }),
+    fn validate_int_repr(
+        &self,
+        type_: &BuiltinType,
+        span: wast::Span,
+    ) -> Result<IntRepr, ValidationError> {
+        match type_ {
+            BuiltinType::U8 => Ok(IntRepr::U8),
+            BuiltinType::U16 => Ok(IntRepr::U16),
+            BuiltinType::U32 => Ok(IntRepr::U32),
+            BuiltinType::U64 => Ok(IntRepr::U64),
+            _ => Err(ValidationError::InvalidRepr {
+                repr: type_.clone(),
+                location: self.location(span),
+            }),
+        }
     }
 }
 
 struct ModuleValidation<'a> {
-    doc: &'a DocValidation,
+    doc: &'a DocValidationScope<'a>,
     scope: IdentValidation,
     pub entries: HashMap<Id, ModuleEntry>,
 }
 
 impl<'a> ModuleValidation<'a> {
-    fn new(doc: &'a DocValidation) -> Self {
+    fn new(doc: &'a DocValidationScope<'a>) -> Self {
         Self {
             doc,
             scope: IdentValidation::new(),
@@ -347,7 +378,8 @@ impl<'a> ModuleValidation<'a> {
     ) -> Result<ModuleDefinition, ValidationError> {
         match decl {
             ModuleDeclSyntax::Import(syntax) => {
-                let name = self.scope.introduce(&syntax.name)?;
+                let loc = self.doc.location(syntax.name_loc);
+                let name = self.scope.introduce(syntax.name, loc)?;
                 let variant = match syntax.type_ {
                     ImportTypeSyntax::Memory => ModuleImportVariant::Memory,
                 };
@@ -360,7 +392,8 @@ impl<'a> ModuleValidation<'a> {
                 Ok(ModuleDefinition::Import(rc_import))
             }
             ModuleDeclSyntax::Func(syntax) => {
-                let name = self.scope.introduce(&syntax.export)?;
+                let loc = self.doc.location(syntax.export_loc);
+                let name = self.scope.introduce(syntax.export, loc)?;
                 let mut argnames = IdentValidation::new();
                 let params = syntax
                     .params
@@ -368,7 +401,8 @@ impl<'a> ModuleValidation<'a> {
                     .enumerate()
                     .map(|(ix, f)| {
                         Ok(InterfaceFuncParam {
-                            name: argnames.introduce(&f.name)?,
+                            name: argnames
+                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
                             type_: self.doc.validate_datatype_ident(&f.type_)?,
                             position: InterfaceFuncParamPosition::Param(ix),
                         })
@@ -384,12 +418,13 @@ impl<'a> ModuleValidation<'a> {
                             match type_.passed_by() {
                                 DatatypePassedBy::Value(_) => {}
                                 _ => Err(ValidationError::InvalidFirstResultType {
-                                    location: f.name.location.clone(),
+                                    location: self.doc.location(f.name.span()),
                                 })?,
                             }
                         }
                         Ok(InterfaceFuncParam {
-                            name: argnames.introduce(&f.name)?,
+                            name: argnames
+                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
                             type_,
                             position: InterfaceFuncParamPosition::Result(ix),
                         })
