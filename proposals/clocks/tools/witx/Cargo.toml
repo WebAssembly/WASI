@@ -1,12 +1,12 @@
 [package]
 name = "witx"
-version = "0.3.0"
+version = "0.3.1"
 description = "Parse and validate witx file format"
 homepage = "https://github.com/WebAssembly/WASI"
 repository = "https://github.com/WebAssembly/WASI"
 license = "Apache-2.0"
 categories = ["wasm"]
-authors = ["Pat Hickey <phickey@fastly.com>"]
+authors = ["Pat Hickey <phickey@fastly.com>", "Alex Crichton <alex@alexcrichton.com>"]
 edition = "2018"
 
 [lib]
