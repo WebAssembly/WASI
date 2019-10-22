@@ -1,162 +1,144 @@
+use crate::ast::{Definition, Document};
 use crate::io::{Filesystem, WitxIo};
-use crate::parser::{DeclSyntax, ParseError, TopLevelSyntax};
-use crate::sexpr::SExprParser;
+use crate::parser::{TopLevelDocument, TopLevelSyntax};
+use crate::validate::DocValidation;
 use crate::WitxError;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub fn parse_witx<P: AsRef<Path>>(i: P) -> Result<Vec<DeclSyntax>, WitxError> {
-    parse_witx_with(i, &Filesystem)
+pub fn parse_witx(i: impl AsRef<Path>) -> Result<Document, WitxError> {
+    _parse_witx_with(i.as_ref(), &Filesystem)
 }
 
-pub fn parse_witx_with<P: AsRef<Path>>(
-    i: P,
-    witxio: &dyn WitxIo,
-) -> Result<Vec<DeclSyntax>, WitxError> {
-    let input_path = witxio.canonicalize(&i.as_ref())?;
-
-    let input = witxio.fgets(&input_path)?;
-
-    let toplevel = parse_toplevel(&input, &input_path)?;
-    let mut resolved = HashSet::new();
-    resolved.insert(input_path.clone());
-    let search_path = input_path.parent().unwrap_or(Path::new("."));
-    resolve_uses(toplevel, &search_path, &mut resolved, witxio)
+pub fn parse_witx_with(i: impl AsRef<Path>, witxio: impl WitxIo) -> Result<Document, WitxError> {
+    _parse_witx_with(i.as_ref(), &witxio)
 }
 
-fn parse_toplevel(source_text: &str, file_path: &Path) -> Result<Vec<TopLevelSyntax>, WitxError> {
-    let mut sexpr_parser = SExprParser::new(source_text, file_path);
-    let sexprs = sexpr_parser.match_sexprs().map_err(WitxError::SExpr)?;
-    let top_levels = sexprs
-        .iter()
-        .map(|s| TopLevelSyntax::parse(s))
-        .collect::<Result<Vec<TopLevelSyntax>, ParseError>>()
-        .map_err(WitxError::Parse)?;
-    Ok(top_levels)
+fn _parse_witx_with(path: &Path, io: &dyn WitxIo) -> Result<Document, WitxError> {
+    let mut validator = DocValidation::new();
+    let mut definitions = Vec::new();
+    let root = path.parent().unwrap_or(Path::new("."));
+
+    parse_file(
+        path.file_name().unwrap().as_ref(),
+        io,
+        root,
+        &mut validator,
+        &mut definitions,
+        &mut HashSet::new(),
+    )?;
+    Ok(Document::new(definitions, validator.entries))
 }
 
-fn resolve_uses(
-    toplevel: Vec<TopLevelSyntax>,
-    search_path: &Path,
-    used: &mut HashSet<PathBuf>,
-    witxio: &dyn WitxIo,
-) -> Result<Vec<DeclSyntax>, WitxError> {
-    let mut decls = Vec::new();
+fn parse_file(
+    path: &Path,
+    io: &dyn WitxIo,
+    root: &Path,
+    validator: &mut DocValidation,
+    definitions: &mut Vec<Definition>,
+    parsed: &mut HashSet<PathBuf>,
+) -> Result<(), WitxError> {
+    let path = io.canonicalize(&root.join(path))?;
+    if !parsed.insert(path.clone()) {
+        return Ok(());
+    }
+    let input = io.fgets(&path)?;
 
-    for t in toplevel {
+    let adjust_err = |mut error: wast::Error| {
+        error.set_path(&path);
+        error.set_text(&input);
+        WitxError::Parse(error)
+    };
+    let buf = wast::parser::ParseBuffer::new(&input).map_err(adjust_err)?;
+    let doc = wast::parser::parse::<TopLevelDocument>(&buf).map_err(adjust_err)?;
+
+    for t in doc.items {
         match t {
-            TopLevelSyntax::Decl(d) => decls.push(d),
+            TopLevelSyntax::Decl(d) => {
+                let def = validator
+                    .scope(&input, &path)
+                    .validate_decl(&d)
+                    .map_err(WitxError::Validation)?;
+                definitions.push(def);
+            }
             TopLevelSyntax::Use(u) => {
-                let abs_path = witxio.canonicalize(&search_path.join(u.name))?;
-                // Include the decls from a use declaration only once
-                // in a given toplevel. Same idea as #pragma once.
-                if !used.contains(&abs_path) {
-                    used.insert(abs_path.clone());
-
-                    let source_text = witxio.fgets(&abs_path)?;
-                    let inner_toplevels = parse_toplevel(&source_text, &abs_path)?;
-
-                    let inner_decls = resolve_uses(inner_toplevels, search_path, used, witxio)?;
-                    decls.extend(inner_decls)
-                }
+                parse_file(u.as_ref(), io, root, validator, definitions, parsed)?;
             }
         }
     }
 
-    Ok(decls)
+    Ok(())
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::ast::*;
     use crate::io::MockFs;
-    use crate::parser::*;
-    use crate::Location;
 
     #[test]
     fn empty() {
-        assert_eq!(
-            parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", ";; empty")])).expect("parse"),
-            Vec::new(),
-        );
+        parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", ";; empty")])).expect("parse");
     }
 
     #[test]
     fn one_use() {
-        assert_eq!(
-            parse_witx_with(
-                &Path::new("/a"),
-                &MockFs::new(&[("/a", "(use \"b\")"), ("/b", ";; empty")])
-            )
-            .expect("parse"),
-            Vec::new(),
-        );
+        parse_witx_with(
+            &Path::new("/a"),
+            &MockFs::new(&[("/a", "(use \"b\")"), ("/b", ";; empty")]),
+        )
+        .unwrap();
     }
 
     #[test]
     fn multi_use() {
-        assert_eq!(
-            parse_witx_with(
-                &Path::new("/a"),
-                &MockFs::new(&[
-                    ("/a", "(use \"b\")"),
-                    ("/b", "(use \"c\")\n(typename $b_float f64)"),
-                    ("/c", "(typename $c_int u32)")
-                ])
-            )
-            .expect("parse"),
-            vec![
-                DeclSyntax::Typename(TypenameSyntax {
-                    ident: IdentSyntax {
-                        name: "c_int".to_owned(),
-                        location: Location {
-                            path: PathBuf::from("/c"),
-                            line: 1,
-                            column: 10,
-                        }
-                    },
-                    def: TypedefSyntax::Ident(DatatypeIdentSyntax::Builtin(BuiltinType::U32))
-                }),
-                DeclSyntax::Typename(TypenameSyntax {
-                    ident: IdentSyntax {
-                        name: "b_float".to_owned(),
-                        location: Location {
-                            path: PathBuf::from("/b"),
-                            line: 2,
-                            column: 10,
-                        }
-                    },
-                    def: TypedefSyntax::Ident(DatatypeIdentSyntax::Builtin(BuiltinType::F64))
-                })
-            ],
-        );
+        let doc = parse_witx_with(
+            &Path::new("/a"),
+            &MockFs::new(&[
+                ("/a", "(use \"b\")"),
+                ("/b", "(use \"c\")\n(typename $b_float f64)"),
+                ("/c", "(typename $c_int u32)"),
+            ]),
+        )
+        .expect("parse");
+
+        match &doc.datatype(&Id::new("b_float")).unwrap().variant {
+            DatatypeVariant::Alias(a) => {
+                assert_eq!(a.name.as_str(), "b_float");
+                assert_eq!(a.to, DatatypeIdent::Builtin(BuiltinType::F64));
+            }
+            other => panic!("expected alias, got {:?}", other),
+        }
+
+        match &doc.datatype(&Id::new("c_int")).unwrap().variant {
+            DatatypeVariant::Alias(a) => {
+                assert_eq!(a.name.as_str(), "c_int");
+                assert_eq!(a.to, DatatypeIdent::Builtin(BuiltinType::U32));
+            }
+            other => panic!("expected alias, got {:?}", other),
+        }
     }
 
     #[test]
     fn diamond_dependency() {
-        assert_eq!(
-            parse_witx_with(
-                &Path::new("/a"),
-                &MockFs::new(&[
-                    ("/a", "(use \"b\")\n(use \"c\")"),
-                    ("/b", "(use \"d\")"),
-                    ("/c", "(use \"d\")"),
-                    ("/d", "(typename $d_char u8)")
-                ])
-            )
-            .expect("parse"),
-            vec![DeclSyntax::Typename(TypenameSyntax {
-                ident: IdentSyntax {
-                    name: "d_char".to_owned(),
-                    location: Location {
-                        path: PathBuf::from("/d"),
-                        line: 1,
-                        column: 10,
-                    }
-                },
-                def: TypedefSyntax::Ident(DatatypeIdentSyntax::Builtin(BuiltinType::U8))
-            })],
-        );
+        let doc = parse_witx_with(
+            &Path::new("/a"),
+            &MockFs::new(&[
+                ("/a", "(use \"b\")\n(use \"c\")"),
+                ("/b", "(use \"d\")"),
+                ("/c", "(use \"d\")"),
+                ("/d", "(typename $d_char u8)"),
+            ]),
+        )
+        .expect("parse");
+
+        match &doc.datatype(&Id::new("d_char")).unwrap().variant {
+            DatatypeVariant::Alias(a) => {
+                assert_eq!(a.name.as_str(), "d_char");
+                assert_eq!(a.to, DatatypeIdent::Builtin(BuiltinType::U8));
+            }
+            other => panic!("expected alias, got {:?}", other),
+        }
     }
 
     #[test]
@@ -177,15 +159,9 @@ mod test {
             .unwrap()
         {
             WitxError::Parse(e) => {
-                assert_eq!(e.message, "invalid use declaration");
-                assert_eq!(
-                    e.location,
-                    Location {
-                        path: PathBuf::from("/a"),
-                        line: 1,
-                        column: 1
-                    }
-                );
+                let err = e.to_string();
+                assert!(err.contains("expected a string"), "bad error: {}", err);
+                assert!(err.contains("/a:1:6"));
             }
             e => panic!("wrong error: {:?}", e),
         }

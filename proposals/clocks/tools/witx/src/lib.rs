@@ -4,14 +4,10 @@ mod ast;
 mod coretypes;
 /// Interface for filesystem or mock IO
 mod io;
-/// Lexer text into tokens
-mod lexer;
 /// Witx syntax parsing from SExprs
 mod parser;
 /// Render ast to text
 mod render;
-/// SExpr parsing from tokens
-mod sexpr;
 /// Resolve toplevel `use` declarations across files
 mod toplevel;
 /// Validate declarations into ast
@@ -25,10 +21,8 @@ pub use ast::{
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
 pub use io::{Filesystem, MockFs, WitxIo};
-pub use lexer::LexError;
-pub use parser::{DeclSyntax, ParseError};
+pub use parser::DeclSyntax;
 pub use render::{Render, SExpr as RenderSExpr};
-pub use sexpr::SExprParseError;
 pub use validate::ValidationError;
 
 use failure::Fail;
@@ -36,19 +30,13 @@ use std::path::{Path, PathBuf};
 
 /// Load a witx document from the filesystem
 pub fn load<P: AsRef<Path>>(path: P) -> Result<Document, WitxError> {
-    use toplevel::parse_witx;
-    use validate::validate_document;
-    let parsed_decls = parse_witx(path)?;
-    validate_document(&parsed_decls).map_err(WitxError::Validation)
+    toplevel::parse_witx(path.as_ref())
 }
 
 /// Parse a witx document from a str. `(use ...)` directives are not permitted.
 pub fn parse(source: &str) -> Result<Document, WitxError> {
-    use toplevel::parse_witx_with;
-    use validate::validate_document;
     let mockfs = MockFs::new(&[("-", source)]);
-    let parsed_decls = parse_witx_with(Path::new("-"), &mockfs)?;
-    validate_document(&parsed_decls).map_err(WitxError::Validation)
+    toplevel::parse_witx_with(Path::new("-"), &mockfs)
 }
 
 /// Location in the source text
@@ -61,12 +49,10 @@ pub struct Location {
 
 #[derive(Debug, Fail)]
 pub enum WitxError {
-    #[fail(display = "{}", _0)]
-    SExpr(#[cause] SExprParseError),
     #[fail(display = "with file {:?}: {}", _0, _1)]
     Io(PathBuf, #[cause] ::std::io::Error),
     #[fail(display = "{}", _0)]
-    Parse(#[cause] ParseError),
+    Parse(#[cause] wast::Error),
     #[fail(display = "{}", _0)]
     Validation(#[cause] ValidationError),
 }
@@ -75,9 +61,8 @@ impl WitxError {
     pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
         use WitxError::*;
         match self {
-            SExpr(sexpr) => sexpr.report_with(witxio),
             Io(path, ioerr) => format!("with file {:?}: {}", path, ioerr),
-            Parse(parse) => parse.report_with(witxio),
+            Parse(parse) => parse.to_string(),
             Validation(validation) => validation.report_with(witxio),
         }
     }
