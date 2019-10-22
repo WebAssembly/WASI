@@ -18,4 +18,5 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2"
+wast = "3.0.1"
 failure = "0.1"

@@ -13,6 +13,18 @@ pub trait WitxIo {
     fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError>;
 }
 
+impl<T: WitxIo + ?Sized> WitxIo for &'_ T {
+    fn fgets(&self, path: &Path) -> Result<String, WitxError> {
+        T::fgets(self, path)
+    }
+    fn fget_line(&self, path: &Path, line_num: usize) -> Result<String, WitxError> {
+        T::fget_line(self, path, line_num)
+    }
+    fn canonicalize(&self, path: &Path) -> Result<PathBuf, WitxError> {
+        T::canonicalize(self, path)
+    }
+}
+
 pub struct Filesystem;
 
 impl WitxIo for Filesystem {

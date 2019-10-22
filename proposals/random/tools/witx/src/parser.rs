@@ -1,7 +1,4 @@
-use crate::io::{Filesystem, WitxIo};
-use crate::sexpr::SExpr;
-use crate::Location;
-use failure::Fail;
+use wast::parser::{Cursor, Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
 ///! conventions:
@@ -16,48 +13,31 @@ use failure::Fail;
 ///! This is used for error reporting in case the slice doesn't have the number of elements
 ///! expected.
 
-#[derive(Debug, Fail)]
-#[fail(display = "{} at {:?}", _0, _1)]
-pub struct ParseError {
-    pub message: String,
-    pub location: Location,
-}
+mod kw {
+    pub use wast::kw::{export, func, import, memory, module, param, result};
 
-impl ParseError {
-    pub fn report_with(&self, witxio: &dyn WitxIo) -> String {
-        format!(
-            "{}\n{}",
-            self.location.highlight_source_with(witxio),
-            self.message
-        )
-    }
-    pub fn report(&self) -> String {
-        self.report_with(&Filesystem)
-    }
-}
-
-macro_rules! parse_err {
-    ($loc:expr, $msg:expr) => {
-        ParseError { message: $msg.to_string(), location: $loc.clone() }
-    };
-    ($loc:expr, $fmt:expr, $( $arg:expr ),+ ) => {
-        ParseError { message: format!($fmt, $( $arg ),+), location: $loc.clone() }
-    };
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct IdentSyntax {
-    pub name: String,
-    pub location: Location,
-}
-
-macro_rules! id {
-    ($s:expr, $loc: expr) => {
-        IdentSyntax {
-            name: $s.to_string(),
-            location: $loc.clone(),
-        }
-    };
+    wast::custom_keyword!(array);
+    wast::custom_keyword!(const_pointer);
+    wast::custom_keyword!(f32);
+    wast::custom_keyword!(f64);
+    wast::custom_keyword!(field);
+    wast::custom_keyword!(flag);
+    wast::custom_keyword!(flags);
+    wast::custom_keyword!(pointer);
+    wast::custom_keyword!(r#enum = "enum");
+    wast::custom_keyword!(r#struct = "struct");
+    wast::custom_keyword!(r#union = "union");
+    wast::custom_keyword!(r#use = "use");
+    wast::custom_keyword!(s16);
+    wast::custom_keyword!(s32);
+    wast::custom_keyword!(s64);
+    wast::custom_keyword!(s8);
+    wast::custom_keyword!(string);
+    wast::custom_keyword!(typename);
+    wast::custom_keyword!(u16);
+    wast::custom_keyword!(u32);
+    wast::custom_keyword!(u64);
+    wast::custom_keyword!(u8);
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -75,514 +55,450 @@ pub enum BuiltinType {
     F64,
 }
 
-impl BuiltinType {
-    pub fn starts_parsing(sexpr: &SExpr) -> bool {
-        match sexpr {
-            SExpr::Word("string", _)
-            | SExpr::Word("u8", _)
-            | SExpr::Word("u16", _)
-            | SExpr::Word("u32", _)
-            | SExpr::Word("u64", _)
-            | SExpr::Word("s8", _)
-            | SExpr::Word("s16", _)
-            | SExpr::Word("s32", _)
-            | SExpr::Word("s64", _)
-            | SExpr::Word("f32", _)
-            | SExpr::Word("f64", _) => true,
-            _ => false,
-        }
-    }
-    pub fn parse(sexpr: &SExpr) -> Result<Self, ParseError> {
-        match sexpr {
-            SExpr::Word("string", _loc) => Ok(BuiltinType::String),
-            SExpr::Word("u8", _loc) => Ok(BuiltinType::U8),
-            SExpr::Word("u16", _loc) => Ok(BuiltinType::U16),
-            SExpr::Word("u32", _loc) => Ok(BuiltinType::U32),
-            SExpr::Word("u64", _loc) => Ok(BuiltinType::U64),
-            SExpr::Word("s8", _loc) => Ok(BuiltinType::S8),
-            SExpr::Word("s16", _loc) => Ok(BuiltinType::S16),
-            SExpr::Word("s32", _loc) => Ok(BuiltinType::S32),
-            SExpr::Word("s64", _loc) => Ok(BuiltinType::S64),
-            SExpr::Word("f32", _loc) => Ok(BuiltinType::F32),
-            SExpr::Word("f64", _loc) => Ok(BuiltinType::F64),
-            _ => Err(parse_err!(sexpr.location(), "invalid builtin type")),
+impl Parse<'_> for BuiltinType {
+    fn parse(parser: Parser<'_>) -> Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<kw::string>() {
+            parser.parse::<kw::string>()?;
+            Ok(BuiltinType::String)
+        } else if l.peek::<kw::u8>() {
+            parser.parse::<kw::u8>()?;
+            Ok(BuiltinType::U8)
+        } else if l.peek::<kw::u16>() {
+            parser.parse::<kw::u16>()?;
+            Ok(BuiltinType::U16)
+        } else if l.peek::<kw::u32>() {
+            parser.parse::<kw::u32>()?;
+            Ok(BuiltinType::U32)
+        } else if l.peek::<kw::u64>() {
+            parser.parse::<kw::u64>()?;
+            Ok(BuiltinType::U64)
+        } else if l.peek::<kw::s8>() {
+            parser.parse::<kw::s8>()?;
+            Ok(BuiltinType::S8)
+        } else if l.peek::<kw::s16>() {
+            parser.parse::<kw::s16>()?;
+            Ok(BuiltinType::S16)
+        } else if l.peek::<kw::s32>() {
+            parser.parse::<kw::s32>()?;
+            Ok(BuiltinType::S32)
+        } else if l.peek::<kw::s64>() {
+            parser.parse::<kw::s64>()?;
+            Ok(BuiltinType::S64)
+        } else if l.peek::<kw::f32>() {
+            parser.parse::<kw::f32>()?;
+            Ok(BuiltinType::F32)
+        } else if l.peek::<kw::f64>() {
+            parser.parse::<kw::f64>()?;
+            Ok(BuiltinType::F64)
+        } else {
+            Err(l.error())
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeIdentSyntax {
+pub enum DatatypeIdentSyntax<'a> {
     Builtin(BuiltinType),
-    Array(Box<DatatypeIdentSyntax>),
-    Pointer(Box<DatatypeIdentSyntax>),
-    ConstPointer(Box<DatatypeIdentSyntax>),
-    Ident(IdentSyntax),
+    Array(Box<DatatypeIdentSyntax<'a>>),
+    Pointer(Box<DatatypeIdentSyntax<'a>>),
+    ConstPointer(Box<DatatypeIdentSyntax<'a>>),
+    Ident(wast::Id<'a>),
 }
 
-impl DatatypeIdentSyntax {
-    pub fn starts_parsing(sexpr: &SExpr) -> bool {
-        BuiltinType::starts_parsing(sexpr)
-            || match sexpr {
-                SExpr::Ident(_, _) => true,
-                SExpr::Vec(v, _) => match (v.get(0), v.get(1)) {
-                    (Some(SExpr::Word("array", _)), Some(_)) => true,
-                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("pointer", _))) => true,
-                    (Some(SExpr::Annot("witx", _)), Some(SExpr::Word("const_pointer", _))) => true,
-                    _ => false,
-                },
-                _ => false,
-            }
-    }
-    pub fn parse(sexpr: &SExpr) -> Result<DatatypeIdentSyntax, ParseError> {
-        if BuiltinType::starts_parsing(sexpr) {
-            let builtin = BuiltinType::parse(sexpr)?;
-            Ok(DatatypeIdentSyntax::Builtin(builtin))
-        } else {
-            match sexpr {
-                SExpr::Ident(i, loc) => Ok(DatatypeIdentSyntax::Ident(id!(i, loc))),
-                SExpr::Vec(v, loc) => match (v.get(0), v.get(1), v.get(2)) {
-                    (Some(SExpr::Word("array", _)), Some(expr), None) => Ok(
-                        DatatypeIdentSyntax::Array(Box::new(DatatypeIdentSyntax::parse(expr)?)),
-                    ),
-                    (
-                        Some(SExpr::Annot("witx", _)),
-                        Some(SExpr::Word("pointer", _)),
-                        Some(expr),
-                    ) => Ok(DatatypeIdentSyntax::Pointer(Box::new(
-                        DatatypeIdentSyntax::parse(expr)?,
-                    ))),
-                    (
-                        Some(SExpr::Annot("witx", _)),
-                        Some(SExpr::Word("const_pointer", _)),
-                        Some(expr),
-                    ) => Ok(DatatypeIdentSyntax::ConstPointer(Box::new(
-                        DatatypeIdentSyntax::parse(expr)?,
-                    ))),
-                    _ => Err(parse_err!(loc, "expected type identifier")),
-                },
-                _ => Err(parse_err!(sexpr.location(), "expected type identifier")),
-            }
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum TopLevelSyntax {
-    Decl(DeclSyntax),
-    Use(IdentSyntax),
-}
-
-impl TopLevelSyntax {
-    pub fn parse(sexpr: &SExpr) -> Result<TopLevelSyntax, ParseError> {
-        if DeclSyntax::starts_parsing(sexpr) {
-            let decl = DeclSyntax::parse(sexpr)?;
-            Ok(TopLevelSyntax::Decl(decl))
-        } else {
-            match sexpr {
-                SExpr::Vec(v, vec_loc) => match v.get(0) {
-                    Some(SExpr::Word("use", loc)) => match v.get(1) {
-                        Some(SExpr::Quote(u, loc)) => Ok(TopLevelSyntax::Use(id!(u, loc))),
-                        _ => Err(parse_err!(loc, "invalid use declaration")),
-                    },
-                    _ => Err(parse_err!(vec_loc, "expected top level declaration")),
-                },
-                _ => Err(parse_err!(
-                    sexpr.location(),
-                    "expected top level declaration"
-                )),
-            }
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DeclSyntax {
-    Typename(TypenameSyntax),
-    Module(ModuleSyntax),
-}
-
-impl DeclSyntax {
-    pub fn starts_parsing(sexpr: &SExpr) -> bool {
-        match sexpr {
-            SExpr::Vec(v, _) => match v.get(0) {
-                Some(SExpr::Word("typename", _)) => true,
-                Some(SExpr::Word("module", _)) => true,
-                _ => false,
-            },
-            _ => false,
-        }
-    }
-    pub fn parse(sexpr: &SExpr) -> Result<DeclSyntax, ParseError> {
-        match sexpr {
-            SExpr::Vec(v, loc) => match v.get(0) {
-                Some(SExpr::Word("typename", loc)) => {
-                    Ok(DeclSyntax::Typename(TypenameSyntax::parse(&v[1..], loc)?))
+impl<'a> Parse<'a> for DatatypeIdentSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        if parser.peek::<wast::Id>() {
+            Ok(DatatypeIdentSyntax::Ident(parser.parse()?))
+        } else if parser.peek2::<kw::array>() {
+            Ok(DatatypeIdentSyntax::Array(parser.parens(|p| {
+                p.parse::<kw::array>()?;
+                Ok(Box::new(parser.parse()?))
+            })?))
+        } else if parser.peek::<wast::LParen>() {
+            parser.parens(|p| {
+                p.parse::<AtWitx>()?;
+                if p.peek::<kw::const_pointer>() {
+                    p.parse::<kw::const_pointer>()?;
+                    Ok(DatatypeIdentSyntax::ConstPointer(Box::new(p.parse()?)))
+                } else {
+                    p.parse::<kw::pointer>()?;
+                    Ok(DatatypeIdentSyntax::Pointer(Box::new(p.parse()?)))
                 }
-                Some(SExpr::Word("module", loc)) => {
-                    Ok(DeclSyntax::Module(ModuleSyntax::parse(&v[1..], loc)?))
-                }
-                _ => Err(parse_err!(loc, "invalid declaration")),
-            },
-            _ => Err(parse_err!(sexpr.location(), "expected vec")),
+            })
+        } else {
+            Ok(DatatypeIdentSyntax::Builtin(parser.parse()?))
+        }
+    }
+}
+
+struct AtWitx;
+
+impl Parse<'_> for AtWitx {
+    fn parse(parser: Parser<'_>) -> Result<Self> {
+        parser.step(|c| {
+            if let Some(("@witx", rest)) = c.reserved() {
+                return Ok((AtWitx, rest));
+            }
+            Err(c.error("expected `@witx`"))
+        })
+    }
+}
+
+impl Peek for AtWitx {
+    fn peek(cursor: Cursor<'_>) -> bool {
+        cursor.reserved().map(|s| s.0) == Some("@witx")
+    }
+
+    fn display() -> &'static str {
+        "`@witx`"
+    }
+}
+
+struct AtInterface;
+
+impl Parse<'_> for AtInterface {
+    fn parse(parser: Parser<'_>) -> Result<Self> {
+        parser.step(|c| {
+            if let Some(("@interface", rest)) = c.reserved() {
+                return Ok((AtInterface, rest));
+            }
+            Err(c.error("expected `@interface`"))
+        })
+    }
+}
+
+impl Peek for AtInterface {
+    fn peek(cursor: Cursor<'_>) -> bool {
+        cursor.reserved().map(|s| s.0) == Some("@interface")
+    }
+
+    fn display() -> &'static str {
+        "`@interface`"
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TopLevelDocument<'a> {
+    pub items: Vec<TopLevelSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for TopLevelDocument<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let mut items = Vec::new();
+        while !parser.is_empty() {
+            items.push(parser.parens(|p| p.parse())?);
+        }
+        Ok(TopLevelDocument { items })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TopLevelSyntax<'a> {
+    Decl(DeclSyntax<'a>),
+    Use(&'a str),
+}
+
+impl<'a> Parse<'a> for TopLevelSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        if parser.peek::<kw::r#use>() {
+            parser.parse::<kw::r#use>()?;
+            Ok(TopLevelSyntax::Use(parser.parse()?))
+        } else {
+            Ok(TopLevelSyntax::Decl(parser.parse()?))
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TypenameSyntax {
-    pub ident: IdentSyntax,
-    pub def: TypedefSyntax,
+pub enum DeclSyntax<'a> {
+    Typename(TypenameSyntax<'a>),
+    Module(ModuleSyntax<'a>),
 }
 
-impl TypenameSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<TypenameSyntax, ParseError> {
-        let ident = match sexpr.get(0) {
-            Some(SExpr::Ident(i, loc)) => id!(i, loc),
-            Some(s) => Err(parse_err!(s.location(), "expected typename identifier"))?,
-            None => Err(parse_err!(loc, "expected typename identifier"))?,
-        };
-        let def = match sexpr.get(1) {
-            Some(expr) => TypedefSyntax::parse(expr)?,
-            _ => Err(parse_err!(loc, "expected type definition"))?,
-        };
+impl<'a> Parse<'a> for DeclSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<kw::module>() {
+            Ok(DeclSyntax::Module(parser.parse()?))
+        } else if l.peek::<kw::typename>() {
+            Ok(DeclSyntax::Typename(parser.parse()?))
+        } else {
+            Err(l.error())
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TypenameSyntax<'a> {
+    pub ident: wast::Id<'a>,
+    pub def: TypedefSyntax<'a>,
+}
+
+impl<'a> Parse<'a> for TypenameSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::typename>()?;
+        let ident = parser.parse()?;
+        let def = parser.parse()?;
         Ok(TypenameSyntax { ident, def })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum TypedefSyntax {
-    Ident(DatatypeIdentSyntax),
-    Enum(EnumSyntax),
-    Flags(FlagsSyntax),
-    Struct(StructSyntax),
-    Union(UnionSyntax),
+pub enum TypedefSyntax<'a> {
+    Ident(DatatypeIdentSyntax<'a>),
+    Enum(EnumSyntax<'a>),
+    Flags(FlagsSyntax<'a>),
+    Struct(StructSyntax<'a>),
+    Union(UnionSyntax<'a>),
 }
 
-impl TypedefSyntax {
-    pub fn parse(sexpr: &SExpr) -> Result<TypedefSyntax, ParseError> {
-        if DatatypeIdentSyntax::starts_parsing(sexpr) {
-            let ident = DatatypeIdentSyntax::parse(sexpr)?;
-            Ok(TypedefSyntax::Ident(ident))
-        } else {
-            match sexpr {
-                SExpr::Vec(vs, loc) => match vs.get(0) {
-                    Some(SExpr::Word("enum", loc)) => {
-                        Ok(TypedefSyntax::Enum(EnumSyntax::parse(&vs[1..], loc)?))
-                    }
-                    Some(SExpr::Word("flags", loc)) => {
-                        Ok(TypedefSyntax::Flags(FlagsSyntax::parse(&vs[1..], loc)?))
-                    }
-                    Some(SExpr::Word("struct", loc)) => {
-                        Ok(TypedefSyntax::Struct(StructSyntax::parse(&vs[1..], loc)?))
-                    }
-                    Some(SExpr::Word("union", loc)) => {
-                        Ok(TypedefSyntax::Union(UnionSyntax::parse(&vs[1..], loc)?))
-                    }
-                    _ => Err(parse_err!(
-                        loc,
-                        "expected type identifier or type definition"
-                    )),
-                },
-                _ => Err(parse_err!(
-                    sexpr.location(),
-                    "expected type identifier or type definition"
-                )),
-            }
+impl<'a> Parse<'a> for TypedefSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        if !parser.peek::<wast::LParen>() || parser.peek2::<kw::array>() || parser.peek2::<AtWitx>()
+        {
+            return Ok(TypedefSyntax::Ident(parser.parse()?));
         }
+        parser.parens(|parser| {
+            let mut l = parser.lookahead1();
+            if l.peek::<kw::r#enum>() {
+                Ok(TypedefSyntax::Enum(parser.parse()?))
+            } else if l.peek::<kw::flags>() {
+                Ok(TypedefSyntax::Flags(parser.parse()?))
+            } else if l.peek::<kw::r#struct>() {
+                Ok(TypedefSyntax::Struct(parser.parse()?))
+            } else if l.peek::<kw::r#union>() {
+                Ok(TypedefSyntax::Union(parser.parse()?))
+            } else {
+                Err(l.error())
+            }
+        })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct EnumSyntax {
+pub struct EnumSyntax<'a> {
     pub repr: BuiltinType,
-    pub members: Vec<IdentSyntax>,
+    pub members: Vec<wast::Id<'a>>,
 }
 
-impl EnumSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<EnumSyntax, ParseError> {
-        let repr = match sexpr.get(0) {
-            Some(e) => BuiltinType::parse(e)?,
-            _ => Err(parse_err!(loc, "no enum repr"))?,
-        };
-        let members = sexpr[1..]
-            .iter()
-            .map(|m| match m {
-                SExpr::Ident(i, loc) => Ok(id!(i, loc)),
-                s => Err(parse_err!(s.location(), "expected enum member identifier")),
-            })
-            .collect::<Result<Vec<IdentSyntax>, ParseError>>()?;
-        if members.is_empty() {
-            Err(parse_err!(loc, "expected at least one enum member"))?
+impl<'a> Parse<'a> for EnumSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::r#enum>()?;
+        let repr = parser.parse()?;
+        let mut members = Vec::new();
+        members.push(parser.parse()?);
+        while !parser.is_empty() {
+            members.push(parser.parse()?);
         }
         Ok(EnumSyntax { repr, members })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct FlagsSyntax {
+pub struct FlagsSyntax<'a> {
     pub repr: BuiltinType,
-    pub flags: Vec<IdentSyntax>,
+    pub flags: Vec<wast::Id<'a>>,
 }
 
-impl FlagsSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<FlagsSyntax, ParseError> {
-        let repr = BuiltinType::parse(
-            sexpr
-                .get(0)
-                .ok_or_else(|| parse_err!(loc, "expected flag repr type"))?,
-        )?;
-        let flags = sexpr[1..]
-            .iter()
-            .map(|f| match f {
-                SExpr::Vec(vs, loc) => match (vs.get(0), vs.get(1)) {
-                    (Some(SExpr::Word("flag", _)), Some(SExpr::Ident(i, loc))) => Ok(id!(i, loc)),
-                    _ => Err(parse_err!(loc, "expected flag specifier")),
-                },
-                s => Err(parse_err!(s.location(), "expected flag specifier")),
-            })
-            .collect::<Result<Vec<_>, ParseError>>()?;
+impl<'a> Parse<'a> for FlagsSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::flags>()?;
+        let repr = parser.parse()?;
+        let mut flags = Vec::new();
+        while !parser.is_empty() {
+            flags.push(parser.parens(|parser| {
+                parser.parse::<kw::flag>()?;
+                parser.parse()
+            })?);
+        }
         Ok(FlagsSyntax { repr, flags })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct StructSyntax {
-    pub fields: Vec<FieldSyntax>,
+pub struct StructSyntax<'a> {
+    pub fields: Vec<FieldSyntax<'a>>,
 }
 
-impl StructSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<StructSyntax, ParseError> {
-        if sexpr.is_empty() {
-            Err(parse_err!(loc, "expected at least one struct member"))?
+impl<'a> Parse<'a> for StructSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::r#struct>()?;
+        let mut fields = Vec::new();
+        fields.push(parser.parens(|p| p.parse())?);
+        while !parser.is_empty() {
+            fields.push(parser.parens(|p| p.parse())?);
         }
-        let fields = sexpr
-            .iter()
-            .map(|f| FieldSyntax::parse(f, "field"))
-            .collect::<Result<Vec<_>, ParseError>>()?;
         Ok(StructSyntax { fields })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct FieldSyntax {
-    pub name: IdentSyntax,
-    pub type_: DatatypeIdentSyntax,
+pub struct FieldSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub type_: DatatypeIdentSyntax<'a>,
 }
 
-impl FieldSyntax {
-    pub fn starts_parsing(sexpr: &SExpr, constructor: &str) -> bool {
-        match sexpr {
-            SExpr::Vec(v, _) => match v.get(0) {
-                Some(SExpr::Word(c, _)) => *c == constructor,
-                _ => false,
-            },
-            _ => false,
-        }
-    }
-    pub fn parse(sexpr: &SExpr, constructor: &str) -> Result<FieldSyntax, ParseError> {
-        match sexpr {
-            SExpr::Vec(v, loc) => match v.get(0) {
-                Some(SExpr::Word(c, _)) if *c == constructor => {
-                    let name = match v.get(1) {
-                        Some(SExpr::Ident(i, loc)) => id!(i, loc),
-                        _ => Err(parse_err!(loc, "expected {} name identifier", constructor))?,
-                    };
-                    let type_ = DatatypeIdentSyntax::parse(v.get(2).ok_or_else(|| {
-                        parse_err!(loc, "expected {} type identifier", constructor)
-                    })?)?;
-                    Ok(FieldSyntax { name, type_ })
-                }
-                _ => Err(parse_err!(loc, "expected {}", constructor)),
-            },
-            _ => Err(parse_err!(sexpr.location(), "expected {}", constructor)),
-        }
+impl<'a> Parse<'a> for FieldSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::field>()?;
+        let name = parser.parse()?;
+        let type_ = parser.parse()?;
+        Ok(FieldSyntax { name, type_ })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UnionSyntax {
-    pub fields: Vec<FieldSyntax>,
+pub struct UnionSyntax<'a> {
+    pub fields: Vec<FieldSyntax<'a>>,
 }
 
-impl UnionSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<UnionSyntax, ParseError> {
-        if sexpr.is_empty() {
-            Err(parse_err!(loc, "expected at least one union member"))?
+impl<'a> Parse<'a> for UnionSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::r#union>()?;
+        let mut fields = Vec::new();
+        fields.push(parser.parens(|p| p.parse())?);
+        while !parser.is_empty() {
+            fields.push(parser.parens(|p| p.parse())?);
         }
-        let fields = sexpr
-            .iter()
-            .map(|f| FieldSyntax::parse(f, "field"))
-            .collect::<Result<Vec<_>, ParseError>>()?;
         Ok(UnionSyntax { fields })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ModuleSyntax {
-    pub name: IdentSyntax,
-    pub decls: Vec<ModuleDeclSyntax>,
+pub struct ModuleSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub decls: Vec<ModuleDeclSyntax<'a>>,
 }
 
-impl ModuleSyntax {
-    pub fn parse(sexprs: &[SExpr], loc: &Location) -> Result<ModuleSyntax, ParseError> {
-        let name = match sexprs.get(0) {
-            Some(SExpr::Ident(i, loc)) => id!(i, loc),
-            _ => Err(parse_err!(loc, "expected module name"))?,
-        };
-        let decls = sexprs[1..]
-            .iter()
-            .map(|s| ModuleDeclSyntax::parse(s))
-            .collect::<Result<Vec<ModuleDeclSyntax>, _>>()?;
+impl<'a> Parse<'a> for ModuleSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::module>()?;
+        let name = parser.parse()?;
+        let mut decls = Vec::new();
+        while !parser.is_empty() {
+            decls.push(parser.parens(|p| p.parse())?);
+        }
         Ok(ModuleSyntax { name, decls })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ModuleDeclSyntax {
-    Import(ModuleImportSyntax),
-    Func(InterfaceFuncSyntax),
+pub enum ModuleDeclSyntax<'a> {
+    Import(ModuleImportSyntax<'a>),
+    Func(InterfaceFuncSyntax<'a>),
 }
 
-impl ModuleDeclSyntax {
-    pub fn parse(sexpr: &SExpr) -> Result<ModuleDeclSyntax, ParseError> {
-        if ModuleImportSyntax::starts_parsing(sexpr) {
-            Ok(ModuleDeclSyntax::Import(ModuleImportSyntax::parse(sexpr)?))
-        } else if InterfaceFuncSyntax::starts_parsing(sexpr) {
-            Ok(ModuleDeclSyntax::Func(InterfaceFuncSyntax::parse(sexpr)?))
+impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<kw::import>() {
+            Ok(ModuleDeclSyntax::Import(parser.parse()?))
+        } else if l.peek::<AtInterface>() {
+            Ok(ModuleDeclSyntax::Func(parser.parse()?))
         } else {
-            Err(parse_err!(sexpr.location(), "expected import or function"))
+            Err(l.error())
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ModuleImportSyntax {
-    pub name: IdentSyntax,
+#[derive(Debug, Clone)]
+pub struct ModuleImportSyntax<'a> {
+    pub name: &'a str,
+    pub name_loc: wast::Span,
     pub type_: ImportTypeSyntax,
 }
 
-impl ModuleImportSyntax {
-    pub fn starts_parsing(sexpr: &SExpr) -> bool {
-        match sexpr {
-            SExpr::Vec(vs, _) => match vs.get(0) {
-                Some(SExpr::Word("import", _)) => true,
-                _ => false,
-            },
-            _ => false,
-        }
-    }
-    pub fn parse(sexpr: &SExpr) -> Result<ModuleImportSyntax, ParseError> {
-        match sexpr {
-            SExpr::Vec(vs, vec_loc) => match (vs.get(0), vs.get(1)) {
-                (Some(SExpr::Word("import", _)), Some(SExpr::Quote(name, loc))) => {
-                    let name = id!(name, loc);
-                    let type_ = ImportTypeSyntax::parse(&vs[2..], vec_loc)?;
-                    Ok(ModuleImportSyntax { name, type_ })
-                }
-                _ => Err(parse_err!(vec_loc, "expected module import")),
-            },
-            _ => Err(parse_err!(sexpr.location(), "expected module import")),
-        }
+impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::import>()?;
+        let name_loc = parser.cur_span();
+        Ok(ModuleImportSyntax {
+            name: parser.parse()?,
+            name_loc,
+            type_: parser.parens(|p| p.parse())?,
+        })
     }
 }
+
+impl PartialEq for ModuleImportSyntax<'_> {
+    fn eq(&self, other: &ModuleImportSyntax<'_>) -> bool {
+        // skip the `name_loc` field
+        self.name == other.name && self.type_ == other.type_
+    }
+}
+
+impl Eq for ModuleImportSyntax<'_> {}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ImportTypeSyntax {
     Memory,
 }
 
-impl ImportTypeSyntax {
-    pub fn parse(sexpr: &[SExpr], loc: &Location) -> Result<ImportTypeSyntax, ParseError> {
-        if sexpr.len() > 1 {
-            Err(parse_err!(loc, "too many elements for an import type"))?;
-        }
-        match sexpr.get(0) {
-            Some(SExpr::Vec(vs, loc)) => match vs.get(0) {
-                Some(SExpr::Word("memory", _)) => {
-                    if vs.len() == 1 {
-                        Ok(ImportTypeSyntax::Memory)
-                    } else {
-                        Err(parse_err!(loc, "too many elements for memory declaration"))
-                    }
+impl Parse<'_> for ImportTypeSyntax {
+    fn parse(parser: Parser<'_>) -> Result<Self> {
+        parser.parse::<kw::memory>()?;
+        Ok(ImportTypeSyntax::Memory)
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct InterfaceFuncSyntax<'a> {
+    pub export: &'a str,
+    pub export_loc: wast::Span,
+    pub params: Vec<FieldSyntax<'a>>,
+    pub results: Vec<FieldSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<AtInterface>()?;
+        parser.parse::<kw::func>()?;
+
+        let (export_loc, export) = parser.parens(|p| {
+            p.parse::<kw::export>()?;
+            Ok((p.cur_span(), p.parse()?))
+        })?;
+
+        let mut params = Vec::new();
+        let mut results = Vec::new();
+
+        while !parser.is_empty() {
+            parser.parens(|p| {
+                let mut l = p.lookahead1();
+                if l.peek::<kw::param>() {
+                    parser.parse::<kw::param>()?;
+                    params.push(FieldSyntax {
+                        name: parser.parse()?,
+                        type_: parser.parse()?,
+                    });
+                } else if l.peek::<kw::result>() {
+                    parser.parse::<kw::result>()?;
+                    results.push(FieldSyntax {
+                        name: parser.parse()?,
+                        type_: parser.parse()?,
+                    });
+                } else {
+                    return Err(l.error());
                 }
-                _ => Err(parse_err!(loc, "expected import type")),
-            },
-            _ => Err(parse_err!(loc, "expected import type")),
+                Ok(())
+            })?;
         }
+
+        Ok(InterfaceFuncSyntax {
+            export,
+            export_loc,
+            params,
+            results,
+        })
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct InterfaceFuncSyntax {
-    pub export: IdentSyntax,
-    pub params: Vec<FieldSyntax>,
-    pub results: Vec<FieldSyntax>,
-}
-
-impl InterfaceFuncSyntax {
-    pub fn starts_parsing(sexpr: &SExpr) -> bool {
-        match sexpr {
-            SExpr::Vec(vs, _) => match (vs.get(0), vs.get(1)) {
-                (Some(SExpr::Annot("interface", _)), Some(SExpr::Word("func", _))) => true,
-                _ => false,
-            },
-            _ => false,
-        }
-    }
-    pub fn parse(sexpr: &SExpr) -> Result<InterfaceFuncSyntax, ParseError> {
-        match sexpr {
-            SExpr::Vec(vs, loc) => match (vs.get(0), vs.get(1)) {
-                (Some(SExpr::Annot("interface", _)), Some(SExpr::Word("func", _))) => {
-                    let export = match vs.get(2) {
-                        Some(SExpr::Vec(es, loc)) => match (es.get(0), es.get(1)) {
-                            (
-                                Some(SExpr::Word("export", _)),
-                                Some(SExpr::Quote(name, name_loc)),
-                            ) => {
-                                if es.len() == 2 {
-                                    id!(name, name_loc)
-                                } else {
-                                    Err(parse_err!(
-                                        loc,
-                                        "too many elements for export declaration"
-                                    ))?
-                                }
-                            }
-                            _ => Err(parse_err!(loc, "expected export declaration"))?,
-                        },
-                        _ => Err(parse_err!(loc, "expected export declaration"))?,
-                    };
-                    let mut params = Vec::new();
-                    let mut results = Vec::new();
-
-                    for sexpr in &vs[3..] {
-                        if FieldSyntax::starts_parsing(sexpr, "param") {
-                            let param = FieldSyntax::parse(sexpr, "param")?;
-                            params.push(param);
-                        } else if FieldSyntax::starts_parsing(sexpr, "result") {
-                            let result = FieldSyntax::parse(sexpr, "result")?;
-                            results.push(result);
-                        } else {
-                            Err(parse_err!(
-                                sexpr.location(),
-                                "expected param or result field"
-                            ))?;
-                        }
-                    }
-
-                    Ok(InterfaceFuncSyntax {
-                        export,
-                        params,
-                        results,
-                    })
-                }
-                _ => Err(parse_err!(loc, "expected interface func declaration")),
-            },
-
-            _ => Err(parse_err!(
-                sexpr.location(),
-                "expected interface func declaration"
-            )),
-        }
+impl PartialEq for InterfaceFuncSyntax<'_> {
+    fn eq(&self, other: &InterfaceFuncSyntax<'_>) -> bool {
+        // skip the `export_loc` field
+        self.export == other.export && self.params == other.params && self.results == other.results
     }
 }
+
+impl Eq for InterfaceFuncSyntax<'_> {}
