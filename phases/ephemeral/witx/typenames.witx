@@ -315,6 +315,8 @@
 )
 
 ;; A reference to the offset of a directory entry.
+;;
+;; The value 0 signifies the start of the directory.
 (typename $dircookie_t u64)
 
 ;; The type for the $d_namlen field of $dirent_t.
