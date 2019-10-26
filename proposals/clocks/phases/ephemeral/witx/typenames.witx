@@ -16,6 +16,9 @@
 ;; Identifiers for clocks.
 (typename $clockid_t
   (enum u32
+    ;; The clock measuring real time. Time value zero corresponds with
+    ;; 1970-01-01T00:00:00Z.
+    $CLOCK_REALTIME
     ;; The store-wide monotonic clock, which is defined as a clock measuring
     ;; real time, whose value cannot be adjusted and which cannot have negative
     ;; clock jumps. The epoch of this clock is undefined. The absolute time
@@ -23,9 +26,6 @@
     $CLOCK_MONOTONIC
     ;; The CPU-time clock associated with the current process.
     $CLOCK_PROCESS_CPUTIME_ID
-    ;; The clock measuring real time. Time value zero corresponds with
-    ;; 1970-01-01T00:00:00Z.
-    $CLOCK_REALTIME
     ;; The CPU-time clock associated with the current thread.
     $CLOCK_THREAD_CPUTIME_ID
   )
