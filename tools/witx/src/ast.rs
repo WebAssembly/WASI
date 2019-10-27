@@ -130,6 +130,21 @@ pub enum DatatypeVariant {
     Flags(FlagsDatatype),
     Struct(StructDatatype),
     Union(UnionDatatype),
+    Handle(HandleDatatype),
+}
+
+impl DatatypeVariant {
+    pub fn kind(&self) -> &'static str {
+        use DatatypeVariant::*;
+        match self {
+            Alias(_) => "alias",
+            Enum(_) => "enum",
+            Flags(_) => "flags",
+            Struct(_) => "struct",
+            Union(_) => "union",
+            Handle(_) => "handle",
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -196,6 +211,12 @@ pub struct UnionVariant {
     pub name: Id,
     pub type_: DatatypeIdent,
     pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HandleDatatype {
+    pub name: Id,
+    pub supertypes: Vec<DatatypeIdent>,
 }
 
 #[derive(Debug, Clone)]

@@ -59,6 +59,7 @@ impl DatatypeIdent {
                 DatatypeVariant::Struct { .. } | DatatypeVariant::Union { .. } => {
                     DatatypePassedBy::Pointer
                 }
+                DatatypeVariant::Handle { .. } => DatatypePassedBy::Value(AtomType::I32),
             },
         }
     }
