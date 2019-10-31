@@ -558,9 +558,9 @@
     (field $timeout $timestamp_t)
     ;; The amount of time that the implementation may wait additionally
     ;; to coalesce with other events.
-    ;;
-    ;; Flags specifying whether the timeout is absolute or relative
     (field $precision $timestamp_t)
+    ;; Flags specifying whether the timeout is absolute or relative
+    (field $flags $subclockflags_t)
   )
 )
 
