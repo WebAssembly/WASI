@@ -1807,7 +1807,7 @@ Members:
 
     The address and length of the buffer to be filled.
 
-### <a href="#linkcount" name="linkcount"></a>`__wasi_linkcount_t` (`uint32_t`)
+### <a href="#linkcount" name="linkcount"></a>`__wasi_linkcount_t` (`uint64_t`)
 
 Number of hard links to an inode.
 
