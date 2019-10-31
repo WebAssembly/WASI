@@ -451,7 +451,7 @@
 )
 
 ;; Number of hard links to an inode.
-(typename $linkcount_t u32)
+(typename $linkcount_t u64)
 
 ;; File attributes.
 (typename $filestat_t
