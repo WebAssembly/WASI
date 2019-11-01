@@ -201,75 +201,75 @@
     ;;
     ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;; `path_open` with `FDFLAG_DSYNC`.
-    (flag $RIGHT_FD_DATASYNC)
+    $RIGHT_FD_DATASYNC
     ;; The right to invoke `fd_read` and `sock_recv`.
     ;;
     ;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pread`.
-    (flag $RIGHT_FD_READ)
+    $RIGHT_FD_READ
     ;; The right to invoke `fd_seek`. This flag implies `RIGHT_FD_TELL`.
-    (flag $RIGHT_FD_SEEK)
+    $RIGHT_FD_SEEK
     ;; The right to invoke `fd_fdstat_set_flags`.
-    (flag $RIGHT_FD_FDSTAT_SET_FLAGS)
+    $RIGHT_FD_FDSTAT_SET_FLAGS
     ;; The right to invoke `fd_sync`.
     ;;
     ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;; `path_open` with `FDFLAG_RSYNC` and `FDFLAG_DSYNC`.
-    (flag $RIGHT_FD_SYNC)
+    $RIGHT_FD_SYNC
     ;; The right to invoke `fd_seek` in such a way that the file offset
     ;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
     ;; invoke `fd_tell`.
-    (flag $RIGHT_FD_TELL)
+    $RIGHT_FD_TELL
     ;; The right to invoke `fd_write` and `sock_send`.
     ;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pwrite`.
-    (flag $RIGHT_FD_WRITE)
+    $RIGHT_FD_WRITE
     ;; The right to invoke `fd_advise`.
-    (flag $RIGHT_FD_ADVISE)
+    $RIGHT_FD_ADVISE
     ;; The right to invoke `fd_allocate`.
-    (flag $RIGHT_FD_ALLOCATE)
+    $RIGHT_FD_ALLOCATE
     ;; The right to invoke `path_create_directory`.
-    (flag $RIGHT_PATH_CREATE_DIRECTORY)
+    $RIGHT_PATH_CREATE_DIRECTORY
     ;; If `RIGHT_PATH_OPEN` is set, the right to invoke `path_open` with `O_CREAT`.
-    (flag $RIGHT_PATH_CREATE_FILE)
+    $RIGHT_PATH_CREATE_FILE
     ;; The right to invoke `path_link` with the file descriptor as the
     ;; source directory.
-    (flag $RIGHT_PATH_LINK_SOURCE)
+    $RIGHT_PATH_LINK_SOURCE
     ;; The right to invoke `path_link` with the file descriptor as the
     ;; target directory.
-    (flag $RIGHT_PATH_LINK_TARGET)
+    $RIGHT_PATH_LINK_TARGET
     ;; The right to invoke `path_open`.
-    (flag $RIGHT_PATH_OPEN)
+    $RIGHT_PATH_OPEN
     ;; The right to invoke `fd_readdir`.
-    (flag $RIGHT_FD_READDIR)
+    $RIGHT_FD_READDIR
     ;; The right to invoke `path_readlink`.
-    (flag $RIGHT_PATH_READLINK)
+    $RIGHT_PATH_READLINK
     ;; The right to invoke `path_rename` with the file descriptor as the source directory.
-    (flag $RIGHT_PATH_RENAME_SOURCE)
+    $RIGHT_PATH_RENAME_SOURCE
     ;; The right to invoke `path_rename` with the file descriptor as the target directory.
-    (flag $RIGHT_PATH_RENAME_TARGET)
+    $RIGHT_PATH_RENAME_TARGET
     ;; The right to invoke `path_filestat_get`.
-    (flag $RIGHT_PATH_FILESTAT_GET)
+    $RIGHT_PATH_FILESTAT_GET
     ;; The right to change a file's size (there is no `path_filestat_set_size`).
     ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke `path_open` with `O_TRUNC`.
-    (flag $RIGHT_PATH_FILESTAT_SET_SIZE)
+    $RIGHT_PATH_FILESTAT_SET_SIZE
     ;; The right to invoke `path_filestat_set_times`.
-    (flag $RIGHT_PATH_FILESTAT_SET_TIMES)
+    $RIGHT_PATH_FILESTAT_SET_TIMES
     ;; The right to invoke `fd_filestat_get`.
-    (flag $RIGHT_FD_FILESTAT_GET)
+    $RIGHT_FD_FILESTAT_GET
     ;; The right to invoke `fd_filestat_set_size`.
-    (flag $RIGHT_FD_FILESTAT_SET_SIZE)
+    $RIGHT_FD_FILESTAT_SET_SIZE
     ;; The right to invoke `fd_filestat_set_times`.
-    (flag $RIGHT_FD_FILESTAT_SET_TIMES)
+    $RIGHT_FD_FILESTAT_SET_TIMES
     ;; The right to invoke `path_symlink`.
-    (flag $RIGHT_PATH_SYMLINK)
+    $RIGHT_PATH_SYMLINK
     ;; The right to invoke `path_unlink_file`.
-    (flag $RIGHT_PATH_UNLINK_FILE)
+    $RIGHT_PATH_UNLINK_FILE
     ;; The right to invoke `path_remove_directory`.
-    (flag $RIGHT_PATH_REMOVE_DIRECTORY)
+    $RIGHT_PATH_REMOVE_DIRECTORY
     ;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
     ;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
-    (flag $RIGHT_POLL_FD_READWRITE)
+    $RIGHT_POLL_FD_READWRITE
     ;; The right to invoke `sock_shutdown`.
-    (flag $RIGHT_SOCK_SHUTDOWN)
+    $RIGHT_SOCK_SHUTDOWN
   )
 )
 
@@ -383,17 +383,17 @@
 (typename $fdflags_t
   (flags u16
     ;; Append mode: Data written to the file is always appended to the file's end.
-    (flag $FDFLAG_APPEND)
+    $FDFLAG_APPEND
     ;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
-    (flag $FDFLAG_DSYNC)
+    $FDFLAG_DSYNC
     ;; Non-blocking mode.
-    (flag $FDFLAG_NONBLOCK)
+    $FDFLAG_NONBLOCK
     ;; Synchronized read I/O operations.
-    (flag $FDFLAG_RSYNC)
+    $FDFLAG_RSYNC
     ;; Write according to synchronized I/O file integrity completion. In
     ;; addition to synchronizing the data stored in the file, the implementation
     ;; may also synchronously update the file's metadata.
-    (flag $FDFLAG_SYNC)
+    $FDFLAG_SYNC
   )
 )
 
@@ -420,13 +420,13 @@
 (typename $fstflags_t
   (flags u16
     ;; Adjust the last data access timestamp to the value stored in `filestat_t::st_atim`.
-    (flag $FILESTAT_SET_ATIM)
+    $FILESTAT_SET_ATIM
     ;; Adjust the last data access timestamp to the time of clock `CLOCK_REALTIME`.
-    (flag $FILESTAT_SET_ATIM_NOW)
+    $FILESTAT_SET_ATIM_NOW
     ;; Adjust the last data modification timestamp to the value stored in `filestat_t::st_mtim`.
-    (flag $FILESTAT_SET_MTIM)
+    $FILESTAT_SET_MTIM
     ;; Adjust the last data modification timestamp to the time of clock `CLOCK_REALTIME`.
-    (flag $FILESTAT_SET_MTIM_NOW)
+    $FILESTAT_SET_MTIM_NOW
   )
 )
 
@@ -434,7 +434,7 @@
 (typename $lookupflags_t
   (flags u32
     ;; As long as the resolved path corresponds to a symbolic link, it is expanded.
-    (flag $LOOKUP_SYMLINK_FOLLOW)
+    $LOOKUP_SYMLINK_FOLLOW
   )
 )
 
@@ -442,13 +442,13 @@
 (typename $oflags_t
   (flags u16
     ;; Create file if it does not exist.
-    (flag $O_CREAT)
+    $O_CREAT
     ;; Fail if not a directory.
-    (flag $O_DIRECTORY)
+    $O_DIRECTORY
     ;; Fail if file already exists.
-    (flag $O_EXCL)
+    $O_EXCL
     ;; Truncate file to size 0.
-    (flag $O_TRUNC)
+    $O_TRUNC
   )
 )
 
@@ -486,13 +486,13 @@
   (flags u8
     ;; The time value of clock `subscription_t::u.clock.clock_id` has
     ;; reached timestamp `subscription_t::u.clock.timeout`.
-    (flag $EVENTTYPE_CLOCK)
+    $EVENTTYPE_CLOCK
     ;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
     ;; available for reading. This event always triggers for regular files.
-    (flag $EVENTTYPE_FD_READ)
+    $EVENTTYPE_FD_READ
     ;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
     ;; available for writing. This event always triggers for regular files.
-    (flag $EVENTTYPE_FD_WRITE)
+    $EVENTTYPE_FD_WRITE
   )
 )
 
@@ -501,7 +501,7 @@
 (typename $eventrwflags_t
   (flags u16
     ;; The peer of this socket has closed or disconnected.
-    (flag $EVENT_FD_READWRITE_HANGUP)
+    $EVENT_FD_READWRITE_HANGUP
   )
 )
 
@@ -547,7 +547,7 @@
     ;; `subscription_t::u.clock.clock_id.` If clear, treat the timestamp
     ;; provided in `subscription_t::u.clock.timeout` relative to the
     ;; current time value of clock `subscription_t::u.clock.clock_id.`
-    (flag $SUBSCRIPTION_CLOCK_ABSTIME)
+    $SUBSCRIPTION_CLOCK_ABSTIME
   )
 )
 
@@ -689,9 +689,9 @@
 (typename $riflags_t
   (flags u16
     ;; Returns the message without removing it from the socket's receive queue.
-    (flag $SOCK_RECV_PEEK)
+    $SOCK_RECV_PEEK
     ;; On byte-stream sockets, block until the full amount of data can be returned.
-    (flag $SOCK_RECV_WAITALL)
+    $SOCK_RECV_WAITALL
   )
 )
 
@@ -699,7 +699,7 @@
 (typename $roflags_t
   (flags u16
     ;; Returned by `sock_recv`: Message data has been truncated.
-    (flag $SOCK_RECV_DATA_TRUNCATED)
+    $SOCK_RECV_DATA_TRUNCATED
   )
 )
 
@@ -711,9 +711,9 @@
 (typename $sdflags_t
   (flags u8
     ;; Disables further receive operations.
-    (flag $SHUT_RD)
+    $SHUT_RD
     ;; Disables further send operations.
-    (flag $SHUT_WR)
+    $SHUT_WR
   )
 )
 

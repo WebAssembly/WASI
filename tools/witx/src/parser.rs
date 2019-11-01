@@ -21,7 +21,6 @@ mod kw {
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
     wast::custom_keyword!(field);
-    wast::custom_keyword!(flag);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(r#enum = "enum");
@@ -307,10 +306,7 @@ impl<'a> Parse<'a> for FlagsSyntax<'a> {
         let repr = parser.parse()?;
         let mut flags = Vec::new();
         while !parser.is_empty() {
-            flags.push(parser.parens(|parser| {
-                parser.parse::<kw::flag>()?;
-                parser.parse()
-            })?);
+            flags.push(parser.parse()?);
         }
         Ok(FlagsSyntax { repr, flags })
     }
