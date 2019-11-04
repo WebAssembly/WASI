@@ -604,57 +604,63 @@
 ;; Signal condition.
 (typename $signal_t
   (enum u8
+    ;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
+    ;; so this value is reserved.
+    $SIGNONE
+    ;; Hangup.
+    ;; Action: Terminates the process.
+    $SIGHUP
+    ;; Terminate interrupt signal.
+    ;; Action: Terminates the process.
+    $SIGINT
+    ;; Terminal quit signal.
+    ;; Action: Terminates the process.
+    $SIGQUIT
+    ;; Illegal instruction.
+    ;; Action: Terminates the process.
+    $SIGILL
+    ;; Trace/breakpoint trap.
+    ;; Action: Terminates the process.
+    $SIGTRAP
     ;; Process abort signal.
     ;; Action: Terminates the process.
     $SIGABRT
-    ;; Alarm clock.
-    ;; Action: Terminates the process.
-    $SIGALRM
     ;; Access to an undefined portion of a memory object.
     ;; Action: Terminates the process.
     $SIGBUS
+    ;; Erroneous arithmetic operation.
+    ;; Action: Terminates the process.
+    $SIGFPE
+    ;; Kill.
+    ;; Action: Terminates the process.
+    $SIGKILL
+    ;; User-defined signal 1.
+    ;; Action: Terminates the process.
+    $SIGUSR1
+    ;; Invalid memory reference.
+    ;; Action: Terminates the process.
+    $SIGSEGV
+    ;; User-defined signal 2.
+    ;; Action: Terminates the process.
+    $SIGUSR2
+    ;; Write on a pipe with no one to read it.
+    ;; Action: Ignored.
+    $SIGPIPE
+    ;; Alarm clock.
+    ;; Action: Terminates the process.
+    $SIGALRM
+    ;; Termination signal.
+    ;; Action: Terminates the process.
+    $SIGTERM
     ;; Child process terminated, stopped, or continued.
     ;; Action: Ignored.
     $SIGCHLD
     ;; Continue executing, if stopped.
     ;; Action: Continues executing, if stopped.
     $SIGCONT
-    ;; Erroneous arithmetic operation.
-    ;; Action: Terminates the process.
-    $SIGFPE
-    ;; Hangup.
-    ;; Action: Terminates the process.
-    $SIGHUP
-    ;; Illegal instruction.
-    ;; Action: Terminates the process.
-    $SIGILL
-    ;; Terminate interrupt signal.
-    ;; Action: Terminates the process.
-    $SIGINT
-    ;; Kill.
-    ;; Action: Terminates the process.
-    $SIGKILL
-    ;; Write on a pipe with no one to read it.
-    ;; Action: Ignored.
-    $SIGPIPE
-    ;; Terminal quit signal.
-    ;; Action: Terminates the process.
-    $SIGQUIT
-    ;; Invalid memory reference.
-    ;; Action: Terminates the process.
-    $SIGSEGV
     ;; Stop executing.
     ;; Action: Stops executing.
     $SIGSTOP
-    ;; Bad system call.
-    ;; Action: Terminates the process.
-    $SIGSYS
-    ;; Termination signal.
-    ;; Action: Terminates the process.
-    $SIGTERM
-    ;; Trace/breakpoint trap.
-    ;; Action: Terminates the process.
-    $SIGTRAP
     ;; Terminal stop signal.
     ;; Action: Stops executing.
     $SIGTSTP
@@ -667,21 +673,30 @@
     ;; High bandwidth data is available at a socket.
     ;; Action: Ignored.
     $SIGURG
-    ;; User-defined signal 1.
-    ;; Action: Terminates the process.
-    $SIGUSR1
-    ;; User-defined signal 2.
-    ;; Action: Terminates the process.
-    $SIGUSR2
-    ;; Virtual timer expired.
-    ;; Action: Terminates the process.
-    $SIGVTALRM
     ;; CPU time limit exceeded.
     ;; Action: Terminates the process.
     $SIGXCPU
     ;; File size limit exceeded.
     ;; Action: Terminates the process.
     $SIGXFSZ
+    ;; Virtual timer expired.
+    ;; Action: Terminates the process.
+    $SIGVTALRM
+    ;; Profiling timer expired.
+    ;; Action: Terminates the process.
+    $SIGPROF
+    ;; Window changed.
+    ;; Action: Ignored.
+    $SIGWINCH
+    ;; I/O possible.
+    ;; Action: Terminates the process.
+    $SIGPOLL
+    ;; Power failure.
+    ;; Action: Terminates the process.
+    $SIGPWR
+    ;; Bad system call.
+    ;; Action: Terminates the process.
+    $SIGSYS
   )
 )
 
