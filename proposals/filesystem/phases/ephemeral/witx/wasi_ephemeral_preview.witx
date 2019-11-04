@@ -463,14 +463,6 @@
     (param $rval $exitcode)
   )
 
-  ;;; Send a signal to the process of the calling thread.
-  ;;; Note: This is similar to `raise` in POSIX.
-  (@interface func (export "proc_raise")
-    ;;; The signal condition to trigger.
-    (param $sig $signal)
-    (result $error $errno)
-  )
-
   ;;; Temporarily yield execution of the calling thread.
   ;;; Note: This is similar to `sched_yield` in POSIX.
   (@interface func (export "sched_yield")
