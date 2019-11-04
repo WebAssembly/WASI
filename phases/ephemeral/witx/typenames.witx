@@ -261,10 +261,10 @@
     $RIGHT_FD_FILESTAT_SET_TIMES
     ;; The right to invoke `path_symlink`.
     $RIGHT_PATH_SYMLINK
-    ;; The right to invoke `path_unlink_file`.
-    $RIGHT_PATH_UNLINK_FILE
     ;; The right to invoke `path_remove_directory`.
     $RIGHT_PATH_REMOVE_DIRECTORY
+    ;; The right to invoke `path_unlink_file`.
+    $RIGHT_PATH_UNLINK_FILE
     ;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
     ;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
     $RIGHT_POLL_FD_READWRITE
@@ -364,18 +364,18 @@
 ;; File or memory access pattern advisory information.
 (typename $advice_t
   (enum u8
+    ;; The application has no advice to give on its behavior with respect to the specified data.
+    $ADVICE_NORMAL
+    ;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
+    $ADVICE_SEQUENTIAL
+    ;; The application expects to access the specified data in a random order.
+    $ADVICE_RANDOM
+    ;; The application expects to access the specified data in the near future.
+    $ADVICE_WILLNEED
     ;; The application expects that it will not access the specified data in the near future.
     $ADVICE_DONTNEED
     ;; The application expects to access the specified data once and then not reuse it thereafter.
     $ADVICE_NOREUSE
-    ;; The application has no advice to give on its behavior with respect to the specified data.
-    $ADVICE_NORMAL
-    ;; The application expects to access the specified data in a random order.
-    $ADVICE_RANDOM
-    ;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
-    $ADVICE_SEQUENTIAL
-    ;; The application expects to access the specified data in the near future.
-    $ADVICE_WILLNEED
   )
 )
 
