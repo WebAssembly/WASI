@@ -481,16 +481,16 @@
 
 ;; Type of a subscription to an event or its occurrence.
 (typename $eventtype_t
-  (flags u8
+  (enum u8
     ;; The time value of clock `subscription_t::u.clock.clock_id` has
     ;; reached timestamp `subscription_t::u.clock.timeout`.
-    (flag $EVENTTYPE_CLOCK)
+    $EVENTTYPE_CLOCK
     ;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
     ;; available for reading. This event always triggers for regular files.
-    (flag $EVENTTYPE_FD_READ)
+    $EVENTTYPE_FD_READ
     ;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
     ;; available for writing. This event always triggers for regular files.
-    (flag $EVENTTYPE_FD_WRITE)
+    $EVENTTYPE_FD_WRITE
   )
 )
 
