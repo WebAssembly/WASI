@@ -1063,6 +1063,26 @@ Used by [`__wasi_fd_advise()`](#fd_advise).
 
 Possible values:
 
+- <a href="#advice.normal" name="advice.normal"></a>**`__WASI_ADVICE_NORMAL`**
+
+    The application has no advice to give on its behavior
+    with respect to the specified data.
+
+- <a href="#advice.sequential" name="advice.sequential"></a>**`__WASI_ADVICE_SEQUENTIAL`**
+
+    The application expects to access the specified data
+    sequentially from lower offsets to higher offsets.
+
+- <a href="#advice.random" name="advice.random"></a>**`__WASI_ADVICE_RANDOM`**
+
+    The application expects to access the specified data
+    in a random order.
+
+- <a href="#advice.willneed" name="advice.willneed"></a>**`__WASI_ADVICE_WILLNEED`**
+
+    The application expects to access the specified data
+    in the near future.
+
 - <a href="#advice.dontneed" name="advice.dontneed"></a>**`__WASI_ADVICE_DONTNEED`**
 
     The application expects that it will not access the
@@ -1072,26 +1092,6 @@ Possible values:
 
     The application expects to access the specified data
     once and then not reuse it thereafter.
-
-- <a href="#advice.normal" name="advice.normal"></a>**`__WASI_ADVICE_NORMAL`**
-
-    The application has no advice to give on its behavior
-    with respect to the specified data.
-
-- <a href="#advice.random" name="advice.random"></a>**`__WASI_ADVICE_RANDOM`**
-
-    The application expects to access the specified data
-    in a random order.
-
-- <a href="#advice.sequential" name="advice.sequential"></a>**`__WASI_ADVICE_SEQUENTIAL`**
-
-    The application expects to access the specified data
-    sequentially from lower offsets to higher offsets.
-
-- <a href="#advice.willneed" name="advice.willneed"></a>**`__WASI_ADVICE_WILLNEED`**
-
-    The application expects to access the specified data
-    in the near future.
 
 ### <a href="#ciovec" name="ciovec"></a>`__wasi_ciovec_t` (`struct`)
 
@@ -1993,13 +1993,13 @@ Possible values:
 
     The right to invoke [`__wasi_path_symlink()`](#path_symlink).
 
-- <a href="#rights.path_unlink_file" name="rights.path_unlink_file"></a>**`__WASI_RIGHT_PATH_UNLINK_FILE`**
-
-    The right to invoke [`__wasi_path_unlink_file()`](#path_unlink_file).
-
 - <a href="#rights.path_remove_directory" name="rights.path_remove_directory"></a>**`__WASI_RIGHT_PATH_REMOVE_DIRECTORY`**
 
     The right to invoke [`__wasi_path_remove_directory()`](#path_remove_directory).
+
+- <a href="#rights.path_unlink_file" name="rights.path_unlink_file"></a>**`__WASI_RIGHT_PATH_UNLINK_FILE`**
+
+    The right to invoke [`__wasi_path_unlink_file()`](#path_unlink_file).
 
 - <a href="#rights.poll_fd_readwrite" name="rights.poll_fd_readwrite"></a>**`__WASI_RIGHT_POLL_FD_READWRITE`**
 
