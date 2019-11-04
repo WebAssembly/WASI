@@ -2057,11 +2057,83 @@ Used by [`__wasi_proc_raise()`](#proc_raise).
 
 Possible values:
 
+- <a href="#signal.hup" name="signal.hup"></a>**`__WASI_SIGHUP`**
+
+    Hangup.
+
+    Action: Terminates the process.
+
+- <a href="#signal.int" name="signal.int"></a>**`__WASI_SIGINT`**
+
+    Terminate interrupt signal.
+
+    Action: Terminates the process.
+
+- <a href="#signal.quit" name="signal.quit"></a>**`__WASI_SIGQUIT`**
+
+    Terminal quit signal.
+
+    Action: Terminates the process.
+
+- <a href="#signal.ill" name="signal.ill"></a>**`__WASI_SIGILL`**
+
+    Illegal instruction.
+
+    Action: Terminates the process.
+
+- <a href="#signal.trap" name="signal.trap"></a>**`__WASI_SIGTRAP`**
+
+    Trace/breakpoint trap.
+
+    Action: Terminates the process.
+
 - <a href="#signal.abrt" name="signal.abrt"></a>**`__WASI_SIGABRT`**
 
     Process abort signal.
 
     Action: Terminates the process.
+
+- <a href="#signal.bus" name="signal.bus"></a>**`__WASI_SIGBUS`**
+
+    Access to an undefined portion of a memory object.
+
+    Action: Terminates the process.
+
+- <a href="#signal.fpe" name="signal.fpe"></a>**`__WASI_SIGFPE`**
+
+    Erroneous arithmetic operation.
+
+    Action: Terminates the process.
+
+- <a href="#signal.kill" name="signal.kill"></a>**`__WASI_SIGKILL`**
+
+    Kill.
+
+    Action: Terminates the process.
+
+- <a href="#signal.usr1" name="signal.usr1"></a>**`__WASI_SIGUSR1`**
+
+    User-defined signal 1.
+
+    Action: Terminates the process.
+
+- <a href="#signal.segv" name="signal.segv"></a>**`__WASI_SIGSEGV`**
+
+    Invalid memory reference.
+
+    Action: Terminates the process.
+
+- <a href="#signal.usr2" name="signal.usr2"></a>**`__WASI_SIGUSR2`**
+
+    User-defined signal 2.
+
+    Action: Terminates the process.
+
+- <a href="#signal.pipe" name="signal.pipe"></a>**`__WASI_SIGPIPE`**
+
+    Write on a pipe with no one to read it.
+
+    Action: Ignored.
 
 - <a href="#signal.alrm" name="signal.alrm"></a>**`__WASI_SIGALRM`**
 
@@ -2069,9 +2141,9 @@ Possible values:
 
     Action: Terminates the process.
 
-- <a href="#signal.bus" name="signal.bus"></a>**`__WASI_SIGBUS`**
+- <a href="#signal.term" name="signal.term"></a>**`__WASI_SIGTERM`**
 
-    Access to an undefined portion of a memory object.
+    Termination signal.
 
     Action: Terminates the process.
 
@@ -2087,77 +2159,11 @@ Possible values:
 
     Action: Continues executing, if stopped.
 
-- <a href="#signal.fpe" name="signal.fpe"></a>**`__WASI_SIGFPE`**
-
-    Erroneous arithmetic operation.
-
-    Action: Terminates the process.
-
-- <a href="#signal.hup" name="signal.hup"></a>**`__WASI_SIGHUP`**
-
-    Hangup.
-
-    Action: Terminates the process.
-
-- <a href="#signal.ill" name="signal.ill"></a>**`__WASI_SIGILL`**
-
-    Illegal instruction.
-
-    Action: Terminates the process.
-
-- <a href="#signal.int" name="signal.int"></a>**`__WASI_SIGINT`**
-
-    Terminate interrupt signal.
-
-    Action: Terminates the process.
-
-- <a href="#signal.kill" name="signal.kill"></a>**`__WASI_SIGKILL`**
-
-    Kill.
-
-    Action: Terminates the process.
-
-- <a href="#signal.pipe" name="signal.pipe"></a>**`__WASI_SIGPIPE`**
-
-    Write on a pipe with no one to read it.
-
-    Action: Ignored.
-
-- <a href="#signal.quit" name="signal.quit"></a>**`__WASI_SIGQUIT`**
-
-    Terminal quit signal.
-
-    Action: Terminates the process.
-
-- <a href="#signal.segv" name="signal.segv"></a>**`__WASI_SIGSEGV`**
-
-    Invalid memory reference.
-
-    Action: Terminates the process.
-
 - <a href="#signal.stop" name="signal.stop"></a>**`__WASI_SIGSTOP`**
 
     Stop executing.
 
     Action: Stops executing.
-
-- <a href="#signal.sys" name="signal.sys"></a>**`__WASI_SIGSYS`**
-
-    Bad system call.
-
-    Action: Terminates the process.
-
-- <a href="#signal.term" name="signal.term"></a>**`__WASI_SIGTERM`**
-
-    Termination signal.
-
-    Action: Terminates the process.
-
-- <a href="#signal.trap" name="signal.trap"></a>**`__WASI_SIGTRAP`**
-
-    Trace/breakpoint trap.
-
-    Action: Terminates the process.
 
 - <a href="#signal.tstp" name="signal.tstp"></a>**`__WASI_SIGTSTP`**
 
@@ -2183,24 +2189,6 @@ Possible values:
 
     Action: Ignored.
 
-- <a href="#signal.usr1" name="signal.usr1"></a>**`__WASI_SIGUSR1`**
-
-    User-defined signal 1.
-
-    Action: Terminates the process.
-
-- <a href="#signal.usr2" name="signal.usr2"></a>**`__WASI_SIGUSR2`**
-
-    User-defined signal 2.
-
-    Action: Terminates the process.
-
-- <a href="#signal.vtalrm" name="signal.vtalrm"></a>**`__WASI_SIGVTALRM`**
-
-    Virtual timer expired.
-
-    Action: Terminates the process.
-
 - <a href="#signal.xcpu" name="signal.xcpu"></a>**`__WASI_SIGXCPU`**
 
     CPU time limit exceeded.
@@ -2210,6 +2198,42 @@ Possible values:
 - <a href="#signal.xfsz" name="signal.xfsz"></a>**`__WASI_SIGXFSZ`**
 
     File size limit exceeded.
+
+    Action: Terminates the process.
+
+- <a href="#signal.vtalrm" name="signal.vtalrm"></a>**`__WASI_SIGVTALRM`**
+
+    Virtual timer expired.
+
+    Action: Terminates the process.
+
+- <a href="#signal.prof" name="signal.prof"></a>**`__WASI_SIGPROF`**
+
+    Profiling timer expired.
+
+    Action: Terminates the process.
+
+- <a href="#signal.winch" name="signal.winch"></a>**`__WASI_SIGWINCH`**
+
+    Window changed.
+
+    Action: Ignored.
+
+- <a href="#signal.poll" name="signal.poll"></a>**`__WASI_SIGPOLL`**
+
+    I/O possible.
+
+    Action: Terminates the process.
+
+- <a href="#signal.pwr" name="signal.pwr"></a>**`__WASI_SIGPWR`**
+
+    Power failure.
+
+    Action: Terminates the process.
+
+- <a href="#signal.sys" name="signal.sys"></a>**`__WASI_SIGSYS`**
+
+    Bad system call.
 
     Action: Terminates the process.
 
