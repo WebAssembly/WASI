@@ -150,7 +150,7 @@ impl Render for FlagsDatatype {
         let flags = self
             .flags
             .iter()
-            .map(|f| SExpr::Vec(vec![SExpr::word("flag"), f.to_sexpr()]))
+            .map(|f| f.to_sexpr())
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, flags].concat())
     }
