@@ -19,5 +19,5 @@ path = "src/main.rs"
 
 [dependencies]
 clap = "2"
-wast = "3.0.1"
+wast = { git = "https://github.com/alexcrichton/wat", branch = "doc-blocks" }
 failure = "0.1"

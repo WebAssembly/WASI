@@ -1,3 +1,4 @@
+use wast::lexer::Comment;
 use wast::parser::{Cursor, Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
@@ -93,6 +94,46 @@ impl Parse<'_> for BuiltinType {
         } else {
             Err(l.error())
         }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct CommentSyntax<'a> {
+    pub comments: Vec<&'a str>,
+}
+
+impl<'a> Parse<'a> for CommentSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<CommentSyntax<'a>> {
+        let comments = parser.step(|mut cursor| {
+            let mut comments = Vec::new();
+            loop {
+                let (comment, c) = match cursor.comment() {
+                    Some(pair) => pair,
+                    None => break,
+                };
+                cursor = c;
+                comments.push(match comment {
+                    Comment::Block(s) => &s[2..s.len() - 2],
+                    Comment::Line(s) => &s[2..],
+                });
+            }
+            Ok((comments, cursor))
+        })?;
+        Ok(CommentSyntax { comments })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct Documented<'a, T> {
+    pub comments: CommentSyntax<'a>,
+    pub item: T,
+}
+
+impl<'a, T: Parse<'a>> Parse<'a> for Documented<'a, T> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let comments = parser.parse()?;
+        let item = parser.parens(T::parse)?;
+        Ok(Documented { comments, item })
     }
 }
 
