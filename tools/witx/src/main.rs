@@ -59,8 +59,8 @@ pub fn main() {
 fn render_markdown(doc: &witx::Document) -> String {
     let mut s = format!("# Type definitions\n");
     for d in doc.datatypes() {
-        s += &format!("\n## {}\n", d.name.as_str());
-        s += &d.docs.join("\n");
+        s += &format!("\n## {}\n\n", d.name.as_str());
+        s += &d.docs;
     }
     s
 }

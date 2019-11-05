@@ -166,7 +166,7 @@ impl DocValidationScope<'_> {
         match decl {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
-                let docs = comments.comments.iter().map(|c| c.to_string()).collect(); // XXX trim leading whitespace
+                let docs = render_docs(&comments.comments);
                 let variant =
                     match &decl.def {
                         TypedefSyntax::Ident(syntax) => DatatypeVariant::Alias(AliasDatatype {
@@ -449,4 +449,41 @@ impl<'a> ModuleValidation<'a> {
             }
         }
     }
+}
+
+fn render_docs(docs: &[&str]) -> String {
+    // Perform a small amount of preprocessing by removing all trailing
+    // whitespace, and then also filter for only "doc comments" which are `;;;`
+    // or `(;; ... ;)`.
+    let docs = docs
+        .iter()
+        .map(|d| d.trim_end())
+        .filter_map(|d| {
+            if d.starts_with(";") {
+                Some(&d[1..])
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    // Figure out how much leading whitespace we're going to be trimming from
+    // all docs, trimming the minimum amount in each doc comment.
+    let to_trim = docs
+        .iter()
+        .filter(|d| !d.is_empty())
+        .map(|d| d.len() - d.trim().len())
+        .min()
+        .unwrap_or(0);
+
+    // Separate all documents by a newline and collect everything into a single
+    // string.
+    let mut ret = String::new();
+    for doc in docs {
+        if !doc.is_empty() {
+            ret.push_str(doc[to_trim..].trim_end());
+        }
+        ret.push_str("\n");
+    }
+    return ret;
 }

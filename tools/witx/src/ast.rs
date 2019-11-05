@@ -120,7 +120,7 @@ pub enum DatatypeIdent {
 pub struct Datatype {
     pub name: Id,
     pub variant: DatatypeVariant,
-    pub docs: Vec<String>,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
