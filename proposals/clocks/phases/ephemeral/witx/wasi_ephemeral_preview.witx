@@ -134,7 +134,7 @@
     (param $fd $fd_t)
     (result $error $errno_t)
     ;; The buffer where the file's attributes are stored.
-    (result $fs_rights_base $rights_t)
+    (result $buf $filestat_t)
   )
 
   ;; Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
