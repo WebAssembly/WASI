@@ -1,7 +1,7 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, ImportTypeSyntax,
+        CommentSyntax, DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, ImportTypeSyntax,
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
@@ -158,10 +158,15 @@ impl DocValidationScope<'_> {
         self.doc.scope.get(name.name(), loc)
     }
 
-    pub fn validate_decl(&mut self, decl: &DeclSyntax) -> Result<Definition, ValidationError> {
+    pub fn validate_decl(
+        &mut self,
+        decl: &DeclSyntax,
+        comments: &CommentSyntax,
+    ) -> Result<Definition, ValidationError> {
         match decl {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
+                let docs = comments.comments.iter().map(|c| c.to_string()).collect(); // XXX trim leading whitespace
                 let variant =
                     match &decl.def {
                         TypedefSyntax::Ident(syntax) => DatatypeVariant::Alias(AliasDatatype {
@@ -186,6 +191,7 @@ impl DocValidationScope<'_> {
                 let rc_datatype = Rc::new(Datatype {
                     name: name.clone(),
                     variant,
+                    docs,
                 });
                 self.doc
                     .entries

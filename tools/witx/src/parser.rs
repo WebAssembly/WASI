@@ -220,14 +220,14 @@ impl Peek for AtInterface {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TopLevelDocument<'a> {
-    pub items: Vec<TopLevelSyntax<'a>>,
+    pub items: Vec<Documented<'a, TopLevelSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for TopLevelDocument<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         let mut items = Vec::new();
         while !parser.is_empty() {
-            items.push(parser.parens(|p| p.parse())?);
+            items.push(parser.parse()?);
         }
         Ok(TopLevelDocument { items })
     }
