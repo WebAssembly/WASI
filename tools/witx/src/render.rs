@@ -21,6 +21,8 @@ pub enum SExpr {
     Quote(String),
     /// Short for Annotation
     Annot(String),
+    /// Doc comment
+    Docs(String, Box<SExpr>),
 }
 
 impl fmt::Display for SExpr {
@@ -39,6 +41,7 @@ impl fmt::Display for SExpr {
             SExpr::Ident(i) => write!(f, "${}", i),
             SExpr::Quote(q) => write!(f, "\"{}\"", q),
             SExpr::Annot(a) => write!(f, "@{}", a),
+            SExpr::Docs(d, s) => write!(f, "(;; {} ;) {}", d, s),
         }
     }
 }
@@ -55,6 +58,13 @@ impl SExpr {
     }
     fn annot(s: &str) -> SExpr {
         SExpr::Annot(s.to_string())
+    }
+    fn docs(d: &str, s: SExpr) -> SExpr {
+        if d.is_empty() {
+            s
+        } else {
+            SExpr::Docs(d.to_string(), Box::new(s))
+        }
     }
 }
 
@@ -110,7 +120,10 @@ impl Render for Datatype {
     fn to_sexpr(&self) -> SExpr {
         let name = self.name.to_sexpr();
         let body = self.variant.to_sexpr();
-        SExpr::Vec(vec![SExpr::word("typename"), name, body])
+        SExpr::docs(
+            &self.docs,
+            SExpr::Vec(vec![SExpr::word("typename"), name, body]),
+        )
     }
 }
 
@@ -138,7 +151,7 @@ impl Render for EnumDatatype {
         let variants = self
             .variants
             .iter()
-            .map(|v| v.name.to_sexpr())
+            .map(|v| SExpr::docs(&v.docs, v.name.to_sexpr()))
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, variants].concat())
     }
@@ -150,7 +163,7 @@ impl Render for FlagsDatatype {
         let flags = self
             .flags
             .iter()
-            .map(|f| f.name.to_sexpr())
+            .map(|f| SExpr::docs(&f.docs, f.name.to_sexpr()))
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, flags].concat())
     }
@@ -163,11 +176,14 @@ impl Render for StructDatatype {
             .members
             .iter()
             .map(|m| {
-                SExpr::Vec(vec![
-                    SExpr::word("field"),
-                    m.name.to_sexpr(),
-                    m.type_.to_sexpr(),
-                ])
+                SExpr::docs(
+                    &m.docs,
+                    SExpr::Vec(vec![
+                        SExpr::word("field"),
+                        m.name.to_sexpr(),
+                        m.type_.to_sexpr(),
+                    ]),
+                )
             })
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, members].concat())
@@ -181,11 +197,14 @@ impl Render for UnionDatatype {
             .variants
             .iter()
             .map(|v| {
-                SExpr::Vec(vec![
-                    SExpr::word("field"),
-                    v.name.to_sexpr(),
-                    v.type_.to_sexpr(),
-                ])
+                SExpr::docs(
+                    &v.docs,
+                    SExpr::Vec(vec![
+                        SExpr::word("field"),
+                        v.name.to_sexpr(),
+                        v.type_.to_sexpr(),
+                    ]),
+                )
             })
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, variants].concat())
@@ -211,7 +230,7 @@ impl Render for Module {
             .map(|i| i.to_sexpr())
             .chain(self.funcs().map(|f| f.to_sexpr()))
             .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, definitions].concat())
+        SExpr::docs(&self.docs, SExpr::Vec([header, definitions].concat()))
     }
 }
 
@@ -220,11 +239,14 @@ impl Render for ModuleImport {
         let variant = match self.variant {
             ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
         };
-        SExpr::Vec(vec![
-            SExpr::word("import"),
-            SExpr::quote(self.name.as_str()),
-            variant,
-        ])
+        SExpr::docs(
+            &self.docs,
+            SExpr::Vec(vec![
+                SExpr::word("import"),
+                SExpr::quote(self.name.as_str()),
+                variant,
+            ]),
+        )
     }
 }
 
@@ -242,24 +264,30 @@ impl Render for InterfaceFunc {
             .params
             .iter()
             .map(|f| {
-                SExpr::Vec(vec![
-                    SExpr::word("param"),
-                    f.name.to_sexpr(),
-                    f.type_.to_sexpr(),
-                ])
+                SExpr::docs(
+                    &f.docs,
+                    SExpr::Vec(vec![
+                        SExpr::word("param"),
+                        f.name.to_sexpr(),
+                        f.type_.to_sexpr(),
+                    ]),
+                )
             })
             .collect();
         let results = self
             .results
             .iter()
             .map(|f| {
-                SExpr::Vec(vec![
-                    SExpr::word("result"),
-                    f.name.to_sexpr(),
-                    f.type_.to_sexpr(),
-                ])
+                SExpr::docs(
+                    &f.docs,
+                    SExpr::Vec(vec![
+                        SExpr::word("result"),
+                        f.name.to_sexpr(),
+                        f.type_.to_sexpr(),
+                    ]),
+                )
             })
             .collect();
-        SExpr::Vec([header, params, results].concat())
+        SExpr::docs(&self.docs, SExpr::Vec([header, params, results].concat()))
     }
 }

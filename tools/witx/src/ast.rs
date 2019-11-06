@@ -203,6 +203,7 @@ pub struct Module {
     pub name: Id,
     definitions: Vec<ModuleDefinition>,
     entries: HashMap<Id, ModuleEntry>,
+    pub docs: String,
 }
 
 impl Module {
@@ -210,11 +211,13 @@ impl Module {
         name: Id,
         definitions: Vec<ModuleDefinition>,
         entries: HashMap<Id, ModuleEntry>,
+        docs: String,
     ) -> Self {
         Module {
             name,
             definitions,
             entries,
+            docs,
         }
     }
     pub fn import(&self, name: &Id) -> Option<Rc<ModuleImport>> {
