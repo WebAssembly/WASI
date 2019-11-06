@@ -143,7 +143,7 @@ impl DocValidationScope<'_> {
         let (line, column) = span.linecol_in(self.text);
         Location {
             line: line + 1,
-            column: column ,
+            column: column,
             path: self.path.to_path_buf(),
         }
     }
