@@ -73,9 +73,12 @@
   ;;; Note: This is similar to `posix_fadvise` in POSIX.
   (@interface func (export "fd_advise")
     (param $fd $fd_t)
-    (param $offset $filesize_t) ;;; The offset within the file to which the advisory applies.
-    (param $len $filesize_t) ;;; The length of the region to which the advisory applies.
-    (param $advice $advice_t) ;;; The advice.
+    ;;; The offset within the file to which the advisory applies.
+    (param $offset $filesize_t)
+    ;;; The length of the region to which the advisory applies.
+    (param $len $filesize_t)
+    ;;; The advice.
+    (param $advice $advice_t)
     (result $error $errno_t)
   )
 
