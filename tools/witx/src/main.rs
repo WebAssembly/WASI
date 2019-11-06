@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use std::path::PathBuf;
 use std::process;
-use witx::load;
+use witx::{load, Documentation};
 
 pub fn main() {
     let app = App::new("witx")
@@ -43,7 +43,7 @@ pub fn main() {
             }
 
             if app.is_present("docs") {
-                println!("{}", render_markdown(&doc))
+                println!("{}", doc.to_md());
             }
         }
         Err(e) => {
@@ -54,13 +54,4 @@ pub fn main() {
             process::exit(1)
         }
     }
-}
-
-fn render_markdown(doc: &witx::Document) -> String {
-    let mut s = format!("# Type definitions\n");
-    for d in doc.datatypes() {
-        s += &format!("\n## {}\n\n", d.name.as_str());
-        s += &d.docs;
-    }
-    s
 }

@@ -138,7 +138,7 @@ impl Render for EnumDatatype {
         let variants = self
             .variants
             .iter()
-            .map(|v| v.to_sexpr())
+            .map(|v| v.name.to_sexpr())
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, variants].concat())
     }

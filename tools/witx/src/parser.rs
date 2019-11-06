@@ -123,6 +123,46 @@ impl<'a> Parse<'a> for CommentSyntax<'a> {
     }
 }
 
+impl<'a> CommentSyntax<'a> {
+    pub fn docs(&self) -> String {
+        // Perform a small amount of preprocessing by removing all trailing
+        // whitespace, and then also filter for only "doc comments" which are `;;;`
+        // or `(;; ... ;)`.
+        let docs = self
+            .comments
+            .iter()
+            .map(|d| d.trim_end())
+            .filter_map(|d| {
+                if d.starts_with(";") {
+                    Some(&d[1..])
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+
+        // Figure out how much leading whitespace we're going to be trimming from
+        // all docs, trimming the minimum amount in each doc comment.
+        let to_trim = docs
+            .iter()
+            .filter(|d| !d.is_empty())
+            .map(|d| d.len() - d.trim().len())
+            .min()
+            .unwrap_or(0);
+
+        // Separate all documents by a newline and collect everything into a single
+        // string.
+        let mut ret = String::new();
+        for doc in docs {
+            if !doc.is_empty() {
+                ret.push_str(doc[to_trim..].trim_end());
+            }
+            ret.push_str("\n");
+        }
+        return ret;
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct Documented<'a, T> {
     pub comments: CommentSyntax<'a>,
@@ -132,7 +172,7 @@ pub struct Documented<'a, T> {
 impl<'a, T: Parse<'a>> Parse<'a> for Documented<'a, T> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         let comments = parser.parse()?;
-        let item = parser.parens(T::parse)?;
+        let item = parser.parse()?;
         Ok(Documented { comments, item })
     }
 }
@@ -241,12 +281,14 @@ pub enum TopLevelSyntax<'a> {
 
 impl<'a> Parse<'a> for TopLevelSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        if parser.peek::<kw::r#use>() {
-            parser.parse::<kw::r#use>()?;
-            Ok(TopLevelSyntax::Use(parser.parse()?))
-        } else {
-            Ok(TopLevelSyntax::Decl(parser.parse()?))
-        }
+        parser.parens(|p| {
+            if p.peek::<kw::r#use>() {
+                p.parse::<kw::r#use>()?;
+                Ok(TopLevelSyntax::Use(p.parse()?))
+            } else {
+                Ok(TopLevelSyntax::Decl(p.parse()?))
+            }
+        })
     }
 }
 
@@ -319,7 +361,7 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumSyntax<'a> {
     pub repr: BuiltinType,
-    pub members: Vec<wast::Id<'a>>,
+    pub members: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for EnumSyntax<'a> {

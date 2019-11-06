@@ -150,7 +150,14 @@ pub enum IntRepr {
 pub struct EnumDatatype {
     pub name: Id,
     pub repr: IntRepr,
-    pub variants: Vec<Id>,
+    pub variants: Vec<EnumVariant>,
+}
+
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EnumVariant {
+    pub name: Id,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
