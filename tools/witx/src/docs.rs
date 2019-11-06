@@ -99,7 +99,7 @@ impl Documentation for FlagsDatatype {
         let flags = self
             .flags
             .iter()
-            .map(|f| format!("#### `{}`\n{}\n", f.as_str(), "FLAGS DOCS TODO"))
+            .map(|f| format!("#### `{}`\n{}\n", f.name.as_str(), f.docs))
             .collect::<Vec<String>>()
             .join("\n");
         format!(
@@ -117,10 +117,10 @@ impl Documentation for StructDatatype {
             .iter()
             .map(|m| {
                 format!(
-                    "#### `{}`\nMember type: `{}`\n{}\n",
+                    "#### `{}`\nMember type: `{}`\n{}",
                     m.name.as_str(),
                     m.type_.name(),
-                    "STRUCT MEMBER DOCS TODO",
+                    m.docs,
                 )
             })
             .collect::<Vec<String>>()
@@ -136,10 +136,10 @@ impl Documentation for UnionDatatype {
             .iter()
             .map(|v| {
                 format!(
-                    "#### `{}`\nVariant type: `{}`\n{}\n",
+                    "#### `{}`\nVariant type: `{}`\n{}",
                     v.name.as_str(),
                     v.type_.name(),
-                    "UNION VARIANT DOCS TODO",
+                    v.docs,
                 )
             })
             .collect::<Vec<String>>()

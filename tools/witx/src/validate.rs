@@ -5,9 +5,10 @@ use crate::{
         ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
-    Definition, Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant, EnumVariant,
+    Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, Id, IntRepr,
+    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
+    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
+    UnionDatatype, UnionVariant,
 };
 use failure::Fail;
 use std::collections::HashMap;
@@ -292,8 +293,12 @@ impl DocValidationScope<'_> {
         let flags = syntax
             .flags
             .iter()
-            .map(|i| flags_scope.introduce(i.name(), self.location(i.span())))
-            .collect::<Result<Vec<Id>, _>>()?;
+            .map(|i| {
+                let name = flags_scope.introduce(i.item.name(), self.location(i.item.span()))?;
+                let docs = i.comments.docs();
+                Ok(FlagsMember { name, docs })
+            })
+            .collect::<Result<Vec<FlagsMember>, _>>()?;
 
         Ok(FlagsDatatype {
             name: name.clone(),
@@ -313,10 +318,11 @@ impl DocValidationScope<'_> {
             .fields
             .iter()
             .map(|f| {
-                Ok(StructMember {
-                    name: member_scope.introduce(f.name.name(), self.location(f.name.span()))?,
-                    type_: self.validate_datatype_ident(&f.type_)?,
-                })
+                let name = member_scope
+                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
+                let type_ = self.validate_datatype_ident(&f.item.type_)?;
+                let docs = f.comments.docs();
+                Ok(StructMember { name, type_, docs })
             })
             .collect::<Result<Vec<StructMember>, _>>()?;
 
@@ -337,10 +343,11 @@ impl DocValidationScope<'_> {
             .fields
             .iter()
             .map(|f| {
-                Ok(UnionVariant {
-                    name: variant_scope.introduce(f.name.name(), self.location(f.name.span()))?,
-                    type_: self.validate_datatype_ident(&f.type_)?,
-                })
+                let name = variant_scope
+                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
+                let type_ = self.validate_datatype_ident(&f.item.type_)?;
+                let docs = f.comments.docs();
+                Ok(UnionVariant { name, type_, docs })
             })
             .collect::<Result<Vec<UnionVariant>, _>>()?;
 
@@ -454,4 +461,3 @@ impl<'a> ModuleValidation<'a> {
         }
     }
 }
-

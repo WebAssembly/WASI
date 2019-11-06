@@ -380,7 +380,7 @@ impl<'a> Parse<'a> for EnumSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
     pub repr: BuiltinType,
-    pub flags: Vec<wast::Id<'a>>,
+    pub flags: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for FlagsSyntax<'a> {
@@ -397,16 +397,16 @@ impl<'a> Parse<'a> for FlagsSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructSyntax<'a> {
-    pub fields: Vec<FieldSyntax<'a>>,
+    pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for StructSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#struct>()?;
         let mut fields = Vec::new();
-        fields.push(parser.parens(|p| p.parse())?);
+        fields.push(parser.parse()?);
         while !parser.is_empty() {
-            fields.push(parser.parens(|p| p.parse())?);
+            fields.push(parser.parse()?);
         }
         Ok(StructSyntax { fields })
     }
@@ -420,25 +420,27 @@ pub struct FieldSyntax<'a> {
 
 impl<'a> Parse<'a> for FieldSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::field>()?;
-        let name = parser.parse()?;
-        let type_ = parser.parse()?;
-        Ok(FieldSyntax { name, type_ })
+        parser.parens(|p| {
+            p.parse::<kw::field>()?;
+            let name = p.parse()?;
+            let type_ = p.parse()?;
+            Ok(FieldSyntax { name, type_ })
+        })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionSyntax<'a> {
-    pub fields: Vec<FieldSyntax<'a>>,
+    pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for UnionSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#union>()?;
         let mut fields = Vec::new();
-        fields.push(parser.parens(|p| p.parse())?);
+        fields.push(parser.parse()?);
         while !parser.is_empty() {
-            fields.push(parser.parens(|p| p.parse())?);
+            fields.push(parser.parse()?);
         }
         Ok(UnionSyntax { fields })
     }

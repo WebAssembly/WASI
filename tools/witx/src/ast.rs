@@ -164,7 +164,13 @@ pub struct EnumVariant {
 pub struct FlagsDatatype {
     pub name: Id,
     pub repr: IntRepr,
-    pub flags: Vec<Id>,
+    pub flags: Vec<FlagsMember>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FlagsMember {
+    pub name: Id,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -177,6 +183,7 @@ pub struct StructDatatype {
 pub struct StructMember {
     pub name: Id,
     pub type_: DatatypeIdent,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -189,6 +196,7 @@ pub struct UnionDatatype {
 pub struct UnionVariant {
     pub name: Id,
     pub type_: DatatypeIdent,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone)]
