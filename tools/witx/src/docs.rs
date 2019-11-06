@@ -161,57 +161,67 @@ impl IntRepr {
 
 impl Documentation for Module {
     fn to_md(&self) -> String {
-        format!("## `{}`\nTODO FIXME", self.name.as_str())
+        let imports = self
+            .imports()
+            .map(|i| i.to_md())
+            .collect::<Vec<String>>()
+            .join("\n");
+        let funcs = self
+            .funcs()
+            .map(|i| i.to_md())
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!(
+            "## `{}`\n### Imports\n{}### Functions\n {}",
+            self.name.as_str(),
+            imports,
+            funcs,
+        )
     }
 }
 
-/*
-impl Render for ModuleImport {
-    fn to_sexpr(&self) -> SExpr {
-        let variant = match self.variant {
-            ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
-        };
-        SExpr::Vec(vec![
-            SExpr::word("import"),
-            SExpr::quote(self.name.as_str()),
-            variant,
-        ])
+impl Documentation for ModuleImport {
+    fn to_md(&self) -> String {
+        match self.variant {
+            ModuleImportVariant::Memory => format!("* {}: Memory", self.name.as_str()),
+        }
     }
 }
 
-impl Render for InterfaceFunc {
-    fn to_sexpr(&self) -> SExpr {
-        let header = vec![
-            SExpr::annot("interface"),
-            SExpr::word("func"),
-            SExpr::Vec(vec![
-                SExpr::word("export"),
-                SExpr::quote(self.name.as_str()),
-            ]),
-        ];
+impl Documentation for InterfaceFunc {
+    fn to_md(&self) -> String {
         let params = self
             .params
             .iter()
             .map(|f| {
-                SExpr::Vec(vec![
-                    SExpr::word("param"),
-                    f.name.to_sexpr(),
-                    f.type_.to_sexpr(),
-                ])
+                format!(
+                    "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
+                    name = f.name.as_str(),
+                    type_ = f.type_.name(),
+                    docs = f.docs
+                )
             })
-            .collect();
+            .collect::<Vec<String>>()
+            .join("\n");
         let results = self
             .results
             .iter()
             .map(|f| {
-                SExpr::Vec(vec![
-                    SExpr::word("result"),
-                    f.name.to_sexpr(),
-                    f.type_.to_sexpr(),
-                ])
+                format!(
+                    "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
+                    name = f.name.as_str(),
+                    type_ = f.type_.name(),
+                    docs = f.docs
+                )
             })
-            .collect();
-        SExpr::Vec([header, params, results].concat())
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!(
+            "### {}\n{}\n#### Parameters:\n{}#### Results:\n{}",
+            self.name.as_str(),
+            self.docs,
+            params,
+            results,
+        )
     }
 }
-*/

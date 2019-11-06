@@ -449,7 +449,7 @@ impl<'a> Parse<'a> for UnionSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ModuleSyntax<'a> {
     pub name: wast::Id<'a>,
-    pub decls: Vec<ModuleDeclSyntax<'a>>,
+    pub decls: Vec<Documented<'a, ModuleDeclSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for ModuleSyntax<'a> {
@@ -458,7 +458,7 @@ impl<'a> Parse<'a> for ModuleSyntax<'a> {
         let name = parser.parse()?;
         let mut decls = Vec::new();
         while !parser.is_empty() {
-            decls.push(parser.parens(|p| p.parse())?);
+            decls.push(parser.parse()?);
         }
         Ok(ModuleSyntax { name, decls })
     }
@@ -472,14 +472,16 @@ pub enum ModuleDeclSyntax<'a> {
 
 impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        let mut l = parser.lookahead1();
-        if l.peek::<kw::import>() {
-            Ok(ModuleDeclSyntax::Import(parser.parse()?))
-        } else if l.peek::<AtInterface>() {
-            Ok(ModuleDeclSyntax::Func(parser.parse()?))
-        } else {
-            Err(l.error())
-        }
+        parser.parens(|p| {
+            let mut l = p.lookahead1();
+            if l.peek::<kw::import>() {
+                Ok(ModuleDeclSyntax::Import(p.parse()?))
+            } else if l.peek::<AtInterface>() {
+                Ok(ModuleDeclSyntax::Func(p.parse()?))
+            } else {
+                Err(l.error())
+            }
+        })
     }
 }
 
@@ -527,8 +529,8 @@ impl Parse<'_> for ImportTypeSyntax {
 pub struct InterfaceFuncSyntax<'a> {
     pub export: &'a str,
     pub export_loc: wast::Span,
-    pub params: Vec<FieldSyntax<'a>>,
-    pub results: Vec<FieldSyntax<'a>>,
+    pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
+    pub results: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
@@ -545,25 +547,21 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
         let mut results = Vec::new();
 
         while !parser.is_empty() {
-            parser.parens(|p| {
-                let mut l = p.lookahead1();
-                if l.peek::<kw::param>() {
-                    parser.parse::<kw::param>()?;
-                    params.push(FieldSyntax {
-                        name: parser.parse()?,
-                        type_: parser.parse()?,
+            let func_field = parser.parse::<Documented<InterfaceFuncField>>()?;
+            match func_field.item {
+                InterfaceFuncField::Param(item) => {
+                    params.push(Documented {
+                        comments: func_field.comments,
+                        item,
                     });
-                } else if l.peek::<kw::result>() {
-                    parser.parse::<kw::result>()?;
-                    results.push(FieldSyntax {
-                        name: parser.parse()?,
-                        type_: parser.parse()?,
-                    });
-                } else {
-                    return Err(l.error());
                 }
-                Ok(())
-            })?;
+                InterfaceFuncField::Result(item) => {
+                    results.push(Documented {
+                        comments: func_field.comments,
+                        item,
+                    });
+                }
+            }
         }
 
         Ok(InterfaceFuncSyntax {
@@ -571,6 +569,33 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
             export_loc,
             params,
             results,
+        })
+    }
+}
+
+enum InterfaceFuncField<'a> {
+    Param(FieldSyntax<'a>),
+    Result(FieldSyntax<'a>),
+}
+impl<'a> Parse<'a> for InterfaceFuncField<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parens(|p| {
+            let mut l = p.lookahead1();
+            if l.peek::<kw::param>() {
+                parser.parse::<kw::param>()?;
+                Ok(InterfaceFuncField::Param(FieldSyntax {
+                    name: parser.parse()?,
+                    type_: parser.parse()?,
+                }))
+            } else if l.peek::<kw::result>() {
+                parser.parse::<kw::result>()?;
+                Ok(InterfaceFuncField::Result(FieldSyntax {
+                    name: parser.parse()?,
+                    type_: parser.parse()?,
+                }))
+            } else {
+                Err(l.error())
+            }
         })
     }
 }

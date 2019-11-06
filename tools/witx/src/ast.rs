@@ -153,7 +153,6 @@ pub struct EnumDatatype {
     pub variants: Vec<EnumVariant>,
 }
 
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumVariant {
     pub name: Id,
@@ -291,6 +290,7 @@ impl PartialEq for ModuleEntry {
 pub struct ModuleImport {
     pub name: Id,
     pub variant: ModuleImportVariant,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -303,6 +303,7 @@ pub struct InterfaceFunc {
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
     pub results: Vec<InterfaceFuncParam>,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -310,6 +311,7 @@ pub struct InterfaceFuncParam {
     pub name: Id,
     pub type_: DatatypeIdent,
     pub position: InterfaceFuncParamPosition,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

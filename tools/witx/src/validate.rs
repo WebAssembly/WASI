@@ -1,8 +1,8 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, ImportTypeSyntax,
-        ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        CommentSyntax, DatatypeIdentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax,
+        ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
     Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, Id, IntRepr,
@@ -392,9 +392,9 @@ impl<'a> ModuleValidation<'a> {
 
     fn validate_decl(
         &mut self,
-        decl: &ModuleDeclSyntax,
+        decl: &Documented<ModuleDeclSyntax>,
     ) -> Result<ModuleDefinition, ValidationError> {
-        match decl {
+        match &decl.item {
             ModuleDeclSyntax::Import(syntax) => {
                 let loc = self.doc.location(syntax.name_loc);
                 let name = self.scope.introduce(syntax.name, loc)?;
@@ -404,6 +404,7 @@ impl<'a> ModuleValidation<'a> {
                 let rc_import = Rc::new(ModuleImport {
                     name: name.clone(),
                     variant,
+                    docs: decl.comments.docs(),
                 });
                 self.entries
                     .insert(name, ModuleEntry::Import(Rc::downgrade(&rc_import)));
@@ -419,10 +420,13 @@ impl<'a> ModuleValidation<'a> {
                     .enumerate()
                     .map(|(ix, f)| {
                         Ok(InterfaceFuncParam {
-                            name: argnames
-                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
-                            type_: self.doc.validate_datatype_ident(&f.type_)?,
+                            name: argnames.introduce(
+                                f.item.name.name(),
+                                self.doc.location(f.item.name.span()),
+                            )?,
+                            type_: self.doc.validate_datatype_ident(&f.item.type_)?,
                             position: InterfaceFuncParamPosition::Param(ix),
+                            docs: f.comments.docs(),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
@@ -431,20 +435,23 @@ impl<'a> ModuleValidation<'a> {
                     .iter()
                     .enumerate()
                     .map(|(ix, f)| {
-                        let type_ = self.doc.validate_datatype_ident(&f.type_)?;
+                        let type_ = self.doc.validate_datatype_ident(&f.item.type_)?;
                         if ix == 0 {
                             match type_.passed_by() {
                                 DatatypePassedBy::Value(_) => {}
                                 _ => Err(ValidationError::InvalidFirstResultType {
-                                    location: self.doc.location(f.name.span()),
+                                    location: self.doc.location(f.item.name.span()),
                                 })?,
                             }
                         }
                         Ok(InterfaceFuncParam {
-                            name: argnames
-                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
+                            name: argnames.introduce(
+                                f.item.name.name(),
+                                self.doc.location(f.item.name.span()),
+                            )?,
                             type_,
                             position: InterfaceFuncParamPosition::Result(ix),
+                            docs: f.comments.docs(),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
@@ -453,6 +460,7 @@ impl<'a> ModuleValidation<'a> {
                     name: name.clone(),
                     params,
                     results,
+                    docs: decl.comments.docs(),
                 });
                 self.entries
                     .insert(name, ModuleEntry::Func(Rc::downgrade(&rc_func)));
