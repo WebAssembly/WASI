@@ -172,7 +172,7 @@ impl Documentation for Module {
             .collect::<Vec<String>>()
             .join("\n");
         format!(
-            "## `{}`\n### Imports\n{}### Functions\n {}",
+            "## `{}`\n### Imports\n{}\n### Functions\n{}",
             self.name.as_str(),
             imports,
             funcs,
