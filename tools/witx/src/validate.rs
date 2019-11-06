@@ -139,10 +139,11 @@ impl DocValidation {
 
 impl DocValidationScope<'_> {
     fn location(&self, span: wast::Span) -> Location {
+        // Wast Span gives 0-indexed lines and columns. Location is 1-indexed.
         let (line, column) = span.linecol_in(self.text);
         Location {
-            line,
-            column,
+            line: line + 1,
+            column: column ,
             path: self.path.to_path_buf(),
         }
     }
