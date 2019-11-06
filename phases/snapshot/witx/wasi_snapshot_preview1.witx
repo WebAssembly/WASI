@@ -122,7 +122,7 @@
     (result $error $errno_t)
   )
 
-  ;;;  Adjust the rights associated with a file descriptor.
+  ;;; Adjust the rights associated with a file descriptor.
   ;;; This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
   (@interface func (export "fd_fdstat_set_rights")
     (param $fd $fd_t)
