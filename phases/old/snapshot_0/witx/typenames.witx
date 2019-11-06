@@ -1,297 +1,297 @@
-;; Type names used by low-level WASI interfaces.
+;;; Type names used by low-level WASI interfaces.
 ;;
-;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
+;;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 ;;
-;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
-;; for an explanation of what that means.
+;;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;;; for an explanation of what that means.
 
 (typename $size_t u32)
 
-;; Non-negative file size or length of a region within a file.
+;;; Non-negative file size or length of a region within a file.
 (typename $filesize_t u64)
 
-;; Timestamp in nanoseconds.
+;;; Timestamp in nanoseconds.
 (typename $timestamp_t u64)
 
-;; Identifiers for clocks.
+;;; Identifiers for clocks.
 (typename $clockid_t
   (enum u32
-    ;; The clock measuring real time. Time value zero corresponds with
-    ;; 1970-01-01T00:00:00Z.
+    ;;; The clock measuring real time. Time value zero corresponds with
+    ;;; 1970-01-01T00:00:00Z.
     $CLOCK_REALTIME
-    ;; The store-wide monotonic clock, which is defined as a clock measuring
-    ;; real time, whose value cannot be adjusted and which cannot have negative
-    ;; clock jumps. The epoch of this clock is undefined. The absolute time
-    ;; value of this clock therefore has no meaning.
+    ;;; The store-wide monotonic clock, which is defined as a clock measuring
+    ;;; real time, whose value cannot be adjusted and which cannot have negative
+    ;;; clock jumps. The epoch of this clock is undefined. The absolute time
+    ;;; value of this clock therefore has no meaning.
     $CLOCK_MONOTONIC
-    ;; The CPU-time clock associated with the current process.
+    ;;; The CPU-time clock associated with the current process.
     $CLOCK_PROCESS_CPUTIME_ID
-    ;; The CPU-time clock associated with the current thread.
+    ;;; The CPU-time clock associated with the current thread.
     $CLOCK_THREAD_CPUTIME_ID
   )
 )
 
-;; Error codes returned by functions.
-;; Not all of these error codes are returned by the functions provided by this
-;; API; some are used in higher-level library layers, and others are provided
-;; merely for alignment with POSIX.
+;;; Error codes returned by functions.
+;;; Not all of these error codes are returned by the functions provided by this
+;;; API; some are used in higher-level library layers, and others are provided
+;;; merely for alignment with POSIX.
 (typename $errno_t
   (enum u16
-    ;; No error occurred. System call completed successfully.
+    ;;; No error occurred. System call completed successfully.
     $ESUCCESS
-    ;; Argument list too long.
+    ;;; Argument list too long.
     $E2BIG
-    ;; Permission denied.
+    ;;; Permission denied.
     $EACCES
-    ;; Address in use.
+    ;;; Address in use.
     $EADDRINUSE
-    ;; Address not available.
+    ;;; Address not available.
     $EADDRNOTAVAIL
-    ;; Address family not supported.
+    ;;; Address family not supported.
     $EAFNOSUPPORT
-    ;; Resource unavailable, or operation would block.
+    ;;; Resource unavailable, or operation would block.
     $EAGAIN
-    ;; Connection already in progress.
+    ;;; Connection already in progress.
     $EALREADY
-    ;; Bad file descriptor.
+    ;;; Bad file descriptor.
     $EBADF
-    ;; Bad message.
+    ;;; Bad message.
     $EBADMSG
-    ;; Device or resource busy.
+    ;;; Device or resource busy.
     $EBUSY
-    ;; Operation canceled.
+    ;;; Operation canceled.
     $ECANCELED
-    ;; No child processes.
+    ;;; No child processes.
     $ECHILD
-    ;; Connection aborted.
+    ;;; Connection aborted.
     $ECONNABORTED
-    ;; Connection refused.
+    ;;; Connection refused.
     $ECONNREFUSED
-    ;; Connection reset.
+    ;;; Connection reset.
     $ECONNRESET
-    ;; Resource deadlock would occur.
+    ;;; Resource deadlock would occur.
     $EDEADLK
-    ;; Destination address required.
+    ;;; Destination address required.
     $EDESTADDRREQ
-    ;; Mathematics argument out of domain of function.
+    ;;; Mathematics argument out of domain of function.
     $EDOM
-    ;; Reserved.
+    ;;; Reserved.
     $EDQUOT
-    ;; File exists.
+    ;;; File exists.
     $EEXIST
-    ;; Bad address.
+    ;;; Bad address.
     $EFAULT
-    ;; File too large.
+    ;;; File too large.
     $EFBIG
-    ;; Host is unreachable.
+    ;;; Host is unreachable.
     $EHOSTUNREACH
-    ;; Identifier removed.
+    ;;; Identifier removed.
     $EIDRM
-    ;; Illegal byte sequence.
+    ;;; Illegal byte sequence.
     $EILSEQ
-    ;; Operation in progress.
+    ;;; Operation in progress.
     $EINPROGRESS
-    ;; Interrupted function.
+    ;;; Interrupted function.
     $EINTR
-    ;; Invalid argument.
+    ;;; Invalid argument.
     $EINVAL
-    ;; I/O error.
+    ;;; I/O error.
     $EIO
-    ;; Socket is connected.
+    ;;; Socket is connected.
     $EISCONN
-    ;; Is a directory.
+    ;;; Is a directory.
     $EISDIR
-    ;; Too many levels of symbolic links.
+    ;;; Too many levels of symbolic links.
     $ELOOP
-    ;; File descriptor value too large.
+    ;;; File descriptor value too large.
     $EMFILE
-    ;; Too many links.
+    ;;; Too many links.
     $EMLINK
-    ;; Message too large.
+    ;;; Message too large.
     $EMSGSIZE
-    ;; Reserved.
+    ;;; Reserved.
     $EMULTIHOP
-    ;; Filename too long.
+    ;;; Filename too long.
     $ENAMETOOLONG
-    ;; Network is down.
+    ;;; Network is down.
     $ENETDOWN
-    ;; Connection aborted by network.
+    ;;; Connection aborted by network.
     $ENETRESET
-    ;; Network unreachable.
+    ;;; Network unreachable.
     $ENETUNREACH
-    ;; Too many files open in system.
+    ;;; Too many files open in system.
     $ENFILE
-    ;; No buffer space available.
+    ;;; No buffer space available.
     $ENOBUFS
-    ;; No such device.
+    ;;; No such device.
     $ENODEV
-    ;; No such file or directory.
+    ;;; No such file or directory.
     $ENOENT
-    ;; Executable file format error.
+    ;;; Executable file format error.
     $ENOEXEC
-    ;; No locks available.
+    ;;; No locks available.
     $ENOLCK
-    ;; Reserved.
+    ;;; Reserved.
     $ENOLINK
-    ;; Not enough space.
+    ;;; Not enough space.
     $ENOMEM
-    ;; No message of the desired type.
+    ;;; No message of the desired type.
     $ENOMSG
-    ;; Protocol not available.
+    ;;; Protocol not available.
     $ENOPROTOOPT
-    ;; No space left on device.
+    ;;; No space left on device.
     $ENOSPC
-    ;; Function not supported.
+    ;;; Function not supported.
     $ENOSYS
-    ;; The socket is not connected.
+    ;;; The socket is not connected.
     $ENOTCONN
-    ;; Not a directory or a symbolic link to a directory.
+    ;;; Not a directory or a symbolic link to a directory.
     $ENOTDIR
-    ;; Directory not empty.
+    ;;; Directory not empty.
     $ENOTEMPTY
-    ;; State not recoverable.
+    ;;; State not recoverable.
     $ENOTRECOVERABLE
-    ;; Not a socket.
+    ;;; Not a socket.
     $ENOTSOCK
-    ;; Not supported, or operation not supported on socket.
+    ;;; Not supported, or operation not supported on socket.
     $ENOTSUP
-    ;; Inappropriate I/O control operation.
+    ;;; Inappropriate I/O control operation.
     $ENOTTY
-    ;; No such device or address.
+    ;;; No such device or address.
     $ENXIO
-    ;; Value too large to be stored in data type.
+    ;;; Value too large to be stored in data type.
     $EOVERFLOW
-    ;; Previous owner died.
+    ;;; Previous owner died.
     $EOWNERDEAD
-    ;; Operation not permitted.
+    ;;; Operation not permitted.
     $EPERM
-    ;; Broken pipe.
+    ;;; Broken pipe.
     $EPIPE
-    ;; Protocol error.
+    ;;; Protocol error.
     $EPROTO
-    ;; Protocol not supported.
+    ;;; Protocol not supported.
     $EPROTONOSUPPORT
-    ;; Protocol wrong type for socket.
+    ;;; Protocol wrong type for socket.
     $EPROTOTYPE
-    ;; Result too large.
+    ;;; Result too large.
     $ERANGE
-    ;; Read-only file system.
+    ;;; Read-only file system.
     $EROFS
-    ;; Invalid seek.
+    ;;; Invalid seek.
     $ESPIPE
-    ;; No such process.
+    ;;; No such process.
     $ESRCH
-    ;; Reserved.
+    ;;; Reserved.
     $ESTALE
-    ;; Connection timed out.
+    ;;; Connection timed out.
     $ETIMEDOUT
-    ;; Text file busy.
+    ;;; Text file busy.
     $ETXTBSY
-    ;; Cross-device link.
+    ;;; Cross-device link.
     $EXDEV
-    ;; Extension: Capabilities insufficient.
+    ;;; Extension: Capabilities insufficient.
     $ENOTCAPABLE
   )
 )
 
-;; File descriptor rights, determining which actions may be performed.
+;;; File descriptor rights, determining which actions may be performed.
 (typename $rights_t
   (flags u64
-    ;; The right to invoke `fd_datasync`.
+    ;;; The right to invoke `fd_datasync`.
     ;;
-    ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
-    ;; `path_open` with `FDFLAG_DSYNC`.
+    ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
+    ;;; `path_open` with `FDFLAG_DSYNC`.
     $RIGHT_FD_DATASYNC
-    ;; The right to invoke `fd_read` and `sock_recv`.
+    ;;; The right to invoke `fd_read` and `sock_recv`.
     ;;
-    ;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pread`.
+    ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pread`.
     $RIGHT_FD_READ
-    ;; The right to invoke `fd_seek`. This flag implies `RIGHT_FD_TELL`.
+    ;;; The right to invoke `fd_seek`. This flag implies `RIGHT_FD_TELL`.
     $RIGHT_FD_SEEK
-    ;; The right to invoke `fd_fdstat_set_flags`.
+    ;;; The right to invoke `fd_fdstat_set_flags`.
     $RIGHT_FD_FDSTAT_SET_FLAGS
-    ;; The right to invoke `fd_sync`.
+    ;;; The right to invoke `fd_sync`.
     ;;
-    ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
-    ;; `path_open` with `FDFLAG_RSYNC` and `FDFLAG_DSYNC`.
+    ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
+    ;;; `path_open` with `FDFLAG_RSYNC` and `FDFLAG_DSYNC`.
     $RIGHT_FD_SYNC
-    ;; The right to invoke `fd_seek` in such a way that the file offset
-    ;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
-    ;; invoke `fd_tell`.
+    ;;; The right to invoke `fd_seek` in such a way that the file offset
+    ;;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
+    ;;; invoke `fd_tell`.
     $RIGHT_FD_TELL
-    ;; The right to invoke `fd_write` and `sock_send`.
-    ;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pwrite`.
+    ;;; The right to invoke `fd_write` and `sock_send`.
+    ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pwrite`.
     $RIGHT_FD_WRITE
-    ;; The right to invoke `fd_advise`.
+    ;;; The right to invoke `fd_advise`.
     $RIGHT_FD_ADVISE
-    ;; The right to invoke `fd_allocate`.
+    ;;; The right to invoke `fd_allocate`.
     $RIGHT_FD_ALLOCATE
-    ;; The right to invoke `path_create_directory`.
+    ;;; The right to invoke `path_create_directory`.
     $RIGHT_PATH_CREATE_DIRECTORY
-    ;; If `RIGHT_PATH_OPEN` is set, the right to invoke `path_open` with `O_CREAT`.
+    ;;; If `RIGHT_PATH_OPEN` is set, the right to invoke `path_open` with `O_CREAT`.
     $RIGHT_PATH_CREATE_FILE
-    ;; The right to invoke `path_link` with the file descriptor as the
-    ;; source directory.
+    ;;; The right to invoke `path_link` with the file descriptor as the
+    ;;; source directory.
     $RIGHT_PATH_LINK_SOURCE
-    ;; The right to invoke `path_link` with the file descriptor as the
-    ;; target directory.
+    ;;; The right to invoke `path_link` with the file descriptor as the
+    ;;; target directory.
     $RIGHT_PATH_LINK_TARGET
-    ;; The right to invoke `path_open`.
+    ;;; The right to invoke `path_open`.
     $RIGHT_PATH_OPEN
-    ;; The right to invoke `fd_readdir`.
+    ;;; The right to invoke `fd_readdir`.
     $RIGHT_FD_READDIR
-    ;; The right to invoke `path_readlink`.
+    ;;; The right to invoke `path_readlink`.
     $RIGHT_PATH_READLINK
-    ;; The right to invoke `path_rename` with the file descriptor as the source directory.
+    ;;; The right to invoke `path_rename` with the file descriptor as the source directory.
     $RIGHT_PATH_RENAME_SOURCE
-    ;; The right to invoke `path_rename` with the file descriptor as the target directory.
+    ;;; The right to invoke `path_rename` with the file descriptor as the target directory.
     $RIGHT_PATH_RENAME_TARGET
-    ;; The right to invoke `path_filestat_get`.
+    ;;; The right to invoke `path_filestat_get`.
     $RIGHT_PATH_FILESTAT_GET
-    ;; The right to change a file's size (there is no `path_filestat_set_size`).
-    ;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke `path_open` with `O_TRUNC`.
+    ;;; The right to change a file's size (there is no `path_filestat_set_size`).
+    ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke `path_open` with `O_TRUNC`.
     $RIGHT_PATH_FILESTAT_SET_SIZE
-    ;; The right to invoke `path_filestat_set_times`.
+    ;;; The right to invoke `path_filestat_set_times`.
     $RIGHT_PATH_FILESTAT_SET_TIMES
-    ;; The right to invoke `fd_filestat_get`.
+    ;;; The right to invoke `fd_filestat_get`.
     $RIGHT_FD_FILESTAT_GET
-    ;; The right to invoke `fd_filestat_set_size`.
+    ;;; The right to invoke `fd_filestat_set_size`.
     $RIGHT_FD_FILESTAT_SET_SIZE
-    ;; The right to invoke `fd_filestat_set_times`.
+    ;;; The right to invoke `fd_filestat_set_times`.
     $RIGHT_FD_FILESTAT_SET_TIMES
-    ;; The right to invoke `path_symlink`.
+    ;;; The right to invoke `path_symlink`.
     $RIGHT_PATH_SYMLINK
-    ;; The right to invoke `path_remove_directory`.
+    ;;; The right to invoke `path_remove_directory`.
     $RIGHT_PATH_REMOVE_DIRECTORY
-    ;; The right to invoke `path_unlink_file`.
+    ;;; The right to invoke `path_unlink_file`.
     $RIGHT_PATH_UNLINK_FILE
-    ;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
-    ;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
+    ;;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
+    ;;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
     $RIGHT_POLL_FD_READWRITE
-    ;; The right to invoke `sock_shutdown`.
+    ;;; The right to invoke `sock_shutdown`.
     $RIGHT_SOCK_SHUTDOWN
   )
 )
 
-;; A file descriptor index.
+;;; A file descriptor index.
 (typename $fd_t u32)
 
-;; A region of memory for scatter/gather reads.
+;;; A region of memory for scatter/gather reads.
 (typename $iovec_t
   (struct
-    ;; The address of the buffer to be filled.
+    ;;; The address of the buffer to be filled.
     (field $buf (@witx pointer u8))
-    ;; The length of the buffer to be filled.
+    ;;; The length of the buffer to be filled.
     (field $buf_len $size_t)
   )
 )
 
-;; A region of memory for scatter/gather writes.
+;;; A region of memory for scatter/gather writes.
 (typename $ciovec_t
   (struct
-    ;; The address of the buffer to be written.
+    ;;; The address of the buffer to be written.
     (field $buf (@witx const_pointer u8))
-    ;; The length of the buffer to be written.
+    ;;; The length of the buffer to be written.
     (field $buf_len $size_t)
   )
 )
@@ -299,469 +299,469 @@
 (typename $iovec_t_array (array $iovec_t))
 (typename $ciovec_t_array (array $ciovec_t))
 
-;; Relative offset within a file.
+;;; Relative offset within a file.
 (typename $filedelta_t s64)
 
-;; The position relative to which to set the offset of the file descriptor.
+;;; The position relative to which to set the offset of the file descriptor.
 (typename $whence_t
   (enum u8
-    ;; Seek relative to current position.
+    ;;; Seek relative to current position.
     $WHENCE_CUR
-    ;; Seek relative to end-of-file.
+    ;;; Seek relative to end-of-file.
     $WHENCE_END
-    ;; Seek relative to start-of-file.
+    ;;; Seek relative to start-of-file.
     $WHENCE_SET
   )
 )
 
-;; A reference to the offset of a directory entry.
+;;; A reference to the offset of a directory entry.
 (typename $dircookie_t u64)
 
-;; The type for the $d_namlen field of $dirent_t.
+;;; The type for the $d_namlen field of $dirent_t.
 (typename $dirnamlen_t u32)
 
-;; File serial number that is unique within its file system.
+;;; File serial number that is unique within its file system.
 (typename $inode_t u64)
 
-;; The type of a file descriptor or file.
+;;; The type of a file descriptor or file.
 (typename $filetype_t
   (enum u8
-    ;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
+    ;;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
     $FILETYPE_UNKNOWN
-    ;; The file descriptor or file refers to a block device inode.
+    ;;; The file descriptor or file refers to a block device inode.
     $FILETYPE_BLOCK_DEVICE
-    ;; The file descriptor or file refers to a character device inode.
+    ;;; The file descriptor or file refers to a character device inode.
     $FILETYPE_CHARACTER_DEVICE
-    ;; The file descriptor or file refers to a directory inode.
+    ;;; The file descriptor or file refers to a directory inode.
     $FILETYPE_DIRECTORY
-    ;; The file descriptor or file refers to a regular file inode.
+    ;;; The file descriptor or file refers to a regular file inode.
     $FILETYPE_REGULAR_FILE
-    ;; The file descriptor or file refers to a datagram socket.
+    ;;; The file descriptor or file refers to a datagram socket.
     $FILETYPE_SOCKET_DGRAM
-    ;; The file descriptor or file refers to a byte-stream socket.
+    ;;; The file descriptor or file refers to a byte-stream socket.
     $FILETYPE_SOCKET_STREAM
-    ;; The file refers to a symbolic link inode.
+    ;;; The file refers to a symbolic link inode.
     $FILETYPE_SYMBOLIC_LINK
   )
 )
 
-;; A directory entry.
+;;; A directory entry.
 (typename $dirent_t
   (struct
-    ;; The offset of the next directory entry stored in this directory.
+    ;;; The offset of the next directory entry stored in this directory.
     (field $d_next $dircookie_t)
-    ;; The serial number of the file referred to by this directory entry.
+    ;;; The serial number of the file referred to by this directory entry.
     (field $d_ino $inode_t)
-    ;; The length of the name of the directory entry.
+    ;;; The length of the name of the directory entry.
     (field $d_namlen $dirnamlen_t)
-    ;; The type of the file referred to by this directory entry.
+    ;;; The type of the file referred to by this directory entry.
     (field $d_type $filetype_t)
   )
 )
 
-;; File or memory access pattern advisory information.
+;;; File or memory access pattern advisory information.
 (typename $advice_t
   (enum u8
-    ;; The application has no advice to give on its behavior with respect to the specified data.
+    ;;; The application has no advice to give on its behavior with respect to the specified data.
     $ADVICE_NORMAL
-    ;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
+    ;;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
     $ADVICE_SEQUENTIAL
-    ;; The application expects to access the specified data in a random order.
+    ;;; The application expects to access the specified data in a random order.
     $ADVICE_RANDOM
-    ;; The application expects to access the specified data in the near future.
+    ;;; The application expects to access the specified data in the near future.
     $ADVICE_WILLNEED
-    ;; The application expects that it will not access the specified data in the near future.
+    ;;; The application expects that it will not access the specified data in the near future.
     $ADVICE_DONTNEED
-    ;; The application expects to access the specified data once and then not reuse it thereafter.
+    ;;; The application expects to access the specified data once and then not reuse it thereafter.
     $ADVICE_NOREUSE
   )
 )
 
-;; File descriptor flags.
+;;; File descriptor flags.
 (typename $fdflags_t
   (flags u16
-    ;; Append mode: Data written to the file is always appended to the file's end.
+    ;;; Append mode: Data written to the file is always appended to the file's end.
     $FDFLAG_APPEND
-    ;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
+    ;;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
     $FDFLAG_DSYNC
-    ;; Non-blocking mode.
+    ;;; Non-blocking mode.
     $FDFLAG_NONBLOCK
-    ;; Synchronized read I/O operations.
+    ;;; Synchronized read I/O operations.
     $FDFLAG_RSYNC
-    ;; Write according to synchronized I/O file integrity completion. In
-    ;; addition to synchronizing the data stored in the file, the implementation
-    ;; may also synchronously update the file's metadata.
+    ;;; Write according to synchronized I/O file integrity completion. In
+    ;;; addition to synchronizing the data stored in the file, the implementation
+    ;;; may also synchronously update the file's metadata.
     $FDFLAG_SYNC
   )
 )
 
-;; File descriptor attributes.
+;;; File descriptor attributes.
 (typename $fdstat_t
   (struct
-    ;; File type.
+    ;;; File type.
     (field $fs_filetype $filetype_t)
-    ;; File descriptor flags.
+    ;;; File descriptor flags.
     (field $fs_flags $fdflags_t)
-    ;; Rights that apply to this file descriptor.
+    ;;; Rights that apply to this file descriptor.
     (field $fs_rights_base $rights_t)
-    ;; Maximum set of rights that may be installed on new file descriptors that
-    ;; are created through this file descriptor, e.g., through `path_open`.
+    ;;; Maximum set of rights that may be installed on new file descriptors that
+    ;;; are created through this file descriptor, e.g., through `path_open`.
     (field $fs_rights_inheriting $rights_t)
   )
 )
 
-;; Identifier for a device containing a file system. Can be used in combination
-;; with `inode_t` to uniquely identify a file or directory in the filesystem.
+;;; Identifier for a device containing a file system. Can be used in combination
+;;; with `inode_t` to uniquely identify a file or directory in the filesystem.
 (typename $device_t u64)
 
-;; Which file time attributes to adjust.
+;;; Which file time attributes to adjust.
 (typename $fstflags_t
   (flags u16
-    ;; Adjust the last data access timestamp to the value stored in `filestat_t::st_atim`.
+    ;;; Adjust the last data access timestamp to the value stored in `filestat_t::st_atim`.
     $FILESTAT_SET_ATIM
-    ;; Adjust the last data access timestamp to the time of clock `CLOCK_REALTIME`.
+    ;;; Adjust the last data access timestamp to the time of clock `CLOCK_REALTIME`.
     $FILESTAT_SET_ATIM_NOW
-    ;; Adjust the last data modification timestamp to the value stored in `filestat_t::st_mtim`.
+    ;;; Adjust the last data modification timestamp to the value stored in `filestat_t::st_mtim`.
     $FILESTAT_SET_MTIM
-    ;; Adjust the last data modification timestamp to the time of clock `CLOCK_REALTIME`.
+    ;;; Adjust the last data modification timestamp to the time of clock `CLOCK_REALTIME`.
     $FILESTAT_SET_MTIM_NOW
   )
 )
 
-;; Flags determining the method of how paths are resolved.
+;;; Flags determining the method of how paths are resolved.
 (typename $lookupflags_t
   (flags u32
-    ;; As long as the resolved path corresponds to a symbolic link, it is expanded.
+    ;;; As long as the resolved path corresponds to a symbolic link, it is expanded.
     $LOOKUP_SYMLINK_FOLLOW
   )
 )
 
-;; Open flags used by `path_open`.
+;;; Open flags used by `path_open`.
 (typename $oflags_t
   (flags u16
-    ;; Create file if it does not exist.
+    ;;; Create file if it does not exist.
     $O_CREAT
-    ;; Fail if not a directory.
+    ;;; Fail if not a directory.
     $O_DIRECTORY
-    ;; Fail if file already exists.
+    ;;; Fail if file already exists.
     $O_EXCL
-    ;; Truncate file to size 0.
+    ;;; Truncate file to size 0.
     $O_TRUNC
   )
 )
 
-;; Number of hard links to an inode.
+;;; Number of hard links to an inode.
 (typename $linkcount_t u32)
 
-;; File attributes.
+;;; File attributes.
 (typename $filestat_t
   (struct
-    ;; Device ID of device containing the file.
+    ;;; Device ID of device containing the file.
     (field $st_dev $device_t)
-    ;; File serial number.
+    ;;; File serial number.
     (field $st_ino $inode_t)
-    ;; File type.
+    ;;; File type.
     (field $st_filetype $filetype_t)
-    ;; Number of hard links to the file.
+    ;;; Number of hard links to the file.
     (field $st_nlink $linkcount_t)
-    ;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+    ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
     (field $st_size $filesize_t)
-    ;; Last data access timestamp.
+    ;;; Last data access timestamp.
     (field $st_atim $timestamp_t)
-    ;; Last data modification timestamp.
+    ;;; Last data modification timestamp.
     (field $st_mtim $timestamp_t)
-    ;; Last file status change timestamp.
+    ;;; Last file status change timestamp.
     (field $st_ctim $timestamp_t)
   )
 )
 
-;; User-provided value that may be attached to objects that is retained when
-;; extracted from the implementation.
+;;; User-provided value that may be attached to objects that is retained when
+;;; extracted from the implementation.
 (typename $userdata_t u64)
 
-;; Type of a subscription to an event or its occurrence.
+;;; Type of a subscription to an event or its occurrence.
 (typename $eventtype_t
   (enum u8
-    ;; The time value of clock `subscription_t::u.clock.clock_id` has
-    ;; reached timestamp `subscription_t::u.clock.timeout`.
+    ;;; The time value of clock `subscription_t::u.clock.clock_id` has
+    ;;; reached timestamp `subscription_t::u.clock.timeout`.
     $EVENTTYPE_CLOCK
-    ;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
-    ;; available for reading. This event always triggers for regular files.
+    ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
+    ;;; available for reading. This event always triggers for regular files.
     $EVENTTYPE_FD_READ
-    ;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
-    ;; available for writing. This event always triggers for regular files.
+    ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
+    ;;; available for writing. This event always triggers for regular files.
     $EVENTTYPE_FD_WRITE
   )
 )
 
-;; The state of the file descriptor subscribed to with
-;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
+;;; The state of the file descriptor subscribed to with
+;;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
 (typename $eventrwflags_t
   (flags u16
-    ;; The peer of this socket has closed or disconnected.
+    ;;; The peer of this socket has closed or disconnected.
     $EVENT_FD_READWRITE_HANGUP
   )
 )
 
-;; The contents of an $event_t when type is `EVENTTYPE_FD_READ` or
-;; `EVENTTYPE_FD_WRITE`.
+;;; The contents of an $event_t when type is `EVENTTYPE_FD_READ` or
+;;; `EVENTTYPE_FD_WRITE`.
 (typename $event_fd_readwrite_t
   (struct
-    ;; The number of bytes available for reading or writing.
+    ;;; The number of bytes available for reading or writing.
     (field $nbytes $filesize_t)
-    ;; The state of the file descriptor.
+    ;;; The state of the file descriptor.
     (field $flags $eventrwflags_t)
   )
 )
 
-;; The contents of an $event_t.
+;;; The contents of an $event_t.
 (typename $event_u
   (union
-    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
+    ;;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
     (field $fd_readwrite $event_fd_readwrite_t)
   )
 )
 
-;; An event that occurred.
+;;; An event that occurred.
 (typename $event_t
   (struct
-    ;; User-provided value that got attached to `subscription_t::userdata`.
+    ;;; User-provided value that got attached to `subscription_t::userdata`.
     (field $userdata $userdata_t)
-    ;; If non-zero, an error that occurred while processing the subscription request.
+    ;;; If non-zero, an error that occurred while processing the subscription request.
     (field $error $errno_t)
-    ;; The type of the event that occurred.
+    ;;; The type of the event that occurred.
     (field $type $eventtype_t)
-    ;; The contents of the event.
+    ;;; The contents of the event.
     (field $u $event_u)
   )
 )
 
-;; Flags determining how to interpret the timestamp provided in
-;; `subscription_t::u.clock.timeout.`
+;;; Flags determining how to interpret the timestamp provided in
+;;; `subscription_t::u.clock.timeout.`
 (typename $subclockflags_t
   (flags u16
-    ;; If set, treat the timestamp provided in
-    ;; `subscription_t::u.clock.timeout` as an absolute timestamp of clock
-    ;; `subscription_t::u.clock.clock_id.` If clear, treat the timestamp
-    ;; provided in `subscription_t::u.clock.timeout` relative to the
-    ;; current time value of clock `subscription_t::u.clock.clock_id.`
+    ;;; If set, treat the timestamp provided in
+    ;;; `subscription_t::u.clock.timeout` as an absolute timestamp of clock
+    ;;; `subscription_t::u.clock.clock_id.` If clear, treat the timestamp
+    ;;; provided in `subscription_t::u.clock.timeout` relative to the
+    ;;; current time value of clock `subscription_t::u.clock.clock_id.`
     $SUBSCRIPTION_CLOCK_ABSTIME
   )
 )
 
-;; The contents of a $subscription_t when type is `EVENTTYPE_CLOCK`.
+;;; The contents of a $subscription_t when type is `EVENTTYPE_CLOCK`.
 (typename $subscription_clock_t
   (struct
-    ;; The user-defined unique identifier of the clock.
+    ;;; The user-defined unique identifier of the clock.
     (field $identifier $userdata_t)
-    ;; The clock against which to compare the timestamp.
+    ;;; The clock against which to compare the timestamp.
     (field $clock_id $clockid_t)
-    ;; The absolute or relative timestamp.
+    ;;; The absolute or relative timestamp.
     (field $timeout $timestamp_t)
-    ;; The amount of time that the implementation may wait additionally
-    ;; to coalesce with other events.
+    ;;; The amount of time that the implementation may wait additionally
+    ;;; to coalesce with other events.
     (field $precision $timestamp_t)
-    ;; Flags specifying whether the timeout is absolute or relative
+    ;;; Flags specifying whether the timeout is absolute or relative
     (field $flags $subclockflags_t)
   )
 )
 
-;; The contents of a $subscription_t when type is type is
-;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
+;;; The contents of a $subscription_t when type is type is
+;;; `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`.
 (typename $subscription_fd_readwrite_t
   (struct
-    ;; The file descriptor on which to wait for it to become ready for reading or writing.
+    ;;; The file descriptor on which to wait for it to become ready for reading or writing.
     (field $file_descriptor $fd_t)
   )
 )
 
-;; The contents of a $subscription_t.
+;;; The contents of a $subscription_t.
 (typename $subscription_u
   (union
-    ;; When type is `EVENTTYPE_CLOCK`:
+    ;;; When type is `EVENTTYPE_CLOCK`:
     (field $clock $subscription_clock_t)
-    ;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
+    ;;; When type is `EVENTTYPE_FD_READ` or `EVENTTYPE_FD_WRITE`:
     (field $fd_readwrite $subscription_fd_readwrite_t)
   )
 )
 
-;; Subscription to an event.
+;;; Subscription to an event.
 (typename $subscription_t
   (struct
-    ;; User-provided value that is attached to the subscription in the
-    ;; implementation and returned through `event_t::userdata`.
+    ;;; User-provided value that is attached to the subscription in the
+    ;;; implementation and returned through `event_t::userdata`.
     (field $userdata $userdata_t)
-    ;; The type of the event to which to subscribe.
+    ;;; The type of the event to which to subscribe.
     (field $type $eventtype_t)
-    ;; The contents of the subscription.
+    ;;; The contents of the subscription.
     (field $u $subscription_u)
   )
 )
 
-;; Exit code generated by a process when exiting.
+;;; Exit code generated by a process when exiting.
 (typename $exitcode_t u32)
 
-;; Signal condition.
+;;; Signal condition.
 (typename $signal_t
   (enum u8
-    ;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
-    ;; so this value is reserved.
+    ;;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
+    ;;; so this value is reserved.
     $SIGNONE
-    ;; Hangup.
-    ;; Action: Terminates the process.
+    ;;; Hangup.
+    ;;; Action: Terminates the process.
     $SIGHUP
-    ;; Terminate interrupt signal.
-    ;; Action: Terminates the process.
+    ;;; Terminate interrupt signal.
+    ;;; Action: Terminates the process.
     $SIGINT
-    ;; Terminal quit signal.
-    ;; Action: Terminates the process.
+    ;;; Terminal quit signal.
+    ;;; Action: Terminates the process.
     $SIGQUIT
-    ;; Illegal instruction.
-    ;; Action: Terminates the process.
+    ;;; Illegal instruction.
+    ;;; Action: Terminates the process.
     $SIGILL
-    ;; Trace/breakpoint trap.
-    ;; Action: Terminates the process.
+    ;;; Trace/breakpoint trap.
+    ;;; Action: Terminates the process.
     $SIGTRAP
-    ;; Process abort signal.
-    ;; Action: Terminates the process.
+    ;;; Process abort signal.
+    ;;; Action: Terminates the process.
     $SIGABRT
-    ;; Access to an undefined portion of a memory object.
-    ;; Action: Terminates the process.
+    ;;; Access to an undefined portion of a memory object.
+    ;;; Action: Terminates the process.
     $SIGBUS
-    ;; Erroneous arithmetic operation.
-    ;; Action: Terminates the process.
+    ;;; Erroneous arithmetic operation.
+    ;;; Action: Terminates the process.
     $SIGFPE
-    ;; Kill.
-    ;; Action: Terminates the process.
+    ;;; Kill.
+    ;;; Action: Terminates the process.
     $SIGKILL
-    ;; User-defined signal 1.
-    ;; Action: Terminates the process.
+    ;;; User-defined signal 1.
+    ;;; Action: Terminates the process.
     $SIGUSR1
-    ;; Invalid memory reference.
-    ;; Action: Terminates the process.
+    ;;; Invalid memory reference.
+    ;;; Action: Terminates the process.
     $SIGSEGV
-    ;; User-defined signal 2.
-    ;; Action: Terminates the process.
+    ;;; User-defined signal 2.
+    ;;; Action: Terminates the process.
     $SIGUSR2
-    ;; Write on a pipe with no one to read it.
-    ;; Action: Ignored.
+    ;;; Write on a pipe with no one to read it.
+    ;;; Action: Ignored.
     $SIGPIPE
-    ;; Alarm clock.
-    ;; Action: Terminates the process.
+    ;;; Alarm clock.
+    ;;; Action: Terminates the process.
     $SIGALRM
-    ;; Termination signal.
-    ;; Action: Terminates the process.
+    ;;; Termination signal.
+    ;;; Action: Terminates the process.
     $SIGTERM
-    ;; Child process terminated, stopped, or continued.
-    ;; Action: Ignored.
+    ;;; Child process terminated, stopped, or continued.
+    ;;; Action: Ignored.
     $SIGCHLD
-    ;; Continue executing, if stopped.
-    ;; Action: Continues executing, if stopped.
+    ;;; Continue executing, if stopped.
+    ;;; Action: Continues executing, if stopped.
     $SIGCONT
-    ;; Stop executing.
-    ;; Action: Stops executing.
+    ;;; Stop executing.
+    ;;; Action: Stops executing.
     $SIGSTOP
-    ;; Terminal stop signal.
-    ;; Action: Stops executing.
+    ;;; Terminal stop signal.
+    ;;; Action: Stops executing.
     $SIGTSTP
-    ;; Background process attempting read.
-    ;; Action: Stops executing.
+    ;;; Background process attempting read.
+    ;;; Action: Stops executing.
     $SIGTTIN
-    ;; Background process attempting write.
-    ;; Action: Stops executing.
+    ;;; Background process attempting write.
+    ;;; Action: Stops executing.
     $SIGTTOU
-    ;; High bandwidth data is available at a socket.
-    ;; Action: Ignored.
+    ;;; High bandwidth data is available at a socket.
+    ;;; Action: Ignored.
     $SIGURG
-    ;; CPU time limit exceeded.
-    ;; Action: Terminates the process.
+    ;;; CPU time limit exceeded.
+    ;;; Action: Terminates the process.
     $SIGXCPU
-    ;; File size limit exceeded.
-    ;; Action: Terminates the process.
+    ;;; File size limit exceeded.
+    ;;; Action: Terminates the process.
     $SIGXFSZ
-    ;; Virtual timer expired.
-    ;; Action: Terminates the process.
+    ;;; Virtual timer expired.
+    ;;; Action: Terminates the process.
     $SIGVTALRM
-    ;; Profiling timer expired.
-    ;; Action: Terminates the process.
+    ;;; Profiling timer expired.
+    ;;; Action: Terminates the process.
     $SIGPROF
-    ;; Window changed.
-    ;; Action: Ignored.
+    ;;; Window changed.
+    ;;; Action: Ignored.
     $SIGWINCH
-    ;; I/O possible.
-    ;; Action: Terminates the process.
+    ;;; I/O possible.
+    ;;; Action: Terminates the process.
     $SIGPOLL
-    ;; Power failure.
-    ;; Action: Terminates the process.
+    ;;; Power failure.
+    ;;; Action: Terminates the process.
     $SIGPWR
-    ;; Bad system call.
-    ;; Action: Terminates the process.
+    ;;; Bad system call.
+    ;;; Action: Terminates the process.
     $SIGSYS
   )
 )
 
-;; Flags provided to `sock_recv`.
+;;; Flags provided to `sock_recv`.
 (typename $riflags_t
   (flags u16
-    ;; Returns the message without removing it from the socket's receive queue.
+    ;;; Returns the message without removing it from the socket's receive queue.
     $SOCK_RECV_PEEK
-    ;; On byte-stream sockets, block until the full amount of data can be returned.
+    ;;; On byte-stream sockets, block until the full amount of data can be returned.
     $SOCK_RECV_WAITALL
   )
 )
 
-;; Flags returned by `sock_recv`.
+;;; Flags returned by `sock_recv`.
 (typename $roflags_t
   (flags u16
-    ;; Returned by `sock_recv`: Message data has been truncated.
+    ;;; Returned by `sock_recv`: Message data has been truncated.
     $SOCK_RECV_DATA_TRUNCATED
   )
 )
 
-;; Flags provided to `sock_send`. As there are currently no flags
-;; defined, it must be set to zero.
+;;; Flags provided to `sock_send`. As there are currently no flags
+;;; defined, it must be set to zero.
 (typename $siflags_t u16)
 
-;; Which channels on a socket to shut down.
+;;; Which channels on a socket to shut down.
 (typename $sdflags_t
   (flags u8
-    ;; Disables further receive operations.
+    ;;; Disables further receive operations.
     $SHUT_RD
-    ;; Disables further send operations.
+    ;;; Disables further send operations.
     $SHUT_WR
   )
 )
 
-;; Identifiers for preopened capabilities.
+;;; Identifiers for preopened capabilities.
 (typename $preopentype_t
   (enum u8
-    ;; A pre-opened directory.
+    ;;; A pre-opened directory.
     $PREOPENTYPE_DIR
   )
 )
 
-;; The contents of a $prestat_t when type is `PREOPENTYPE_DIR`.
+;;; The contents of a $prestat_t when type is `PREOPENTYPE_DIR`.
 (typename $prestat_dir
   (struct
-    ;; The length of the directory name for use with `fd_prestat_dir_name`.
+    ;;; The length of the directory name for use with `fd_prestat_dir_name`.
     (field $pr_name_len $size_t)
   )
 )
 
-;; The contents of an $prestat_t.
+;;; The contents of an $prestat_t.
 (typename $prestat_u
   (union
-    ;; When type is `PREOPENTYPE_DIR`:
+    ;;; When type is `PREOPENTYPE_DIR`:
     (field $dir $prestat_dir)
   )
 )
 
-;; Information about a pre-opened capability.
+;;; Information about a pre-opened capability.
 (typename $prestat_t
   (struct
-    ;; The type of the pre-opened capability.
+    ;;; The type of the pre-opened capability.
     (field $pr_type $preopentype_t)
-    ;; The contents of the information.
+    ;;; The contents of the information.
     (field $u $prestat_u)
   )
 )
