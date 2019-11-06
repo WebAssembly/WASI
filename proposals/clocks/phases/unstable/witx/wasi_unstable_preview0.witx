@@ -420,9 +420,9 @@
   ;; Create a symbolic link.
   ;; Note: This is similar to `symlinkat` in POSIX.
   (@interface func (export "path_symlink")
-    (param $fd $fd_t)
     ;; The contents of the symbolic link.
     (param $old_path string)
+    (param $fd $fd_t)
     ;; The destination path at which to create the symbolic link.
     (param $new_path string)
     (result $error $errno_t)
