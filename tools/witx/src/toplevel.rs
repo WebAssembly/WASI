@@ -6,27 +6,32 @@ use crate::WitxError;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-pub fn parse_witx(i: impl AsRef<Path>) -> Result<Document, WitxError> {
-    _parse_witx_with(i.as_ref(), &Filesystem)
+pub fn parse_witx(i: &[impl AsRef<Path>]) -> Result<Document, WitxError> {
+    let paths = i.iter().map(|p| p.as_ref()).collect::<Vec<&Path>>();
+    _parse_witx_with(&paths, &Filesystem)
 }
 
-pub fn parse_witx_with(i: impl AsRef<Path>, witxio: impl WitxIo) -> Result<Document, WitxError> {
-    _parse_witx_with(i.as_ref(), &witxio)
+pub fn parse_witx_with(i: &[impl AsRef<Path>], witxio: impl WitxIo) -> Result<Document, WitxError> {
+    let paths = i.iter().map(|p| p.as_ref()).collect::<Vec<&Path>>();
+    _parse_witx_with(&paths, &witxio)
 }
 
-fn _parse_witx_with(path: &Path, io: &dyn WitxIo) -> Result<Document, WitxError> {
+fn _parse_witx_with(paths: &[&Path], io: &dyn WitxIo) -> Result<Document, WitxError> {
     let mut validator = DocValidation::new();
     let mut definitions = Vec::new();
-    let root = path.parent().unwrap_or(Path::new("."));
+    let mut parsed = HashSet::new();
+    for path in paths {
+        let root = path.parent().unwrap_or(Path::new("."));
 
-    parse_file(
-        path.file_name().unwrap().as_ref(),
-        io,
-        root,
-        &mut validator,
-        &mut definitions,
-        &mut HashSet::new(),
-    )?;
+        parse_file(
+            path.file_name().unwrap().as_ref(),
+            io,
+            root,
+            &mut validator,
+            &mut definitions,
+            &mut parsed,
+        )?;
+    }
     Ok(Document::new(definitions, validator.entries))
 }
 
@@ -78,13 +83,13 @@ mod test {
 
     #[test]
     fn empty() {
-        parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", ";; empty")])).expect("parse");
+        parse_witx_with(&[Path::new("/a")], &MockFs::new(&[("/a", ";; empty")])).expect("parse");
     }
 
     #[test]
     fn one_use() {
         parse_witx_with(
-            &Path::new("/a"),
+            &[Path::new("/a")],
             &MockFs::new(&[("/a", "(use \"b\")"), ("/b", ";; empty")]),
         )
         .unwrap();
@@ -93,7 +98,7 @@ mod test {
     #[test]
     fn multi_use() {
         let doc = parse_witx_with(
-            &Path::new("/a"),
+            &[Path::new("/a")],
             &MockFs::new(&[
                 ("/a", "(use \"b\")"),
                 ("/b", "(use \"c\")\n(typename $b_float f64)"),
@@ -122,7 +127,7 @@ mod test {
     #[test]
     fn diamond_dependency() {
         let doc = parse_witx_with(
-            &Path::new("/a"),
+            &[Path::new("/a")],
             &MockFs::new(&[
                 ("/a", "(use \"b\")\n(use \"c\")"),
                 ("/b", "(use \"d\")"),
@@ -143,7 +148,7 @@ mod test {
 
     #[test]
     fn use_not_found() {
-        match parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", "(use \"b\")")]))
+        match parse_witx_with(&[Path::new("/a")], &MockFs::new(&[("/a", "(use \"b\")")]))
             .err()
             .unwrap()
         {
@@ -154,7 +159,7 @@ mod test {
 
     #[test]
     fn use_invalid() {
-        match parse_witx_with(&Path::new("/a"), &MockFs::new(&[("/a", "(use bbbbbbb)")]))
+        match parse_witx_with(&[Path::new("/a")], &MockFs::new(&[("/a", "(use bbbbbbb)")]))
             .err()
             .unwrap()
         {
