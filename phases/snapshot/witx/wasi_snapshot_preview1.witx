@@ -1,10 +1,10 @@
-;;; WASI Preview. This is an evolution of the API that WASI initially
-;;; launched with.
+;; WASI Preview. This is an evolution of the API that WASI initially
+;; launched with.
 ;;
-;;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
+;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
 ;;
-;;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
-;;; for an explanation of what that means.
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; for an explanation of what that means.
 
 (use "typenames.witx")
 
