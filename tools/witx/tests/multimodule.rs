@@ -1,13 +1,13 @@
 use witx::{load, BuiltinType, DatatypeIdent, DatatypeVariant, Id};
 
 #[test]
-fn validate_simple_multimodule() {
+fn validate_multimodule() {
     // B uses A, and C uses A.
     let doc = load(&[
-        "tests/simple_multimodule/type_b.witx",
-        "tests/simple_multimodule/type_c.witx",
+        "tests/multimodule/type_b.witx",
+        "tests/multimodule/type_c.witx",
     ])
-    .unwrap_or_else(|e| panic!("failed to parse: {}", e));
+    .unwrap_or_else(|e| panic!("failed to validate: {}", e));
 
     println!("{}", doc);
 
@@ -50,4 +50,13 @@ fn validate_simple_multimodule() {
         }
         _ => panic!("c is a struct"),
     }
+}
+
+#[test]
+fn multimodule_reject_redefinition() {
+    assert!(load(&[
+        "tests/multimodule/type_a.witx",
+        "tests/multimodule/redefine_a.witx",
+    ])
+    .is_err())
 }
