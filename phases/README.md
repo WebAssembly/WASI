@@ -8,22 +8,30 @@
   provides no API stability or versioning. APIs in this directory use
   API module names starting with `wasi_ephemeral_`.
 
-- [`unstable`](unstable): Usable APIs. APIs in `ephemeral` will be
-  occasionally snapshotted and promoted into `unstable`, with approval
+- [`snapshot`](snapshot): Usable APIs. APIs in `ephemeral` will be
+  occasionally snapshotted and promoted into `snapshot`, with approval
   from the Subgroup, considering the overall suitability of the APIs
   themselves, their documentation, test coverage, and availability of
   polyfills when appropriate. Once merged, the API modules will be
   considered stable, though they may be superseded by newer versions.
   Proposals to promote specific APIs should be submitted as Pull Requests
   that:
-   - Move any superseded files out of `unstable` into `old`.
-   - Optionally add polyfills for superseded APIs using `unstable` APIs.
-   - Move all files supporting the APIs out of `ephemeral` into `unstable`.
-   - Rename the API modules from `wasi_ephemeral_` to `wasi_unstable_`
-     and append a version number.
+    1. `git mv` contents of `phases/snapshot/` to
+       `phases/old/snapshot_{old_snapshot_number}`.
+    2. `cp -R` contents of `phases/ephemeral/` into `phases/snapshot/`.
+    3. Rename files copied into `phases/snapshot/` to substitute `ephemeral`
+       for `snapshot` in file names. Append the new snapshot number to each
+         name.
+    4. Update module names given in `.witx` files according to the previous
+       step.
+    5. Update tests in `tools/witx/tests/wasi.rs` to point at new snapshot, and
+       add a test pointing at the just-archived snapshot under `old`.
+    6. Optionally, under `phases/old/snapshot_{old_snapshot_number}, add
+       polyfills for suberseded APIs using the new APIs.
+
 
   Pull Requests may also add additional tests, documentation, or
-  polyfills for existing `unstable` APIs.
+  polyfills for existing `snapshot` APIs.
 
 - [`old`](old): When APIs in `current` spec are replaced by new
   versions, the old API modules are moved to the `old` directory. When
@@ -44,7 +52,7 @@ flexibility.
 
 WASI should eventually become a standard at the level of WebAssembly
 itself. Right now, it needs a lot of work before it's ready. The
-`unstable` tree is meant to serve a practical purpose for people who
+`snapshot` tree is meant to serve a practical purpose for people who
 want to work with APIs today, with the understanding that everything
 is still evolving. It's not meant as a replacement for proper
 standardization, which will happen once the overall API is more
