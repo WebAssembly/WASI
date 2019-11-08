@@ -6,6 +6,7 @@ homepage = "https://github.com/WebAssembly/WASI"
 repository = "https://github.com/WebAssembly/WASI"
 license = "Apache-2.0"
 categories = ["wasm"]
+keywords = ["webassembly", "wasm"]
 authors = ["Pat Hickey <phickey@fastly.com>", "Alex Crichton <alex@alexcrichton.com>"]
 edition = "2018"
 
