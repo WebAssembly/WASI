@@ -29,14 +29,14 @@ use failure::Fail;
 use std::path::{Path, PathBuf};
 
 /// Load a witx document from the filesystem
-pub fn load<P: AsRef<Path>>(path: P) -> Result<Document, WitxError> {
-    toplevel::parse_witx(path.as_ref())
+pub fn load<P: AsRef<Path>>(paths: &[P]) -> Result<Document, WitxError> {
+    toplevel::parse_witx(paths)
 }
 
 /// Parse a witx document from a str. `(use ...)` directives are not permitted.
 pub fn parse(source: &str) -> Result<Document, WitxError> {
     let mockfs = MockFs::new(&[("-", source)]);
-    toplevel::parse_witx_with(Path::new("-"), &mockfs)
+    toplevel::parse_witx_with(&[Path::new("-")], &mockfs)
 }
 
 /// Location in the source text
