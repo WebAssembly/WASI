@@ -355,7 +355,7 @@
     ;;; The length of the name of the directory entry.
     (field $d_namlen $dirnamlen)
     ;;; The type of the file referred to by this directory entry.
-    (field $dype $filetype)
+    (field $d_type $filetype)
   )
 )
 
@@ -760,7 +760,7 @@
 (typename $prestat
   (struct
     ;;; The type of the pre-opened capability.
-    (field $prype $preopentype)
+    (field $pr_type $preopentype)
     ;;; The contents of the information.
     (field $u $prestat_u)
   )
