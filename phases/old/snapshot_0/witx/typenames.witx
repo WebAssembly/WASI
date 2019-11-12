@@ -606,97 +606,97 @@
   (enum u8
     ;;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
     ;;; so this value is reserved.
-    $signone
+    $none
     ;;; Hangup.
     ;;; Action: Terminates the process.
-    $sighup
+    $hup
     ;;; Terminate interrupt signal.
     ;;; Action: Terminates the process.
-    $sigint
+    $int
     ;;; Terminal quit signal.
     ;;; Action: Terminates the process.
-    $sigquit
+    $quit
     ;;; Illegal instruction.
     ;;; Action: Terminates the process.
-    $sigill
+    $ill
     ;;; Trace/breakpoint trap.
     ;;; Action: Terminates the process.
-    $sigtrap
+    $trap
     ;;; Process abort signal.
     ;;; Action: Terminates the process.
-    $sigabrt
+    $abrt
     ;;; Access to an undefined portion of a memory object.
     ;;; Action: Terminates the process.
-    $sigbus
+    $bus
     ;;; Erroneous arithmetic operation.
     ;;; Action: Terminates the process.
-    $sigfpe
+    $fpe
     ;;; Kill.
     ;;; Action: Terminates the process.
-    $sigkill
+    $kill
     ;;; User-defined signal 1.
     ;;; Action: Terminates the process.
-    $sigusr1
+    $usr1
     ;;; Invalid memory reference.
     ;;; Action: Terminates the process.
-    $sigsegv
+    $segv
     ;;; User-defined signal 2.
     ;;; Action: Terminates the process.
-    $sigusr2
+    $usr2
     ;;; Write on a pipe with no one to read it.
     ;;; Action: Ignored.
-    $sigpipe
+    $pipe
     ;;; Alarm clock.
     ;;; Action: Terminates the process.
-    $sigalrm
+    $alrm
     ;;; Termination signal.
     ;;; Action: Terminates the process.
-    $sigterm
+    $term
     ;;; Child process terminated, stopped, or continued.
     ;;; Action: Ignored.
-    $sigchld
+    $chld
     ;;; Continue executing, if stopped.
     ;;; Action: Continues executing, if stopped.
-    $sigcont
+    $cont
     ;;; Stop executing.
     ;;; Action: Stops executing.
-    $sigstop
+    $stop
     ;;; Terminal stop signal.
     ;;; Action: Stops executing.
-    $sigtstp
+    $tstp
     ;;; Background process attempting read.
     ;;; Action: Stops executing.
-    $sigttin
+    $ttin
     ;;; Background process attempting write.
     ;;; Action: Stops executing.
-    $sigttou
+    $ttou
     ;;; High bandwidth data is available at a socket.
     ;;; Action: Ignored.
-    $sigurg
+    $urg
     ;;; CPU time limit exceeded.
     ;;; Action: Terminates the process.
-    $sigxcpu
+    $xcpu
     ;;; File size limit exceeded.
     ;;; Action: Terminates the process.
-    $sigxfsz
+    $xfsz
     ;;; Virtual timer expired.
     ;;; Action: Terminates the process.
-    $sigvtalrm
+    $vtalrm
     ;;; Profiling timer expired.
     ;;; Action: Terminates the process.
-    $sigprof
+    $prof
     ;;; Window changed.
     ;;; Action: Ignored.
-    $sigwinch
+    $winch
     ;;; I/O possible.
     ;;; Action: Terminates the process.
-    $sigpoll
+    $poll
     ;;; Power failure.
     ;;; Action: Terminates the process.
-    $sigpwr
+    $pwr
     ;;; Bad system call.
     ;;; Action: Terminates the process.
-    $sigsys
+    $sys
   )
 )
 
