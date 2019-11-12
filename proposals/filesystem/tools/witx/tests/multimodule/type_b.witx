@@ -1,0 +1,2 @@
+(use "type_a.witx")
+(typename $b (struct (field $member_a $a)))
