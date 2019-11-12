@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use std::path::Path;
+use std::path::PathBuf;
 use std::process;
 use witx::load;
 
@@ -10,6 +10,7 @@ pub fn main() {
         .arg(
             Arg::with_name("input")
                 .required(true)
+                .multiple(true)
                 .help("path to root of witx document"),
         )
         .arg(
@@ -21,7 +22,14 @@ pub fn main() {
         )
         .get_matches();
 
-    match load(Path::new(app.value_of("input").expect("required arg"))) {
+    let inputs = app
+        .values_of("input")
+        .expect("at least one input required")
+        .into_iter()
+        .map(|i| PathBuf::from(i))
+        .collect::<Vec<PathBuf>>();
+
+    match load(&inputs) {
         Ok(doc) => {
             if app.is_present("verbose") {
                 println!("{:?}", doc)
