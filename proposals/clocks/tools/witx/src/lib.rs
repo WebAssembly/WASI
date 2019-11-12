@@ -2,6 +2,8 @@
 mod ast;
 /// Map witx types to core (wasm standard) types
 mod coretypes;
+/// Render documentation
+mod docs;
 /// Interface for filesystem or mock IO
 mod io;
 /// Witx syntax parsing from SExprs
@@ -15,11 +17,12 @@ mod validate;
 
 pub use ast::{
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypeVariant, Definition, Document,
-    Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
+    Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, Id, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
+    ModuleImport, ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
+pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
 pub use render::{Render, SExpr as RenderSExpr};
