@@ -2,15 +2,15 @@ use std::path::Path;
 use witx;
 
 #[test]
-fn validate_wasi_unstable_preview0() {
+fn validate_wasi_snapshot() {
     witx::load(Path::new(
-        "../../phases/unstable/witx/wasi_unstable_preview0.witx",
+        "../../phases/snapshot/witx/wasi_snapshot_preview1.witx",
     ))
     .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
-fn validate_wasi_ephemeral_preview() {
+fn validate_wasi_ephemeral() {
     witx::load(Path::new(
         "../../phases/ephemeral/witx/wasi_ephemeral_preview.witx",
     ))
@@ -18,15 +18,17 @@ fn validate_wasi_ephemeral_preview() {
 }
 
 #[test]
-fn validate_wasi_old_preview0() {
-    witx::load(Path::new("../../phases/old/witx/wasi_unstable.witx"))
-        .unwrap_or_else(|e| panic!("failed to parse: {}", e));
+fn validate_wasi_old_snapshot_0() {
+    witx::load(Path::new(
+        "../../phases/old/snapshot_0/witx/wasi_unstable.witx",
+    ))
+    .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
 fn render_roundtrip() {
     let doc = witx::load(Path::new(
-        "../../phases/unstable/witx/wasi_unstable_preview0.witx",
+        "../../phases/snapshot/witx/wasi_snapshot_preview1.witx",
     ))
     .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 
