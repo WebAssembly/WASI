@@ -1,12 +1,14 @@
-use clap::{App, Arg};
+use clap::{App, Arg, SubCommand};
+use std::fs::File;
+use std::io::Write;
 use std::path::PathBuf;
 use std::process;
-use witx::load;
+use witx::{load, Documentation};
 
 pub fn main() {
     let app = App::new("witx")
         .version(env!("CARGO_PKG_VERSION"))
-        .about("Validate witx file format")
+        .about("Validate and process witx files")
         .arg(
             Arg::with_name("input")
                 .required(true)
@@ -19,6 +21,17 @@ pub fn main() {
                 .long("verbose")
                 .takes_value(false)
                 .required(false),
+        )
+        .subcommand(
+            SubCommand::with_name("docs")
+                .about("Output documentation")
+                .arg(
+                    Arg::with_name("output")
+                        .short("o")
+                        .long("output")
+                        .takes_value(true)
+                        .required(false),
+                ),
         )
         .get_matches();
 
@@ -33,6 +46,16 @@ pub fn main() {
         Ok(doc) => {
             if app.is_present("verbose") {
                 println!("{:?}", doc)
+            }
+
+            if let Some(subcommand) = app.subcommand_matches("docs") {
+                let md = doc.to_md();
+                if let Some(output) = subcommand.value_of("output") {
+                    let mut file = File::create(output).expect("create output file");
+                    file.write_all(md.as_bytes()).expect("write output file");
+                } else {
+                    println!("{}", md)
+                }
             }
         }
         Err(e) => {

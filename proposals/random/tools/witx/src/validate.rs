@@ -1,13 +1,14 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        DatatypeIdentSyntax, DeclSyntax, EnumSyntax, FlagsSyntax, ImportTypeSyntax,
-        ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        CommentSyntax, DatatypeIdentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax,
+        ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
-    Definition, Entry, EnumDatatype, FlagsDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, StructDatatype, StructMember, UnionDatatype, UnionVariant,
+    Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, Id, IntRepr,
+    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
+    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
+    UnionDatatype, UnionVariant,
 };
 use failure::Fail;
 use std::collections::HashMap;
@@ -158,10 +159,15 @@ impl DocValidationScope<'_> {
         self.doc.scope.get(name.name(), loc)
     }
 
-    pub fn validate_decl(&mut self, decl: &DeclSyntax) -> Result<Definition, ValidationError> {
+    pub fn validate_decl(
+        &mut self,
+        decl: &DeclSyntax,
+        comments: &CommentSyntax,
+    ) -> Result<Definition, ValidationError> {
         match decl {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
+                let docs = comments.docs();
                 let variant =
                     match &decl.def {
                         TypedefSyntax::Ident(syntax) => DatatypeVariant::Alias(AliasDatatype {
@@ -186,6 +192,7 @@ impl DocValidationScope<'_> {
                 let rc_datatype = Rc::new(Datatype {
                     name: name.clone(),
                     variant,
+                    docs,
                 });
                 self.doc
                     .entries
@@ -205,6 +212,7 @@ impl DocValidationScope<'_> {
                     name.clone(),
                     definitions,
                     module_validator.entries,
+                    comments.docs(),
                 ));
                 self.doc
                     .entries
@@ -261,8 +269,12 @@ impl DocValidationScope<'_> {
         let variants = syntax
             .members
             .iter()
-            .map(|i| enum_scope.introduce(i.name(), self.location(i.span())))
-            .collect::<Result<Vec<Id>, _>>()?;
+            .map(|i| {
+                let name = enum_scope.introduce(i.item.name(), self.location(i.item.span()))?;
+                let docs = i.comments.docs();
+                Ok(EnumVariant { name, docs })
+            })
+            .collect::<Result<Vec<EnumVariant>, _>>()?;
 
         Ok(EnumDatatype {
             name: name.clone(),
@@ -282,8 +294,12 @@ impl DocValidationScope<'_> {
         let flags = syntax
             .flags
             .iter()
-            .map(|i| flags_scope.introduce(i.name(), self.location(i.span())))
-            .collect::<Result<Vec<Id>, _>>()?;
+            .map(|i| {
+                let name = flags_scope.introduce(i.item.name(), self.location(i.item.span()))?;
+                let docs = i.comments.docs();
+                Ok(FlagsMember { name, docs })
+            })
+            .collect::<Result<Vec<FlagsMember>, _>>()?;
 
         Ok(FlagsDatatype {
             name: name.clone(),
@@ -303,10 +319,11 @@ impl DocValidationScope<'_> {
             .fields
             .iter()
             .map(|f| {
-                Ok(StructMember {
-                    name: member_scope.introduce(f.name.name(), self.location(f.name.span()))?,
-                    type_: self.validate_datatype_ident(&f.type_)?,
-                })
+                let name = member_scope
+                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
+                let type_ = self.validate_datatype_ident(&f.item.type_)?;
+                let docs = f.comments.docs();
+                Ok(StructMember { name, type_, docs })
             })
             .collect::<Result<Vec<StructMember>, _>>()?;
 
@@ -327,10 +344,11 @@ impl DocValidationScope<'_> {
             .fields
             .iter()
             .map(|f| {
-                Ok(UnionVariant {
-                    name: variant_scope.introduce(f.name.name(), self.location(f.name.span()))?,
-                    type_: self.validate_datatype_ident(&f.type_)?,
-                })
+                let name = variant_scope
+                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
+                let type_ = self.validate_datatype_ident(&f.item.type_)?;
+                let docs = f.comments.docs();
+                Ok(UnionVariant { name, type_, docs })
             })
             .collect::<Result<Vec<UnionVariant>, _>>()?;
 
@@ -375,9 +393,9 @@ impl<'a> ModuleValidation<'a> {
 
     fn validate_decl(
         &mut self,
-        decl: &ModuleDeclSyntax,
+        decl: &Documented<ModuleDeclSyntax>,
     ) -> Result<ModuleDefinition, ValidationError> {
-        match decl {
+        match &decl.item {
             ModuleDeclSyntax::Import(syntax) => {
                 let loc = self.doc.location(syntax.name_loc);
                 let name = self.scope.introduce(syntax.name, loc)?;
@@ -387,6 +405,7 @@ impl<'a> ModuleValidation<'a> {
                 let rc_import = Rc::new(ModuleImport {
                     name: name.clone(),
                     variant,
+                    docs: decl.comments.docs(),
                 });
                 self.entries
                     .insert(name, ModuleEntry::Import(Rc::downgrade(&rc_import)));
@@ -402,10 +421,13 @@ impl<'a> ModuleValidation<'a> {
                     .enumerate()
                     .map(|(ix, f)| {
                         Ok(InterfaceFuncParam {
-                            name: argnames
-                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
-                            type_: self.doc.validate_datatype_ident(&f.type_)?,
+                            name: argnames.introduce(
+                                f.item.name.name(),
+                                self.doc.location(f.item.name.span()),
+                            )?,
+                            type_: self.doc.validate_datatype_ident(&f.item.type_)?,
                             position: InterfaceFuncParamPosition::Param(ix),
+                            docs: f.comments.docs(),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
@@ -414,20 +436,23 @@ impl<'a> ModuleValidation<'a> {
                     .iter()
                     .enumerate()
                     .map(|(ix, f)| {
-                        let type_ = self.doc.validate_datatype_ident(&f.type_)?;
+                        let type_ = self.doc.validate_datatype_ident(&f.item.type_)?;
                         if ix == 0 {
                             match type_.passed_by() {
                                 DatatypePassedBy::Value(_) => {}
                                 _ => Err(ValidationError::InvalidFirstResultType {
-                                    location: self.doc.location(f.name.span()),
+                                    location: self.doc.location(f.item.name.span()),
                                 })?,
                             }
                         }
                         Ok(InterfaceFuncParam {
-                            name: argnames
-                                .introduce(f.name.name(), self.doc.location(f.name.span()))?,
+                            name: argnames.introduce(
+                                f.item.name.name(),
+                                self.doc.location(f.item.name.span()),
+                            )?,
                             type_,
                             position: InterfaceFuncParamPosition::Result(ix),
+                            docs: f.comments.docs(),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
@@ -436,6 +461,7 @@ impl<'a> ModuleValidation<'a> {
                     name: name.clone(),
                     params,
                     results,
+                    docs: decl.comments.docs(),
                 });
                 self.entries
                     .insert(name, ModuleEntry::Func(Rc::downgrade(&rc_func)));
