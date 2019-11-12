@@ -484,13 +484,13 @@
   (enum u8
     ;;; The time value of clock `subscription_t::u.clock.clock_id` has
     ;;; reached timestamp `subscription_t::u.clock.timeout`.
-    $eventtype_clock
+    $clock
     ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
     ;;; available for reading. This event always triggers for regular files.
-    $eventtype_fd_read
+    $fd_read
     ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
     ;;; available for writing. This event always triggers for regular files.
-    $eventtype_fd_write
+    $fd_write
   )
 )
 
