@@ -18,16 +18,16 @@
   (enum u32
     ;;; The clock measuring real time. Time value zero corresponds with
     ;;; 1970-01-01T00:00:00Z.
-    $clock_realtime
+    $realtime
     ;;; The store-wide monotonic clock, which is defined as a clock measuring
     ;;; real time, whose value cannot be adjusted and which cannot have negative
     ;;; clock jumps. The epoch of this clock is undefined. The absolute time
     ;;; value of this clock therefore has no meaning.
-    $clock_monotonic
+    $monotonic
     ;;; The CPU-time clock associated with the current process.
-    $clock_process_cputime_id
+    $process_cputime_id
     ;;; The CPU-time clock associated with the current thread.
-    $clock_thread_cputime_id
+    $thread_cputime_id
   )
 )
 
@@ -201,75 +201,75 @@
     ;;
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;;; `path_open` with `FDFLAG_DSYNC`.
-    $right_fd_datasync
+    $fd_datasync
     ;;; The right to invoke `fd_read` and `sock_recv`.
     ;;
     ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pread`.
-    $right_fd_read
+    $fd_read
     ;;; The right to invoke `fd_seek`. This flag implies `RIGHT_FD_TELL`.
-    $right_fd_seek
+    $fd_seek
     ;;; The right to invoke `fd_fdstat_set_flags`.
-    $right_fd_fdstat_set_flags
+    $fd_fdstat_set_flags
     ;;; The right to invoke `fd_sync`.
     ;;
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;;; `path_open` with `FDFLAG_RSYNC` and `FDFLAG_DSYNC`.
-    $right_fd_sync
+    $fd_sync
     ;;; The right to invoke `fd_seek` in such a way that the file offset
     ;;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
     ;;; invoke `fd_tell`.
-    $right_fd_tell
+    $fd_tell
     ;;; The right to invoke `fd_write` and `sock_send`.
     ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pwrite`.
-    $right_fd_write
+    $fd_write
     ;;; The right to invoke `fd_advise`.
-    $right_fd_advise
+    $fd_advise
     ;;; The right to invoke `fd_allocate`.
-    $right_fd_allocate
+    $fd_allocate
     ;;; The right to invoke `path_create_directory`.
-    $right_path_create_directory
+    $path_create_directory
     ;;; If `RIGHT_PATH_OPEN` is set, the right to invoke `path_open` with `O_CREAT`.
-    $right_path_create_file
+    $path_create_file
     ;;; The right to invoke `path_link` with the file descriptor as the
     ;;; source directory.
-    $right_path_link_source
+    $path_link_source
     ;;; The right to invoke `path_link` with the file descriptor as the
     ;;; target directory.
-    $right_path_link_target
+    $path_link_target
     ;;; The right to invoke `path_open`.
-    $right_path_open
+    $path_open
     ;;; The right to invoke `fd_readdir`.
-    $right_fd_readdir
+    $fd_readdir
     ;;; The right to invoke `path_readlink`.
-    $right_path_readlink
+    $path_readlink
     ;;; The right to invoke `path_rename` with the file descriptor as the source directory.
-    $right_path_rename_source
+    $path_rename_source
     ;;; The right to invoke `path_rename` with the file descriptor as the target directory.
-    $right_path_rename_target
+    $path_rename_target
     ;;; The right to invoke `path_filestat_get`.
-    $right_path_filestat_get
+    $path_filestat_get
     ;;; The right to change a file's size (there is no `path_filestat_set_size`).
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke `path_open` with `O_TRUNC`.
-    $right_path_filestat_set_size
+    $path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
-    $right_path_filestat_set_times
+    $path_filestat_set_times
     ;;; The right to invoke `fd_filestat_get`.
-    $right_fd_filestat_get
+    $fd_filestat_get
     ;;; The right to invoke `fd_filestat_set_size`.
-    $right_fd_filestat_set_size
+    $fd_filestat_set_size
     ;;; The right to invoke `fd_filestat_set_times`.
-    $right_fd_filestat_set_times
+    $fd_filestat_set_times
     ;;; The right to invoke `path_symlink`.
-    $right_path_symlink
+    $path_symlink
     ;;; The right to invoke `path_remove_directory`.
-    $right_path_remove_directory
+    $path_remove_directory
     ;;; The right to invoke `path_unlink_file`.
-    $right_path_unlink_file
+    $path_unlink_file
     ;;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
     ;;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
-    $right_poll_fd_readwrite
+    $poll_fd_readwrite
     ;;; The right to invoke `sock_shutdown`.
-    $right_sock_shutdown
+    $sock_shutdown
   )
 )
 
@@ -306,11 +306,11 @@
 (typename $whence
   (enum u8
     ;;; Seek relative to start-of-file.
-    $whence_set
+    $set
     ;;; Seek relative to current position.
-    $whence_cur
+    $cur
     ;;; Seek relative to end-of-file.
-    $whence_end
+    $end
   )
 )
 
@@ -329,21 +329,21 @@
 (typename $filetype
   (enum u8
     ;;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
-    $filetype_unknown
+    $unknown
     ;;; The file descriptor or file refers to a block device inode.
-    $filetype_block_device
+    $block_device
     ;;; The file descriptor or file refers to a character device inode.
-    $filetype_character_device
+    $character_device
     ;;; The file descriptor or file refers to a directory inode.
-    $filetype_directory
+    $directory
     ;;; The file descriptor or file refers to a regular file inode.
-    $filetype_regular_file
+    $regular_file
     ;;; The file descriptor or file refers to a datagram socket.
-    $filetype_socket_dgram
+    $socket_dgram
     ;;; The file descriptor or file refers to a byte-stream socket.
-    $filetype_socket_stream
+    $socket_stream
     ;;; The file refers to a symbolic link inode.
-    $filetype_symbolic_link
+    $symbolic_link
   )
 )
 
@@ -365,17 +365,17 @@
 (typename $advice
   (enum u8
     ;;; The application has no advice to give on its behavior with respect to the specified data.
-    $advice_normal
+    $normal
     ;;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
-    $advice_sequential
+    $sequential
     ;;; The application expects to access the specified data in a random order.
-    $advice_random
+    $random
     ;;; The application expects to access the specified data in the near future.
-    $advice_willneed
+    $willneed
     ;;; The application expects that it will not access the specified data in the near future.
-    $advice_dontneed
+    $dontneed
     ;;; The application expects to access the specified data once and then not reuse it thereafter.
-    $advice_noreuse
+    $noreuse
   )
 )
 
@@ -383,17 +383,17 @@
 (typename $fdflags
   (flags u16
     ;;; Append mode: Data written to the file is always appended to the file's end.
-    $fdflag_append
+    $append
     ;;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
-    $fdflag_dsync
+    $dsync
     ;;; Non-blocking mode.
-    $fdflag_nonblock
+    $nonblock
     ;;; Synchronized read I/O operations.
-    $fdflag_rsync
+    $rsync
     ;;; Write according to synchronized I/O file integrity completion. In
     ;;; addition to synchronizing the data stored in the file, the implementation
     ;;; may also synchronously update the file's metadata.
-    $fdflag_sync
+    $sync
   )
 )
 
@@ -420,13 +420,13 @@
 (typename $fstflags
   (flags u16
     ;;; Adjust the last data access timestamp to the value stored in `filestat_t::st_atim`.
-    $filestat_set_atim
+    $atim
     ;;; Adjust the last data access timestamp to the time of clock `CLOCK_REALTIME`.
-    $filestat_set_atim_now
+    $atim_now
     ;;; Adjust the last data modification timestamp to the value stored in `filestat_t::st_mtim`.
-    $filestat_set_mtim
+    $mtim
     ;;; Adjust the last data modification timestamp to the time of clock `CLOCK_REALTIME`.
-    $filestat_set_mtim_now
+    $mtim_now
   )
 )
 
@@ -434,7 +434,7 @@
 (typename $lookupflags
   (flags u32
     ;;; As long as the resolved path corresponds to a symbolic link, it is expanded.
-    $lookup_symlink_follow
+    $symlink_follow
   )
 )
 
@@ -442,13 +442,13 @@
 (typename $oflags
   (flags u16
     ;;; Create file if it does not exist.
-    $o_creat
+    $creat
     ;;; Fail if not a directory.
-    $o_directory
+    $directory
     ;;; Fail if file already exists.
-    $o_excl
+    $excl
     ;;; Truncate file to size 0.
-    $o_trunc
+    $trunc
   )
 )
 
@@ -459,21 +459,21 @@
 (typename $filestat
   (struct
     ;;; Device ID of device containing the file.
-    (field $st_dev $device)
+    (field $dev $device)
     ;;; File serial number.
-    (field $st_ino $inode)
+    (field $ino $inode)
     ;;; File type.
-    (field $st_filetype $filetype)
+    (field $filetype $filetype)
     ;;; Number of hard links to the file.
-    (field $st_nlink $linkcount)
+    (field $nlink $linkcount)
     ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
-    (field $st_size $filesize)
+    (field $size $filesize)
     ;;; Last data access timestamp.
-    (field $st_atim $timestamp)
+    (field $atim $timestamp)
     ;;; Last data modification timestamp.
-    (field $st_mtim $timestamp)
+    (field $mtim $timestamp)
     ;;; Last file status change timestamp.
-    (field $st_ctim $timestamp)
+    (field $ctim $timestamp)
   )
 )
 
@@ -555,7 +555,7 @@
 (typename $subscription_clock
   (struct
     ;;; The clock against which to compare the timestamp.
-    (field $clock_id $clockid)
+    (field $id $clockid)
     ;;; The absolute or relative timestamp.
     (field $timeout $timestamp)
     ;;; The amount of time that the implementation may wait additionally
@@ -704,9 +704,9 @@
 (typename $riflags
   (flags u16
     ;;; Returns the message without removing it from the socket's receive queue.
-    $sock_recv_peek
+    $recv_peek
     ;;; On byte-stream sockets, block until the full amount of data can be returned.
-    $sock_recv_waitall
+    $recv_waitall
   )
 )
 
@@ -714,7 +714,7 @@
 (typename $roflags
   (flags u16
     ;;; Returned by `sock_recv`: Message data has been truncated.
-    $sock_recv_data_truncated
+    $recv_data_truncated
   )
 )
 
@@ -726,9 +726,9 @@
 (typename $sdflags
   (flags u8
     ;;; Disables further receive operations.
-    $shut_rd
+    $rd
     ;;; Disables further send operations.
-    $shut_wr
+    $wr
   )
 )
 
@@ -736,7 +736,7 @@
 (typename $preopentype
   (enum u8
     ;;; A pre-opened directory.
-    $preopentype_dir
+    $dir
   )
 )
 

@@ -53,7 +53,7 @@
   (@interface func (export "clock_res_get")
     (result $error $errno)
     ;;; The clock for which to return the resolution.
-    (param $clock_id $clockid)
+    (param $id $clockid)
     ;;; The resolution of the clock.
     (result $resolution $timestamp)
   )
@@ -61,7 +61,7 @@
   ;;; Note: This is similar to `clock_gettime` in POSIX.
   (@interface func (export "clock_time_get")
     ;;; The clock for which to return the time.
-    (param $clock_id $clockid)
+    (param $id $clockid)
     ;;; The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
     (param $precision $timestamp)
     (result $error $errno)
@@ -148,7 +148,7 @@
   (@interface func (export "fd_filestat_set_size")
     (param $fd $fd)
     ;;; The desired file size.
-    (param $st_size $filesize)
+    (param $size $filesize)
     (result $error $errno)
   )
 
@@ -157,9 +157,9 @@
   (@interface func (export "fd_filestat_set_times")
     (param $fd $fd)
     ;;; The desired values of the data access timestamp.
-    (param $st_atim $timestamp)
+    (param $atim $timestamp)
     ;;; The desired values of the data modification timestamp.
-    (param $st_mtim $timestamp)
+    (param $mtim $timestamp)
     ;;; A bitmask indicating which timestamps to adjust.
     (param $fst_flags $fstflags)
     (result $error $errno)
@@ -329,9 +329,9 @@
     ;;; The path of the file or directory to operate on.
     (param $path string)
     ;;; The desired values of the data access timestamp.
-    (param $st_atim $timestamp)
+    (param $atim $timestamp)
     ;;; The desired values of the data modification timestamp.
-    (param $st_mtim $timestamp)
+    (param $mtim $timestamp)
     ;;; A bitmask indicating which timestamps to adjust.
     (param $fst_flags $fstflags)
     (result $error $errno)
@@ -369,7 +369,7 @@
     ;;; `dirfd` directory.
     (param $path string)
     ;;; The method by which to open the file.
-    (param $o_flags $oflags)
+    (param $flags $oflags)
     ;;; The initial rights of the newly created file descriptor. The
     ;;; implementation is allowed to return a file descriptor with fewer rights
     ;;; than specified, if and only if those rights do not apply to the type of
