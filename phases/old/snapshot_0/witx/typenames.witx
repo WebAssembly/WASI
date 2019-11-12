@@ -18,16 +18,16 @@
   (enum u32
     ;;; The clock measuring real time. Time value zero corresponds with
     ;;; 1970-01-01T00:00:00Z.
-    $CLOCK_REALTIME
+    $clock_realtime
     ;;; The store-wide monotonic clock, which is defined as a clock measuring
     ;;; real time, whose value cannot be adjusted and which cannot have negative
     ;;; clock jumps. The epoch of this clock is undefined. The absolute time
     ;;; value of this clock therefore has no meaning.
-    $CLOCK_MONOTONIC
+    $clock_monotonic
     ;;; The CPU-time clock associated with the current process.
-    $CLOCK_PROCESS_CPUTIME_ID
+    $clock_process_cputime_id
     ;;; The CPU-time clock associated with the current thread.
-    $CLOCK_THREAD_CPUTIME_ID
+    $clock_thread_cputime_id
   )
 )
 
@@ -38,159 +38,159 @@
 (typename $errno
   (enum u16
     ;;; No error occurred. System call completed successfully.
-    $ESUCCESS
+    $esuccess
     ;;; Argument list too long.
-    $E2BIG
+    $e2big
     ;;; Permission denied.
-    $EACCES
+    $eacces
     ;;; Address in use.
-    $EADDRINUSE
+    $eaddrinuse
     ;;; Address not available.
-    $EADDRNOTAVAIL
+    $eaddrnotavail
     ;;; Address family not supported.
-    $EAFNOSUPPORT
+    $eafnosupport
     ;;; Resource unavailable, or operation would block.
-    $EAGAIN
+    $eagain
     ;;; Connection already in progress.
-    $EALREADY
+    $ealready
     ;;; Bad file descriptor.
-    $EBADF
+    $ebadf
     ;;; Bad message.
-    $EBADMSG
+    $ebadmsg
     ;;; Device or resource busy.
-    $EBUSY
+    $ebusy
     ;;; Operation canceled.
-    $ECANCELED
+    $ecanceled
     ;;; No child processes.
-    $ECHILD
+    $echild
     ;;; Connection aborted.
-    $ECONNABORTED
+    $econnaborted
     ;;; Connection refused.
-    $ECONNREFUSED
+    $econnrefused
     ;;; Connection reset.
-    $ECONNRESET
+    $econnreset
     ;;; Resource deadlock would occur.
-    $EDEADLK
+    $edeadlk
     ;;; Destination address required.
-    $EDESTADDRREQ
+    $edestaddrreq
     ;;; Mathematics argument out of domain of function.
-    $EDOM
+    $edom
     ;;; Reserved.
-    $EDQUOT
+    $edquot
     ;;; File exists.
-    $EEXIST
+    $eexist
     ;;; Bad address.
-    $EFAULT
+    $efault
     ;;; File too large.
-    $EFBIG
+    $efbig
     ;;; Host is unreachable.
-    $EHOSTUNREACH
+    $ehostunreach
     ;;; Identifier removed.
-    $EIDRM
+    $eidrm
     ;;; Illegal byte sequence.
-    $EILSEQ
+    $eilseq
     ;;; Operation in progress.
-    $EINPROGRESS
+    $einprogress
     ;;; Interrupted function.
-    $EINTR
+    $eintr
     ;;; Invalid argument.
-    $EINVAL
+    $einval
     ;;; I/O error.
-    $EIO
+    $eio
     ;;; Socket is connected.
-    $EISCONN
+    $eisconn
     ;;; Is a directory.
-    $EISDIR
+    $eisdir
     ;;; Too many levels of symbolic links.
-    $ELOOP
+    $eloop
     ;;; File descriptor value too large.
-    $EMFILE
+    $emfile
     ;;; Too many links.
-    $EMLINK
+    $emlink
     ;;; Message too large.
-    $EMSGSIZE
+    $emsgsize
     ;;; Reserved.
-    $EMULTIHOP
+    $emultihop
     ;;; Filename too long.
-    $ENAMETOOLONG
+    $enametoolong
     ;;; Network is down.
-    $ENETDOWN
+    $enetdown
     ;;; Connection aborted by network.
-    $ENETRESET
+    $enetreset
     ;;; Network unreachable.
-    $ENETUNREACH
+    $enetunreach
     ;;; Too many files open in system.
-    $ENFILE
+    $enfile
     ;;; No buffer space available.
-    $ENOBUFS
+    $enobufs
     ;;; No such device.
-    $ENODEV
+    $enodev
     ;;; No such file or directory.
-    $ENOENT
+    $enoent
     ;;; Executable file format error.
-    $ENOEXEC
+    $enoexec
     ;;; No locks available.
-    $ENOLCK
+    $enolck
     ;;; Reserved.
-    $ENOLINK
+    $enolink
     ;;; Not enough space.
-    $ENOMEM
+    $enomem
     ;;; No message of the desired type.
-    $ENOMSG
+    $enomsg
     ;;; Protocol not available.
-    $ENOPROTOOPT
+    $enoprotoopt
     ;;; No space left on device.
-    $ENOSPC
+    $enospc
     ;;; Function not supported.
-    $ENOSYS
+    $enosys
     ;;; The socket is not connected.
-    $ENOTCONN
+    $enotconn
     ;;; Not a directory or a symbolic link to a directory.
-    $ENOTDIR
+    $enotdir
     ;;; Directory not empty.
-    $ENOTEMPTY
+    $enotempty
     ;;; State not recoverable.
-    $ENOTRECOVERABLE
+    $enotrecoverable
     ;;; Not a socket.
-    $ENOTSOCK
+    $enotsock
     ;;; Not supported, or operation not supported on socket.
-    $ENOTSUP
+    $enotsup
     ;;; Inappropriate I/O control operation.
-    $ENOTTY
+    $enotty
     ;;; No such device or address.
-    $ENXIO
+    $enxio
     ;;; Value too large to be stored in data type.
-    $EOVERFLOW
+    $eoverflow
     ;;; Previous owner died.
-    $EOWNERDEAD
+    $eownerdead
     ;;; Operation not permitted.
-    $EPERM
+    $eperm
     ;;; Broken pipe.
-    $EPIPE
+    $epipe
     ;;; Protocol error.
-    $EPROTO
+    $eproto
     ;;; Protocol not supported.
-    $EPROTONOSUPPORT
+    $eprotonosupport
     ;;; Protocol wrong type for socket.
-    $EPROTOTYPE
+    $eprototype
     ;;; Result too large.
-    $ERANGE
+    $erange
     ;;; Read-only file system.
-    $EROFS
+    $erofs
     ;;; Invalid seek.
-    $ESPIPE
+    $espipe
     ;;; No such process.
-    $ESRCH
+    $esrch
     ;;; Reserved.
-    $ESTALE
+    $estale
     ;;; Connection timed out.
-    $ETIMEDOUT
+    $etimedout
     ;;; Text file busy.
-    $ETXTBSY
+    $etxtbsy
     ;;; Cross-device link.
-    $EXDEV
+    $exdev
     ;;; Extension: Capabilities insufficient.
-    $ENOTCAPABLE
+    $enotcapable
   )
 )
 
@@ -201,75 +201,75 @@
     ;;
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;;; `path_open` with `FDFLAG_DSYNC`.
-    $RIGHT_FD_DATASYNC
+    $right_fd_datasync
     ;;; The right to invoke `fd_read` and `sock_recv`.
     ;;
     ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pread`.
-    $RIGHT_FD_READ
+    $right_fd_read
     ;;; The right to invoke `fd_seek`. This flag implies `RIGHT_FD_TELL`.
-    $RIGHT_FD_SEEK
+    $right_fd_seek
     ;;; The right to invoke `fd_fdstat_set_flags`.
-    $RIGHT_FD_FDSTAT_SET_FLAGS
+    $right_fd_fdstat_set_flags
     ;;; The right to invoke `fd_sync`.
     ;;
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke
     ;;; `path_open` with `FDFLAG_RSYNC` and `FDFLAG_DSYNC`.
-    $RIGHT_FD_SYNC
+    $right_fd_sync
     ;;; The right to invoke `fd_seek` in such a way that the file offset
     ;;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
     ;;; invoke `fd_tell`.
-    $RIGHT_FD_TELL
+    $right_fd_tell
     ;;; The right to invoke `fd_write` and `sock_send`.
     ;;; If `RIGHT_FD_SEEK` is set, includes the right to invoke `fd_pwrite`.
-    $RIGHT_FD_WRITE
+    $right_fd_write
     ;;; The right to invoke `fd_advise`.
-    $RIGHT_FD_ADVISE
+    $right_fd_advise
     ;;; The right to invoke `fd_allocate`.
-    $RIGHT_FD_ALLOCATE
+    $right_fd_allocate
     ;;; The right to invoke `path_create_directory`.
-    $RIGHT_PATH_CREATE_DIRECTORY
+    $right_path_create_directory
     ;;; If `RIGHT_PATH_OPEN` is set, the right to invoke `path_open` with `O_CREAT`.
-    $RIGHT_PATH_CREATE_FILE
+    $right_path_create_file
     ;;; The right to invoke `path_link` with the file descriptor as the
     ;;; source directory.
-    $RIGHT_PATH_LINK_SOURCE
+    $right_path_link_source
     ;;; The right to invoke `path_link` with the file descriptor as the
     ;;; target directory.
-    $RIGHT_PATH_LINK_TARGET
+    $right_path_link_target
     ;;; The right to invoke `path_open`.
-    $RIGHT_PATH_OPEN
+    $right_path_open
     ;;; The right to invoke `fd_readdir`.
-    $RIGHT_FD_READDIR
+    $right_fd_readdir
     ;;; The right to invoke `path_readlink`.
-    $RIGHT_PATH_READLINK
+    $right_path_readlink
     ;;; The right to invoke `path_rename` with the file descriptor as the source directory.
-    $RIGHT_PATH_RENAME_SOURCE
+    $right_path_rename_source
     ;;; The right to invoke `path_rename` with the file descriptor as the target directory.
-    $RIGHT_PATH_RENAME_TARGET
+    $right_path_rename_target
     ;;; The right to invoke `path_filestat_get`.
-    $RIGHT_PATH_FILESTAT_GET
+    $right_path_filestat_get
     ;;; The right to change a file's size (there is no `path_filestat_set_size`).
     ;;; If `RIGHT_PATH_OPEN` is set, includes the right to invoke `path_open` with `O_TRUNC`.
-    $RIGHT_PATH_FILESTAT_SET_SIZE
+    $right_path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
-    $RIGHT_PATH_FILESTAT_SET_TIMES
+    $right_path_filestat_set_times
     ;;; The right to invoke `fd_filestat_get`.
-    $RIGHT_FD_FILESTAT_GET
+    $right_fd_filestat_get
     ;;; The right to invoke `fd_filestat_set_size`.
-    $RIGHT_FD_FILESTAT_SET_SIZE
+    $right_fd_filestat_set_size
     ;;; The right to invoke `fd_filestat_set_times`.
-    $RIGHT_FD_FILESTAT_SET_TIMES
+    $right_fd_filestat_set_times
     ;;; The right to invoke `path_symlink`.
-    $RIGHT_PATH_SYMLINK
+    $right_path_symlink
     ;;; The right to invoke `path_remove_directory`.
-    $RIGHT_PATH_REMOVE_DIRECTORY
+    $right_path_remove_directory
     ;;; The right to invoke `path_unlink_file`.
-    $RIGHT_PATH_UNLINK_FILE
+    $right_path_unlink_file
     ;;; If `RIGHT_FD_READ` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_READ`.
     ;;; If `RIGHT_FD_WRITE` is set, includes the right to invoke `poll_oneoff` to subscribe to `EVENTTYPE_FD_WRITE`.
-    $RIGHT_POLL_FD_READWRITE
+    $right_poll_fd_readwrite
     ;;; The right to invoke `sock_shutdown`.
-    $RIGHT_SOCK_SHUTDOWN
+    $right_sock_shutdown
   )
 )
 
@@ -306,11 +306,11 @@
 (typename $whence
   (enum u8
     ;;; Seek relative to current position.
-    $WHENCE_CUR
+    $whence_cur
     ;;; Seek relative to end-of-file.
-    $WHENCE_END
+    $whence_end
     ;;; Seek relative to start-of-file.
-    $WHENCE_SET
+    $whence_set
   )
 )
 
@@ -327,21 +327,21 @@
 (typename $filetype
   (enum u8
     ;;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
-    $FILETYPE_UNKNOWN
+    $filetype_unknown
     ;;; The file descriptor or file refers to a block device inode.
-    $FILETYPE_BLOCK_DEVICE
+    $filetype_block_device
     ;;; The file descriptor or file refers to a character device inode.
-    $FILETYPE_CHARACTER_DEVICE
+    $filetype_character_device
     ;;; The file descriptor or file refers to a directory inode.
-    $FILETYPE_DIRECTORY
+    $filetype_directory
     ;;; The file descriptor or file refers to a regular file inode.
-    $FILETYPE_REGULAR_FILE
+    $filetype_regular_file
     ;;; The file descriptor or file refers to a datagram socket.
-    $FILETYPE_SOCKET_DGRAM
+    $filetype_socket_dgram
     ;;; The file descriptor or file refers to a byte-stream socket.
-    $FILETYPE_SOCKET_STREAM
+    $filetype_socket_stream
     ;;; The file refers to a symbolic link inode.
-    $FILETYPE_SYMBOLIC_LINK
+    $filetype_symbolic_link
   )
 )
 
@@ -363,17 +363,17 @@
 (typename $advice
   (enum u8
     ;;; The application has no advice to give on its behavior with respect to the specified data.
-    $ADVICE_NORMAL
+    $advice_normal
     ;;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
-    $ADVICE_SEQUENTIAL
+    $advice_sequential
     ;;; The application expects to access the specified data in a random order.
-    $ADVICE_RANDOM
+    $advice_random
     ;;; The application expects to access the specified data in the near future.
-    $ADVICE_WILLNEED
+    $advice_willneed
     ;;; The application expects that it will not access the specified data in the near future.
-    $ADVICE_DONTNEED
+    $advice_dontneed
     ;;; The application expects to access the specified data once and then not reuse it thereafter.
-    $ADVICE_NOREUSE
+    $advice_noreuse
   )
 )
 
@@ -381,17 +381,17 @@
 (typename $fdflags
   (flags u16
     ;;; Append mode: Data written to the file is always appended to the file's end.
-    $FDFLAG_APPEND
+    $fdflag_append
     ;;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
-    $FDFLAG_DSYNC
+    $fdflag_dsync
     ;;; Non-blocking mode.
-    $FDFLAG_NONBLOCK
+    $fdflag_nonblock
     ;;; Synchronized read I/O operations.
-    $FDFLAG_RSYNC
+    $fdflag_rsync
     ;;; Write according to synchronized I/O file integrity completion. In
     ;;; addition to synchronizing the data stored in the file, the implementation
     ;;; may also synchronously update the file's metadata.
-    $FDFLAG_SYNC
+    $fdflag_sync
   )
 )
 
@@ -418,13 +418,13 @@
 (typename $fstflags
   (flags u16
     ;;; Adjust the last data access timestamp to the value stored in `filestat_t::st_atim`.
-    $FILESTAT_SET_ATIM
+    $filestat_set_atim
     ;;; Adjust the last data access timestamp to the time of clock `CLOCK_REALTIME`.
-    $FILESTAT_SET_ATIM_NOW
+    $filestat_set_atim_now
     ;;; Adjust the last data modification timestamp to the value stored in `filestat_t::st_mtim`.
-    $FILESTAT_SET_MTIM
+    $filestat_set_mtim
     ;;; Adjust the last data modification timestamp to the time of clock `CLOCK_REALTIME`.
-    $FILESTAT_SET_MTIM_NOW
+    $filestat_set_mtim_now
   )
 )
 
@@ -432,7 +432,7 @@
 (typename $lookupflags
   (flags u32
     ;;; As long as the resolved path corresponds to a symbolic link, it is expanded.
-    $LOOKUP_SYMLINK_FOLLOW
+    $lookup_symlink_follow
   )
 )
 
@@ -440,13 +440,13 @@
 (typename $oflags
   (flags u16
     ;;; Create file if it does not exist.
-    $O_CREAT
+    $o_creat
     ;;; Fail if not a directory.
-    $O_DIRECTORY
+    $o_directory
     ;;; Fail if file already exists.
-    $O_EXCL
+    $o_excl
     ;;; Truncate file to size 0.
-    $O_TRUNC
+    $o_trunc
   )
 )
 
@@ -484,13 +484,13 @@
   (enum u8
     ;;; The time value of clock `subscription_t::u.clock.clock_id` has
     ;;; reached timestamp `subscription_t::u.clock.timeout`.
-    $EVENTTYPE_CLOCK
+    $eventtype_clock
     ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has data
     ;;; available for reading. This event always triggers for regular files.
-    $EVENTTYPE_FD_READ
+    $eventtype_fd_read
     ;;; File descriptor `subscription_t::u.fd_readwrite.fd` has capacity
     ;;; available for writing. This event always triggers for regular files.
-    $EVENTTYPE_FD_WRITE
+    $eventtype_fd_write
   )
 )
 
@@ -499,7 +499,7 @@
 (typename $eventrwflags
   (flags u16
     ;;; The peer of this socket has closed or disconnected.
-    $EVENT_FD_READWRITE_HANGUP
+    $event_fd_readwrite_hangup
   )
 )
 
@@ -545,7 +545,7 @@
     ;;; `subscription_t::u.clock.clock_id.` If clear, treat the timestamp
     ;;; provided in `subscription_t::u.clock.timeout` relative to the
     ;;; current time value of clock `subscription_t::u.clock.clock_id.`
-    $SUBSCRIPTION_CLOCK_ABSTIME
+    $subscription_clock_abstime
   )
 )
 
@@ -606,97 +606,97 @@
   (enum u8
     ;;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
     ;;; so this value is reserved.
-    $SIGNONE
+    $signone
     ;;; Hangup.
     ;;; Action: Terminates the process.
-    $SIGHUP
+    $sighup
     ;;; Terminate interrupt signal.
     ;;; Action: Terminates the process.
-    $SIGINT
+    $sigint
     ;;; Terminal quit signal.
     ;;; Action: Terminates the process.
-    $SIGQUIT
+    $sigquit
     ;;; Illegal instruction.
     ;;; Action: Terminates the process.
-    $SIGILL
+    $sigill
     ;;; Trace/breakpoint trap.
     ;;; Action: Terminates the process.
-    $SIGTRAP
+    $sigtrap
     ;;; Process abort signal.
     ;;; Action: Terminates the process.
-    $SIGABRT
+    $sigabrt
     ;;; Access to an undefined portion of a memory object.
     ;;; Action: Terminates the process.
-    $SIGBUS
+    $sigbus
     ;;; Erroneous arithmetic operation.
     ;;; Action: Terminates the process.
-    $SIGFPE
+    $sigfpe
     ;;; Kill.
     ;;; Action: Terminates the process.
-    $SIGKILL
+    $sigkill
     ;;; User-defined signal 1.
     ;;; Action: Terminates the process.
-    $SIGUSR1
+    $sigusr1
     ;;; Invalid memory reference.
     ;;; Action: Terminates the process.
-    $SIGSEGV
+    $sigsegv
     ;;; User-defined signal 2.
     ;;; Action: Terminates the process.
-    $SIGUSR2
+    $sigusr2
     ;;; Write on a pipe with no one to read it.
     ;;; Action: Ignored.
-    $SIGPIPE
+    $sigpipe
     ;;; Alarm clock.
     ;;; Action: Terminates the process.
-    $SIGALRM
+    $sigalrm
     ;;; Termination signal.
     ;;; Action: Terminates the process.
-    $SIGTERM
+    $sigterm
     ;;; Child process terminated, stopped, or continued.
     ;;; Action: Ignored.
-    $SIGCHLD
+    $sigchld
     ;;; Continue executing, if stopped.
     ;;; Action: Continues executing, if stopped.
-    $SIGCONT
+    $sigcont
     ;;; Stop executing.
     ;;; Action: Stops executing.
-    $SIGSTOP
+    $sigstop
     ;;; Terminal stop signal.
     ;;; Action: Stops executing.
-    $SIGTSTP
+    $sigtstp
     ;;; Background process attempting read.
     ;;; Action: Stops executing.
-    $SIGTTIN
+    $sigttin
     ;;; Background process attempting write.
     ;;; Action: Stops executing.
-    $SIGTTOU
+    $sigttou
     ;;; High bandwidth data is available at a socket.
     ;;; Action: Ignored.
-    $SIGURG
+    $sigurg
     ;;; CPU time limit exceeded.
     ;;; Action: Terminates the process.
-    $SIGXCPU
+    $sigxcpu
     ;;; File size limit exceeded.
     ;;; Action: Terminates the process.
-    $SIGXFSZ
+    $sigxfsz
     ;;; Virtual timer expired.
     ;;; Action: Terminates the process.
-    $SIGVTALRM
+    $sigvtalrm
     ;;; Profiling timer expired.
     ;;; Action: Terminates the process.
-    $SIGPROF
+    $sigprof
     ;;; Window changed.
     ;;; Action: Ignored.
-    $SIGWINCH
+    $sigwinch
     ;;; I/O possible.
     ;;; Action: Terminates the process.
-    $SIGPOLL
+    $sigpoll
     ;;; Power failure.
     ;;; Action: Terminates the process.
-    $SIGPWR
+    $sigpwr
     ;;; Bad system call.
     ;;; Action: Terminates the process.
-    $SIGSYS
+    $sigsys
   )
 )
 
@@ -704,9 +704,9 @@
 (typename $riflags
   (flags u16
     ;;; Returns the message without removing it from the socket's receive queue.
-    $SOCK_RECV_PEEK
+    $sock_recv_peek
     ;;; On byte-stream sockets, block until the full amount of data can be returned.
-    $SOCK_RECV_WAITALL
+    $sock_recv_waitall
   )
 )
 
@@ -714,7 +714,7 @@
 (typename $roflags
   (flags u16
     ;;; Returned by `sock_recv`: Message data has been truncated.
-    $SOCK_RECV_DATA_TRUNCATED
+    $sock_recv_data_truncated
   )
 )
 
@@ -726,9 +726,9 @@
 (typename $sdflags
   (flags u8
     ;;; Disables further receive operations.
-    $SHUT_RD
+    $shut_rd
     ;;; Disables further send operations.
-    $SHUT_WR
+    $shut_wr
   )
 )
 
@@ -736,7 +736,7 @@
 (typename $preopentype
   (enum u8
     ;;; A pre-opened directory.
-    $PREOPENTYPE_DIR
+    $preopentype_dir
   )
 )
 
