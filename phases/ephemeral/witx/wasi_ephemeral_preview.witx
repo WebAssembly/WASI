@@ -366,7 +366,7 @@
     ;;; `dirfd` directory.
     (param $path string)
     ;;; The method by which to open the file.
-    (param $flags $oflags)
+    (param $oflags $oflags)
     ;;; The initial rights of the newly created file descriptor. The
     ;;; implementation is allowed to return a file descriptor with fewer rights
     ;;; than specified, if and only if those rights do not apply to the type of
@@ -377,7 +377,7 @@
     ;;; file descriptors derived from it.
     (param $fs_rights_base $rights)
     (param $fs_rights_inherting $rights)
-    (param $flags $fdflags)
+    (param $fdflags $fdflags)
     (result $error $errno)
     ;;; The file descriptor of the file that has been opened.
     (result $opened_fd $fd)
