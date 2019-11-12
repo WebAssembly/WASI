@@ -120,6 +120,7 @@ pub enum DatatypeIdent {
 pub struct Datatype {
     pub name: Id,
     pub variant: DatatypeVariant,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -149,14 +150,26 @@ pub enum IntRepr {
 pub struct EnumDatatype {
     pub name: Id,
     pub repr: IntRepr,
-    pub variants: Vec<Id>,
+    pub variants: Vec<EnumVariant>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EnumVariant {
+    pub name: Id,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsDatatype {
     pub name: Id,
     pub repr: IntRepr,
-    pub flags: Vec<Id>,
+    pub flags: Vec<FlagsMember>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FlagsMember {
+    pub name: Id,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -169,6 +182,7 @@ pub struct StructDatatype {
 pub struct StructMember {
     pub name: Id,
     pub type_: DatatypeIdent,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -181,6 +195,7 @@ pub struct UnionDatatype {
 pub struct UnionVariant {
     pub name: Id,
     pub type_: DatatypeIdent,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone)]
@@ -188,6 +203,7 @@ pub struct Module {
     pub name: Id,
     definitions: Vec<ModuleDefinition>,
     entries: HashMap<Id, ModuleEntry>,
+    pub docs: String,
 }
 
 impl Module {
@@ -195,11 +211,13 @@ impl Module {
         name: Id,
         definitions: Vec<ModuleDefinition>,
         entries: HashMap<Id, ModuleEntry>,
+        docs: String,
     ) -> Self {
         Module {
             name,
             definitions,
             entries,
+            docs,
         }
     }
     pub fn import(&self, name: &Id) -> Option<Rc<ModuleImport>> {
@@ -275,6 +293,7 @@ impl PartialEq for ModuleEntry {
 pub struct ModuleImport {
     pub name: Id,
     pub variant: ModuleImportVariant,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -287,6 +306,7 @@ pub struct InterfaceFunc {
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
     pub results: Vec<InterfaceFuncParam>,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -294,6 +314,7 @@ pub struct InterfaceFuncParam {
     pub name: Id,
     pub type_: DatatypeIdent,
     pub position: InterfaceFuncParamPosition,
+    pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

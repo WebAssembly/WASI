@@ -58,11 +58,11 @@ fn parse_file(
     let doc = wast::parser::parse::<TopLevelDocument>(&buf).map_err(adjust_err)?;
 
     for t in doc.items {
-        match t {
+        match t.item {
             TopLevelSyntax::Decl(d) => {
                 let def = validator
                     .scope(&input, &path)
-                    .validate_decl(&d)
+                    .validate_decl(&d, &t.comments)
                     .map_err(WitxError::Validation)?;
                 definitions.push(def);
             }
