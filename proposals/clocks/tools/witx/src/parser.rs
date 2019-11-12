@@ -23,6 +23,7 @@ mod kw {
     wast::custom_keyword!(f64);
     wast::custom_keyword!(field);
     wast::custom_keyword!(flags);
+    wast::custom_keyword!(handle);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#struct = "struct");
@@ -333,6 +334,7 @@ pub enum TypedefSyntax<'a> {
     Flags(FlagsSyntax<'a>),
     Struct(StructSyntax<'a>),
     Union(UnionSyntax<'a>),
+    Handle(HandleSyntax<'a>),
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
@@ -351,6 +353,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                 Ok(TypedefSyntax::Struct(parser.parse()?))
             } else if l.peek::<kw::r#union>() {
                 Ok(TypedefSyntax::Union(parser.parse()?))
+            } else if l.peek::<kw::handle>() {
+                Ok(TypedefSyntax::Handle(parser.parse()?))
             } else {
                 Err(l.error())
             }
@@ -443,6 +447,22 @@ impl<'a> Parse<'a> for UnionSyntax<'a> {
             fields.push(parser.parse()?);
         }
         Ok(UnionSyntax { fields })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HandleSyntax<'a> {
+    pub supertypes: Vec<wast::Id<'a>>,
+}
+
+impl<'a> Parse<'a> for HandleSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::handle>()?;
+        let mut supertypes = Vec::new();
+        while !parser.is_empty() {
+            supertypes.push(parser.parse()?);
+        }
+        Ok(HandleSyntax { supertypes })
     }
 }
 

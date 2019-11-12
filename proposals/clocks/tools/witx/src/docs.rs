@@ -68,6 +68,7 @@ impl Documentation for DatatypeVariant {
             DatatypeVariant::Flags(a) => a.to_md(),
             DatatypeVariant::Struct(a) => a.to_md(),
             DatatypeVariant::Union(a) => a.to_md(),
+            DatatypeVariant::Handle(a) => a.to_md(),
         }
     }
 }
@@ -148,6 +149,17 @@ impl Documentation for UnionDatatype {
     }
 }
 
+impl Documentation for HandleDatatype {
+    fn to_md(&self) -> String {
+        let supertypes = self
+            .supertypes
+            .iter()
+            .map(|s| format!("* {}", s.name()))
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!("### Handle supertypes:\n{}\n", supertypes)
+    }
+}
 impl IntRepr {
     fn name(&self) -> &'static str {
         match self {

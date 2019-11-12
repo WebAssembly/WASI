@@ -135,6 +135,7 @@ impl Render for DatatypeVariant {
             DatatypeVariant::Flags(a) => a.to_sexpr(),
             DatatypeVariant::Struct(a) => a.to_sexpr(),
             DatatypeVariant::Union(a) => a.to_sexpr(),
+            DatatypeVariant::Handle(a) => a.to_sexpr(),
         }
     }
 }
@@ -211,6 +212,17 @@ impl Render for UnionDatatype {
     }
 }
 
+impl Render for HandleDatatype {
+    fn to_sexpr(&self) -> SExpr {
+        let header = vec![SExpr::word("handle")];
+        let supertypes = self
+            .supertypes
+            .iter()
+            .map(|s| s.to_sexpr())
+            .collect::<Vec<SExpr>>();
+        SExpr::Vec([header, supertypes].concat())
+    }
+}
 impl Render for IntRepr {
     fn to_sexpr(&self) -> SExpr {
         match self {

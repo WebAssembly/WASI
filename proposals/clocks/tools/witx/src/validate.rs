@@ -2,11 +2,11 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DatatypeIdentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax,
-        ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
-    Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, Id, IntRepr,
-    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
+    Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, HandleDatatype, Id,
+    IntRepr, InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
     ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
     UnionDatatype, UnionVariant,
 };
@@ -188,6 +188,9 @@ impl DocValidationScope<'_> {
                         TypedefSyntax::Union(syntax) => DatatypeVariant::Union(
                             self.validate_union(&name, &syntax, decl.ident.span())?,
                         ),
+                        TypedefSyntax::Handle(syntax) => DatatypeVariant::Handle(
+                            self.validate_handle(&name, syntax, decl.ident.span())?,
+                        ),
                     };
                 let rc_datatype = Rc::new(Datatype {
                     name: name.clone(),
@@ -355,6 +358,50 @@ impl DocValidationScope<'_> {
         Ok(UnionDatatype {
             name: name.clone(),
             variants,
+        })
+    }
+
+    fn validate_handle(
+        &self,
+        name: &Id,
+        syntax: &HandleSyntax,
+        _span: wast::Span,
+    ) -> Result<HandleDatatype, ValidationError> {
+        let supertypes = syntax
+            .supertypes
+            .iter()
+            .map(|id_syntax| {
+                let id = self.get(&id_syntax)?;
+                match self.doc.entries.get(&id) {
+                    Some(Entry::Datatype(weak_d)) => {
+                        let d = weak_d.upgrade().expect("weak backref to defined type");
+                        match &d.variant {
+                            DatatypeVariant::Handle { .. } => Ok(DatatypeIdent::Ident(d)),
+                            _ => Err(ValidationError::WrongKindName {
+                                name: id_syntax.name().to_string(),
+                                location: self.location(id_syntax.span()),
+                                expected: "handle",
+                                got: d.variant.kind(),
+                            }),
+                        }
+                    }
+                    Some(entry) => Err(ValidationError::WrongKindName {
+                        name: id_syntax.name().to_string(),
+                        location: self.location(id_syntax.span()),
+                        expected: "handle",
+                        got: entry.kind(),
+                    }),
+                    None => Err(ValidationError::Recursive {
+                        name: id_syntax.name().to_string(),
+                        location: self.location(id_syntax.span()),
+                    }),
+                }
+            })
+            .collect::<Result<Vec<DatatypeIdent>, _>>()?;
+
+        Ok(HandleDatatype {
+            name: name.clone(),
+            supertypes,
         })
     }
 
