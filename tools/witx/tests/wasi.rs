@@ -25,11 +25,6 @@ fn render_roundtrip() {
 
     let back_to_sexprs = format!("{}", doc);
     println!("{}", back_to_sexprs);
-    let doc2 = witx::parse(&back_to_sexprs)
-        .map_err(|e| e.report_with(&witx::MockFs::new(&[("-", &back_to_sexprs)])))
-        .unwrap();
-
-    let back_to_sexprs = format!("{}", doc);
 
     let doc2 = witx::parse(&back_to_sexprs)
         .map_err(|e| e.report_with(&witx::MockFs::new(&[("-", &back_to_sexprs)])))
