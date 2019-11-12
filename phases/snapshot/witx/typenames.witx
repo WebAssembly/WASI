@@ -38,159 +38,159 @@
 (typename $errno
   (enum u16
     ;;; No error occurred. System call completed successfully.
-    $esuccess
+    $success
     ;;; Argument list too long.
-    $e2big
+    $2big
     ;;; Permission denied.
-    $eacces
+    $acces
     ;;; Address in use.
-    $eaddrinuse
+    $addrinuse
     ;;; Address not available.
-    $eaddrnotavail
+    $addrnotavail
     ;;; Address family not supported.
-    $eafnosupport
+    $afnosupport
     ;;; Resource unavailable, or operation would block.
-    $eagain
+    $again
     ;;; Connection already in progress.
-    $ealready
+    $already
     ;;; Bad file descriptor.
-    $ebadf
+    $badf
     ;;; Bad message.
-    $ebadmsg
+    $badmsg
     ;;; Device or resource busy.
-    $ebusy
+    $busy
     ;;; Operation canceled.
-    $ecanceled
+    $canceled
     ;;; No child processes.
-    $echild
+    $child
     ;;; Connection aborted.
-    $econnaborted
+    $connaborted
     ;;; Connection refused.
-    $econnrefused
+    $connrefused
     ;;; Connection reset.
-    $econnreset
+    $connreset
     ;;; Resource deadlock would occur.
-    $edeadlk
+    $deadlk
     ;;; Destination address required.
-    $edestaddrreq
+    $destaddrreq
     ;;; Mathematics argument out of domain of function.
-    $edom
+    $dom
     ;;; Reserved.
-    $edquot
+    $dquot
     ;;; File exists.
-    $eexist
+    $exist
     ;;; Bad address.
-    $efault
+    $fault
     ;;; File too large.
-    $efbig
+    $fbig
     ;;; Host is unreachable.
-    $ehostunreach
+    $hostunreach
     ;;; Identifier removed.
-    $eidrm
+    $idrm
     ;;; Illegal byte sequence.
-    $eilseq
+    $ilseq
     ;;; Operation in progress.
-    $einprogress
+    $inprogress
     ;;; Interrupted function.
-    $eintr
+    $intr
     ;;; Invalid argument.
-    $einval
+    $inval
     ;;; I/O error.
-    $eio
+    $io
     ;;; Socket is connected.
-    $eisconn
+    $isconn
     ;;; Is a directory.
-    $eisdir
+    $isdir
     ;;; Too many levels of symbolic links.
-    $eloop
+    $loop
     ;;; File descriptor value too large.
-    $emfile
+    $mfile
     ;;; Too many links.
-    $emlink
+    $mlink
     ;;; Message too large.
-    $emsgsize
+    $msgsize
     ;;; Reserved.
-    $emultihop
+    $multihop
     ;;; Filename too long.
-    $enametoolong
+    $nametoolong
     ;;; Network is down.
-    $enetdown
+    $netdown
     ;;; Connection aborted by network.
-    $enetreset
+    $netreset
     ;;; Network unreachable.
-    $enetunreach
+    $netunreach
     ;;; Too many files open in system.
-    $enfile
+    $nfile
     ;;; No buffer space available.
-    $enobufs
+    $nobufs
     ;;; No such device.
-    $enodev
+    $nodev
     ;;; No such file or directory.
-    $enoent
+    $noent
     ;;; Executable file format error.
-    $enoexec
+    $noexec
     ;;; No locks available.
-    $enolck
+    $nolck
     ;;; Reserved.
-    $enolink
+    $nolink
     ;;; Not enough space.
-    $enomem
+    $nomem
     ;;; No message of the desired type.
-    $enomsg
+    $nomsg
     ;;; Protocol not available.
-    $enoprotoopt
+    $noprotoopt
     ;;; No space left on device.
-    $enospc
+    $nospc
     ;;; Function not supported.
-    $enosys
+    $nosys
     ;;; The socket is not connected.
-    $enotconn
+    $notconn
     ;;; Not a directory or a symbolic link to a directory.
-    $enotdir
+    $notdir
     ;;; Directory not empty.
-    $enotempty
+    $notempty
     ;;; State not recoverable.
-    $enotrecoverable
+    $notrecoverable
     ;;; Not a socket.
-    $enotsock
+    $notsock
     ;;; Not supported, or operation not supported on socket.
-    $enotsup
+    $notsup
     ;;; Inappropriate I/O control operation.
-    $enotty
+    $notty
     ;;; No such device or address.
-    $enxio
+    $nxio
     ;;; Value too large to be stored in data type.
-    $eoverflow
+    $overflow
     ;;; Previous owner died.
-    $eownerdead
+    $ownerdead
     ;;; Operation not permitted.
-    $eperm
+    $perm
     ;;; Broken pipe.
-    $epipe
+    $pipe
     ;;; Protocol error.
-    $eproto
+    $proto
     ;;; Protocol not supported.
-    $eprotonosupport
+    $protonosupport
     ;;; Protocol wrong type for socket.
-    $eprototype
+    $prototype
     ;;; Result too large.
-    $erange
+    $range
     ;;; Read-only file system.
-    $erofs
+    $rofs
     ;;; Invalid seek.
-    $espipe
+    $spipe
     ;;; No such process.
-    $esrch
+    $srch
     ;;; Reserved.
-    $estale
+    $stale
     ;;; Connection timed out.
-    $etimedout
+    $timedout
     ;;; Text file busy.
-    $etxtbsy
+    $txtbsy
     ;;; Cross-device link.
-    $exdev
+    $xdev
     ;;; Extension: Capabilities insufficient.
-    $enotcapable
+    $notcapable
   )
 )
 
