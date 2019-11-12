@@ -501,7 +501,7 @@
 (typename $eventrwflags
   (flags u16
     ;;; The peer of this socket has closed or disconnected.
-    $event_fd_readwrite_hangup
+    $fd_readwrite_hangup
   )
 )
 
