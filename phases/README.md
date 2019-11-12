@@ -27,13 +27,13 @@
     5. Update tests in `tools/witx/tests/wasi.rs` to point at new snapshot, and
        add a test pointing at the just-archived snapshot under `old`.
     6. Optionally, under `phases/old/snapshot_{old_snapshot_number}, add
-       polyfills for suberseded APIs using the new APIs.
+       polyfills for superceded APIs using the new APIs.
 
 
   Pull Requests may also add additional tests, documentation, or
   polyfills for existing `snapshot` APIs.
 
-- [`old`](old): When APIs in `current` spec are replaced by new
+- [`old`](old): When APIs in `snapshot` spec are replaced by new
   versions, the old API modules are moved to the `old` directory. When
   possible, `old` APIs may be accompanied by polyfill modules which
   implement their API in terms of newer versions of the API.
