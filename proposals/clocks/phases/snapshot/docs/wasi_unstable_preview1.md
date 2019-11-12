@@ -117,17 +117,21 @@ modules so that embedders need not implement all of it.
 
 Read command-line argument data.
 
-The sizes of the buffers should match that returned by [`__wasi_args_sizes_get()`](#args_sizes_get).
-
 Inputs:
 
 - <a href="#args_get.argv" name="args_get.argv"></a><code>char \*\*<strong>argv</strong></code>
 
     A pointer to a buffer to write the argument pointers.
 
+    The count of elements for the buffer should be at least the value of `argc` returned by [`__wasi_args_sizes_get()`](#args_sizes_get).
+
+    The caller of `__wasi_args_get()` is responsible for allocating an additional element for a terminating NULL pointer, if necessary.
+
 - <a href="#args_get.argv_buf" name="args_get.argv_buf"></a><code>char \*<strong>argv\_buf</strong></code>
 
     A pointer to a buffer to write the argument string data.
+
+    The size of this buffer should be the value of `argv_buf_size` returned by [`__wasi_args_sizes_get()`](#args_sizes_get).
 
 ### <a href="#args_sizes_get" name="args_sizes_get"></a>`__wasi_args_sizes_get()`
 
@@ -192,21 +196,25 @@ Outputs:
 
 Read environment variable data.
 
-The sizes of the buffers should match that returned by [`__wasi_environ_sizes_get()`](#environ_sizes_get).
-
 Inputs:
 
 - <a href="#environ_get.environ" name="environ_get.environ"></a><code>char \*\*<strong>environ</strong></code>
 
     A pointer to a buffer to write the environment variable pointers.
 
+    The count of elements for the buffer should be at least the value of `environ_count` returned by [`__wasi_environ_sizes_get()`](#environ_sizes_get).
+
+    The caller of `__wasi_environ_get()` is responsible for allocating an additional element for a terminating NULL pointer, if necessary.
+
 - <a href="#environ_get.environ_buf" name="environ_get.environ_buf"></a><code>char \*<strong>environ\_buf</strong></code>
 
     A pointer to a buffer to write the environment variable string data.
 
+    The size of this buffer should be the value of `environ_buf_size` returned by [`__wasi_environ_sizes_get()`](#environ_sizes_get).
+
 ### <a href="#environ_sizes_get" name="environ_sizes_get"></a>`__wasi_environ_sizes_get()`
 
-Return command-line argument data sizes.
+Return enviroment variable data sizes.
 
 Outputs:
 
@@ -1799,7 +1807,7 @@ Members:
 
     The address and length of the buffer to be filled.
 
-### <a href="#linkcount" name="linkcount"></a>`__wasi_linkcount_t` (`uint32_t`)
+### <a href="#linkcount" name="linkcount"></a>`__wasi_linkcount_t` (`uint64_t`)
 
 Number of hard links to an inode.
 
@@ -2329,6 +2337,10 @@ Used by [`__wasi_fd_seek()`](#fd_seek).
 
 Possible values:
 
+- <a href="#whence.set" name="whence.set"></a>**`__WASI_WHENCE_SET`**
+
+    Seek relative to start-of-file.
+
 - <a href="#whence.cur" name="whence.cur"></a>**`__WASI_WHENCE_CUR`**
 
     Seek relative to current position.
@@ -2336,8 +2348,4 @@ Possible values:
 - <a href="#whence.end" name="whence.end"></a>**`__WASI_WHENCE_END`**
 
     Seek relative to end-of-file.
-
-- <a href="#whence.set" name="whence.set"></a>**`__WASI_WHENCE_SET`**
-
-    Seek relative to start-of-file.
 

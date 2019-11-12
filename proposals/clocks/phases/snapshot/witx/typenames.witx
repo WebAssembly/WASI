@@ -305,16 +305,18 @@
 ;; The position relative to which to set the offset of the file descriptor.
 (typename $whence_t
   (enum u8
+    ;; Seek relative to start-of-file.
+    $WHENCE_SET
     ;; Seek relative to current position.
     $WHENCE_CUR
     ;; Seek relative to end-of-file.
     $WHENCE_END
-    ;; Seek relative to start-of-file.
-    $WHENCE_SET
   )
 )
 
 ;; A reference to the offset of a directory entry.
+;;
+;; The value 0 signifies the start of the directory.
 (typename $dircookie_t u64)
 
 ;; The type for the $d_namlen field of $dirent_t.
@@ -451,7 +453,7 @@
 )
 
 ;; Number of hard links to an inode.
-(typename $linkcount_t u32)
+(typename $linkcount_t u64)
 
 ;; File attributes.
 (typename $filestat_t
@@ -552,8 +554,6 @@
 ;; The contents of a $subscription_t when type is `EVENTTYPE_CLOCK`.
 (typename $subscription_clock_t
   (struct
-    ;; The user-defined unique identifier of the clock.
-    (field $identifier $userdata_t)
     ;; The clock against which to compare the timestamp.
     (field $clock_id $clockid_t)
     ;; The absolute or relative timestamp.
