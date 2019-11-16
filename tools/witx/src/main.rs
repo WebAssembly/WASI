@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 use std::process;
-use witx::{load, Documentation};
+use witx::{load, to_c_header, Documentation};
 
 pub fn main() {
     let app = App::new("witx")
@@ -25,6 +25,17 @@ pub fn main() {
         .subcommand(
             SubCommand::with_name("docs")
                 .about("Output documentation")
+                .arg(
+                    Arg::with_name("output")
+                        .short("o")
+                        .long("output")
+                        .takes_value(true)
+                        .required(false),
+                ),
+        )
+        .subcommand(
+            SubCommand::with_name("c_header")
+                .about("Output C header file")
                 .arg(
                     Arg::with_name("output")
                         .short("o")
@@ -55,6 +66,15 @@ pub fn main() {
                     file.write_all(md.as_bytes()).expect("write output file");
                 } else {
                     println!("{}", md)
+                }
+            } else if let Some(subcommand) = app.subcommand_matches("c_header") {
+                let c_header = to_c_header(&doc);
+                if let Some(output) = subcommand.value_of("output") {
+                    let mut file = File::create(output).expect("create output file");
+                    file.write_all(c_header.as_bytes())
+                        .expect("write output file");
+                } else {
+                    println!("{}", c_header)
                 }
             }
         }

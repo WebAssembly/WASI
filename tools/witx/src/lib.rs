@@ -1,5 +1,7 @@
 /// Types describing a validated witx document
 mod ast;
+/// Render C header files
+mod c_header;
 /// Map witx types to core (wasm standard) types
 mod coretypes;
 /// Render documentation
@@ -22,6 +24,7 @@ pub use ast::{
     ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember, UnionDatatype,
     UnionVariant,
 };
+pub use c_header::to_c_header;
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
