@@ -1,7 +1,8 @@
 use crate::ast::*;
 use heck::ShoutySnakeCase;
 
-const PROLOGUE: &'static str = r#"/*
+const PROLOGUE: &str = r#"/**
+ * @file
  * This file describes the WASI interface, consisting of functions, types,
  * and defined values (macros).
  *
@@ -36,7 +37,7 @@ extern "C" {
 
 "#;
 
-const EPILOGUE: &'static str = r#"#ifdef __cplusplus
+const EPILOGUE: &str = r#"#ifdef __cplusplus
 }
 #endif
 
@@ -48,11 +49,11 @@ pub fn to_c_header(doc: &Document) -> String {
     ret.push_str(PROLOGUE);
 
     for d in doc.datatypes() {
-        datatype_to_c_header(&mut ret, &*d);
+        print_datatype(&mut ret, &*d);
     }
 
     for m in doc.modules() {
-        module_to_c_header(&mut ret, &m);
+        print_module(&mut ret, doc, &m);
     }
 
     ret.push_str(EPILOGUE);
@@ -60,7 +61,7 @@ pub fn to_c_header(doc: &Document) -> String {
     ret
 }
 
-fn datatype_to_c_header(ret: &mut String, d: &Datatype) {
+fn print_datatype(ret: &mut String, d: &Datatype) {
     if !d.docs.is_empty() {
         ret.push_str("/**\n");
         for line in d.docs.lines() {
@@ -70,25 +71,34 @@ fn datatype_to_c_header(ret: &mut String, d: &Datatype) {
     }
 
     match &d.variant {
-        DatatypeVariant::Alias(a) => alias_to_c_header(ret, a),
-        DatatypeVariant::Enum(e) => enum_to_c_header(ret, e),
-        DatatypeVariant::Flags(f) => flags_to_c_header(ret, f),
-        DatatypeVariant::Struct(s) => struct_to_c_header(ret, s),
-        DatatypeVariant::Union(u) => union_to_c_header(ret, u),
-        DatatypeVariant::Handle(h) => handle_to_c_header(ret, h),
+        DatatypeVariant::Alias(a) => print_alias(ret, a),
+        DatatypeVariant::Enum(e) => print_enum(ret, e),
+        DatatypeVariant::Flags(f) => print_flags(ret, f),
+        DatatypeVariant::Struct(s) => print_struct(ret, s),
+        DatatypeVariant::Union(u) => print_union(ret, u),
+        DatatypeVariant::Handle(h) => print_handle(ret, h),
     }
 }
 
-fn alias_to_c_header(ret: &mut String, a: &AliasDatatype) {
-    ret.push_str(&format!(
-        "typedef {} __wasi_{}_t;\n",
-        datatype_ident_name(&a.to),
-        ident_name(&a.name)
-    ));
-    ret.push_str("\n");
+fn print_alias(ret: &mut String, a: &AliasDatatype) {
+    match a.to {
+        DatatypeIdent::Array(_) => {
+            // Don't emit arrays as top-level types; instead we special-case
+            // them in places like parameter lists so that we can pass them
+            // as pointer and length pairs.
+        }
+        _ => {
+            ret.push_str(&format!(
+                "typedef {} __wasi_{}_t;\n",
+                datatype_ident_name(&a.to),
+                ident_name(&a.name)
+            ));
+            ret.push_str("\n");
+        }
+    }
 }
 
-fn enum_to_c_header(ret: &mut String, e: &EnumDatatype) {
+fn print_enum(ret: &mut String, e: &EnumDatatype) {
     ret.push_str(&format!(
         "typedef {} __wasi_{}_t;\n",
         intrepr_name(e.repr),
@@ -115,7 +125,7 @@ fn enum_to_c_header(ret: &mut String, e: &EnumDatatype) {
     }
 }
 
-fn flags_to_c_header(ret: &mut String, f: &FlagsDatatype) {
+fn print_flags(ret: &mut String, f: &FlagsDatatype) {
     ret.push_str(&format!(
         "typedef {} __wasi_{}_t;\n",
         intrepr_name(f.repr),
@@ -141,9 +151,9 @@ fn flags_to_c_header(ret: &mut String, f: &FlagsDatatype) {
     }
 }
 
-fn struct_to_c_header(ret: &mut String, s: &StructDatatype) {
+fn print_struct(ret: &mut String, s: &StructDatatype) {
     ret.push_str(&format!(
-        "typedef struct __wasi_{} {{\n",
+        "typedef struct __wasi_{}_t {{\n",
         ident_name(&s.name)
     ));
 
@@ -163,13 +173,13 @@ fn struct_to_c_header(ret: &mut String, s: &StructDatatype) {
         ret.push_str("\n");
     }
 
-    ret.push_str(&format!("}} __wasi_{};\n", ident_name(&s.name)));
+    ret.push_str(&format!("}} __wasi_{}_t;\n", ident_name(&s.name)));
     ret.push_str("\n");
 }
 
-fn union_to_c_header(ret: &mut String, u: &UnionDatatype) {
+fn print_union(ret: &mut String, u: &UnionDatatype) {
     ret.push_str(&format!(
-        "typedef union __wasi_{} {{\n",
+        "typedef union __wasi_{}_t {{\n",
         ident_name(&u.name)
     ));
 
@@ -189,21 +199,17 @@ fn union_to_c_header(ret: &mut String, u: &UnionDatatype) {
         ret.push_str("\n");
     }
 
-    ret.push_str(&format!("}} __wasi_{};\n", ident_name(&u.name)));
+    ret.push_str(&format!("}} __wasi_{}_t;\n", ident_name(&u.name)));
     ret.push_str("\n");
 }
 
-fn handle_to_c_header(ret: &mut String, h: &HandleDatatype) {
+fn print_handle(ret: &mut String, h: &HandleDatatype) {
     ret.push_str(&format!("typedef int __wasi_{}_t;", ident_name(&h.name)));
 }
 
-fn module_to_c_header(ret: &mut String, m: &Module) {
+fn print_module(ret: &mut String, doc: &Document, m: &Module) {
     ret.push_str("/**\n");
-    ret.push_str(&format!(
-        " * @defgroup {} {}\n",
-        ident_name(&m.name),
-        m.docs.lines().next().unwrap_or("(not documented yet)")
-    ));
+    ret.push_str(&format!(" * @defgroup {}\n", ident_name(&m.name),));
     for line in m.docs.lines() {
         ret.push_str(&format!(" * {}\n", line));
     }
@@ -212,14 +218,14 @@ fn module_to_c_header(ret: &mut String, m: &Module) {
     ret.push_str("\n");
 
     for func in m.funcs() {
-        func_to_c_header(ret, &func, &m.name);
+        print_func(ret, doc, &func, &m.name);
     }
 
     ret.push_str("/** @} */\n");
     ret.push_str("\n");
 }
 
-fn func_to_c_header(ret: &mut String, func: &InterfaceFunc, module_name: &Id) {
+fn print_func(ret: &mut String, doc: &Document, func: &InterfaceFunc, module_name: &Id) {
     if !func.docs.is_empty() {
         ret.push_str("/**\n");
         for line in func.docs.lines() {
@@ -236,13 +242,21 @@ fn func_to_c_header(ret: &mut String, func: &InterfaceFunc, module_name: &Id) {
         }
         ret.push_str(" */\n");
     }
-    if !func.results.is_empty() {
+    if func.results.is_empty() {
+        if func.name.as_str() == "proc_exit" {
+            ret.push_str("_Noreturn ");
+        }
+        ret.push_str("void ");
+    } else {
         let first_result = &func.results[0];
         ret.push_str(&format!("{} ", datatype_ident_name(&first_result.type_)));
     }
 
-    ret.push_str(&format!("__wasi_{}_t(\n", ident_name(&func.name)));
+    ret.push_str(&format!("__wasi_{}(\n", ident_name(&func.name)));
 
+    if func.params.is_empty() && func.results.len() <= 1 {
+        ret.push_str("    void\n");
+    }
     for (index, param) in func.params.iter().enumerate() {
         if !param.docs.is_empty() {
             ret.push_str("    /**\n");
@@ -251,11 +265,34 @@ fn func_to_c_header(ret: &mut String, func: &InterfaceFunc, module_name: &Id) {
             }
             ret.push_str("     */\n");
         }
+        add_params(ret, doc, &ident_name(&param.name), &param.type_);
         ret.push_str(&format!(
-            "    {} {}{}\n",
-            datatype_ident_name(&param.type_),
-            ident_name(&param.name),
+            "{}\n",
             if index + 1 < func.params.len() || func.results.len() > 1 {
+                ",\n"
+            } else {
+                ""
+            }
+        ));
+    }
+
+    for (index, result) in func.results.iter().enumerate() {
+        if index == 0 {
+            // The first result is returned by value above.
+            continue;
+        }
+        if !result.docs.is_empty() {
+            ret.push_str("    /**\n");
+            for line in result.docs.lines() {
+                ret.push_str(&format!("     * {}\n", line));
+            }
+            ret.push_str("     */\n");
+        }
+        ret.push_str(&format!(
+            "    {} *{}{}\n",
+            datatype_ident_name(&result.type_),
+            ident_name(&result.name),
+            if index + 1 < func.results.len() {
                 ","
             } else {
                 ""
@@ -263,42 +300,64 @@ fn func_to_c_header(ret: &mut String, func: &InterfaceFunc, module_name: &Id) {
         ));
     }
 
-    if !func.results.is_empty() {
-        for (index, result) in func.results.iter().enumerate() {
-            if index == 0 {
-                // The first result is returned by value above.
-                continue;
-            }
-            if !result.docs.is_empty() {
-                ret.push_str("    /**\n");
-                for line in result.docs.lines() {
-                    ret.push_str(&format!("     * {}\n", line));
-                }
-                ret.push_str("     */\n");
-            }
-            ret.push_str(&format!(
-                "    {} *{}{}\n",
-                datatype_ident_name(&result.type_),
-                ident_name(&result.name),
-                if index + 1 < func.results.len() {
-                    ","
-                } else {
-                    ""
-                }
-            ));
-        }
-    }
-
+    ret.push_str(") __attribute__((\n");
     ret.push_str(&format!(
-        ") __attribute__((__import_module__(\"{}\"), __import_name__(\"{}\")))",
-        ident_name(module_name),
+        "    __import_module__(\"{}\"),\n",
+        ident_name(module_name)
+    ));
+    ret.push_str(&format!(
+        "    __import_name__(\"{}\")",
         ident_name(&func.name)
     ));
     if !func.results.is_empty() {
-        ret.push_str(" __attribute__((__warn_unused_result__))");
+        ret.push_str(",\n    __warn_unused_result__\n");
     }
-    ret.push_str(";\n");
+    ret.push_str("));\n");
     ret.push_str("\n");
+}
+
+fn add_params(ret: &mut String, doc: &Document, name: &str, type_: &DatatypeIdent) {
+    match type_ {
+        DatatypeIdent::Ident(i) => match &doc.datatype(&i.name).unwrap().as_ref().variant {
+            DatatypeVariant::Alias(a) => add_resolved_params(ret, name, &a.to),
+            _ => add_resolved_params(ret, name, type_),
+        },
+        _ => add_resolved_params(ret, name, type_),
+    }
+}
+
+fn add_resolved_params(ret: &mut String, name: &str, type_: &DatatypeIdent) {
+    match type_ {
+        DatatypeIdent::Builtin(BuiltinType::String) => {
+            ret.push_str(&format!("    const char *{},\n", name));
+            ret.push_str("\n");
+            ret.push_str("    /**\n");
+            ret.push_str(&format!(
+                "     * The length of the buffer pointed to by `{}`.\n",
+                name,
+            ));
+            ret.push_str("     */\n");
+            ret.push_str(&format!("    size_t {}_len", name));
+        }
+        DatatypeIdent::Array(element) => {
+            ret.push_str(&format!(
+                "    const {} *{},\n",
+                datatype_ident_name(&element),
+                name
+            ));
+            ret.push_str("\n");
+            ret.push_str("    /**\n");
+            ret.push_str(&format!(
+                "     * The length of the array pointed to by `{}`.\n",
+                name,
+            ));
+            ret.push_str("     */\n");
+            ret.push_str(&format!("    size_t {}_len", name));
+        }
+        _ => {
+            ret.push_str(&format!("    {} {}", datatype_ident_name(&type_), name));
+        }
+    }
 }
 
 fn ident_name(i: &Id) -> String {
@@ -324,7 +383,7 @@ fn builtin_type_name(b: BuiltinType) -> &'static str {
 fn datatype_ident_name(data_ty: &DatatypeIdent) -> String {
     match data_ty {
         DatatypeIdent::Builtin(b) => builtin_type_name(*b).to_string(),
-        DatatypeIdent::Array(a) => format!("Array<{}>", datatype_ident_name(&*a)),
+        DatatypeIdent::Array(_) => unreachable!("arrays should be special-cased"),
         DatatypeIdent::Pointer(p) => format!("{} *", datatype_ident_name(&*p)),
         DatatypeIdent::ConstPointer(p) => format!("const {} *", datatype_ident_name(&*p)),
         DatatypeIdent::Ident(i) => format!("__wasi_{}_t", i.name.as_str()),
