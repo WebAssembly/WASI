@@ -20,7 +20,7 @@ impl Documentation for Document {
 }
 
 impl BuiltinType {
-    fn name(&self) -> &'static str {
+    fn type_name(&self) -> &'static str {
         match self {
             BuiltinType::String => "string",
             BuiltinType::U8 => "u8",
@@ -37,26 +37,40 @@ impl BuiltinType {
     }
 }
 
-impl DatatypeIdent {
-    fn name(&self) -> String {
-        match self {
-            DatatypeIdent::Builtin(b) => b.name().to_string(),
-            DatatypeIdent::Array(a) => format!("Array<{}>", a.name()),
-            DatatypeIdent::Pointer(p) => format!("Pointer<{}>", p.name()),
-            DatatypeIdent::ConstPointer(p) => format!("ConstPointer<{}>", p.name()),
-            DatatypeIdent::Ident(i) => i.name.as_str().to_string(),
+impl Documentation for Datatype {
+    fn to_md(&self) -> String {
+        if let Some(name) = &self.name {
+            format!(
+                "## `{}`\n{}\n{}\n",
+                name.as_str(),
+                self.docs,
+                self.variant.to_md()
+            )
+        } else {
+            unreachable!("should only produce Documentation for named datatypes")
         }
     }
 }
 
-impl Documentation for Datatype {
-    fn to_md(&self) -> String {
-        format!(
-            "## `{}`\n{}\n{}\n",
-            self.name.as_str(),
-            self.docs,
-            self.variant.to_md()
-        )
+impl Datatype {
+    fn type_name(&self) -> String {
+        self.name
+            .clone()
+            .map(|n| n.as_str().to_string())
+            .unwrap_or_else(|| match &self.variant {
+                DatatypeVariant::Array(a) => format!("Array<{}>", a.type_name()),
+                DatatypeVariant::Pointer(p) => format!("Pointer<{}>", p.type_name()),
+                DatatypeVariant::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
+                DatatypeVariant::Builtin(b) => b.type_name().to_string(),
+                DatatypeVariant::Alias { .. }
+                | DatatypeVariant::Enum { .. }
+                | DatatypeVariant::Flags { .. }
+                | DatatypeVariant::Struct { .. }
+                | DatatypeVariant::Union { .. }
+                | DatatypeVariant::Handle { .. } => {
+                    unreachable!("these variants should always be named")
+                }
+            })
     }
 }
 
@@ -69,13 +83,17 @@ impl Documentation for DatatypeVariant {
             DatatypeVariant::Struct(a) => a.to_md(),
             DatatypeVariant::Union(a) => a.to_md(),
             DatatypeVariant::Handle(a) => a.to_md(),
+            DatatypeVariant::Array{..} |
+            DatatypeVariant::Pointer{..} |
+            DatatypeVariant::ConstPointer{..} |
+            DatatypeVariant::Builtin{..} => unreachable!("should only produce Documentation for other variants"),
         }
     }
 }
 
 impl Documentation for AliasDatatype {
     fn to_md(&self) -> String {
-        format!("Alias to `{}`", self.to.name())
+        format!("Alias to `{}`", self.to.type_name())
     }
 }
 
@@ -89,7 +107,7 @@ impl Documentation for EnumDatatype {
             .join("\n");
         format!(
             "Enum represented by `{}`\n\n### Variants:\n{}\n",
-            self.repr.name(),
+            self.repr.type_name(),
             variants
         )
     }
@@ -105,7 +123,7 @@ impl Documentation for FlagsDatatype {
             .join("\n");
         format!(
             "Flags represented by `{}`\n\n### Flags:\n{}",
-            self.repr.name(),
+            self.repr.type_name(),
             flags
         )
     }
@@ -120,7 +138,7 @@ impl Documentation for StructDatatype {
                 format!(
                     "#### `{}`\nMember type: `{}`\n{}",
                     m.name.as_str(),
-                    m.type_.name(),
+                    m.type_.type_name(),
                     m.docs,
                 )
             })
@@ -139,7 +157,7 @@ impl Documentation for UnionDatatype {
                 format!(
                     "#### `{}`\nVariant type: `{}`\n{}",
                     v.name.as_str(),
-                    v.type_.name(),
+                    v.type_.type_name(),
                     v.docs,
                 )
             })
@@ -154,14 +172,14 @@ impl Documentation for HandleDatatype {
         let supertypes = self
             .supertypes
             .iter()
-            .map(|s| format!("* {}", s.name()))
+            .map(|s| format!("* {}", s.type_name()))
             .collect::<Vec<String>>()
             .join("\n");
         format!("### Handle supertypes:\n{}\n", supertypes)
     }
 }
 impl IntRepr {
-    fn name(&self) -> &'static str {
+    fn type_name(&self) -> &'static str {
         match self {
             IntRepr::U8 => "u8",
             IntRepr::U16 => "u16",
@@ -209,7 +227,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.name(),
+                    type_ = f.type_.type_name(),
                     docs = f.docs
                 )
             })
@@ -222,7 +240,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.name(),
+                    type_ = f.type_.type_name(),
                     docs = f.docs
                 )
             })

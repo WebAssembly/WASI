@@ -4,7 +4,7 @@ use std::fmt;
 impl fmt::Display for Document {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for d in self.datatypes() {
-            write!(f, "{}\n", d.to_sexpr())?;
+            write!(f, "{}\n", d.definition_sexpr())?;
         }
         for m in self.modules() {
             write!(f, "{}\n", m.to_sexpr())?;
@@ -68,17 +68,13 @@ impl SExpr {
     }
 }
 
-pub trait Render {
-    fn to_sexpr(&self) -> SExpr;
-}
-
-impl Render for Id {
+impl Id {
     fn to_sexpr(&self) -> SExpr {
         SExpr::ident(self.as_str())
     }
 }
 
-impl Render for BuiltinType {
+impl BuiltinType {
     fn to_sexpr(&self) -> SExpr {
         match self {
             BuiltinType::String => SExpr::word("string"),
@@ -96,38 +92,28 @@ impl Render for BuiltinType {
     }
 }
 
-impl Render for DatatypeIdent {
-    fn to_sexpr(&self) -> SExpr {
-        match self {
-            DatatypeIdent::Builtin(b) => b.to_sexpr(),
-            DatatypeIdent::Array(a) => SExpr::Vec(vec![SExpr::word("array"), a.to_sexpr()]),
-            DatatypeIdent::Pointer(p) => SExpr::Vec(vec![
-                SExpr::annot("witx"),
-                SExpr::word("pointer"),
-                p.to_sexpr(),
-            ]),
-            DatatypeIdent::ConstPointer(p) => SExpr::Vec(vec![
-                SExpr::annot("witx"),
-                SExpr::word("const_pointer"),
-                p.to_sexpr(),
-            ]),
-            DatatypeIdent::Ident(i) => i.name.to_sexpr(),
-        }
-    }
-}
-
-impl Render for Datatype {
-    fn to_sexpr(&self) -> SExpr {
-        let name = self.name.to_sexpr();
+impl Datatype {
+    fn definition_sexpr(&self) -> SExpr {
+        let name = self
+            .name
+            .as_ref()
+            .expect("definition of named datatype")
+            .to_sexpr();
         let body = self.variant.to_sexpr();
         SExpr::docs(
             &self.docs,
             SExpr::Vec(vec![SExpr::word("typename"), name, body]),
         )
     }
+    fn identifier_sexpr(&self) -> SExpr {
+        match &self.name {
+            Some(n) => n.to_sexpr(),
+            None => self.variant.to_sexpr(),
+        }
+    }
 }
 
-impl Render for DatatypeVariant {
+impl DatatypeVariant {
     fn to_sexpr(&self) -> SExpr {
         match self {
             DatatypeVariant::Alias(a) => a.to_sexpr(),
@@ -136,17 +122,31 @@ impl Render for DatatypeVariant {
             DatatypeVariant::Struct(a) => a.to_sexpr(),
             DatatypeVariant::Union(a) => a.to_sexpr(),
             DatatypeVariant::Handle(a) => a.to_sexpr(),
+            DatatypeVariant::Array(a) => {
+                SExpr::Vec(vec![SExpr::word("array"), a.identifier_sexpr()])
+            }
+            DatatypeVariant::Pointer(p) => SExpr::Vec(vec![
+                SExpr::annot("witx"),
+                SExpr::word("pointer"),
+                p.identifier_sexpr(),
+            ]),
+            DatatypeVariant::ConstPointer(p) => SExpr::Vec(vec![
+                SExpr::annot("witx"),
+                SExpr::word("const_pointer"),
+                p.identifier_sexpr(),
+            ]),
+            DatatypeVariant::Builtin(b) => b.to_sexpr(),
         }
     }
 }
 
-impl Render for AliasDatatype {
+impl AliasDatatype {
     fn to_sexpr(&self) -> SExpr {
-        self.to.to_sexpr()
+        self.to.identifier_sexpr()
     }
 }
 
-impl Render for EnumDatatype {
+impl EnumDatatype {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("enum"), self.repr.to_sexpr()];
         let variants = self
@@ -158,7 +158,7 @@ impl Render for EnumDatatype {
     }
 }
 
-impl Render for FlagsDatatype {
+impl FlagsDatatype {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("flags"), self.repr.to_sexpr()];
         let flags = self
@@ -170,7 +170,7 @@ impl Render for FlagsDatatype {
     }
 }
 
-impl Render for StructDatatype {
+impl StructDatatype {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("struct")];
         let members = self
@@ -182,7 +182,7 @@ impl Render for StructDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         m.name.to_sexpr(),
-                        m.type_.to_sexpr(),
+                        m.type_.identifier_sexpr(),
                     ]),
                 )
             })
@@ -191,7 +191,7 @@ impl Render for StructDatatype {
     }
 }
 
-impl Render for UnionDatatype {
+impl UnionDatatype {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("union")];
         let variants = self
@@ -203,7 +203,7 @@ impl Render for UnionDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         v.name.to_sexpr(),
-                        v.type_.to_sexpr(),
+                        v.type_.identifier_sexpr(),
                     ]),
                 )
             })
@@ -212,18 +212,18 @@ impl Render for UnionDatatype {
     }
 }
 
-impl Render for HandleDatatype {
+impl HandleDatatype {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("handle")];
         let supertypes = self
             .supertypes
             .iter()
-            .map(|s| s.to_sexpr())
+            .map(|s| s.identifier_sexpr())
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, supertypes].concat())
     }
 }
-impl Render for IntRepr {
+impl IntRepr {
     fn to_sexpr(&self) -> SExpr {
         match self {
             IntRepr::U8 => SExpr::word("u8"),
@@ -234,7 +234,7 @@ impl Render for IntRepr {
     }
 }
 
-impl Render for Module {
+impl Module {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("module"), self.name.to_sexpr()];
         let definitions = self
@@ -246,7 +246,7 @@ impl Render for Module {
     }
 }
 
-impl Render for ModuleImport {
+impl ModuleImport {
     fn to_sexpr(&self) -> SExpr {
         let variant = match self.variant {
             ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
@@ -262,7 +262,7 @@ impl Render for ModuleImport {
     }
 }
 
-impl Render for InterfaceFunc {
+impl InterfaceFunc {
     fn to_sexpr(&self) -> SExpr {
         let header = vec![
             SExpr::annot("interface"),
@@ -281,7 +281,7 @@ impl Render for InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("param"),
                         f.name.to_sexpr(),
-                        f.type_.to_sexpr(),
+                        f.type_.identifier_sexpr(),
                     ]),
                 )
             })
@@ -295,7 +295,7 @@ impl Render for InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("result"),
                         f.name.to_sexpr(),
-                        f.type_.to_sexpr(),
+                        f.type_.identifier_sexpr(),
                     ]),
                 )
             })

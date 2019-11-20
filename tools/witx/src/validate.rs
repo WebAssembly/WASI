@@ -1,8 +1,8 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DatatypeIdentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax,
-        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
+        ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
     Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, HandleDatatype, Id,
@@ -191,9 +191,19 @@ impl DocValidationScope<'_> {
                         TypedefSyntax::Handle(syntax) => DatatypeVariant::Handle(
                             self.validate_handle(&name, syntax, decl.ident.span())?,
                         ),
+                        TypedefSyntax::Array(syntax) => DatatypeVariant::Array(
+                            self.validate_pointee(&name, syntax, decl.ident.span())?,
+                        ),
+                        TypedefSyntax::Pointer(syntax) => DatatypeVariant::Pointer(
+                            self.validate_pointee(&name, syntax, decl.ident.span())?,
+                        ),
+                        TypedefSyntax::ConstPointer(syntax) => DatatypeVariant::ConstPointer(
+                            self.validate_pointee(&name, syntax, decl.ident.span())?,
+                        ),
+                        TypedefSyntax::Builtin(builtin) => DatatypeVariant::Builtin(*builtin),
                     };
                 let rc_datatype = Rc::new(Datatype {
-                    name: name.clone(),
+                    name: Some(name.clone()),
                     variant,
                     docs,
                 });
@@ -227,37 +237,23 @@ impl DocValidationScope<'_> {
 
     fn validate_datatype_ident(
         &self,
-        syntax: &DatatypeIdentSyntax,
-    ) -> Result<DatatypeIdent, ValidationError> {
-        match syntax {
-            DatatypeIdentSyntax::Builtin(b) => Ok(DatatypeIdent::Builtin(*b)),
-            DatatypeIdentSyntax::Array(a) => Ok(DatatypeIdent::Array(Box::new(
-                self.validate_datatype_ident(&a)?,
-            ))),
-            DatatypeIdentSyntax::Pointer(a) => Ok(DatatypeIdent::Pointer(Box::new(
-                self.validate_datatype_ident(&a)?,
-            ))),
-            DatatypeIdentSyntax::ConstPointer(a) => Ok(DatatypeIdent::ConstPointer(Box::new(
-                self.validate_datatype_ident(&a)?,
-            ))),
-            DatatypeIdentSyntax::Ident(i) => {
-                let id = self.get(i)?;
-                match self.doc.entries.get(&id) {
-                    Some(Entry::Datatype(weak_d)) => Ok(DatatypeIdent::Ident(
-                        weak_d.upgrade().expect("weak backref to defined type"),
-                    )),
-                    Some(e) => Err(ValidationError::WrongKindName {
-                        name: i.name().to_string(),
-                        location: self.location(i.span()),
-                        expected: "datatype",
-                        got: e.kind(),
-                    }),
-                    None => Err(ValidationError::Recursive {
-                        name: i.name().to_string(),
-                        location: self.location(i.span()),
-                    }),
-                }
+        name_syntax: &wast::Id,
+    ) -> Result<Rc<Datatype>, ValidationError> {
+        let i = self.get(name_syntax)?;
+        match self.doc.entries.get(&i) {
+            Some(Entry::Datatype(weak_ref)) => {
+                Ok(weak_ref.upgrade().expect("weak backref to defined type"))
             }
+            Some(e) => Err(ValidationError::WrongKindName {
+                name: i.as_str().to_string(),
+                location: self.location(name_syntax.span()),
+                expected: "datatype",
+                got: e.kind(),
+            }),
+            None => Err(ValidationError::Recursive {
+                name: i.as_str().to_string(),
+                location: self.location(name_syntax.span()),
+            }),
         }
     }
 
@@ -373,10 +369,10 @@ impl DocValidationScope<'_> {
             .map(|id_syntax| {
                 let id = self.get(&id_syntax)?;
                 match self.doc.entries.get(&id) {
-                    Some(Entry::Datatype(weak_d)) => {
-                        let d = weak_d.upgrade().expect("weak backref to defined type");
+                    Some(Entry::Datatype(weak_ref)) => {
+                        let d = weak_ref.upgrade().expect("weak backref to defined type");
                         match &d.variant {
-                            DatatypeVariant::Handle { .. } => Ok(DatatypeIdent::Ident(d)),
+                            DatatypeVariant::Handle { .. } => Ok(d),
                             _ => Err(ValidationError::WrongKindName {
                                 name: id_syntax.name().to_string(),
                                 location: self.location(id_syntax.span()),
@@ -403,6 +399,15 @@ impl DocValidationScope<'_> {
             name: name.clone(),
             supertypes,
         })
+    }
+
+    fn validate_pointee(
+        &self,
+        name: &Id,
+        syntax: &TypedefSyntax,
+        _span: wast::Span,
+    ) -> Result<Rc<Datatype>, ValidationError> {
+        unimplemented!()
     }
 
     fn validate_int_repr(

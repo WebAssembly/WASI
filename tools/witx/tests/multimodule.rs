@@ -1,4 +1,4 @@
-use witx::{load, BuiltinType, DatatypeIdent, DatatypeVariant, Id};
+use witx::{load, BuiltinType, DatatypeVariant, Id};
 
 #[test]
 fn validate_multimodule() {
@@ -9,13 +9,13 @@ fn validate_multimodule() {
     ])
     .unwrap_or_else(|e| panic!("failed to validate: {}", e));
 
-    println!("{}", doc);
+    //println!("{}", doc);
 
     // Check that the `a` both modules use is what we expect:
     let type_a = doc.datatype(&Id::new("a")).expect("type a exists");
     match &type_a.variant {
-        DatatypeVariant::Alias(alias) => match alias.to {
-            DatatypeIdent::Builtin(b) => assert_eq!(b, BuiltinType::U32),
+        DatatypeVariant::Alias(alias) => match alias.to.variant {
+            DatatypeVariant::Builtin(b) => assert_eq!(b, BuiltinType::U32),
             _ => panic!("a is an alias u32"),
         },
         _ => panic!("a is an alias to u32"),
@@ -26,10 +26,7 @@ fn validate_multimodule() {
     match &type_b.variant {
         DatatypeVariant::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 1);
-            match &struct_.members.get(0).unwrap().type_ {
-                DatatypeIdent::Ident(member_a) => assert_eq!(*member_a, type_a),
-                _ => panic!("b.0 has type a"),
-            }
+            assert_eq!(struct_.members.get(0).unwrap().type_, type_a);
         }
         _ => panic!("b is a struct"),
     }
@@ -39,14 +36,8 @@ fn validate_multimodule() {
     match &type_c.variant {
         DatatypeVariant::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 2);
-            match &struct_.members.get(0).unwrap().type_ {
-                DatatypeIdent::Ident(member_a) => assert_eq!(*member_a, type_a),
-                _ => panic!("c.0 has type a"),
-            }
-            match &struct_.members.get(1).unwrap().type_ {
-                DatatypeIdent::Ident(member_a) => assert_eq!(*member_a, type_a),
-                _ => panic!("c.1 has type a"),
-            }
+            assert_eq!(struct_.members.get(0).unwrap().type_, type_a);
+            assert_eq!(struct_.members.get(1).unwrap().type_, type_a);
         }
         _ => panic!("c is a struct"),
     }

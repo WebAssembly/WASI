@@ -34,7 +34,9 @@ fn render_roundtrip() {
     // to figure out where they are unequal.
     if doc != doc2 {
         for type_ in doc.datatypes() {
-            let type2 = doc2.datatype(&type_.name).expect("doc2 missing datatype");
+            let type2 = doc2
+                .datatype(&type_.name.as_ref().expect("iterator gives named datatypes"))
+                .expect("doc2 missing datatype");
             assert_eq!(type_, type2);
         }
         for mod_ in doc.modules() {

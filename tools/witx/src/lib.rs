@@ -26,7 +26,7 @@ pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, D
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
-pub use render::{Render, SExpr as RenderSExpr};
+pub use render::SExpr;
 pub use validate::ValidationError;
 
 use failure::Fail;

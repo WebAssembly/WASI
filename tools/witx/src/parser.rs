@@ -98,6 +98,24 @@ impl Parse<'_> for BuiltinType {
     }
 }
 
+impl wast::parser::Peek for BuiltinType {
+    fn peek(cursor: wast::parser::Cursor<'_>) -> bool {
+        <kw::string as Peek>::peek(cursor)
+            || <kw::u8 as Peek>::peek(cursor)
+            || <kw::u16 as Peek>::peek(cursor)
+            || <kw::u32 as Peek>::peek(cursor)
+            || <kw::u64 as Peek>::peek(cursor)
+            || <kw::s8 as Peek>::peek(cursor)
+            || <kw::s16 as Peek>::peek(cursor)
+            || <kw::s32 as Peek>::peek(cursor)
+            || <kw::s64 as Peek>::peek(cursor)
+            || <kw::f32 as Peek>::peek(cursor)
+            || <kw::f64 as Peek>::peek(cursor)
+    }
+    fn display() -> &'static str {
+        "builtin type"
+    }
+}
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CommentSyntax<'a> {
     pub comments: Vec<&'a str>,
@@ -175,41 +193,6 @@ impl<'a, T: Parse<'a>> Parse<'a> for Documented<'a, T> {
         let comments = parser.parse()?;
         let item = parser.parse()?;
         Ok(Documented { comments, item })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeIdentSyntax<'a> {
-    Builtin(BuiltinType),
-    Array(Box<DatatypeIdentSyntax<'a>>),
-    Pointer(Box<DatatypeIdentSyntax<'a>>),
-    ConstPointer(Box<DatatypeIdentSyntax<'a>>),
-    Ident(wast::Id<'a>),
-}
-
-impl<'a> Parse<'a> for DatatypeIdentSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        if parser.peek::<wast::Id>() {
-            Ok(DatatypeIdentSyntax::Ident(parser.parse()?))
-        } else if parser.peek2::<kw::array>() {
-            Ok(DatatypeIdentSyntax::Array(parser.parens(|p| {
-                p.parse::<kw::array>()?;
-                Ok(Box::new(parser.parse()?))
-            })?))
-        } else if parser.peek::<wast::LParen>() {
-            parser.parens(|p| {
-                p.parse::<AtWitx>()?;
-                if p.peek::<kw::const_pointer>() {
-                    p.parse::<kw::const_pointer>()?;
-                    Ok(DatatypeIdentSyntax::ConstPointer(Box::new(p.parse()?)))
-                } else {
-                    p.parse::<kw::pointer>()?;
-                    Ok(DatatypeIdentSyntax::Pointer(Box::new(p.parse()?)))
-                }
-            })
-        } else {
-            Ok(DatatypeIdentSyntax::Builtin(parser.parse()?))
-        }
     }
 }
 
@@ -329,36 +312,59 @@ impl<'a> Parse<'a> for TypenameSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TypedefSyntax<'a> {
-    Ident(DatatypeIdentSyntax<'a>),
     Enum(EnumSyntax<'a>),
     Flags(FlagsSyntax<'a>),
     Struct(StructSyntax<'a>),
     Union(UnionSyntax<'a>),
     Handle(HandleSyntax<'a>),
+    Array(Box<TypedefSyntax<'a>>),
+    Pointer(Box<TypedefSyntax<'a>>),
+    ConstPointer(Box<TypedefSyntax<'a>>),
+    Builtin(BuiltinType),
+    Ident(wast::Id<'a>),
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        if !parser.peek::<wast::LParen>() || parser.peek2::<kw::array>() || parser.peek2::<AtWitx>()
-        {
-            return Ok(TypedefSyntax::Ident(parser.parse()?));
+        let mut l = parser.lookahead1();
+        if l.peek::<wast::Id>() {
+            Ok(TypedefSyntax::Ident(parser.parse()?))
+        } else if l.peek::<BuiltinType>() {
+            Ok(TypedefSyntax::Builtin(parser.parse()?))
+        } else if l.peek::<wast::LParen>() {
+            parser.parens(|parser| {
+                let mut l = parser.lookahead1();
+                if l.peek::<kw::r#enum>() {
+                    Ok(TypedefSyntax::Enum(parser.parse()?))
+                } else if l.peek::<kw::flags>() {
+                    Ok(TypedefSyntax::Flags(parser.parse()?))
+                } else if l.peek::<kw::r#struct>() {
+                    Ok(TypedefSyntax::Struct(parser.parse()?))
+                } else if l.peek::<kw::r#union>() {
+                    Ok(TypedefSyntax::Union(parser.parse()?))
+                } else if l.peek::<kw::handle>() {
+                    Ok(TypedefSyntax::Handle(parser.parse()?))
+                } else if l.peek::<kw::array>() {
+                    Ok(TypedefSyntax::Array(Box::new(parser.parse()?)))
+                } else if l.peek::<AtWitx>() {
+                    parser.parse::<AtWitx>()?;
+                    let mut l = parser.lookahead1();
+                    if l.peek::<kw::const_pointer>() {
+                        parser.parse::<kw::const_pointer>()?;
+                        Ok(TypedefSyntax::ConstPointer(Box::new(parser.parse()?)))
+                    } else if l.peek::<kw::pointer>() {
+                        parser.parse::<kw::pointer>()?;
+                        Ok(TypedefSyntax::Pointer(Box::new(parser.parse()?)))
+                    } else {
+                        Err(l.error())
+                    }
+                } else {
+                    Err(l.error())
+                }
+            })
+        } else {
+            Err(l.error())
         }
-        parser.parens(|parser| {
-            let mut l = parser.lookahead1();
-            if l.peek::<kw::r#enum>() {
-                Ok(TypedefSyntax::Enum(parser.parse()?))
-            } else if l.peek::<kw::flags>() {
-                Ok(TypedefSyntax::Flags(parser.parse()?))
-            } else if l.peek::<kw::r#struct>() {
-                Ok(TypedefSyntax::Struct(parser.parse()?))
-            } else if l.peek::<kw::r#union>() {
-                Ok(TypedefSyntax::Union(parser.parse()?))
-            } else if l.peek::<kw::handle>() {
-                Ok(TypedefSyntax::Handle(parser.parse()?))
-            } else {
-                Err(l.error())
-            }
-        })
     }
 }
 
@@ -419,7 +425,7 @@ impl<'a> Parse<'a> for StructSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FieldSyntax<'a> {
     pub name: wast::Id<'a>,
-    pub type_: DatatypeIdentSyntax<'a>,
+    pub type_: wast::Id<'a>,
 }
 
 impl<'a> Parse<'a> for FieldSyntax<'a> {

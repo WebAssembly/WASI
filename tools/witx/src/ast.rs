@@ -107,6 +107,8 @@ impl PartialEq for Entry {
     }
 }
 
+pub type DatatypeIdent = Rc<Datatype>;
+/*
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DatatypeIdent {
     Builtin(BuiltinType),
@@ -115,10 +117,11 @@ pub enum DatatypeIdent {
     ConstPointer(Box<DatatypeIdent>),
     Ident(Rc<Datatype>),
 }
+*/
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Datatype {
-    pub name: Id,
+    pub name: Option<Id>,
     pub variant: DatatypeVariant,
     pub docs: String,
 }
@@ -131,6 +134,10 @@ pub enum DatatypeVariant {
     Struct(StructDatatype),
     Union(UnionDatatype),
     Handle(HandleDatatype),
+    Array(Rc<Datatype>),
+    Pointer(Rc<Datatype>),
+    ConstPointer(Rc<Datatype>),
+    Builtin(BuiltinType),
 }
 
 impl DatatypeVariant {
@@ -143,6 +150,10 @@ impl DatatypeVariant {
             Struct(_) => "struct",
             Union(_) => "union",
             Handle(_) => "handle",
+            Builtin(_) => "builtin",
+            Array(_) => "array",
+            Pointer(_) => "pointer",
+            ConstPointer(_) => "constpointer",
         }
     }
 }

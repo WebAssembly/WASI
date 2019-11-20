@@ -1,6 +1,4 @@
-use crate::{
-    BuiltinType, DatatypeIdent, DatatypeVariant, IntRepr, InterfaceFunc, InterfaceFuncParam,
-};
+use crate::{BuiltinType, Datatype, DatatypeVariant, IntRepr, InterfaceFunc, InterfaceFuncParam};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 /// Enumerates the types permitted for function arguments in the WebAssembly spec
@@ -31,12 +29,12 @@ pub enum DatatypePassedBy {
     PointerLengthPair,
 }
 
-impl DatatypeIdent {
+impl Datatype {
     /// Determine the simplest strategy by which a type may be passed. Value always preferred over
     /// Pointer.
     pub fn passed_by(&self) -> DatatypePassedBy {
-        match &self {
-            DatatypeIdent::Builtin(b) => match b {
+        match &self.variant {
+            DatatypeVariant::Builtin(b) => match b {
                 BuiltinType::String => DatatypePassedBy::PointerLengthPair,
                 BuiltinType::U8
                 | BuiltinType::U16
@@ -48,19 +46,17 @@ impl DatatypeIdent {
                 BuiltinType::F32 => DatatypePassedBy::Value(AtomType::F32),
                 BuiltinType::F64 => DatatypePassedBy::Value(AtomType::F64),
             },
-            DatatypeIdent::Array { .. } => DatatypePassedBy::PointerLengthPair,
-            DatatypeIdent::Pointer { .. } | DatatypeIdent::ConstPointer { .. } => {
+            DatatypeVariant::Array { .. } => DatatypePassedBy::PointerLengthPair,
+            DatatypeVariant::Pointer { .. } | DatatypeVariant::ConstPointer { .. } => {
                 DatatypePassedBy::Value(AtomType::I32)
             }
-            DatatypeIdent::Ident(i) => match &i.variant {
-                DatatypeVariant::Alias(a) => a.to.passed_by(),
-                DatatypeVariant::Enum(e) => DatatypePassedBy::Value(e.repr.into()),
-                DatatypeVariant::Flags(f) => DatatypePassedBy::Value(f.repr.into()),
-                DatatypeVariant::Struct { .. } | DatatypeVariant::Union { .. } => {
-                    DatatypePassedBy::Pointer
-                }
-                DatatypeVariant::Handle { .. } => DatatypePassedBy::Value(AtomType::I32),
-            },
+            DatatypeVariant::Alias(a) => a.to.passed_by(),
+            DatatypeVariant::Enum(e) => DatatypePassedBy::Value(e.repr.into()),
+            DatatypeVariant::Flags(f) => DatatypePassedBy::Value(f.repr.into()),
+            DatatypeVariant::Struct { .. } | DatatypeVariant::Union { .. } => {
+                DatatypePassedBy::Pointer
+            }
+            DatatypeVariant::Handle { .. } => DatatypePassedBy::Value(AtomType::I32),
         }
     }
 }
