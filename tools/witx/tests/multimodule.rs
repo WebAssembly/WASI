@@ -1,4 +1,4 @@
-use witx::{load, BuiltinType, Datatype, DatatypeRef, Id};
+use witx::{load, BuiltinType, Id, Type, TypeRef};
 
 #[test]
 fn validate_multimodule() {
@@ -12,26 +12,32 @@ fn validate_multimodule() {
     //println!("{}", doc);
 
     // Check that the `a` both modules use is what we expect:
-    let type_a = doc.datatype(&Id::new("a")).expect("type a exists");
-    assert_eq!(*type_a.datatype(), Datatype::Builtin(BuiltinType::U32));
+    let type_a = doc.typename(&Id::new("a")).expect("type a exists");
+    assert_eq!(*type_a.type_(), Type::Builtin(BuiltinType::U32));
 
     // `b` is a struct with a single member of type `a`
-    let type_b = doc.datatype(&Id::new("b")).expect("type b exists");
-    match &*type_b.datatype() {
-        Datatype::Struct(struct_) => {
+    let type_b = doc.typename(&Id::new("b")).expect("type b exists");
+    match &*type_b.type_() {
+        Type::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 1);
-            assert_eq!(struct_.members.get(0).unwrap().type_, DatatypeRef::Name(type_a.clone()));
+            assert_eq!(
+                struct_.members.get(0).unwrap().tref,
+                TypeRef::Name(type_a.clone())
+            );
         }
         _ => panic!("b is a struct"),
     }
 
     // `c` is a struct with a two members of type `a`
-    let type_c = doc.datatype(&Id::new("c")).expect("type c exists");
-    match &*type_c.datatype() {
-        Datatype::Struct(struct_) => {
+    let type_c = doc.typename(&Id::new("c")).expect("type c exists");
+    match &*type_c.type_() {
+        Type::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 2);
-            assert_eq!(struct_.members.get(0).unwrap().type_, DatatypeRef::Name(type_a.clone()));
-            assert_eq!(struct_.members.get(1).unwrap().type_, DatatypeRef::Name(type_a));
+            assert_eq!(
+                struct_.members.get(0).unwrap().tref,
+                TypeRef::Name(type_a.clone())
+            );
+            assert_eq!(struct_.members.get(1).unwrap().tref, TypeRef::Name(type_a));
         }
         _ => panic!("c is a struct"),
     }

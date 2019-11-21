@@ -7,7 +7,7 @@ pub trait Documentation {
 impl Documentation for Document {
     fn to_md(&self) -> String {
         let mut ret = "# Types\n".to_string();
-        for d in self.datatypes() {
+        for d in self.typenames() {
             ret += &d.to_md();
         }
 
@@ -37,47 +37,47 @@ impl BuiltinType {
     }
 }
 
-impl Documentation for NamedDatatype {
+impl Documentation for NamedType {
     fn to_md(&self) -> String {
         let body = match &self.dt {
-            DatatypeRef::Value(v) => v.to_md(),
-            DatatypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
+            TypeRef::Value(v) => v.to_md(),
+            TypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
         };
         format!("## `{}`\n{}\n{}\n", self.name.as_str(), self.docs, body,)
     }
 }
 
-impl DatatypeRef {
+impl TypeRef {
     fn type_name(&self) -> String {
         match self {
-            DatatypeRef::Name(n) => n.name.as_str().to_string(),
-            DatatypeRef::Value(ref v) => match &**v {
-                Datatype::Array(a) => format!("Array<{}>", a.type_name()),
-                Datatype::Pointer(p) => format!("Pointer<{}>", p.type_name()),
-                Datatype::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
-                Datatype::Builtin(b) => b.type_name().to_string(),
-                Datatype::Enum { .. }
-                | Datatype::Flags { .. }
-                | Datatype::Struct { .. }
-                | Datatype::Union { .. }
-                | Datatype::Handle { .. } => unimplemented!("type_name of anonymous datatypes"),
+            TypeRef::Name(n) => n.name.as_str().to_string(),
+            TypeRef::Value(ref v) => match &**v {
+                Type::Array(a) => format!("Array<{}>", a.type_name()),
+                Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
+                Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
+                Type::Builtin(b) => b.type_name().to_string(),
+                Type::Enum { .. }
+                | Type::Flags { .. }
+                | Type::Struct { .. }
+                | Type::Union { .. }
+                | Type::Handle { .. } => unimplemented!("type_name of anonymous datatypes"),
             },
         }
     }
 }
 
-impl Documentation for Datatype {
+impl Documentation for Type {
     fn to_md(&self) -> String {
         match self {
-            Datatype::Enum(a) => a.to_md(),
-            Datatype::Flags(a) => a.to_md(),
-            Datatype::Struct(a) => a.to_md(),
-            Datatype::Union(a) => a.to_md(),
-            Datatype::Handle(a) => a.to_md(),
-            Datatype::Array { .. }
-            | Datatype::Pointer { .. }
-            | Datatype::ConstPointer { .. }
-            | Datatype::Builtin { .. } => unimplemented!(),
+            Type::Enum(a) => a.to_md(),
+            Type::Flags(a) => a.to_md(),
+            Type::Struct(a) => a.to_md(),
+            Type::Union(a) => a.to_md(),
+            Type::Handle(a) => a.to_md(),
+            Type::Array { .. }
+            | Type::Pointer { .. }
+            | Type::ConstPointer { .. }
+            | Type::Builtin { .. } => unimplemented!(),
         }
     }
 }
@@ -123,7 +123,7 @@ impl Documentation for StructDatatype {
                 format!(
                     "#### `{}`\nMember type: `{}`\n{}",
                     m.name.as_str(),
-                    m.type_.type_name(),
+                    m.tref.type_name(),
                     m.docs,
                 )
             })
@@ -142,7 +142,7 @@ impl Documentation for UnionDatatype {
                 format!(
                     "#### `{}`\nVariant type: `{}`\n{}",
                     v.name.as_str(),
-                    v.type_.type_name(),
+                    v.tref.type_name(),
                     v.docs,
                 )
             })
@@ -212,7 +212,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.type_name(),
+                    type_ = f.tref.type_name(),
                     docs = f.docs
                 )
             })
@@ -225,7 +225,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.type_name(),
+                    type_ = f.tref.type_name(),
                     docs = f.docs
                 )
             })

@@ -3,7 +3,7 @@ use std::fmt;
 
 impl fmt::Display for Document {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for d in self.datatypes() {
+        for d in self.typenames() {
             write!(f, "{}\n", d.definition_sexpr())?;
         }
         for m in self.modules() {
@@ -92,7 +92,7 @@ impl BuiltinType {
     }
 }
 
-impl NamedDatatype {
+impl NamedType {
     fn definition_sexpr(&self) -> SExpr {
         let body = self.dt.to_sexpr();
         SExpr::docs(
@@ -102,37 +102,35 @@ impl NamedDatatype {
     }
 }
 
-impl DatatypeRef {
+impl TypeRef {
     fn to_sexpr(&self) -> SExpr {
         match self {
-            DatatypeRef::Name(n) => n.name.to_sexpr(),
-            DatatypeRef::Value(v) => v.to_sexpr(),
+            TypeRef::Name(n) => n.name.to_sexpr(),
+            TypeRef::Value(v) => v.to_sexpr(),
         }
     }
 }
 
-impl Datatype {
+impl Type {
     fn to_sexpr(&self) -> SExpr {
         match self {
-            Datatype::Enum(a) => a.to_sexpr(),
-            Datatype::Flags(a) => a.to_sexpr(),
-            Datatype::Struct(a) => a.to_sexpr(),
-            Datatype::Union(a) => a.to_sexpr(),
-            Datatype::Handle(a) => a.to_sexpr(),
-            Datatype::Array(a) => {
-                SExpr::Vec(vec![SExpr::word("array"), a.to_sexpr()])
-            }
-            Datatype::Pointer(p) => SExpr::Vec(vec![
+            Type::Enum(a) => a.to_sexpr(),
+            Type::Flags(a) => a.to_sexpr(),
+            Type::Struct(a) => a.to_sexpr(),
+            Type::Union(a) => a.to_sexpr(),
+            Type::Handle(a) => a.to_sexpr(),
+            Type::Array(a) => SExpr::Vec(vec![SExpr::word("array"), a.to_sexpr()]),
+            Type::Pointer(p) => SExpr::Vec(vec![
                 SExpr::annot("witx"),
                 SExpr::word("pointer"),
                 p.to_sexpr(),
             ]),
-            Datatype::ConstPointer(p) => SExpr::Vec(vec![
+            Type::ConstPointer(p) => SExpr::Vec(vec![
                 SExpr::annot("witx"),
                 SExpr::word("const_pointer"),
                 p.to_sexpr(),
             ]),
-            Datatype::Builtin(b) => b.to_sexpr(),
+            Type::Builtin(b) => b.to_sexpr(),
         }
     }
 }
@@ -173,7 +171,7 @@ impl StructDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         m.name.to_sexpr(),
-                        m.type_.to_sexpr(),
+                        m.tref.to_sexpr(),
                     ]),
                 )
             })
@@ -194,7 +192,7 @@ impl UnionDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         v.name.to_sexpr(),
-                        v.type_.to_sexpr(),
+                        v.tref.to_sexpr(),
                     ]),
                 )
             })
@@ -272,7 +270,7 @@ impl InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("param"),
                         f.name.to_sexpr(),
-                        f.type_.to_sexpr(),
+                        f.tref.to_sexpr(),
                     ]),
                 )
             })
@@ -286,7 +284,7 @@ impl InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("result"),
                         f.name.to_sexpr(),
-                        f.type_.to_sexpr(),
+                        f.tref.to_sexpr(),
                     ]),
                 )
             })

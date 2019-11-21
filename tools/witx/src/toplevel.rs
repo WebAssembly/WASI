@@ -107,11 +107,11 @@ mod test {
         )
         .expect("parse");
 
-        let b_float = doc.datatype(&Id::new("b_float")).unwrap();
-        assert_eq!(*b_float.datatype(), Datatype::Builtin(BuiltinType::F64));
+        let b_float = doc.typename(&Id::new("b_float")).unwrap();
+        assert_eq!(*b_float.type_(), Type::Builtin(BuiltinType::F64));
 
-        let c_int = doc.datatype(&Id::new("c_int")).unwrap();
-        assert_eq!(*c_int.datatype(), Datatype::Builtin(BuiltinType::U32));
+        let c_int = doc.typename(&Id::new("c_int")).unwrap();
+        assert_eq!(*c_int.type_(), Type::Builtin(BuiltinType::U32));
     }
 
     #[test]
@@ -127,8 +127,8 @@ mod test {
         )
         .expect("parse");
 
-        let d_char = doc.datatype(&Id::new("d_char")).unwrap();
-        assert_eq!(*d_char.datatype(), Datatype::Builtin(BuiltinType::U8));
+        let d_char = doc.typename(&Id::new("d_char")).unwrap();
+        assert_eq!(*d_char.type_(), Type::Builtin(BuiltinType::U8));
     }
 
     #[test]

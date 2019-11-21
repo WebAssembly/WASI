@@ -33,9 +33,9 @@ fn render_roundtrip() {
     // I'd just assert_eq, but when it fails the debug print is thousands of lines long and impossible
     // to figure out where they are unequal.
     if doc != doc2 {
-        for type_ in doc.datatypes() {
+        for type_ in doc.typenames() {
             let type2 = doc2
-                .datatype(&type_.name)
+                .typename(&type_.name)
                 .expect("doc2 missing datatype");
             assert_eq!(type_, type2);
         }

@@ -29,27 +29,27 @@ impl Document {
             entries,
         }
     }
-    pub fn datatype(&self, name: &Id) -> Option<Rc<NamedDatatype>> {
+    pub fn typename(&self, name: &Id) -> Option<Rc<NamedType>> {
         self.entries.get(name).and_then(|e| match e {
-            Entry::Datatype(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            Entry::Typename(nt) => Some(nt.upgrade().expect("always possible to upgrade entry")),
             _ => None,
         })
     }
-    pub fn datatypes<'a>(&'a self) -> impl Iterator<Item = Rc<NamedDatatype>> + 'a {
+    pub fn typenames<'a>(&'a self) -> impl Iterator<Item = Rc<NamedType>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            Definition::Datatype(d) => Some(d.clone()),
+            Definition::Typename(nt) => Some(nt.clone()),
             _ => None,
         })
     }
     pub fn module(&self, name: &Id) -> Option<Rc<Module>> {
         self.entries.get(&name).and_then(|e| match e {
-            Entry::Module(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            Entry::Module(m) => Some(m.upgrade().expect("always possible to upgrade entry")),
             _ => None,
         })
     }
     pub fn modules<'a>(&'a self) -> impl Iterator<Item = Rc<Module>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            Definition::Module(d) => Some(d.clone()),
+            Definition::Module(m) => Some(m.clone()),
             _ => None,
         })
     }
@@ -66,20 +66,20 @@ impl Eq for Document {}
 
 #[derive(Debug, Clone)]
 pub enum Definition {
-    Datatype(Rc<NamedDatatype>),
+    Typename(Rc<NamedType>),
     Module(Rc<Module>),
 }
 
 #[derive(Debug, Clone)]
 pub enum Entry {
-    Datatype(Weak<NamedDatatype>),
+    Typename(Weak<NamedType>),
     Module(Weak<Module>),
 }
 
 impl Entry {
     pub fn kind(&self) -> &'static str {
         match self {
-            Entry::Datatype { .. } => "datatype",
+            Entry::Typename { .. } => "typename",
             Entry::Module { .. } => "module",
         }
     }
@@ -88,10 +88,10 @@ impl Entry {
 impl PartialEq for Entry {
     fn eq(&self, rhs: &Entry) -> bool {
         match (self, rhs) {
-            (Entry::Datatype(d), Entry::Datatype(d_rhs)) => {
-                d.upgrade()
+            (Entry::Typename(t), Entry::Typename(t_rhs)) => {
+                t.upgrade()
                     .expect("possible to upgrade entry when part of document")
-                    == d_rhs
+                    == t_rhs
                         .upgrade()
                         .expect("possible to upgrade entry when part of document")
             }
@@ -108,49 +108,49 @@ impl PartialEq for Entry {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeRef {
-    Name(Rc<NamedDatatype>),
-    Value(Rc<Datatype>),
+pub enum TypeRef {
+    Name(Rc<NamedType>),
+    Value(Rc<Type>),
 }
 
-impl DatatypeRef {
-    pub fn datatype(&self) -> Rc<Datatype> {
+impl TypeRef {
+    pub fn type_(&self) -> Rc<Type> {
         match self {
-            DatatypeRef::Name(named) => named.datatype(),
-            DatatypeRef::Value(ref v) => v.clone(),
+            TypeRef::Name(named) => named.type_(),
+            TypeRef::Value(ref v) => v.clone(),
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NamedDatatype {
+pub struct NamedType {
     pub name: Id,
-    pub dt: DatatypeRef,
+    pub dt: TypeRef,
     pub docs: String,
 }
 
-impl NamedDatatype {
-    pub fn datatype(&self) -> Rc<Datatype> {
-        self.dt.datatype()
+impl NamedType {
+    pub fn type_(&self) -> Rc<Type> {
+        self.dt.type_()
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Datatype {
+pub enum Type {
     Enum(EnumDatatype),
     Flags(FlagsDatatype),
     Struct(StructDatatype),
     Union(UnionDatatype),
     Handle(HandleDatatype),
-    Array(DatatypeRef),
-    Pointer(DatatypeRef),
-    ConstPointer(DatatypeRef),
+    Array(TypeRef),
+    Pointer(TypeRef),
+    ConstPointer(TypeRef),
     Builtin(BuiltinType),
 }
 
-impl Datatype {
+impl Type {
     pub fn kind(&self) -> &'static str {
-        use Datatype::*;
+        use Type::*;
         match self {
             Enum(_) => "enum",
             Flags(_) => "flags",
@@ -205,7 +205,7 @@ pub struct StructDatatype {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructMember {
     pub name: Id,
-    pub type_: DatatypeRef,
+    pub tref: TypeRef,
     pub docs: String,
 }
 
@@ -217,13 +217,13 @@ pub struct UnionDatatype {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionVariant {
     pub name: Id,
-    pub type_: DatatypeRef,
+    pub tref: TypeRef,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HandleDatatype {
-    pub supertypes: Vec<DatatypeRef>,
+    pub supertypes: Vec<TypeRef>,
 }
 
 #[derive(Debug, Clone)]
@@ -340,7 +340,7 @@ pub struct InterfaceFunc {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InterfaceFuncParam {
     pub name: Id,
-    pub type_: DatatypeRef,
+    pub tref: TypeRef,
     pub position: InterfaceFuncParamPosition,
     pub docs: String,
 }
