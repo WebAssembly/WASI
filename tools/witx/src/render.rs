@@ -92,57 +92,48 @@ impl BuiltinType {
     }
 }
 
-impl Datatype {
+impl NamedDatatype {
     fn definition_sexpr(&self) -> SExpr {
-        let name = self
-            .name
-            .as_ref()
-            .expect("definition of named datatype")
-            .to_sexpr();
-        let body = self.variant.to_sexpr();
+        let body = self.dt.to_sexpr();
         SExpr::docs(
             &self.docs,
-            SExpr::Vec(vec![SExpr::word("typename"), name, body]),
+            SExpr::Vec(vec![SExpr::word("typename"), self.name.to_sexpr(), body]),
         )
     }
-    fn identifier_sexpr(&self) -> SExpr {
-        match &self.name {
-            Some(n) => n.to_sexpr(),
-            None => self.variant.to_sexpr(),
-        }
-    }
 }
 
-impl DatatypeVariant {
+impl DatatypeRef {
     fn to_sexpr(&self) -> SExpr {
         match self {
-            DatatypeVariant::Alias(a) => a.to_sexpr(),
-            DatatypeVariant::Enum(a) => a.to_sexpr(),
-            DatatypeVariant::Flags(a) => a.to_sexpr(),
-            DatatypeVariant::Struct(a) => a.to_sexpr(),
-            DatatypeVariant::Union(a) => a.to_sexpr(),
-            DatatypeVariant::Handle(a) => a.to_sexpr(),
-            DatatypeVariant::Array(a) => {
-                SExpr::Vec(vec![SExpr::word("array"), a.identifier_sexpr()])
-            }
-            DatatypeVariant::Pointer(p) => SExpr::Vec(vec![
-                SExpr::annot("witx"),
-                SExpr::word("pointer"),
-                p.identifier_sexpr(),
-            ]),
-            DatatypeVariant::ConstPointer(p) => SExpr::Vec(vec![
-                SExpr::annot("witx"),
-                SExpr::word("const_pointer"),
-                p.identifier_sexpr(),
-            ]),
-            DatatypeVariant::Builtin(b) => b.to_sexpr(),
+            DatatypeRef::Name(n) => n.name.to_sexpr(),
+            DatatypeRef::Value(v) => v.to_sexpr(),
         }
     }
 }
 
-impl AliasDatatype {
+impl Datatype {
     fn to_sexpr(&self) -> SExpr {
-        self.to.identifier_sexpr()
+        match self {
+            Datatype::Enum(a) => a.to_sexpr(),
+            Datatype::Flags(a) => a.to_sexpr(),
+            Datatype::Struct(a) => a.to_sexpr(),
+            Datatype::Union(a) => a.to_sexpr(),
+            Datatype::Handle(a) => a.to_sexpr(),
+            Datatype::Array(a) => {
+                SExpr::Vec(vec![SExpr::word("array"), a.to_sexpr()])
+            }
+            Datatype::Pointer(p) => SExpr::Vec(vec![
+                SExpr::annot("witx"),
+                SExpr::word("pointer"),
+                p.to_sexpr(),
+            ]),
+            Datatype::ConstPointer(p) => SExpr::Vec(vec![
+                SExpr::annot("witx"),
+                SExpr::word("const_pointer"),
+                p.to_sexpr(),
+            ]),
+            Datatype::Builtin(b) => b.to_sexpr(),
+        }
     }
 }
 
@@ -182,7 +173,7 @@ impl StructDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         m.name.to_sexpr(),
-                        m.type_.identifier_sexpr(),
+                        m.type_.to_sexpr(),
                     ]),
                 )
             })
@@ -203,7 +194,7 @@ impl UnionDatatype {
                     SExpr::Vec(vec![
                         SExpr::word("field"),
                         v.name.to_sexpr(),
-                        v.type_.identifier_sexpr(),
+                        v.type_.to_sexpr(),
                     ]),
                 )
             })
@@ -218,7 +209,7 @@ impl HandleDatatype {
         let supertypes = self
             .supertypes
             .iter()
-            .map(|s| s.identifier_sexpr())
+            .map(|s| s.to_sexpr())
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, supertypes].concat())
     }
@@ -281,7 +272,7 @@ impl InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("param"),
                         f.name.to_sexpr(),
-                        f.type_.identifier_sexpr(),
+                        f.type_.to_sexpr(),
                     ]),
                 )
             })
@@ -295,7 +286,7 @@ impl InterfaceFunc {
                     SExpr::Vec(vec![
                         SExpr::word("result"),
                         f.name.to_sexpr(),
-                        f.type_.identifier_sexpr(),
+                        f.type_.to_sexpr(),
                     ]),
                 )
             })

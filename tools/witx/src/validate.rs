@@ -4,10 +4,10 @@ use crate::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
         ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
-    AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypePassedBy, DatatypeVariant,
-    Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, HandleDatatype, Id,
-    IntRepr, InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
-    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember,
+    BuiltinType, Datatype, DatatypePassedBy, DatatypeRef, Definition, Entry, EnumDatatype,
+    EnumVariant, FlagsDatatype, FlagsMember, HandleDatatype, Id, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
+    ModuleEntry, ModuleImport, ModuleImportVariant, NamedDatatype, StructDatatype, StructMember,
     UnionDatatype, UnionVariant,
 };
 use failure::Fail;
@@ -168,43 +168,47 @@ impl DocValidationScope<'_> {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
                 let docs = comments.docs();
-                let variant =
-                    match &decl.def {
-                        TypedefSyntax::Ident(syntax) => DatatypeVariant::Alias(AliasDatatype {
-                            name: name.clone(),
-                            to: self.validate_datatype_ident(&syntax)?,
-                        }),
-                        TypedefSyntax::Enum(syntax) => DatatypeVariant::Enum(self.validate_enum(
+                let dt = match &decl.def {
+                    TypedefSyntax::Ident(syntax) => self.validate_datatype_ident(syntax)?,
+                    TypedefSyntax::Enum(syntax) => DatatypeRef::Value(Rc::new(Datatype::Enum(
+                        self.validate_enum(&name, &syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Flags(syntax) => DatatypeRef::Value(Rc::new(Datatype::Flags(
+                        self.validate_flags(&name, &syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Struct(syntax) => DatatypeRef::Value(Rc::new(Datatype::Struct(
+                        self.validate_struct(&name, &syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Union(syntax) => DatatypeRef::Value(Rc::new(Datatype::Union(
+                        self.validate_union(&name, &syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Handle(syntax) => DatatypeRef::Value(Rc::new(Datatype::Handle(
+                        self.validate_handle(&name, syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Array(syntax) => DatatypeRef::Value(Rc::new(Datatype::Array(
+                        self.validate_pointee(&name, syntax, decl.ident.span())?,
+                    ))),
+                    TypedefSyntax::Pointer(syntax) => {
+                        DatatypeRef::Value(Rc::new(Datatype::Pointer(self.validate_pointee(
                             &name,
-                            &syntax,
+                            syntax,
                             decl.ident.span(),
-                        )?),
-                        TypedefSyntax::Flags(syntax) => DatatypeVariant::Flags(
-                            self.validate_flags(&name, &syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Struct(syntax) => DatatypeVariant::Struct(
-                            self.validate_struct(&name, &syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Union(syntax) => DatatypeVariant::Union(
-                            self.validate_union(&name, &syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Handle(syntax) => DatatypeVariant::Handle(
-                            self.validate_handle(&name, syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Array(syntax) => DatatypeVariant::Array(
-                            self.validate_pointee(&name, syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Pointer(syntax) => DatatypeVariant::Pointer(
-                            self.validate_pointee(&name, syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::ConstPointer(syntax) => DatatypeVariant::ConstPointer(
-                            self.validate_pointee(&name, syntax, decl.ident.span())?,
-                        ),
-                        TypedefSyntax::Builtin(builtin) => DatatypeVariant::Builtin(*builtin),
-                    };
-                let rc_datatype = Rc::new(Datatype {
-                    name: Some(name.clone()),
-                    variant,
+                        )?)))
+                    }
+                    TypedefSyntax::ConstPointer(syntax) => {
+                        DatatypeRef::Value(Rc::new(Datatype::ConstPointer(self.validate_pointee(
+                            &name,
+                            syntax,
+                            decl.ident.span(),
+                        )?)))
+                    }
+                    TypedefSyntax::Builtin(builtin) => {
+                        DatatypeRef::Value(Rc::new(Datatype::Builtin(*builtin)))
+                    }
+                };
+                let rc_datatype = Rc::new(NamedDatatype {
+                    name: name.clone(),
+                    dt,
                     docs,
                 });
                 self.doc
@@ -238,12 +242,12 @@ impl DocValidationScope<'_> {
     fn validate_datatype_ident(
         &self,
         name_syntax: &wast::Id,
-    ) -> Result<Rc<Datatype>, ValidationError> {
+    ) -> Result<DatatypeRef, ValidationError> {
         let i = self.get(name_syntax)?;
         match self.doc.entries.get(&i) {
-            Some(Entry::Datatype(weak_ref)) => {
-                Ok(weak_ref.upgrade().expect("weak backref to defined type"))
-            }
+            Some(Entry::Datatype(weak_ref)) => Ok(DatatypeRef::Name(
+                weak_ref.upgrade().expect("weak backref to defined type"),
+            )),
             Some(e) => Err(ValidationError::WrongKindName {
                 name: i.as_str().to_string(),
                 location: self.location(name_syntax.span()),
@@ -370,14 +374,14 @@ impl DocValidationScope<'_> {
                 let id = self.get(&id_syntax)?;
                 match self.doc.entries.get(&id) {
                     Some(Entry::Datatype(weak_ref)) => {
-                        let d = weak_ref.upgrade().expect("weak backref to defined type");
-                        match &d.variant {
-                            DatatypeVariant::Handle { .. } => Ok(d),
-                            _ => Err(ValidationError::WrongKindName {
+                        let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
+                        match &*named_dt.dt.deref() {
+                            Datatype::Handle { .. } => Ok(DatatypeRef::Name(named_dt)),
+                            other => Err(ValidationError::WrongKindName {
                                 name: id_syntax.name().to_string(),
                                 location: self.location(id_syntax.span()),
                                 expected: "handle",
-                                got: d.variant.kind(),
+                                got: other.kind(),
                             }),
                         }
                     }
@@ -393,7 +397,7 @@ impl DocValidationScope<'_> {
                     }),
                 }
             })
-            .collect::<Result<Vec<DatatypeIdent>, _>>()?;
+            .collect::<Result<Vec<DatatypeRef>, _>>()?;
 
         Ok(HandleDatatype {
             name: name.clone(),
@@ -406,8 +410,9 @@ impl DocValidationScope<'_> {
         name: &Id,
         syntax: &TypedefSyntax,
         _span: wast::Span,
-    ) -> Result<Rc<Datatype>, ValidationError> {
+    ) -> Result<DatatypeRef, ValidationError> {
         unimplemented!()
+        // XXX here's where we have to create anonymous types!
     }
 
     fn validate_int_repr(
@@ -490,7 +495,7 @@ impl<'a> ModuleValidation<'a> {
                     .map(|(ix, f)| {
                         let type_ = self.doc.validate_datatype_ident(&f.item.type_)?;
                         if ix == 0 {
-                            match type_.passed_by() {
+                            match type_.deref().passed_by() {
                                 DatatypePassedBy::Value(_) => {}
                                 _ => Err(ValidationError::InvalidFirstResultType {
                                     location: self.doc.location(f.item.name.span()),

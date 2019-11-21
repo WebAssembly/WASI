@@ -1,4 +1,4 @@
-use crate::{BuiltinType, Datatype, DatatypeVariant, IntRepr, InterfaceFunc, InterfaceFuncParam};
+use crate::{BuiltinType, Datatype, IntRepr, InterfaceFunc, InterfaceFuncParam};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 /// Enumerates the types permitted for function arguments in the WebAssembly spec
@@ -33,8 +33,8 @@ impl Datatype {
     /// Determine the simplest strategy by which a type may be passed. Value always preferred over
     /// Pointer.
     pub fn passed_by(&self) -> DatatypePassedBy {
-        match &self.variant {
-            DatatypeVariant::Builtin(b) => match b {
+        match self {
+            Datatype::Builtin(b) => match b {
                 BuiltinType::String => DatatypePassedBy::PointerLengthPair,
                 BuiltinType::U8
                 | BuiltinType::U16
@@ -46,17 +46,16 @@ impl Datatype {
                 BuiltinType::F32 => DatatypePassedBy::Value(AtomType::F32),
                 BuiltinType::F64 => DatatypePassedBy::Value(AtomType::F64),
             },
-            DatatypeVariant::Array { .. } => DatatypePassedBy::PointerLengthPair,
-            DatatypeVariant::Pointer { .. } | DatatypeVariant::ConstPointer { .. } => {
+            Datatype::Array { .. } => DatatypePassedBy::PointerLengthPair,
+            Datatype::Pointer { .. } | Datatype::ConstPointer { .. } => {
                 DatatypePassedBy::Value(AtomType::I32)
             }
-            DatatypeVariant::Alias(a) => a.to.passed_by(),
-            DatatypeVariant::Enum(e) => DatatypePassedBy::Value(e.repr.into()),
-            DatatypeVariant::Flags(f) => DatatypePassedBy::Value(f.repr.into()),
-            DatatypeVariant::Struct { .. } | DatatypeVariant::Union { .. } => {
+            Datatype::Enum(e) => DatatypePassedBy::Value(e.repr.into()),
+            Datatype::Flags(f) => DatatypePassedBy::Value(f.repr.into()),
+            Datatype::Struct { .. } | Datatype::Union { .. } => {
                 DatatypePassedBy::Pointer
             }
-            DatatypeVariant::Handle { .. } => DatatypePassedBy::Value(AtomType::I32),
+            Datatype::Handle { .. } => DatatypePassedBy::Value(AtomType::I32),
         }
     }
 }
@@ -104,7 +103,7 @@ impl InterfaceFuncParam {
     /// Gives the WebAssembly type that corresponds to passing this interface func parameter by value.
     /// Not all types can be passed by value: those which cannot return None
     pub fn pass_by_value(&self) -> Option<CoreParamType> {
-        match self.type_.passed_by() {
+        match self.type_.deref().passed_by() {
             DatatypePassedBy::Value(atom) => Some(CoreParamType {
                 signifies: CoreParamSignifies::Value(atom),
                 param: self.clone(),
@@ -117,7 +116,7 @@ impl InterfaceFuncParam {
     /// by reference. Some types are passed by reference using a single pointer, others
     /// require both a pointer and length.
     pub fn pass_by_reference(&self) -> Vec<CoreParamType> {
-        match self.type_.passed_by() {
+        match self.type_.deref().passed_by() {
             DatatypePassedBy::Value(_) | DatatypePassedBy::Pointer => vec![CoreParamType {
                 signifies: CoreParamSignifies::PointerTo,
                 param: self.clone(),

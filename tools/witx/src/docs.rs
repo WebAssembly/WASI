@@ -37,63 +37,48 @@ impl BuiltinType {
     }
 }
 
+impl Documentation for NamedDatatype {
+    fn to_md(&self) -> String {
+        let body = match &self.dt {
+            DatatypeRef::Value(v) => v.to_md(),
+            DatatypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
+        };
+        format!("## `{}`\n{}\n{}\n", self.name.as_str(), self.docs, body,)
+    }
+}
+
+impl DatatypeRef {
+    fn type_name(&self) -> String {
+        match self {
+            DatatypeRef::Name(n) => n.name.as_str().to_string(),
+            DatatypeRef::Value(ref v) => match &**v {
+                Datatype::Array(a) => format!("Array<{}>", a.type_name()),
+                Datatype::Pointer(p) => format!("Pointer<{}>", p.type_name()),
+                Datatype::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
+                Datatype::Builtin(b) => b.type_name().to_string(),
+                Datatype::Enum { .. }
+                | Datatype::Flags { .. }
+                | Datatype::Struct { .. }
+                | Datatype::Union { .. }
+                | Datatype::Handle { .. } => unimplemented!("type_name of anonymous datatypes"),
+            },
+        }
+    }
+}
+
 impl Documentation for Datatype {
     fn to_md(&self) -> String {
-        if let Some(name) = &self.name {
-            format!(
-                "## `{}`\n{}\n{}\n",
-                name.as_str(),
-                self.docs,
-                self.variant.to_md()
-            )
-        } else {
-            unreachable!("should only produce Documentation for named datatypes")
-        }
-    }
-}
-
-impl Datatype {
-    fn type_name(&self) -> String {
-        self.name
-            .clone()
-            .map(|n| n.as_str().to_string())
-            .unwrap_or_else(|| match &self.variant {
-                DatatypeVariant::Array(a) => format!("Array<{}>", a.type_name()),
-                DatatypeVariant::Pointer(p) => format!("Pointer<{}>", p.type_name()),
-                DatatypeVariant::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
-                DatatypeVariant::Builtin(b) => b.type_name().to_string(),
-                DatatypeVariant::Alias { .. }
-                | DatatypeVariant::Enum { .. }
-                | DatatypeVariant::Flags { .. }
-                | DatatypeVariant::Struct { .. }
-                | DatatypeVariant::Union { .. }
-                | DatatypeVariant::Handle { .. } => {
-                    unreachable!("these variants should always be named")
-                }
-            })
-    }
-}
-
-impl Documentation for DatatypeVariant {
-    fn to_md(&self) -> String {
         match self {
-            DatatypeVariant::Alias(a) => a.to_md(),
-            DatatypeVariant::Enum(a) => a.to_md(),
-            DatatypeVariant::Flags(a) => a.to_md(),
-            DatatypeVariant::Struct(a) => a.to_md(),
-            DatatypeVariant::Union(a) => a.to_md(),
-            DatatypeVariant::Handle(a) => a.to_md(),
-            DatatypeVariant::Array{..} |
-            DatatypeVariant::Pointer{..} |
-            DatatypeVariant::ConstPointer{..} |
-            DatatypeVariant::Builtin{..} => unreachable!("should only produce Documentation for other variants"),
+            Datatype::Enum(a) => a.to_md(),
+            Datatype::Flags(a) => a.to_md(),
+            Datatype::Struct(a) => a.to_md(),
+            Datatype::Union(a) => a.to_md(),
+            Datatype::Handle(a) => a.to_md(),
+            Datatype::Array { .. }
+            | Datatype::Pointer { .. }
+            | Datatype::ConstPointer { .. }
+            | Datatype::Builtin { .. } => unimplemented!(),
         }
-    }
-}
-
-impl Documentation for AliasDatatype {
-    fn to_md(&self) -> String {
-        format!("Alias to `{}`", self.to.type_name())
     }
 }
 

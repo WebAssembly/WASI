@@ -29,13 +29,13 @@ impl Document {
             entries,
         }
     }
-    pub fn datatype(&self, name: &Id) -> Option<Rc<Datatype>> {
+    pub fn datatype(&self, name: &Id) -> Option<Rc<NamedDatatype>> {
         self.entries.get(name).and_then(|e| match e {
             Entry::Datatype(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
             _ => None,
         })
     }
-    pub fn datatypes<'a>(&'a self) -> impl Iterator<Item = Rc<Datatype>> + 'a {
+    pub fn datatypes<'a>(&'a self) -> impl Iterator<Item = Rc<NamedDatatype>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
             Definition::Datatype(d) => Some(d.clone()),
             _ => None,
@@ -66,13 +66,13 @@ impl Eq for Document {}
 
 #[derive(Debug, Clone)]
 pub enum Definition {
-    Datatype(Rc<Datatype>),
+    Datatype(Rc<NamedDatatype>),
     Module(Rc<Module>),
 }
 
 #[derive(Debug, Clone)]
 pub enum Entry {
-    Datatype(Weak<Datatype>),
+    Datatype(Weak<NamedDatatype>),
     Module(Weak<Module>),
 }
 
@@ -107,61 +107,56 @@ impl PartialEq for Entry {
     }
 }
 
-pub type DatatypeIdent = Rc<Datatype>;
-/*
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeIdent {
-    Builtin(BuiltinType),
-    Array(Box<DatatypeIdent>),
-    Pointer(Box<DatatypeIdent>),
-    ConstPointer(Box<DatatypeIdent>),
-    Ident(Rc<Datatype>),
-}
-*/
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Datatype {
-    pub name: Option<Id>,
-    pub variant: DatatypeVariant,
-    pub docs: String,
+pub enum DatatypeRef {
+    Name(Rc<NamedDatatype>),
+    Value(Rc<Datatype>),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeVariant {
-    Alias(AliasDatatype),
-    Enum(EnumDatatype),
-    Flags(FlagsDatatype),
-    Struct(StructDatatype),
-    Union(UnionDatatype),
-    Handle(HandleDatatype),
-    Array(Rc<Datatype>),
-    Pointer(Rc<Datatype>),
-    ConstPointer(Rc<Datatype>),
-    Builtin(BuiltinType),
-}
-
-impl DatatypeVariant {
-    pub fn kind(&self) -> &'static str {
-        use DatatypeVariant::*;
+impl DatatypeRef {
+    pub fn deref(&self) -> Rc<Datatype> {
         match self {
-            Alias(_) => "alias",
-            Enum(_) => "enum",
-            Flags(_) => "flags",
-            Struct(_) => "struct",
-            Union(_) => "union",
-            Handle(_) => "handle",
-            Builtin(_) => "builtin",
-            Array(_) => "array",
-            Pointer(_) => "pointer",
-            ConstPointer(_) => "constpointer",
+            DatatypeRef::Name(named) => named.dt.deref(),
+            DatatypeRef::Value(ref v) => v.clone(),
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct AliasDatatype {
+pub struct NamedDatatype {
     pub name: Id,
-    pub to: DatatypeIdent,
+    pub dt: DatatypeRef,
+    pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Datatype {
+    Enum(EnumDatatype),
+    Flags(FlagsDatatype),
+    Struct(StructDatatype),
+    Union(UnionDatatype),
+    Handle(HandleDatatype),
+    Array(DatatypeRef),
+    Pointer(DatatypeRef),
+    ConstPointer(DatatypeRef),
+    Builtin(BuiltinType),
+}
+
+impl Datatype {
+    pub fn kind(&self) -> &'static str {
+        use Datatype::*;
+        match self {
+            Enum(_) => "enum",
+            Flags(_) => "flags",
+            Struct(_) => "struct",
+            Union(_) => "union",
+            Handle(_) => "handle",
+            Array(_) => "array",
+            Pointer(_) => "pointer",
+            ConstPointer(_) => "constpointer",
+            Builtin(_) => "builtin",
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -207,7 +202,7 @@ pub struct StructDatatype {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructMember {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub type_: DatatypeRef,
     pub docs: String,
 }
 
@@ -220,14 +215,14 @@ pub struct UnionDatatype {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionVariant {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub type_: DatatypeRef,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HandleDatatype {
     pub name: Id,
-    pub supertypes: Vec<DatatypeIdent>,
+    pub supertypes: Vec<DatatypeRef>,
 }
 
 #[derive(Debug, Clone)]
@@ -344,7 +339,7 @@ pub struct InterfaceFunc {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InterfaceFuncParam {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub type_: DatatypeRef,
     pub position: InterfaceFuncParamPosition,
     pub docs: String,
 }
