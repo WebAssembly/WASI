@@ -40,7 +40,17 @@ impl BuiltinType {
 impl Documentation for NamedType {
     fn to_md(&self) -> String {
         let body = match &self.dt {
-            TypeRef::Value(v) => v.to_md(),
+            TypeRef::Value(v) => match &**v {
+                Type::Enum(a) => a.to_md(),
+                Type::Flags(a) => a.to_md(),
+                Type::Struct(a) => a.to_md(),
+                Type::Union(a) => a.to_md(),
+                Type::Handle(a) => a.to_md(),
+                Type::Array(a) => format!("Array of {}", a.type_name()),
+                Type::Pointer(a) => format!("Pointer to {}", a.type_name()),
+                Type::ConstPointer(a) => format!("Constant Pointer to {}", a.type_name()),
+                Type::Builtin(a) => format!("Builtin type {}", a.type_name()),
+            },
             TypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
         };
         format!("## `{}`\n{}\n{}\n", self.name.as_str(), self.docs, body,)
@@ -60,24 +70,10 @@ impl TypeRef {
                 | Type::Flags { .. }
                 | Type::Struct { .. }
                 | Type::Union { .. }
-                | Type::Handle { .. } => unimplemented!("type_name of anonymous datatypes"),
+                | Type::Handle { .. } => {
+                    unimplemented!("type_name of anonymous compound datatypes")
+                }
             },
-        }
-    }
-}
-
-impl Documentation for Type {
-    fn to_md(&self) -> String {
-        match self {
-            Type::Enum(a) => a.to_md(),
-            Type::Flags(a) => a.to_md(),
-            Type::Struct(a) => a.to_md(),
-            Type::Union(a) => a.to_md(),
-            Type::Handle(a) => a.to_md(),
-            Type::Array { .. }
-            | Type::Pointer { .. }
-            | Type::ConstPointer { .. }
-            | Type::Builtin { .. } => unimplemented!(),
         }
     }
 }
