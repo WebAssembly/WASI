@@ -107,21 +107,11 @@ mod test {
         )
         .expect("parse");
 
-        match &doc.datatype(&Id::new("b_float")).unwrap().variant {
-            DatatypeVariant::Alias(a) => {
-                assert_eq!(a.name.as_str(), "b_float");
-                assert_eq!(a.to.variant, DatatypeVariant::Builtin(BuiltinType::F64));
-            }
-            other => panic!("expected alias, got {:?}", other),
-        }
+        let b_float = doc.datatype(&Id::new("b_float")).unwrap();
+        assert_eq!(*b_float.datatype(), Datatype::Builtin(BuiltinType::F64));
 
-        match &doc.datatype(&Id::new("c_int")).unwrap().variant {
-            DatatypeVariant::Alias(a) => {
-                assert_eq!(a.name.as_str(), "c_int");
-                assert_eq!(a.to.variant, DatatypeVariant::Builtin(BuiltinType::U32));
-            }
-            other => panic!("expected alias, got {:?}", other),
-        }
+        let c_int = doc.datatype(&Id::new("c_int")).unwrap();
+        assert_eq!(*c_int.datatype(), Datatype::Builtin(BuiltinType::U32));
     }
 
     #[test]
@@ -137,13 +127,8 @@ mod test {
         )
         .expect("parse");
 
-        match &doc.datatype(&Id::new("d_char")).unwrap().variant {
-            DatatypeVariant::Alias(a) => {
-                assert_eq!(a.name.as_str(), "d_char");
-                assert_eq!(a.to.variant, DatatypeVariant::Builtin(BuiltinType::U8));
-            }
-            other => panic!("expected alias, got {:?}", other),
-        }
+        let d_char = doc.datatype(&Id::new("d_char")).unwrap();
+        assert_eq!(*d_char.datatype(), Datatype::Builtin(BuiltinType::U8));
     }
 
     #[test]

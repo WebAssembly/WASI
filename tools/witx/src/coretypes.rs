@@ -103,7 +103,7 @@ impl InterfaceFuncParam {
     /// Gives the WebAssembly type that corresponds to passing this interface func parameter by value.
     /// Not all types can be passed by value: those which cannot return None
     pub fn pass_by_value(&self) -> Option<CoreParamType> {
-        match self.type_.deref().passed_by() {
+        match self.type_.datatype().passed_by() {
             DatatypePassedBy::Value(atom) => Some(CoreParamType {
                 signifies: CoreParamSignifies::Value(atom),
                 param: self.clone(),
@@ -116,7 +116,7 @@ impl InterfaceFuncParam {
     /// by reference. Some types are passed by reference using a single pointer, others
     /// require both a pointer and length.
     pub fn pass_by_reference(&self) -> Vec<CoreParamType> {
-        match self.type_.deref().passed_by() {
+        match self.type_.datatype().passed_by() {
             DatatypePassedBy::Value(_) | DatatypePassedBy::Pointer => vec![CoreParamType {
                 signifies: CoreParamSignifies::PointerTo,
                 param: self.clone(),

@@ -114,9 +114,9 @@ pub enum DatatypeRef {
 }
 
 impl DatatypeRef {
-    pub fn deref(&self) -> Rc<Datatype> {
+    pub fn datatype(&self) -> Rc<Datatype> {
         match self {
-            DatatypeRef::Name(named) => named.dt.deref(),
+            DatatypeRef::Name(named) => named.datatype(),
             DatatypeRef::Value(ref v) => v.clone(),
         }
     }
@@ -127,6 +127,12 @@ pub struct NamedDatatype {
     pub name: Id,
     pub dt: DatatypeRef,
     pub docs: String,
+}
+
+impl NamedDatatype {
+    pub fn datatype(&self) -> Rc<Datatype> {
+        self.dt.datatype()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

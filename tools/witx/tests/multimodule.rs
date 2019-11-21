@@ -1,4 +1,4 @@
-use witx::{load, BuiltinType, DatatypeVariant, Id};
+use witx::{load, BuiltinType, Datatype, DatatypeRef, Id};
 
 #[test]
 fn validate_multimodule() {
@@ -13,31 +13,25 @@ fn validate_multimodule() {
 
     // Check that the `a` both modules use is what we expect:
     let type_a = doc.datatype(&Id::new("a")).expect("type a exists");
-    match &type_a.variant {
-        DatatypeVariant::Alias(alias) => match alias.to.variant {
-            DatatypeVariant::Builtin(b) => assert_eq!(b, BuiltinType::U32),
-            _ => panic!("a is an alias u32"),
-        },
-        _ => panic!("a is an alias to u32"),
-    }
+    assert_eq!(*type_a.datatype(), Datatype::Builtin(BuiltinType::U32));
 
     // `b` is a struct with a single member of type `a`
     let type_b = doc.datatype(&Id::new("b")).expect("type b exists");
-    match &type_b.variant {
-        DatatypeVariant::Struct(struct_) => {
+    match &*type_b.datatype() {
+        Datatype::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 1);
-            assert_eq!(struct_.members.get(0).unwrap().type_, type_a);
+            assert_eq!(struct_.members.get(0).unwrap().type_, DatatypeRef::Name(type_a.clone()));
         }
         _ => panic!("b is a struct"),
     }
 
     // `c` is a struct with a two members of type `a`
     let type_c = doc.datatype(&Id::new("c")).expect("type c exists");
-    match &type_c.variant {
-        DatatypeVariant::Struct(struct_) => {
+    match &*type_c.datatype() {
+        Datatype::Struct(struct_) => {
             assert_eq!(struct_.members.len(), 2);
-            assert_eq!(struct_.members.get(0).unwrap().type_, type_a);
-            assert_eq!(struct_.members.get(1).unwrap().type_, type_a);
+            assert_eq!(struct_.members.get(0).unwrap().type_, DatatypeRef::Name(type_a.clone()));
+            assert_eq!(struct_.members.get(1).unwrap().type_, DatatypeRef::Name(type_a));
         }
         _ => panic!("c is a struct"),
     }

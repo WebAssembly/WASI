@@ -35,7 +35,7 @@ fn render_roundtrip() {
     if doc != doc2 {
         for type_ in doc.datatypes() {
             let type2 = doc2
-                .datatype(&type_.name.as_ref().expect("iterator gives named datatypes"))
+                .datatype(&type_.name)
                 .expect("doc2 missing datatype");
             assert_eq!(type_, type2);
         }

@@ -375,7 +375,7 @@ impl DocValidationScope<'_> {
                 match self.doc.entries.get(&id) {
                     Some(Entry::Datatype(weak_ref)) => {
                         let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
-                        match &*named_dt.dt.deref() {
+                        match &*named_dt.datatype() {
                             Datatype::Handle { .. } => Ok(DatatypeRef::Name(named_dt)),
                             other => Err(ValidationError::WrongKindName {
                                 name: id_syntax.name().to_string(),
@@ -495,7 +495,7 @@ impl<'a> ModuleValidation<'a> {
                     .map(|(ix, f)| {
                         let type_ = self.doc.validate_datatype_ident(&f.item.type_)?;
                         if ix == 0 {
-                            match type_.deref().passed_by() {
+                            match type_.datatype().passed_by() {
                                 DatatypePassedBy::Value(_) => {}
                                 _ => Err(ValidationError::InvalidFirstResultType {
                                     location: self.doc.location(f.item.name.span()),
