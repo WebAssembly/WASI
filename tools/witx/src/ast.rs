@@ -175,7 +175,6 @@ pub enum IntRepr {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumDatatype {
-    pub name: Id,
     pub repr: IntRepr,
     pub variants: Vec<EnumVariant>,
 }
@@ -188,7 +187,6 @@ pub struct EnumVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsDatatype {
-    pub name: Id,
     pub repr: IntRepr,
     pub flags: Vec<FlagsMember>,
 }
@@ -201,7 +199,6 @@ pub struct FlagsMember {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructDatatype {
-    pub name: Id,
     pub members: Vec<StructMember>,
 }
 
@@ -214,7 +211,6 @@ pub struct StructMember {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionDatatype {
-    pub name: Id,
     pub variants: Vec<UnionVariant>,
 }
 
@@ -227,7 +223,6 @@ pub struct UnionVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HandleDatatype {
-    pub name: Id,
     pub supertypes: Vec<DatatypeRef>,
 }
 

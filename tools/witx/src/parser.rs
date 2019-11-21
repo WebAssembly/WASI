@@ -345,6 +345,7 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
                 } else if l.peek::<kw::array>() {
+                    parser.parse::<kw::array>()?;
                     Ok(TypedefSyntax::Array(Box::new(parser.parse()?)))
                 } else if l.peek::<AtWitx>() {
                     parser.parse::<AtWitx>()?;
@@ -425,7 +426,7 @@ impl<'a> Parse<'a> for StructSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FieldSyntax<'a> {
     pub name: wast::Id<'a>,
-    pub type_: wast::Id<'a>,
+    pub type_: TypedefSyntax<'a>,
 }
 
 impl<'a> Parse<'a> for FieldSyntax<'a> {
