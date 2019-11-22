@@ -33,8 +33,8 @@ fn render_roundtrip() {
     // I'd just assert_eq, but when it fails the debug print is thousands of lines long and impossible
     // to figure out where they are unequal.
     if doc != doc2 {
-        for type_ in doc.datatypes() {
-            let type2 = doc2.datatype(&type_.name).expect("doc2 missing datatype");
+        for type_ in doc.typenames() {
+            let type2 = doc2.typename(&type_.name).expect("doc2 missing datatype");
             assert_eq!(type_, type2);
         }
         for mod_ in doc.modules() {
@@ -51,4 +51,15 @@ fn render_roundtrip() {
     }
     // This should be equivelant to the above, but just in case some code changes where it isnt:
     assert_eq!(doc, doc2);
+}
+
+#[test]
+fn document_wasi_snapshot() {
+    use witx::Documentation;
+    println!(
+        "{}",
+        witx::load(&["../../phases/snapshot/witx/wasi_snapshot_preview1.witx"])
+            .unwrap_or_else(|e| panic!("failed to parse: {}", e))
+            .to_md()
+    );
 }

@@ -7,7 +7,7 @@ pub trait Documentation {
 impl Documentation for Document {
     fn to_md(&self) -> String {
         let mut ret = "# Types\n".to_string();
-        for d in self.datatypes() {
+        for d in self.typenames() {
             ret += &d.to_md();
         }
 
@@ -20,7 +20,7 @@ impl Documentation for Document {
 }
 
 impl BuiltinType {
-    fn name(&self) -> &'static str {
+    fn type_name(&self) -> &'static str {
         match self {
             BuiltinType::String => "string",
             BuiltinType::U8 => "u8",
@@ -37,45 +37,44 @@ impl BuiltinType {
     }
 }
 
-impl DatatypeIdent {
-    fn name(&self) -> String {
+impl Documentation for NamedType {
+    fn to_md(&self) -> String {
+        let body = match &self.dt {
+            TypeRef::Value(v) => match &**v {
+                Type::Enum(a) => a.to_md(),
+                Type::Flags(a) => a.to_md(),
+                Type::Struct(a) => a.to_md(),
+                Type::Union(a) => a.to_md(),
+                Type::Handle(a) => a.to_md(),
+                Type::Array(a) => format!("Array of {}", a.type_name()),
+                Type::Pointer(a) => format!("Pointer to {}", a.type_name()),
+                Type::ConstPointer(a) => format!("Constant Pointer to {}", a.type_name()),
+                Type::Builtin(a) => format!("Builtin type {}", a.type_name()),
+            },
+            TypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
+        };
+        format!("## `{}`\n{}\n{}\n", self.name.as_str(), self.docs, body,)
+    }
+}
+
+impl TypeRef {
+    fn type_name(&self) -> String {
         match self {
-            DatatypeIdent::Builtin(b) => b.name().to_string(),
-            DatatypeIdent::Array(a) => format!("Array<{}>", a.name()),
-            DatatypeIdent::Pointer(p) => format!("Pointer<{}>", p.name()),
-            DatatypeIdent::ConstPointer(p) => format!("ConstPointer<{}>", p.name()),
-            DatatypeIdent::Ident(i) => i.name.as_str().to_string(),
+            TypeRef::Name(n) => n.name.as_str().to_string(),
+            TypeRef::Value(ref v) => match &**v {
+                Type::Array(a) => format!("Array<{}>", a.type_name()),
+                Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
+                Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
+                Type::Builtin(b) => b.type_name().to_string(),
+                Type::Enum { .. }
+                | Type::Flags { .. }
+                | Type::Struct { .. }
+                | Type::Union { .. }
+                | Type::Handle { .. } => {
+                    unimplemented!("type_name of anonymous compound datatypes")
+                }
+            },
         }
-    }
-}
-
-impl Documentation for Datatype {
-    fn to_md(&self) -> String {
-        format!(
-            "## `{}`\n{}\n{}\n",
-            self.name.as_str(),
-            self.docs,
-            self.variant.to_md()
-        )
-    }
-}
-
-impl Documentation for DatatypeVariant {
-    fn to_md(&self) -> String {
-        match self {
-            DatatypeVariant::Alias(a) => a.to_md(),
-            DatatypeVariant::Enum(a) => a.to_md(),
-            DatatypeVariant::Flags(a) => a.to_md(),
-            DatatypeVariant::Struct(a) => a.to_md(),
-            DatatypeVariant::Union(a) => a.to_md(),
-            DatatypeVariant::Handle(a) => a.to_md(),
-        }
-    }
-}
-
-impl Documentation for AliasDatatype {
-    fn to_md(&self) -> String {
-        format!("Alias to `{}`", self.to.name())
     }
 }
 
@@ -89,7 +88,7 @@ impl Documentation for EnumDatatype {
             .join("\n");
         format!(
             "Enum represented by `{}`\n\n### Variants:\n{}\n",
-            self.repr.name(),
+            self.repr.type_name(),
             variants
         )
     }
@@ -105,7 +104,7 @@ impl Documentation for FlagsDatatype {
             .join("\n");
         format!(
             "Flags represented by `{}`\n\n### Flags:\n{}",
-            self.repr.name(),
+            self.repr.type_name(),
             flags
         )
     }
@@ -120,7 +119,7 @@ impl Documentation for StructDatatype {
                 format!(
                     "#### `{}`\nMember type: `{}`\n{}",
                     m.name.as_str(),
-                    m.type_.name(),
+                    m.tref.type_name(),
                     m.docs,
                 )
             })
@@ -139,7 +138,7 @@ impl Documentation for UnionDatatype {
                 format!(
                     "#### `{}`\nVariant type: `{}`\n{}",
                     v.name.as_str(),
-                    v.type_.name(),
+                    v.tref.type_name(),
                     v.docs,
                 )
             })
@@ -154,14 +153,14 @@ impl Documentation for HandleDatatype {
         let supertypes = self
             .supertypes
             .iter()
-            .map(|s| format!("* {}", s.name()))
+            .map(|s| format!("* {}", s.type_name()))
             .collect::<Vec<String>>()
             .join("\n");
         format!("### Handle supertypes:\n{}\n", supertypes)
     }
 }
 impl IntRepr {
-    fn name(&self) -> &'static str {
+    fn type_name(&self) -> &'static str {
         match self {
             IntRepr::U8 => "u8",
             IntRepr::U16 => "u16",
@@ -209,7 +208,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.name(),
+                    type_ = f.tref.type_name(),
                     docs = f.docs
                 )
             })
@@ -222,7 +221,7 @@ impl Documentation for InterfaceFunc {
                 format!(
                     "##### `{name}`\n`{name}` has type `{type_}`\n{docs}",
                     name = f.name.as_str(),
-                    type_ = f.type_.name(),
+                    type_ = f.tref.type_name(),
                     docs = f.docs
                 )
             })
