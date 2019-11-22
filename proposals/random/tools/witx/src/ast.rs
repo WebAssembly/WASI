@@ -29,27 +29,27 @@ impl Document {
             entries,
         }
     }
-    pub fn datatype(&self, name: &Id) -> Option<Rc<Datatype>> {
+    pub fn typename(&self, name: &Id) -> Option<Rc<NamedType>> {
         self.entries.get(name).and_then(|e| match e {
-            Entry::Datatype(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            Entry::Typename(nt) => Some(nt.upgrade().expect("always possible to upgrade entry")),
             _ => None,
         })
     }
-    pub fn datatypes<'a>(&'a self) -> impl Iterator<Item = Rc<Datatype>> + 'a {
+    pub fn typenames<'a>(&'a self) -> impl Iterator<Item = Rc<NamedType>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            Definition::Datatype(d) => Some(d.clone()),
+            Definition::Typename(nt) => Some(nt.clone()),
             _ => None,
         })
     }
     pub fn module(&self, name: &Id) -> Option<Rc<Module>> {
         self.entries.get(&name).and_then(|e| match e {
-            Entry::Module(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
+            Entry::Module(m) => Some(m.upgrade().expect("always possible to upgrade entry")),
             _ => None,
         })
     }
     pub fn modules<'a>(&'a self) -> impl Iterator<Item = Rc<Module>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            Definition::Module(d) => Some(d.clone()),
+            Definition::Module(m) => Some(m.clone()),
             _ => None,
         })
     }
@@ -66,20 +66,20 @@ impl Eq for Document {}
 
 #[derive(Debug, Clone)]
 pub enum Definition {
-    Datatype(Rc<Datatype>),
+    Typename(Rc<NamedType>),
     Module(Rc<Module>),
 }
 
 #[derive(Debug, Clone)]
 pub enum Entry {
-    Datatype(Weak<Datatype>),
+    Typename(Weak<NamedType>),
     Module(Weak<Module>),
 }
 
 impl Entry {
     pub fn kind(&self) -> &'static str {
         match self {
-            Entry::Datatype { .. } => "datatype",
+            Entry::Typename { .. } => "typename",
             Entry::Module { .. } => "module",
         }
     }
@@ -88,10 +88,10 @@ impl Entry {
 impl PartialEq for Entry {
     fn eq(&self, rhs: &Entry) -> bool {
         match (self, rhs) {
-            (Entry::Datatype(d), Entry::Datatype(d_rhs)) => {
-                d.upgrade()
+            (Entry::Typename(t), Entry::Typename(t_rhs)) => {
+                t.upgrade()
                     .expect("possible to upgrade entry when part of document")
-                    == d_rhs
+                    == t_rhs
                         .upgrade()
                         .expect("possible to upgrade entry when part of document")
             }
@@ -108,49 +108,61 @@ impl PartialEq for Entry {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeIdent {
-    Builtin(BuiltinType),
-    Array(Box<DatatypeIdent>),
-    Pointer(Box<DatatypeIdent>),
-    ConstPointer(Box<DatatypeIdent>),
-    Ident(Rc<Datatype>),
+pub enum TypeRef {
+    Name(Rc<NamedType>),
+    Value(Rc<Type>),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Datatype {
-    pub name: Id,
-    pub variant: DatatypeVariant,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DatatypeVariant {
-    Alias(AliasDatatype),
-    Enum(EnumDatatype),
-    Flags(FlagsDatatype),
-    Struct(StructDatatype),
-    Union(UnionDatatype),
-    Handle(HandleDatatype),
-}
-
-impl DatatypeVariant {
-    pub fn kind(&self) -> &'static str {
-        use DatatypeVariant::*;
+impl TypeRef {
+    pub fn type_(&self) -> Rc<Type> {
         match self {
-            Alias(_) => "alias",
-            Enum(_) => "enum",
-            Flags(_) => "flags",
-            Struct(_) => "struct",
-            Union(_) => "union",
-            Handle(_) => "handle",
+            TypeRef::Name(named) => named.type_(),
+            TypeRef::Value(ref v) => v.clone(),
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct AliasDatatype {
+pub struct NamedType {
     pub name: Id,
-    pub to: DatatypeIdent,
+    pub dt: TypeRef,
+    pub docs: String,
+}
+
+impl NamedType {
+    pub fn type_(&self) -> Rc<Type> {
+        self.dt.type_()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Type {
+    Enum(EnumDatatype),
+    Flags(FlagsDatatype),
+    Struct(StructDatatype),
+    Union(UnionDatatype),
+    Handle(HandleDatatype),
+    Array(TypeRef),
+    Pointer(TypeRef),
+    ConstPointer(TypeRef),
+    Builtin(BuiltinType),
+}
+
+impl Type {
+    pub fn kind(&self) -> &'static str {
+        use Type::*;
+        match self {
+            Enum(_) => "enum",
+            Flags(_) => "flags",
+            Struct(_) => "struct",
+            Union(_) => "union",
+            Handle(_) => "handle",
+            Array(_) => "array",
+            Pointer(_) => "pointer",
+            ConstPointer(_) => "constpointer",
+            Builtin(_) => "builtin",
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -163,7 +175,6 @@ pub enum IntRepr {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumDatatype {
-    pub name: Id,
     pub repr: IntRepr,
     pub variants: Vec<EnumVariant>,
 }
@@ -176,7 +187,6 @@ pub struct EnumVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsDatatype {
-    pub name: Id,
     pub repr: IntRepr,
     pub flags: Vec<FlagsMember>,
 }
@@ -189,34 +199,31 @@ pub struct FlagsMember {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructDatatype {
-    pub name: Id,
     pub members: Vec<StructMember>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StructMember {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub tref: TypeRef,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionDatatype {
-    pub name: Id,
     pub variants: Vec<UnionVariant>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionVariant {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub tref: TypeRef,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HandleDatatype {
-    pub name: Id,
-    pub supertypes: Vec<DatatypeIdent>,
+    pub supertypes: Vec<TypeRef>,
 }
 
 #[derive(Debug, Clone)]
@@ -333,7 +340,7 @@ pub struct InterfaceFunc {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InterfaceFuncParam {
     pub name: Id,
-    pub type_: DatatypeIdent,
+    pub tref: TypeRef,
     pub position: InterfaceFuncParamPosition,
     pub docs: String,
 }
