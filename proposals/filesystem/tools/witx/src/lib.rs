@@ -16,17 +16,17 @@ mod toplevel;
 mod validate;
 
 pub use ast::{
-    AliasDatatype, BuiltinType, Datatype, DatatypeIdent, DatatypeVariant, Definition, Document,
-    Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember, HandleDatatype, Id, IntRepr,
-    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition,
-    ModuleEntry, ModuleImport, ModuleImportVariant, StructDatatype, StructMember, UnionDatatype,
+    BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
+    FlagsMember, HandleDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
+    InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry, ModuleImport,
+    ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef, UnionDatatype,
     UnionVariant,
 };
-pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, DatatypePassedBy};
+pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
-pub use render::{Render, SExpr as RenderSExpr};
+pub use render::SExpr;
 pub use validate::ValidationError;
 
 use failure::Fail;
