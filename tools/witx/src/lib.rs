@@ -29,8 +29,8 @@ pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use validate::ValidationError;
 
-use failure::Fail;
 use std::path::{Path, PathBuf};
+use thiserror::Error;
 
 /// Load a witx document from the filesystem
 pub fn load<P: AsRef<Path>>(paths: &[P]) -> Result<Document, WitxError> {
@@ -51,14 +51,14 @@ pub struct Location {
     pub column: usize,
 }
 
-#[derive(Debug, Fail)]
+#[derive(Debug, Error)]
 pub enum WitxError {
-    #[fail(display = "with file {:?}: {}", _0, _1)]
-    Io(PathBuf, #[cause] ::std::io::Error),
-    #[fail(display = "{}", _0)]
-    Parse(#[cause] wast::Error),
-    #[fail(display = "{}", _0)]
-    Validation(#[cause] ValidationError),
+    #[error("IO error with file {0:?}")]
+    Io(PathBuf, #[source] ::std::io::Error),
+    #[error("Parse error")]
+    Parse(#[from] wast::Error),
+    #[error("Validation error")]
+    Validation(#[from] ValidationError),
 }
 
 impl WitxError {
