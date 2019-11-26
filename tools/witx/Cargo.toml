@@ -20,4 +20,4 @@ path = "src/main.rs"
 [dependencies]
 clap = "2"
 wast = "3.0.4"
-failure = "0.1"
+thiserror = "1.0"
