@@ -9,39 +9,36 @@ use crate::{
     Location, Module, ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType,
     StructDatatype, StructMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant,
 };
-use failure::Fail;
 use std::collections::HashMap;
 use std::path::Path;
 use std::rc::Rc;
+use thiserror::Error;
 
-#[derive(Debug, Fail)]
+#[derive(Debug, Error)]
 pub enum ValidationError {
-    #[fail(display = "Unknown name `{}`", name)]
+    #[error("Unknown name `{name}`")]
     UnknownName { name: String, location: Location },
-    #[fail(display = "Redefinition of name `{}`", name)]
+    #[error("Redefinition of name `{name}`")]
     NameAlreadyExists {
         name: String,
         at_location: Location,
         previous_location: Location,
     },
-    #[fail(
-        display = "Wrong kind of name `{}`: expected {}, got {}",
-        name, expected, got
-    )]
+    #[error("Wrong kind of name `{name}`: expected {expected}, got {got}")]
     WrongKindName {
         name: String,
         location: Location,
         expected: &'static str,
         got: &'static str,
     },
-    #[fail(display = "Recursive definition of name `{}`", name)]
+    #[error("Recursive definition of name `{name}`")]
     Recursive { name: String, location: Location },
-    #[fail(display = "Invalid representation `{:?}`", repr)]
+    #[error("Invalid representation `{repr:?}`")]
     InvalidRepr {
         repr: BuiltinType,
         location: Location,
     },
-    #[fail(display = "First result type must be pass-by-value")]
+    #[error("First result type must be pass-by-value")]
     InvalidFirstResultType { location: Location },
 }
 
