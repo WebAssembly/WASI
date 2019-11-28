@@ -8,8 +8,19 @@ fn validate_wasi_snapshot() {
 
 #[test]
 fn validate_wasi_ephemeral() {
-    witx::load(&["../../phases/ephemeral/witx/wasi_ephemeral_preview.witx"])
-        .unwrap_or_else(|e| panic!("failed to parse: {}", e));
+    witx::load(&[
+        "../../phases/ephemeral/witx/wasi_ephemeral_args.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_clock.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_environ.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_fd.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_path.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_poll.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_proc.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_random.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_sched.witx",
+        "../../phases/ephemeral/witx/wasi_ephemeral_sock.witx",
+    ])
+    .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
