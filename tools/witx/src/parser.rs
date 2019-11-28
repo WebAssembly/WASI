@@ -1,3 +1,4 @@
+use crate::BuiltinType;
 use wast::lexer::Comment;
 use wast::parser::{Cursor, Parse, Parser, Peek, Result};
 
@@ -41,20 +42,6 @@ mod kw {
     wast::custom_keyword!(u8);
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum BuiltinType {
-    String,
-    U8,
-    U16,
-    U32,
-    U64,
-    S8,
-    S16,
-    S32,
-    S64,
-    F32,
-    F64,
-}
 
 impl Parse<'_> for BuiltinType {
     fn parse(parser: Parser<'_>) -> Result<Self> {

@@ -14,6 +14,7 @@ mod render;
 mod toplevel;
 /// Validate declarations into ast
 mod validate;
+mod representation;
 
 pub use ast::{
     BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
@@ -28,6 +29,7 @@ pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use validate::ValidationError;
+pub use representation::Representable;
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
