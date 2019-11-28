@@ -2,8 +2,6 @@
 use std::collections::HashMap;
 use std::rc::{Rc, Weak};
 
-pub use crate::parser::BuiltinType;
-
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Id(String);
 
@@ -163,6 +161,21 @@ impl Type {
             Builtin(_) => "builtin",
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BuiltinType {
+    String,
+    U8,
+    U16,
+    U32,
+    U64,
+    S8,
+    S16,
+    S32,
+    S64,
+    F32,
+    F64,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
