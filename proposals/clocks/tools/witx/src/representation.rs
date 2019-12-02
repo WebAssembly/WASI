@@ -3,103 +3,122 @@ use crate::{
     TypeRef, UnionDatatype,
 };
 
+// A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum RepEquality {
+    Eq,
+    Superset,
+    NotEq,
+}
+
+impl RepEquality {
+    pub fn join(&self, rhs: &Self) -> Self {
+        match (self, rhs) {
+            (RepEquality::Eq, RepEquality::Eq) => RepEquality::Eq,
+            _ => RepEquality::NotEq,
+        }
+    }
+}
+
 pub trait Representable {
-    fn representable(&self, by: &Self) -> bool;
-    // XXX its not enough for this to be a bool. we need to give the recipe with which to represent
-    // it -does it correspond exactly, does it need an upcast, or does it not correspond at all?
-    // and so on for each member.
-    // for structs, one might be able to represent each other, but not in the same memory layout.
-    // this can be arbitrarily deep due to recursion. for ABI compatibility we may need
-    // structs to correspond exactly, but maybe builtintypes just need to be representable. for
-    // polyfilling, we may just need everything to be representable.
-    // so, really this should return an enum describing what sort of equality we found between
-    // the two types, and then let the caller make that policy decision. TODO: design exactly that
-    // enum, i guess?
-    // also what about equality of typeref?
+    fn representable(&self, by: &Self) -> RepEquality;
 }
 
 impl Representable for BuiltinType {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
         // An unsigned integer can be used to represent an unsigned integer of smaller width.
         // Otherwise, types must be equal.
+        if self == by {
+            return RepEquality::Eq;
+        }
         match self {
             BuiltinType::U8 => match by {
-                BuiltinType::U64 | BuiltinType::U32 | BuiltinType::U16 | BuiltinType::U8 => true,
-                _ => false,
+                BuiltinType::U64 | BuiltinType::U32 | BuiltinType::U16 => RepEquality::Superset,
+                _ => RepEquality::NotEq,
             },
             BuiltinType::U16 => match by {
-                BuiltinType::U64 | BuiltinType::U32 | BuiltinType::U16 => true,
-                _ => false,
+                BuiltinType::U64 | BuiltinType::U32 => RepEquality::Superset,
+                _ => RepEquality::NotEq,
             },
             BuiltinType::U32 => match by {
-                BuiltinType::U64 | BuiltinType::U32 => true,
-                _ => false,
+                BuiltinType::U64 => RepEquality::Superset,
+                _ => RepEquality::NotEq,
             },
-            other => by == other,
+            _ => RepEquality::NotEq,
         }
     }
 }
 
 impl Representable for IntRepr {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
+        if self == by {
+            return RepEquality::Eq;
+        }
         // An unsigned integer can be used to represent an unsigned integer of smaller width.
         match self {
-            IntRepr::U8 => true,
             IntRepr::U16 => match by {
-                IntRepr::U16 | IntRepr::U32 | IntRepr::U64 => true,
-                _ => false,
+                IntRepr::U32 | IntRepr::U64 => RepEquality::Superset,
+                _ => RepEquality::NotEq,
             },
             IntRepr::U32 => match by {
-                IntRepr::U32 | IntRepr::U64 => true,
-                _ => false,
+                IntRepr::U64 => RepEquality::Superset,
+                _ => RepEquality::NotEq,
             },
-            IntRepr::U64 => *by == IntRepr::U64,
+            _ => RepEquality::NotEq,
         }
     }
 }
 
 impl Representable for EnumDatatype {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
         // Integer representation must be compatible
-        if !by.repr.representable(&self.repr) {
-            return false;
+        if self.repr.representable(&by.repr) == RepEquality::NotEq {
+            return RepEquality::NotEq;
         }
         // For each variant in self, must have variant of same name and position in by:
         for (ix, v) in self.variants.iter().enumerate() {
             if let Some(by_v) = by.variants.get(ix) {
                 if by_v.name != v.name {
-                    return false;
+                    return RepEquality::NotEq;
                 }
             } else {
-                return false;
+                return RepEquality::NotEq;
             }
         }
-        true
+        if by.variants.len() > self.variants.len() {
+            RepEquality::Superset
+        } else {
+            self.repr.representable(&by.repr)
+        }
     }
 }
 
 impl Representable for FlagsDatatype {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
         // Integer representation must be compatible
-        if !by.repr.representable(&self.repr) {
-            return false;
+        if self.repr.representable(&by.repr) == RepEquality::NotEq {
+            return RepEquality::NotEq;
         }
         // For each flag in self, must have flag of same name and position in by:
         for (ix, f) in self.flags.iter().enumerate() {
             if let Some(by_f) = by.flags.get(ix) {
                 if by_f.name != f.name {
-                    return false;
+                    return RepEquality::NotEq;
                 }
             } else {
-                return false;
+                return RepEquality::NotEq;
             }
         }
-        true
+        if by.flags.len() > self.flags.len() {
+            RepEquality::Superset
+        } else {
+            self.repr.representable(&by.repr)
+        }
     }
 }
 
 impl Representable for HandleDatatype {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
         // Handles must have the same set of named supertypes. Anonymous supertypes are never
         // equal, and the validator should probably make sure these are not allowed, because
         // what would that even mean??
@@ -110,44 +129,64 @@ impl Representable for HandleDatatype {
                         TypeRef::Name(by_nt) if by_nt.name == nt.name => Some(by_nt),
                         _ => None,
                     }) {
-                        if !nt.dt.representable(&by_nt.dt) {
-                            return false;
+                        if nt.dt.representable(&by_nt.dt) == RepEquality::NotEq {
+                            return RepEquality::NotEq;
                         }
                     } else {
-                        return false;
+                        return RepEquality::NotEq;
                     }
                 }
                 TypeRef::Value(_) => {
-                    return false;
+                    return RepEquality::NotEq;
                 }
             }
         }
-        true
+        RepEquality::Eq
     }
 }
 
 impl Representable for StructDatatype {
-    fn representable(&self, _by: &Self) -> bool {
-        unimplemented!(
-            "this one is hard - need more than a bool for this return type to really describe it"
-        )
+    fn representable(&self, by: &Self) -> RepEquality {
+        if self.members.len() != by.members.len() {
+            return RepEquality::NotEq;
+        }
+        for (m, bym) in self.members.iter().zip(by.members.iter()) {
+            if m.name != bym.name {
+                return RepEquality::NotEq;
+            }
+            if m.tref.type_().representable(&*bym.tref.type_()) != RepEquality::Eq {
+                return RepEquality::NotEq;
+            }
+        }
+        RepEquality::Eq
     }
 }
 
 impl Representable for UnionDatatype {
-    fn representable(&self, _by: &Self) -> bool {
-        unimplemented!("this one is hard")
+    fn representable(&self, by: &Self) -> RepEquality {
+        if self.variants.len() > by.variants.len() {
+            return RepEquality::NotEq;
+        }
+        for (v, byv) in self.variants.iter().zip(by.variants.iter()) {
+            if v.name != byv.name {
+                return RepEquality::NotEq;
+            }
+            if v.tref.type_().representable(&*byv.tref.type_()) != RepEquality::Eq {
+                return RepEquality::NotEq;
+            }
+        }
+        RepEquality::Eq
     }
 }
 
 impl Representable for TypeRef {
-    fn representable(&self, _by: &Self) -> bool {
-        unimplemented!("this one is hard - representable by type_() is appropriate in some cases, some times you may want precise name equality as well")
+    fn representable(&self, by: &Self) -> RepEquality {
+        self.type_().representable(&*by.type_())
     }
 }
 
 impl Representable for Type {
-    fn representable(&self, by: &Self) -> bool {
+    fn representable(&self, by: &Self) -> RepEquality {
         match (&self, &by) {
             (Type::Enum(s), Type::Enum(b)) => s.representable(b),
             (Type::Flags(s), Type::Flags(b)) => s.representable(b),
@@ -158,7 +197,7 @@ impl Representable for Type {
             (Type::Pointer(s), Type::Pointer(b)) => s.representable(b),
             (Type::ConstPointer(s), Type::ConstPointer(b)) => s.representable(b),
             (Type::Builtin(s), Type::Builtin(b)) => s.representable(b),
-            _ => false,
+            _ => RepEquality::NotEq,
         }
     }
 }
