@@ -29,7 +29,7 @@ pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use validate::ValidationError;
-pub use representation::Representable;
+pub use representation::{Representable, RepEquality};
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
