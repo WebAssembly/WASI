@@ -4,7 +4,7 @@ use std::fmt;
 impl fmt::Display for Document {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for d in self.typenames() {
-            write!(f, "{}\n", d.definition_sexpr())?;
+            write!(f, "{}\n", d.to_sexpr())?;
         }
         for m in self.modules() {
             write!(f, "{}\n", m.to_sexpr())?;
@@ -69,13 +69,13 @@ impl SExpr {
 }
 
 impl Id {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         SExpr::ident(self.as_str())
     }
 }
 
 impl BuiltinType {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         match self {
             BuiltinType::String => SExpr::word("string"),
             BuiltinType::U8 => SExpr::word("u8"),
@@ -93,7 +93,7 @@ impl BuiltinType {
 }
 
 impl NamedType {
-    fn definition_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let body = self.dt.to_sexpr();
         SExpr::docs(
             &self.docs,
@@ -103,7 +103,7 @@ impl NamedType {
 }
 
 impl TypeRef {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         match self {
             TypeRef::Name(n) => n.name.to_sexpr(),
             TypeRef::Value(v) => v.to_sexpr(),
@@ -112,7 +112,7 @@ impl TypeRef {
 }
 
 impl Type {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         match self {
             Type::Enum(a) => a.to_sexpr(),
             Type::Flags(a) => a.to_sexpr(),
@@ -136,7 +136,7 @@ impl Type {
 }
 
 impl EnumDatatype {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("enum"), self.repr.to_sexpr()];
         let variants = self
             .variants
@@ -148,7 +148,7 @@ impl EnumDatatype {
 }
 
 impl FlagsDatatype {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("flags"), self.repr.to_sexpr()];
         let flags = self
             .flags
@@ -160,7 +160,7 @@ impl FlagsDatatype {
 }
 
 impl StructDatatype {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("struct")];
         let members = self
             .members
@@ -181,7 +181,7 @@ impl StructDatatype {
 }
 
 impl UnionDatatype {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("union")];
         let variants = self
             .variants
@@ -202,7 +202,7 @@ impl UnionDatatype {
 }
 
 impl HandleDatatype {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("handle")];
         let supertypes = self
             .supertypes
@@ -213,7 +213,7 @@ impl HandleDatatype {
     }
 }
 impl IntRepr {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         match self {
             IntRepr::U8 => SExpr::word("u8"),
             IntRepr::U16 => SExpr::word("u16"),
@@ -224,7 +224,7 @@ impl IntRepr {
 }
 
 impl Module {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![SExpr::word("module"), self.name.to_sexpr()];
         let definitions = self
             .imports()
@@ -236,7 +236,7 @@ impl Module {
 }
 
 impl ModuleImport {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let variant = match self.variant {
             ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
         };
@@ -252,7 +252,7 @@ impl ModuleImport {
 }
 
 impl InterfaceFunc {
-    fn to_sexpr(&self) -> SExpr {
+    pub fn to_sexpr(&self) -> SExpr {
         let header = vec![
             SExpr::annot("interface"),
             SExpr::word("func"),
