@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::process;
-use witx::{load, Documentation};
+use witx::{load, Documentation, RepEquality};
 
 pub fn main() {
     let app = App::new("witx")
@@ -106,12 +106,12 @@ fn parse_module_mapping(ms: &[&str]) -> HashMap<String, String> {
     let mut o = HashMap::new();
     for m in ms {
         let s = m.split('=').collect::<Vec<&str>>();
-        if s.len() == 0 {
+        if s.len() == 1 {
             let mname = s.get(0).unwrap();
             o.insert(mname.to_string(), mname.to_string());
-        } else if s.len() == 1 {
+        } else if s.len() == 2 {
             let newname = s.get(0).unwrap();
-            let oldname = s.get(0).unwrap();
+            let oldname = s.get(1).unwrap();
             o.insert(newname.to_string(), oldname.to_string());
         } else {
             panic!("invalid module mapping: '{}'", m)
@@ -152,17 +152,18 @@ fn polyfill(new: &witx::Document, old: &witx::Document, module_mapping: &HashMap
                                 oldfunc.name.as_str(),
                                 oldparam.name.as_str(),
                             );
-                        } else if !newparam.tref.representable(&oldparam.tref) {
+                        } else if newparam.tref.representable(&oldparam.tref) != RepEquality::Eq {
                             println!(
-                                "{}:{} param {}:{:?} has incompatible representation with {}:{} param {}:{:?}",
+                                "{}:{} param {}:{} is {:?} of {}:{} param {}:{}",
                                 newmodulename,
                                 newfunc.name.as_str(),
                                 newparam.name.as_str(),
-                                newparam.tref,
+                                newparam.tref.to_sexpr(),
+                                newparam.tref.representable(&oldparam.tref),
                                 oldmodulename,
                                 oldfunc.name.as_str(),
                                 oldparam.name.as_str(),
-                                newparam.tref,
+                                newparam.tref.to_sexpr(),
                             );
                         }
                     }
@@ -188,17 +189,18 @@ fn polyfill(new: &witx::Document, old: &witx::Document, module_mapping: &HashMap
                                 oldfunc.name.as_str(),
                                 oldresult.name.as_str(),
                             );
-                        } else if !newresult.tref.representable(&oldresult.tref) {
+                        } else if newresult.tref.representable(&oldresult.tref) != RepEquality::Eq {
                             println!(
-                                "{}:{} result {}:{:?} has incompatible representation with {}:{} result {}:{:?}",
+                                "{}:{} result {}:{} is {:?} of {}:{} result {}:{}",
                                 newmodulename,
                                 newfunc.name.as_str(),
                                 newresult.name.as_str(),
-                                newresult.tref,
+                                newresult.tref.to_sexpr(),
+                                newresult.tref.representable(&oldresult.tref),
                                 oldmodulename,
                                 oldfunc.name.as_str(),
                                 oldresult.name.as_str(),
-                                newresult.tref,
+                                newresult.tref.to_sexpr(),
                             );
                         }
                     }
