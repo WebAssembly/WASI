@@ -39,7 +39,7 @@ impl BuiltinType {
 
 impl Documentation for NamedType {
     fn to_md(&self) -> String {
-        let body = match &self.dt {
+        let body = match &self.tref {
             TypeRef::Value(v) => match &**v {
                 Type::Enum(a) => a.to_md(),
                 Type::Flags(a) => a.to_md(),
