@@ -129,7 +129,7 @@ impl Representable for HandleDatatype {
                         TypeRef::Name(by_nt) if by_nt.name == nt.name => Some(by_nt),
                         _ => None,
                     }) {
-                        if nt.dt.representable(&by_nt.dt) == RepEquality::NotEq {
+                        if nt.tref.representable(&by_nt.tref) == RepEquality::NotEq {
                             return RepEquality::NotEq;
                         }
                     } else {
@@ -182,6 +182,12 @@ impl Representable for UnionDatatype {
 impl Representable for TypeRef {
     fn representable(&self, by: &Self) -> RepEquality {
         self.type_().representable(&*by.type_())
+    }
+}
+
+impl Representable for NamedType {
+    fn representable(&self, by: &Self) -> RepEquality {
+        self.tref.representable(&by.tref)
     }
 }
 
