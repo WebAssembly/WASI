@@ -164,11 +164,11 @@ impl DocValidationScope<'_> {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
                 let docs = comments.docs();
-                let dt = self.validate_datatype(&decl.def, decl.ident.span())?;
+                let tref = self.validate_datatype(&decl.def, decl.ident.span())?;
 
                 let rc_datatype = Rc::new(NamedType {
                     name: name.clone(),
-                    dt,
+                    tref,
                     docs,
                 });
                 self.doc
