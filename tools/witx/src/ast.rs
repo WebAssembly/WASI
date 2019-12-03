@@ -123,13 +123,13 @@ impl TypeRef {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NamedType {
     pub name: Id,
-    pub dt: TypeRef,
+    pub tref: TypeRef,
     pub docs: String,
 }
 
 impl NamedType {
     pub fn type_(&self) -> Rc<Type> {
-        self.dt.type_()
+        self.tref.type_()
     }
 }
 
