@@ -1,6 +1,6 @@
 use crate::{
-    BuiltinType, EnumDatatype, FlagsDatatype, HandleDatatype, IntRepr, StructDatatype, Type,
-    TypeRef, UnionDatatype,
+    BuiltinType, EnumDatatype, FlagsDatatype, HandleDatatype, IntRepr, NamedType, StructDatatype,
+    Type, TypeRef, UnionDatatype,
 };
 
 // A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
@@ -175,7 +175,11 @@ impl Representable for UnionDatatype {
                 return RepEquality::NotEq;
             }
         }
-        RepEquality::Eq
+        if by.variants.len() > self.variants.len() {
+            RepEquality::Superset
+        } else {
+            RepEquality::Eq
+        }
     }
 }
 
@@ -205,5 +209,87 @@ impl Representable for Type {
             (Type::Builtin(s), Type::Builtin(b)) => s.representable(b),
             _ => RepEquality::NotEq,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::io::MockFs;
+    use crate::toplevel::parse_witx_with;
+    use crate::Id;
+    use std::rc::Rc;
+
+    fn def_type(typename: &str, syntax: &str) -> Rc<NamedType> {
+        use std::path::Path;
+        let doc = parse_witx_with(&[Path::new("-")], &MockFs::new(&[("-", syntax)]))
+            .expect("parse witx doc");
+        let t = doc.typename(&Id::new(typename)).expect("defined type");
+        // Identity should always be true:
+        assert_eq!(t.representable(&t), RepEquality::Eq, "identity");
+        t
+    }
+
+    #[test]
+    fn different_typenames_equal() {
+        let a = def_type("a", "(typename $a (flags u32 $b $c))");
+        let d = def_type("d", "(typename $d (flags u32 $b $c))");
+
+        assert_eq!(a.representable(&d), RepEquality::Eq);
+        assert_eq!(d.representable(&a), RepEquality::Eq);
+    }
+
+    #[test]
+    fn different_flagnames_not_equal() {
+        let a = def_type("a", "(typename $a (flags u32 $b $c))");
+        let d = def_type("d", "(typename $d (flags u32 $b $e))");
+
+        assert_eq!(a.representable(&d), RepEquality::NotEq);
+        assert_eq!(d.representable(&a), RepEquality::NotEq);
+    }
+
+    #[test]
+    fn flag_superset() {
+        let base = def_type("a", "(typename $a (flags u32 $b $c))");
+        let extra_flag = def_type("a", "(typename $a (flags u32 $b $c $d))");
+
+        assert_eq!(base.representable(&extra_flag), RepEquality::Superset);
+        assert_eq!(extra_flag.representable(&base), RepEquality::NotEq);
+
+        let smaller_size = def_type("a", "(typename $a (flags u16 $b $c))");
+        assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
+        assert_eq!(
+            smaller_size.representable(&extra_flag),
+            RepEquality::Superset
+        );
+        assert_eq!(base.representable(&smaller_size), RepEquality::NotEq);
+    }
+
+    #[test]
+    fn enum_superset() {
+        let base = def_type("a", "(typename $a (enum u32 $b $c))");
+        let extra_variant = def_type("a", "(typename $a (enum u32 $b $c $d))");
+
+        assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
+        assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
+
+        let smaller_size = def_type("a", "(typename $a (enum u16 $b $c))");
+        assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
+        assert_eq!(
+            smaller_size.representable(&extra_variant),
+            RepEquality::Superset
+        );
+    }
+
+    #[test]
+    fn union_superset() {
+        let base = def_type("a", "(typename $a (union (field $b u32) (field $c f32)))");
+        let extra_variant = def_type(
+            "a",
+            "(typename $a (union (field $b u32) (field $c f32) (field $d f64)))",
+        );
+
+        assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
+        assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
     }
 }
