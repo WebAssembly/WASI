@@ -20,7 +20,7 @@ impl Documentation for Document {
 }
 
 impl BuiltinType {
-    fn type_name(&self) -> &'static str {
+    pub fn type_name(&self) -> &'static str {
         match self {
             BuiltinType::String => "string",
             BuiltinType::U8 => "u8",
@@ -58,7 +58,7 @@ impl Documentation for NamedType {
 }
 
 impl TypeRef {
-    fn type_name(&self) -> String {
+    pub fn type_name(&self) -> String {
         match self {
             TypeRef::Name(n) => n.name.as_str().to_string(),
             TypeRef::Value(ref v) => match &**v {

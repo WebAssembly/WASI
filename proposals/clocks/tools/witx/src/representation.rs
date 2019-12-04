@@ -147,6 +147,10 @@ impl Representable for HandleDatatype {
 
 impl Representable for StructDatatype {
     fn representable(&self, by: &Self) -> RepEquality {
+        // Structs must have exact structural equality - same members, must
+        // be Eq, in the same order.
+        // We would require require a more expressive RepEquality enum to describe which members
+        // might be supersets.
         if self.members.len() != by.members.len() {
             return RepEquality::NotEq;
         }
@@ -164,14 +168,19 @@ impl Representable for StructDatatype {
 
 impl Representable for UnionDatatype {
     fn representable(&self, by: &Self) -> RepEquality {
+        // Unions must have equal variants, by name (independent of order). If `by` has extra
+        // variants, its a superset.
+        // We would require require a more expressive RepEquality enum to describe which variants
+        // might be supersets.
         if self.variants.len() > by.variants.len() {
             return RepEquality::NotEq;
         }
-        for (v, byv) in self.variants.iter().zip(by.variants.iter()) {
-            if v.name != byv.name {
-                return RepEquality::NotEq;
-            }
-            if v.tref.type_().representable(&*byv.tref.type_()) != RepEquality::Eq {
+        for v in self.variants.iter() {
+            if let Some(byv) = by.variants.iter().find(|byv| byv.name == v.name) {
+                if v.tref.type_().representable(&*byv.tref.type_()) != RepEquality::Eq {
+                    return RepEquality::NotEq;
+                }
+            } else {
                 return RepEquality::NotEq;
             }
         }
@@ -231,7 +240,7 @@ mod test {
     }
 
     #[test]
-    fn different_typenames_equal() {
+    fn different_typenames() {
         let a = def_type("a", "(typename $a (flags u32 $b $c))");
         let d = def_type("d", "(typename $d (flags u32 $b $c))");
 
@@ -240,21 +249,16 @@ mod test {
     }
 
     #[test]
-    fn different_flagnames_not_equal() {
-        let a = def_type("a", "(typename $a (flags u32 $b $c))");
-        let d = def_type("d", "(typename $d (flags u32 $b $e))");
-
-        assert_eq!(a.representable(&d), RepEquality::NotEq);
-        assert_eq!(d.representable(&a), RepEquality::NotEq);
-    }
-
-    #[test]
-    fn flag_superset() {
+    fn flags() {
         let base = def_type("a", "(typename $a (flags u32 $b $c))");
         let extra_flag = def_type("a", "(typename $a (flags u32 $b $c $d))");
 
         assert_eq!(base.representable(&extra_flag), RepEquality::Superset);
         assert_eq!(extra_flag.representable(&base), RepEquality::NotEq);
+
+        let different_flagnames = def_type("d", "(typename $d (flags u32 $b $e))");
+        assert_eq!(base.representable(&different_flagnames), RepEquality::NotEq);
+        assert_eq!(different_flagnames.representable(&base), RepEquality::NotEq);
 
         let smaller_size = def_type("a", "(typename $a (flags u16 $b $c))");
         assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
@@ -266,7 +270,7 @@ mod test {
     }
 
     #[test]
-    fn enum_superset() {
+    fn enum_() {
         let base = def_type("a", "(typename $a (enum u32 $b $c))");
         let extra_variant = def_type("a", "(typename $a (enum u32 $b $c $d))");
 
@@ -282,7 +286,7 @@ mod test {
     }
 
     #[test]
-    fn union_superset() {
+    fn union() {
         let base = def_type("a", "(typename $a (union (field $b u32) (field $c f32)))");
         let extra_variant = def_type(
             "a",
@@ -291,5 +295,13 @@ mod test {
 
         assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
         assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
+
+        let other_ordering = def_type("a", "(typename $a (union (field $c f32) (field $b u32)))");
+        assert_eq!(base.representable(&other_ordering), RepEquality::Eq);
+        assert_eq!(other_ordering.representable(&base), RepEquality::Eq);
+        assert_eq!(
+            other_ordering.representable(&extra_variant),
+            RepEquality::Superset
+        );
     }
 }
