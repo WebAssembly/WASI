@@ -1,4 +1,6 @@
 use crate::ast::*;
+use crate::polyfill::*;
+use crate::RepEquality;
 
 pub trait Documentation {
     fn to_md(&self) -> String;
@@ -234,5 +236,114 @@ impl Documentation for InterfaceFunc {
             params,
             results,
         )
+    }
+}
+
+impl Documentation for Polyfill {
+    fn to_md(&self) -> String {
+        let module_docs = self
+            .modules
+            .iter()
+            .map(|m| m.to_md())
+            .collect::<Vec<String>>()
+            .join("\n");
+        let type_docs = format!("TODO");
+        format!("# Modules\n{}\n# Types\n{}\n", module_docs, type_docs)
+    }
+}
+
+impl Documentation for ModulePolyfill {
+    fn to_md(&self) -> String {
+        format!(
+            "## `{}` in terms of `{}`\n{}",
+            self.new.name.as_str(),
+            self.old.name.as_str(),
+            self.funcs
+                .iter()
+                .map(|f| f.to_md())
+                .collect::<Vec<String>>()
+                .join("\n"),
+        )
+    }
+}
+
+impl Documentation for FuncPolyfill {
+    fn to_md(&self) -> String {
+        if self.full_compat() {
+            format!("* `{}`: full compatibility", self.new.name.as_str())
+        } else {
+            let name = if self.new.name != self.old.name {
+                format!(
+                    "* `{}` => `{}`",
+                    self.old.name.as_str(),
+                    self.new.name.as_str()
+                )
+            } else {
+                format!("* `{}`", self.new.name.as_str())
+            };
+            let mut contents = Vec::new();
+            for p in self.mapped_params.iter() {
+                contents.push(if !p.full_compat() {
+                    format!("param {}", p.to_md())
+                } else {
+                    format!("param `{}`: compatible", p.new.name.as_str())
+                })
+            }
+            for u in self.unknown_params.iter() {
+                contents.push(format!(
+                    "{} param `{}`: no corresponding result!",
+                    u.which(),
+                    u.param().name.as_str()
+                ))
+            }
+            for r in self.mapped_results.iter() {
+                contents.push(if !r.full_compat() {
+                    format!("result {}", r.to_md())
+                } else {
+                    format!("result `{}`: compatible", r.new.name.as_str())
+                })
+            }
+            for u in self.unknown_results.iter() {
+                contents.push(format!(
+                    "{} result `{}`: no corresponding result!",
+                    u.which(),
+                    u.param().name.as_str()
+                ))
+            }
+            let contents = if contents.is_empty() {
+                String::new()
+            } else {
+                format!(":\n    - {}", contents.join("\n    - "))
+            };
+            format!("{}{}", name, contents)
+        }
+    }
+}
+
+impl Documentation for ParamPolyfill {
+    fn to_md(&self) -> String {
+        let name = if self.new.name != self.old.name {
+            format!(
+                "`{}` => `{}`",
+                self.old.name.as_str(),
+                self.new.name.as_str()
+            )
+        } else {
+            format!("`{}`", self.new.name.as_str())
+        };
+        let repr = match self.repeq {
+            RepEquality::Eq => "compatible types".to_string(),
+            RepEquality::Superset => format!(
+                "`{}` is superset-compatible with `{}`",
+                self.old.tref.type_name(),
+                self.new.tref.type_name()
+            ),
+            RepEquality::NotEq => format!(
+                "`{}` is incompatible with new `{}`",
+                self.old.tref.type_name(),
+                self.new.tref.type_name()
+            ),
+        };
+        format!("{}: {}", name, repr)
     }
 }
