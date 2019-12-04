@@ -247,8 +247,7 @@ impl Documentation for Polyfill {
             .map(|m| m.to_md())
             .collect::<Vec<String>>()
             .join("\n");
-        let type_docs = format!("TODO");
-        format!("# Modules\n{}\n# Types\n{}\n", module_docs, type_docs)
+        format!("# Modules\n{}\n", module_docs)
     }
 }
 
