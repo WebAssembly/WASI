@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::process;
-use witx::{load, Documentation, RepEquality};
+use witx::{load, Documentation};
 
 pub fn main() {
     let app = App::new("witx")
@@ -98,7 +98,12 @@ pub fn main() {
             .collect::<Vec<&str>>();
         let module_mapping = parse_module_mapping(&module_mapping_args);
 
-        polyfill(&doc, &older_doc, &module_mapping);
+        let polyfill = witx::polyfill::Polyfill::new(&doc, &older_doc, &module_mapping)
+            .expect("calculate polyfill");
+        println!("{}", polyfill.report());
+        if app.is_present("verbose") {
+            println!("{:?}", polyfill);
+        }
     }
 }
 
@@ -118,101 +123,4 @@ fn parse_module_mapping(ms: &[&str]) -> HashMap<String, String> {
         }
     }
     o
-}
-
-fn polyfill(new: &witx::Document, old: &witx::Document, module_mapping: &HashMap<String, String>) {
-    use witx::Representable;
-    for (newmodulename, oldmodulename) in module_mapping {
-        let newmodule = new
-            .module(&witx::Id::new(newmodulename))
-            .expect("module exists in new");
-        let oldmodule = old
-            .module(&witx::Id::new(oldmodulename))
-            .expect("module exists in old");
-
-        for oldfunc in oldmodule.funcs() {
-            if let Some(newfunc) = newmodule.func(&oldfunc.name) {
-                if newfunc.params.len() != oldfunc.params.len() {
-                    println!(
-                        "{}:{} has different number of params than {}:{}",
-                        newmodulename,
-                        newfunc.name.as_str(),
-                        oldmodulename,
-                        oldfunc.name.as_str()
-                    )
-                } else {
-                    for (newparam, oldparam) in newfunc.params.iter().zip(oldfunc.params.iter()) {
-                        if newparam.name != oldparam.name {
-                            println!(
-                                "{}:{} param {} doesnt match {}:{} param {}",
-                                newmodulename,
-                                newfunc.name.as_str(),
-                                newparam.name.as_str(),
-                                oldmodulename,
-                                oldfunc.name.as_str(),
-                                oldparam.name.as_str(),
-                            );
-                        } else if newparam.tref.representable(&oldparam.tref) != RepEquality::Eq {
-                            println!(
-                                "{}:{} param {}:{} is {:?} of {}:{} param {}:{}",
-                                newmodulename,
-                                newfunc.name.as_str(),
-                                newparam.name.as_str(),
-                                newparam.tref.to_sexpr(),
-                                newparam.tref.representable(&oldparam.tref),
-                                oldmodulename,
-                                oldfunc.name.as_str(),
-                                oldparam.name.as_str(),
-                                newparam.tref.to_sexpr(),
-                            );
-                        }
-                    }
-                }
-                if newfunc.results.len() != oldfunc.results.len() {
-                    println!(
-                        "{}:{} has different number of results than {}:{}",
-                        newmodulename,
-                        newfunc.name.as_str(),
-                        oldmodulename,
-                        oldfunc.name.as_str()
-                    )
-                } else {
-                    for (newresult, oldresult) in newfunc.results.iter().zip(oldfunc.results.iter())
-                    {
-                        if newresult.name != oldresult.name {
-                            println!(
-                                "{}:{} result {} doesnt match {}:{} result {}",
-                                newmodulename,
-                                newfunc.name.as_str(),
-                                newresult.name.as_str(),
-                                oldmodulename,
-                                oldfunc.name.as_str(),
-                                oldresult.name.as_str(),
-                            );
-                        } else if newresult.tref.representable(&oldresult.tref) != RepEquality::Eq {
-                            println!(
-                                "{}:{} result {}:{} is {:?} of {}:{} result {}:{}",
-                                newmodulename,
-                                newfunc.name.as_str(),
-                                newresult.name.as_str(),
-                                newresult.tref.to_sexpr(),
-                                newresult.tref.representable(&oldresult.tref),
-                                oldmodulename,
-                                oldfunc.name.as_str(),
-                                oldresult.name.as_str(),
-                                newresult.tref.to_sexpr(),
-                            );
-                        }
-                    }
-                }
-            } else {
-                println!(
-                    "{}:{} does not correspond to function in {}",
-                    oldmodulename,
-                    oldfunc.name.as_str(),
-                    newmodulename
-                );
-            }
-        }
-    }
 }
