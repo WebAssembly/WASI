@@ -246,19 +246,23 @@
     $path_rename_source
     ;;; The right to invoke `path_rename` with the file descriptor as the target directory.
     $path_rename_target
-    ;;; The right to invoke `path_filestat_get`.
+    ;;; The right to invoke `path_filestat_get` or `path_permissions_get`.
     $path_filestat_get
     ;;; The right to change a file's size (there is no `path_filestat_set_size`).
     ;;; If `path_open` is set, includes the right to invoke `path_open` with `oflags::trunc`.
     $path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
     $path_filestat_set_times
-    ;;; The right to invoke `fd_filestat_get`.
+    ;;; The right to invoke `path_filestat_set_permissions`.
+    $path_permissions_set
+    ;;; The right to invoke `fd_filestat_get` or `fd_permissions_get`.
     $fd_filestat_get
     ;;; The right to invoke `fd_filestat_set_size`.
     $fd_filestat_set_size
     ;;; The right to invoke `fd_filestat_set_times`.
     $fd_filestat_set_times
+    ;;; The right to invoke `fd_filestat_set_permissions`.
+    $fd_permissions_set
     ;;; The right to invoke `path_symlink`.
     $path_symlink
     ;;; The right to invoke `path_remove_directory`.
@@ -474,6 +478,31 @@
     (field $mtim $timestamp)
     ;;; Last file status change timestamp.
     (field $ctim $timestamp)
+  )
+)
+
+;;; File permissions. This represents the permissions associated with a
+;;; file in a filesystem, and don't fully reflect all the conditions
+;;; which determine whether a given WASI program can access the file.
+(typename $permissions
+  (enum u8
+    ;;; For files, permission to read the file.
+    ;;; For directories, permission to do `readdir` within the directory.
+    $read
+
+    ;;; For files, permission to mutate the file.
+    ;;; For directories, permission to create, remove, and rename items
+    ;;; within the directory.
+    $write
+
+    ;;; For files, permission to "execute" the file, using whatever
+    ;;; concept of "executing" the host filesystem has.
+    ;;; This flag is not valid for directories.
+    $execute
+
+    ;;; For directories, permission to access files within the directory.
+    ;;; This flag is not valid for files.
+    $search
   )
 )
 

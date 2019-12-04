@@ -107,6 +107,41 @@
     (result $error $errno)
   )
 
+  ;;; Return the permissions of a file or directory.
+  ;;;
+  ;;; This returns the permissions associated with a file or directory in
+  ;;; a filesystem at the time it is called. The ability to actually access
+  ;;; a file or directory may depend on additional permissions not reflected
+  ;;; here.
+  ;;;
+  ;;; Note: This is similar to reading the `st_mode` flag after a
+  ;;; `fstat` call in POSIX.
+  (@interface func (export "permissions_get")
+    (param $fd $fd)
+    (result $error $errno)
+    ;;; The permissions to associate with the file.
+    (result $permissions $permissions)
+  )
+
+  ;;; Set the permissions of a file or directory.
+  ;;;
+  ;;; This sets the permissions associated with a file or directory in
+  ;;; a filesystem at the time it is called. The ability to actually access
+  ;;; a file or directory may depend on additional permissions not reflected
+  ;;; here.
+  ;;;
+  ;;; Note: This is similar `fchmod` in POSIX.
+  ;;;
+  ;;; Unlike POSIX, this doesn't expose a user/group/other distinction;
+  ;;; implementations in POSIX environments are suggested to consult the
+  ;;; umask to determine which of the user/group/other flags to modify.
+  (@interface func (export "permissions_set")
+    (param $fd $fd)
+    ;;; The permissions associated with the file.
+    (result $permissions $permissions)
+    (result $error $errno)
+  )
+
   ;;; Read from a file descriptor, without using and updating the file descriptor's offset.
   ;;; Note: This is similar to `preadv` in POSIX.
   (@interface func (export "pread")
