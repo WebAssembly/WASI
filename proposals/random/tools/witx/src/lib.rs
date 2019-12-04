@@ -8,13 +8,16 @@ mod docs;
 mod io;
 /// Witx syntax parsing from SExprs
 mod parser;
+/// Calculate required polyfill between interfaces
+pub mod polyfill;
 /// Render ast to text
 mod render;
+/// Representational equality of types
+mod representation;
 /// Resolve toplevel `use` declarations across files
 mod toplevel;
 /// Validate declarations into ast
 mod validate;
-mod representation;
 
 pub use ast::{
     BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
@@ -28,8 +31,8 @@ pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
+pub use representation::{RepEquality, Representable};
 pub use validate::ValidationError;
-pub use representation::{Representable, RepEquality};
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
