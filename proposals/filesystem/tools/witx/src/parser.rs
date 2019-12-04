@@ -42,7 +42,6 @@ mod kw {
     wast::custom_keyword!(u8);
 }
 
-
 impl Parse<'_> for BuiltinType {
     fn parse(parser: Parser<'_>) -> Result<Self> {
         let mut l = parser.lookahead1();
