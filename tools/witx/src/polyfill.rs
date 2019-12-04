@@ -36,14 +36,6 @@ impl Polyfill {
         }
         Ok(Polyfill { modules })
     }
-
-    pub fn report(&self) -> String {
-        self.modules
-            .iter()
-            .map(|m| m.report())
-            .collect::<Vec<String>>()
-            .join("\n")
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -65,19 +57,6 @@ impl ModulePolyfill {
             funcs.push(FuncPolyfill::new(newfunc, oldfunc));
         }
         Ok(ModulePolyfill { new, old, funcs })
-    }
-
-    pub fn report(&self) -> String {
-        format!(
-            "Implement module {} in terms of {}:\n\t{}",
-            self.new.name.as_str(),
-            self.old.name.as_str(),
-            self.funcs
-                .iter()
-                .map(|f| f.report())
-                .collect::<Vec<String>>()
-                .join("\n\t"),
-        )
     }
 }
 
@@ -103,7 +82,7 @@ impl FuncPolyfill {
                     new: new_param.clone(),
                     old: old_param.clone(),
                     // Call new param type with old param:
-                    repeq : old_param
+                    repeq: old_param
                         .tref
                         .type_()
                         .representable(&new_param.tref.type_()),
@@ -134,7 +113,7 @@ impl FuncPolyfill {
                     new: new_result.clone(),
                     old: old_result.clone(),
                     // Return new result type as old result:
-                    repeq : new_result
+                    repeq: new_result
                         .tref
                         .type_()
                         .representable(&old_result.tref.type_()),
@@ -165,52 +144,6 @@ impl FuncPolyfill {
         }
     }
 
-    pub fn report(&self) -> String {
-        if self.full_compat() {
-            format!("{}: full compatibility", self.new.name.as_str())
-        } else {
-            let name = if self.new.name != self.old.name {
-                format!("{} => {}", self.old.name.as_str(), self.new.name.as_str())
-            } else {
-                self.new.name.as_str().to_string()
-            };
-            let mut contents = Vec::new();
-            for p in self.mapped_params.iter() {
-                contents.push(if !p.full_compat() {
-                    format!("param {}", p.report())
-                } else {
-                    format!("param {}: compatible", p.new.name.as_str())
-                })
-            }
-            for u in self.unknown_params.iter() {
-                contents.push(format!(
-                    "{} param {}: no corresponding result!",
-                    u.which(),
-                    u.param().name.as_str()
-                ))
-            }
-            for r in self.mapped_results.iter() {
-                contents.push(if !r.full_compat() {
-                    format!("result {}", r.report())
-                } else {
-                    format!("result {}: compatible", r.new.name.as_str())
-                })
-            }
-            for u in self.unknown_results.iter() {
-                contents.push(format!(
-                    "{} result {}: no corresponding result!",
-                    u.which(),
-                    u.param().name.as_str()
-                ))
-            }
-            let contents = if contents.is_empty() {
-                String::new()
-            } else {
-                format!(":\n\t\t{}", contents.join("\n\t\t"))
-            };
-            format!("{}{}", name, contents)
-        }
-    }
     pub fn full_compat(&self) -> bool {
         self.new.name == self.old.name
             && self.mapped_params.iter().all(|p| p.full_compat())
@@ -230,19 +163,6 @@ pub struct ParamPolyfill {
 impl ParamPolyfill {
     pub fn full_compat(&self) -> bool {
         self.new.name == self.old.name && self.repeq == RepEquality::Eq
-    }
-    pub fn report(&self) -> String {
-        let name = if self.new.name != self.old.name {
-            format!("{} => {}", self.old.name.as_str(), self.new.name.as_str())
-        } else {
-            self.new.name.as_str().to_string()
-        };
-        let repr = match self.repeq {
-            RepEquality::Eq => "compatible types".to_string(),
-            RepEquality::Superset => format!("{} is superset-compatible with {}", self.old.tref.type_name(), self.new.tref.type_name()),
-            RepEquality::NotEq => format!("{} is incompatible with new {}", self.old.tref.type_name(), self.new.tref.type_name())
-        };
-        format!("{}: {}", name, repr)
     }
 }
 
