@@ -8,7 +8,7 @@ pub enum PolyfillError {
     #[error("Module not present: {name:?}")]
     ModuleNotPresent { name: Id },
     #[error("Function not present: {name:?}")]
-    FuncNotPresent { name: Id },
+    FuncNotPresent { module: Id, name: Id },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,6 +52,7 @@ impl ModulePolyfill {
             let newfunc = new
                 .func(&oldfunc.name)
                 .ok_or_else(|| PolyfillError::FuncNotPresent {
+                    module: new.name.clone(),
                     name: oldfunc.name.clone(),
                 })?;
             funcs.push(FuncPolyfill::new(newfunc, oldfunc));
