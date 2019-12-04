@@ -489,7 +489,11 @@
 (typename $permissions
   (flags u8
     ;;; For files, permission to read the file.
-    ;;; For directories, permission to do `readdir` within the directory.
+    ;;; For directories, permission to do `readdir` and access files
+    ;;; within the directory.
+    ;;;
+    ;;; Note: This is similar to the read bit being set on files, and the
+    ;;; read *and* execute bits being set on directories.
     $read
 
     ;;; For files, permission to mutate the file.
@@ -501,10 +505,6 @@
     ;;; concept of "executing" the host filesystem has.
     ;;; This flag is not valid for directories.
     $execute
-
-    ;;; For directories, permission to access files within the directory.
-    ;;; This flag is not valid for files.
-    $search
   )
 )
 
