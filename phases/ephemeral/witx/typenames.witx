@@ -485,7 +485,7 @@
 ;;; file in a filesystem, and don't fully reflect all the conditions
 ;;; which determine whether a given WASI program can access the file.
 (typename $permissions
-  (enum u8
+  (flags u8
     ;;; For files, permission to read the file.
     ;;; For directories, permission to do `readdir` within the directory.
     $read
