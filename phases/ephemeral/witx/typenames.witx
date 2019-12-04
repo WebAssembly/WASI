@@ -505,6 +505,12 @@
     ;;; concept of "executing" the host filesystem has.
     ;;; This flag is not valid for directories.
     $execute
+
+    ;;; For filesystems which have a concept of multiple "users", this flag
+    ;;; indicates that the file is only accessible by the effective "user"
+    ;;; that the WASI store uses to access the filesystem, and inaccessible
+    ;;; to other "users".
+    $private
   )
 )
 
