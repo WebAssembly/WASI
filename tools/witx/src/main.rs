@@ -100,7 +100,7 @@ pub fn main() {
 
         let polyfill = witx::polyfill::Polyfill::new(&doc, &older_doc, &module_mapping)
             .expect("calculate polyfill");
-        println!("{}", polyfill.report());
+        println!("{}", polyfill.to_md());
         if app.is_present("verbose") {
             println!("{:?}", polyfill);
         }
