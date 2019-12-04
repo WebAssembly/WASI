@@ -107,22 +107,6 @@
     (result $error $errno)
   )
 
-  ;;; Return the permissions of a file or directory.
-  ;;;
-  ;;; This returns the permissions associated with a file or directory in
-  ;;; a filesystem at the time it is called. The ability to actually access
-  ;;; a file or directory may depend on additional permissions not reflected
-  ;;; here.
-  ;;;
-  ;;; Note: This is similar to reading the `st_mode` flag after a
-  ;;; `fstat` call in POSIX.
-  (@interface func (export "permissions_get")
-    (param $fd $fd)
-    (result $error $errno)
-    ;;; The permissions to associate with the file.
-    (result $permissions $permissions)
-  )
-
   ;;; Set the permissions of a file or directory.
   ;;;
   ;;; This sets the permissions associated with a file or directory in

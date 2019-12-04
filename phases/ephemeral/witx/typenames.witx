@@ -246,7 +246,7 @@
     $path_rename_source
     ;;; The right to invoke `path_rename` with the file descriptor as the target directory.
     $path_rename_target
-    ;;; The right to invoke `path_filestat_get` or `path_permissions_get`.
+    ;;; The right to invoke `path_filestat_get`.
     $path_filestat_get
     ;;; The right to change a file's size (there is no `path_filestat_set_size`).
     ;;; If `path_open` is set, includes the right to invoke `path_open` with `oflags::trunc`.
@@ -255,7 +255,7 @@
     $path_filestat_set_times
     ;;; The right to invoke `path_filestat_set_permissions`.
     $path_permissions_set
-    ;;; The right to invoke `fd_filestat_get` or `fd_permissions_get`.
+    ;;; The right to invoke `fd_filestat_get`.
     $fd_filestat_get
     ;;; The right to invoke `fd_filestat_set_size`.
     $fd_filestat_set_size
@@ -468,6 +468,8 @@
     (field $ino $inode)
     ;;; File type.
     (field $filetype $filetype)
+    ;;; File permissions.
+    (field $permissions $permissions)
     ;;; Number of hard links to the file.
     (field $nlink $linkcount)
     ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
