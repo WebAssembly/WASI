@@ -1,5 +1,7 @@
-use crate::{Document, Id, InterfaceFunc, InterfaceFuncParam, Module, RepEquality, Representable};
-use std::collections::HashMap;
+use crate::{
+    Document, Id, InterfaceFunc, InterfaceFuncParam, Module, RepEquality, Representable, TypeRef,
+};
+use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 use thiserror::Error;
 
@@ -11,7 +13,7 @@ pub enum PolyfillError {
     FuncNotPresent { module: Id, name: Id },
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Polyfill {
     pub modules: Vec<ModulePolyfill>,
 }
@@ -36,9 +38,17 @@ impl Polyfill {
         }
         Ok(Polyfill { modules })
     }
+
+    pub fn type_polyfills(&self) -> HashSet<TypePolyfill> {
+        self.modules
+            .iter()
+            .map(|m| m.type_polyfills())
+            .flatten()
+            .collect()
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ModulePolyfill {
     pub new: Rc<Module>,
     pub old: Rc<Module>,
@@ -59,9 +69,16 @@ impl ModulePolyfill {
         }
         Ok(ModulePolyfill { new, old, funcs })
     }
+    pub fn type_polyfills(&self) -> HashSet<TypePolyfill> {
+        self.funcs
+            .iter()
+            .map(|f| f.type_polyfills())
+            .flatten()
+            .collect()
+    }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FuncPolyfill {
     pub new: Rc<InterfaceFunc>,
     pub old: Rc<InterfaceFunc>,
@@ -79,15 +96,7 @@ impl FuncPolyfill {
         // Old function is called. Need to map each of its parameters to the new function:
         for old_param in old.params.iter() {
             if let Some(new_param) = new.params.iter().find(|p| p.name == old_param.name) {
-                mapped_params.push(ParamPolyfill {
-                    new: new_param.clone(),
-                    old: old_param.clone(),
-                    // Call new param type with old param:
-                    repeq: old_param
-                        .tref
-                        .type_()
-                        .representable(&new_param.tref.type_()),
-                })
+                mapped_params.push(ParamPolyfill::param(new_param.clone(), old_param.clone()))
             } else {
                 unknown_params.push(ParamUnknown::Old(old_param.clone()));
             }
@@ -110,15 +119,10 @@ impl FuncPolyfill {
         // New function has returned. Need to map each of its results to the old function:
         for new_result in new.results.iter() {
             if let Some(old_result) = old.results.iter().find(|p| p.name == new_result.name) {
-                mapped_results.push(ParamPolyfill {
-                    new: new_result.clone(),
-                    old: old_result.clone(),
-                    // Return new result type as old result:
-                    repeq: new_result
-                        .tref
-                        .type_()
-                        .representable(&old_result.tref.type_()),
-                })
+                mapped_results.push(ParamPolyfill::result(
+                    new_result.clone(),
+                    old_result.clone(),
+                ))
             } else {
                 unknown_results.push(ParamUnknown::New(new_result.clone()));
             }
@@ -152,22 +156,54 @@ impl FuncPolyfill {
             && self.mapped_results.iter().all(|p| p.full_compat())
             && self.unknown_results.is_empty()
     }
-}
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ParamPolyfill {
-    pub new: InterfaceFuncParam,
-    pub old: InterfaceFuncParam,
-    pub repeq: RepEquality,
-}
-
-impl ParamPolyfill {
-    pub fn full_compat(&self) -> bool {
-        self.new.name == self.old.name && self.repeq == RepEquality::Eq
+    pub fn type_polyfills(&self) -> HashSet<TypePolyfill> {
+        self.mapped_params
+            .iter()
+            .map(|p| p.type_polyfill.clone())
+            .chain(self.mapped_results.iter().map(|p| p.type_polyfill.clone()))
+            .collect()
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ParamPolyfill {
+    pub new: InterfaceFuncParam,
+    pub old: InterfaceFuncParam,
+    pub type_polyfill: TypePolyfill,
+}
+
+impl ParamPolyfill {
+    pub fn param(new: InterfaceFuncParam, old: InterfaceFuncParam) -> Self {
+        // Call new param type with old param:
+        let type_polyfill = TypePolyfill::OldToNew(old.tref.clone(), new.tref.clone());
+        ParamPolyfill {
+            new,
+            old,
+            type_polyfill,
+        }
+    }
+
+    pub fn result(new: InterfaceFuncParam, old: InterfaceFuncParam) -> Self {
+        // Return old result type from new result:
+        let type_polyfill = TypePolyfill::NewToOld(new.tref.clone(), old.tref.clone());
+        ParamPolyfill {
+            new,
+            old,
+            type_polyfill,
+        }
+    }
+
+    pub fn full_compat(&self) -> bool {
+        self.new.name == self.old.name && self.repeq() == RepEquality::Eq
+    }
+
+    pub fn repeq(&self) -> RepEquality {
+        self.type_polyfill.repeq()
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ParamUnknown {
     Old(InterfaceFuncParam),
     New(InterfaceFuncParam),
@@ -184,6 +220,21 @@ impl ParamUnknown {
         match self {
             ParamUnknown::Old(p) => &p,
             ParamUnknown::New(p) => &p,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum TypePolyfill {
+    NewToOld(TypeRef, TypeRef),
+    OldToNew(TypeRef, TypeRef),
+}
+
+impl TypePolyfill {
+    pub fn repeq(&self) -> RepEquality {
+        match self {
+            TypePolyfill::NewToOld(new, old) => old.type_().representable(&new.type_()),
+            TypePolyfill::OldToNew(old, new) => new.type_().representable(&old.type_()),
         }
     }
 }

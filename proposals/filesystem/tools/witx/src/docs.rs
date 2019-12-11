@@ -330,7 +330,7 @@ impl Documentation for ParamPolyfill {
         } else {
             format!("`{}`", self.new.name.as_str())
         };
-        let repr = match self.repeq {
+        let repr = match self.repeq() {
             RepEquality::Eq => "compatible types".to_string(),
             RepEquality::Superset => format!(
                 "`{}` is superset-compatible with `{}`",
