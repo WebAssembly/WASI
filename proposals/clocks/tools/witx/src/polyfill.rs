@@ -1,5 +1,6 @@
 use crate::{
-    Document, Id, InterfaceFunc, InterfaceFuncParam, Module, RepEquality, Representable, TypeRef,
+    Document, Id, InterfaceFunc, InterfaceFuncParam, Module, RepEquality, Representable, Type,
+    TypeRef,
 };
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
@@ -174,9 +175,22 @@ pub struct ParamPolyfill {
 }
 
 impl ParamPolyfill {
+    fn common_denominator(a: TypeRef, b: TypeRef) -> (TypeRef, TypeRef) {
+        match (&a, &b) {
+            (TypeRef::Value(va), TypeRef::Value(vb)) => match (&**va, &**vb) {
+                (Type::Array(a), Type::Array(b)) => (a.clone(), b.clone()),
+                (Type::Pointer(a), Type::Pointer(b)) => (a.clone(), b.clone()),
+                (Type::ConstPointer(a), Type::ConstPointer(b)) => (a.clone(), b.clone()),
+                _ => (a, b),
+            },
+            _ => (a, b),
+        }
+    }
+
     pub fn param(new: InterfaceFuncParam, old: InterfaceFuncParam) -> Self {
+        let (told, tnew) = Self::common_denominator(old.tref.clone(), new.tref.clone());
         // Call new param type with old param:
-        let type_polyfill = TypePolyfill::OldToNew(old.tref.clone(), new.tref.clone());
+        let type_polyfill = TypePolyfill::OldToNew(told, tnew);
         ParamPolyfill {
             new,
             old,
@@ -185,8 +199,9 @@ impl ParamPolyfill {
     }
 
     pub fn result(new: InterfaceFuncParam, old: InterfaceFuncParam) -> Self {
+        let (told, tnew) = Self::common_denominator(old.tref.clone(), new.tref.clone());
         // Return old result type from new result:
-        let type_polyfill = TypePolyfill::NewToOld(new.tref.clone(), old.tref.clone());
+        let type_polyfill = TypePolyfill::NewToOld(tnew, told);
         ParamPolyfill {
             new,
             old,
