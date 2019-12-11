@@ -247,7 +247,22 @@ impl Documentation for Polyfill {
             .map(|m| m.to_md())
             .collect::<Vec<String>>()
             .join("\n");
-        format!("# Modules\n{}\n", module_docs)
+        let type_docs = self
+            .type_polyfills()
+            .iter()
+            .filter_map(|t| {
+                if t.repeq() == RepEquality::Eq {
+                    None
+                } else {
+                    Some(t.to_md())
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!(
+            "# Modules\n{}\n# Type Conversions\n{}\n",
+            module_docs, type_docs
+        )
     }
 }
 
@@ -344,5 +359,31 @@ impl Documentation for ParamPolyfill {
             ),
         };
         format!("{}: {}", name, repr)
+    }
+}
+
+impl Documentation for TypePolyfill {
+    fn to_md(&self) -> String {
+        fn repeq_name(r: RepEquality) -> &'static str {
+            match r {
+                RepEquality::Eq => ": compatible",
+                RepEquality::Superset => ": superset",
+                RepEquality::NotEq => "",
+            }
+        }
+        match self {
+            TypePolyfill::OldToNew(o, n) => format!(
+                "* old `{}` => new `{}`{}",
+                o.type_name(),
+                n.type_name(),
+                repeq_name(self.repeq())
+            ),
+            TypePolyfill::NewToOld(n, o) => format!(
+                "* new `{}` => old `{}`{}",
+                n.type_name(),
+                o.type_name(),
+                repeq_name(self.repeq())
+            ),
+        }
     }
 }
