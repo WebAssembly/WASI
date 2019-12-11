@@ -62,7 +62,14 @@ impl PartialEq for Document {
 }
 impl Eq for Document {}
 
-#[derive(Debug, Clone)]
+impl std::hash::Hash for Document {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        std::hash::Hash::hash(&self.definitions, state);
+    }
+}
+
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Definition {
     Typename(Rc<NamedType>),
     Module(Rc<Module>),
@@ -105,7 +112,7 @@ impl PartialEq for Entry {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum TypeRef {
     Name(Rc<NamedType>),
     Value(Rc<Type>),
@@ -120,7 +127,7 @@ impl TypeRef {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NamedType {
     pub name: Id,
     pub tref: TypeRef,
@@ -133,7 +140,7 @@ impl NamedType {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
     Enum(EnumDatatype),
     Flags(FlagsDatatype),
@@ -163,7 +170,7 @@ impl Type {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BuiltinType {
     String,
     U8,
@@ -178,7 +185,7 @@ pub enum BuiltinType {
     F64,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum IntRepr {
     U8,
     U16,
@@ -186,55 +193,55 @@ pub enum IntRepr {
     U64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumDatatype {
     pub repr: IntRepr,
     pub variants: Vec<EnumVariant>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumVariant {
     pub name: Id,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FlagsDatatype {
     pub repr: IntRepr,
     pub flags: Vec<FlagsMember>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FlagsMember {
     pub name: Id,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct StructDatatype {
     pub members: Vec<StructMember>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct StructMember {
     pub name: Id,
     pub tref: TypeRef,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionDatatype {
     pub variants: Vec<UnionVariant>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionVariant {
     pub name: Id,
     pub tref: TypeRef,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct HandleDatatype {
     pub supertypes: Vec<TypeRef>,
 }
@@ -291,12 +298,20 @@ impl PartialEq for Module {
     fn eq(&self, rhs: &Module) -> bool {
         // For equality, we don't care about the ordering of definitions,
         // so we only need to check that the entries map is equal
-        self.entries == rhs.entries
+        self.name == rhs.name && self.entries == rhs.entries && self.docs == rhs.docs
     }
 }
 impl Eq for Module {}
 
-#[derive(Debug, Clone)]
+impl std::hash::Hash for Module {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        std::hash::Hash::hash(&self.name, state);
+        std::hash::Hash::hash(&self.definitions, state);
+        std::hash::Hash::hash(&self.docs, state);
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ModuleDefinition {
     Import(Rc<ModuleImport>),
     Func(Rc<InterfaceFunc>),
@@ -330,19 +345,19 @@ impl PartialEq for ModuleEntry {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ModuleImport {
     pub name: Id,
     pub variant: ModuleImportVariant,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ModuleImportVariant {
     Memory,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceFunc {
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
@@ -350,7 +365,7 @@ pub struct InterfaceFunc {
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceFuncParam {
     pub name: Id,
     pub tref: TypeRef,
@@ -358,7 +373,7 @@ pub struct InterfaceFuncParam {
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum InterfaceFuncParamPosition {
     Param(usize),
     Result(usize),
