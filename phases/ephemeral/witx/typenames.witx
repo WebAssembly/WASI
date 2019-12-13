@@ -459,30 +459,6 @@
 ;;; Number of hard links to an inode.
 (typename $linkcount u64)
 
-;;; File attributes.
-(typename $filestat
-  (struct
-    ;;; Device ID of device containing the file.
-    (field $dev $device)
-    ;;; File serial number.
-    (field $ino $inode)
-    ;;; File type.
-    (field $filetype $filetype)
-    ;;; File permissions.
-    (field $permissions $permissions)
-    ;;; Number of hard links to the file.
-    (field $nlink $linkcount)
-    ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
-    (field $size $filesize)
-    ;;; Last data access timestamp.
-    (field $atim $timestamp)
-    ;;; Last data modification timestamp.
-    (field $mtim $timestamp)
-    ;;; Last file status change timestamp.
-    (field $ctim $timestamp)
-  )
-)
-
 ;;; File permissions. This represents the permissions associated with a
 ;;; file in a filesystem, and don't fully reflect all the conditions
 ;;; which determine whether a given WASI program can access the file.
@@ -511,6 +487,30 @@
     ;;; that the WASI store uses to access the filesystem, and inaccessible
     ;;; to other "users".
     $private
+  )
+)
+
+;;; File attributes.
+(typename $filestat
+  (struct
+    ;;; Device ID of device containing the file.
+    (field $dev $device)
+    ;;; File serial number.
+    (field $ino $inode)
+    ;;; File type.
+    (field $filetype $filetype)
+    ;;; File permissions.
+    (field $permissions $permissions)
+    ;;; Number of hard links to the file.
+    (field $nlink $linkcount)
+    ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+    (field $size $filesize)
+    ;;; Last data access timestamp.
+    (field $atim $timestamp)
+    ;;; Last data modification timestamp.
+    (field $mtim $timestamp)
+    ;;; Last file status change timestamp.
+    (field $ctim $timestamp)
   )
 )
 
