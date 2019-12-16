@@ -12,8 +12,8 @@
   ;;; Read environment variable data.
   ;;; The sizes of the buffers should match that returned by `sizes_get`.
   (@interface func (export "get")
-    (param $environ (@witx pointer (@witx pointer u8)))
-    (param $environ_buf (@witx pointer u8))
+    (param $environ (@witx pointer (@witx pointer char8)))
+    (param $environ_buf (@witx pointer char8))
     (result $error $errno)
   )
 
