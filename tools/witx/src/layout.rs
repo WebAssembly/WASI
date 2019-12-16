@@ -170,7 +170,9 @@ impl Layout for BuiltinType {
     fn mem_size_align(&self) -> SizeAlign {
         match self {
             BuiltinType::String => SizeAlign { size: 8, align: 4 }, // Pointer and Length
-            BuiltinType::U8 | BuiltinType::S8 => SizeAlign { size: 1, align: 1 },
+            BuiltinType::U8 | BuiltinType::S8 | BuiltinType::Char8 => {
+                SizeAlign { size: 1, align: 1 }
+            }
             BuiltinType::U16 | BuiltinType::S16 => SizeAlign { size: 2, align: 2 },
             BuiltinType::U32 | BuiltinType::S32 | BuiltinType::F32 => {
                 SizeAlign { size: 4, align: 4 }
