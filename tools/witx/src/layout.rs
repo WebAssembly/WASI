@@ -24,6 +24,7 @@ impl TypeRef {
         }
         let layout = match &*self.type_() {
             Type::Enum(e) => e.repr.mem_size_align(),
+            Type::Int(i) => i.repr.mem_size_align(),
             Type::Flags(f) => f.repr.mem_size_align(),
             Type::Struct(s) => s.layout(cache),
             Type::Union(u) => u.layout(cache),

@@ -26,8 +26,10 @@ mod kw {
     wast::custom_keyword!(field);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
+    wast::custom_keyword!(int);
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
+    wast::custom_keyword!(r#const = "const");
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#struct = "struct");
     wast::custom_keyword!(r#union = "union");
@@ -305,6 +307,7 @@ impl<'a> Parse<'a> for TypenameSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
+    Int(IntSyntax<'a>),
     Flags(FlagsSyntax<'a>),
     Struct(StructSyntax<'a>),
     Union(UnionSyntax<'a>),
@@ -328,6 +331,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                 let mut l = parser.lookahead1();
                 if l.peek::<kw::r#enum>() {
                     Ok(TypedefSyntax::Enum(parser.parse()?))
+                } else if l.peek::<kw::int>() {
+                    Ok(TypedefSyntax::Int(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
                 } else if l.peek::<kw::r#struct>() {
@@ -377,6 +382,42 @@ impl<'a> Parse<'a> for EnumSyntax<'a> {
             members.push(parser.parse()?);
         }
         Ok(EnumSyntax { repr, members })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct IntSyntax<'a> {
+    pub repr: BuiltinType,
+    pub consts: Vec<Documented<'a, ConstSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for IntSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::int>()?;
+        let repr = parser.parse()?;
+        let mut consts = Vec::new();
+        consts.push(parser.parse()?);
+        while !parser.is_empty() {
+            consts.push(parser.parse()?);
+        }
+        Ok(IntSyntax { repr, consts })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ConstSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub value: u64,
+}
+
+impl<'a> Parse<'a> for ConstSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parens(|p| {
+            p.parse::<kw::r#const>()?;
+            let name = p.parse()?;
+            let value = p.parse()?;
+            Ok(ConstSyntax { name, value })
+        })
     }
 }
 

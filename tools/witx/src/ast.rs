@@ -142,6 +142,7 @@ impl NamedType {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
     Enum(EnumDatatype),
+    Int(IntDatatype),
     Flags(FlagsDatatype),
     Struct(StructDatatype),
     Union(UnionDatatype),
@@ -157,6 +158,7 @@ impl Type {
         use Type::*;
         match self {
             Enum(_) => "enum",
+            Int(_) => "int",
             Flags(_) => "flags",
             Struct(_) => "struct",
             Union(_) => "union",
@@ -202,6 +204,19 @@ pub struct EnumDatatype {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumVariant {
     pub name: Id,
+    pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct IntDatatype {
+    pub repr: IntRepr,
+    pub consts: Vec<IntConst>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct IntConst {
+    pub name: Id,
+    pub value: u64,
     pub docs: String,
 }
 
