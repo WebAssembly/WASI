@@ -29,7 +29,9 @@ impl TypeRef {
             Type::Union(u) => u.layout(cache),
             Type::Handle(h) => h.mem_size_align(),
             Type::Array { .. } => BuiltinType::String.mem_size_align(),
-            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
+            Type::Pointer { .. } | Type::ConstPointer { .. } | Type::USize => {
+                BuiltinType::U32.mem_size_align()
+            }
             Type::Builtin(b) => b.mem_size_align(),
         };
         cache.insert(self.clone(), layout);
