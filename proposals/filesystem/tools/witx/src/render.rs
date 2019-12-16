@@ -290,6 +290,14 @@ impl InterfaceFunc {
                 )
             })
             .collect();
-        SExpr::docs(&self.docs, SExpr::Vec([header, params, results].concat()))
+        let attrs = if self.noreturn {
+            vec![SExpr::annot("witx"), SExpr::word("noreturn")]
+        } else {
+            vec![]
+        };
+        SExpr::docs(
+            &self.docs,
+            SExpr::Vec([header, params, results, attrs].concat()),
+        )
     }
 }
