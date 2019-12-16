@@ -469,7 +469,7 @@
     ;;; within the directory.
     ;;;
     ;;; Note: This is similar to the read bit being set on files, and the
-    ;;; read *and* execute bits being set on directories.
+    ;;; read *and* execute bits being set on directories, in POSIX.
     $read
 
     ;;; For files, permission to mutate the file.
