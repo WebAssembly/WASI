@@ -236,6 +236,7 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::ConstPointer(syntax) => {
                     Type::ConstPointer(self.validate_datatype(syntax, span)?)
                 }
+                TypedefSyntax::USize => Type::USize,
                 TypedefSyntax::Builtin(builtin) => Type::Builtin(*builtin),
                 TypedefSyntax::Ident { .. } => unreachable!(),
             }))),

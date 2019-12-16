@@ -51,6 +51,7 @@ impl Documentation for NamedType {
                 Type::Array(a) => format!("Array of {}", a.type_name()),
                 Type::Pointer(a) => format!("Pointer to {}", a.type_name()),
                 Type::ConstPointer(a) => format!("Constant Pointer to {}", a.type_name()),
+                Type::USize => format!("USize"),
                 Type::Builtin(a) => format!("Builtin type {}", a.type_name()),
             },
             TypeRef::Name(n) => format!("Alias to {}", n.name.as_str()),
@@ -67,6 +68,7 @@ impl TypeRef {
                 Type::Array(a) => format!("Array<{}>", a.type_name()),
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
+                Type::USize => format!("USize"),
                 Type::Builtin(b) => b.type_name().to_string(),
                 Type::Enum { .. }
                 | Type::Flags { .. }

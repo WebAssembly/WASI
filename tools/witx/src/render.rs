@@ -130,6 +130,7 @@ impl Type {
                 SExpr::word("const_pointer"),
                 p.to_sexpr(),
             ]),
+            Type::USize => SExpr::Vec(vec![SExpr::annot("witx"), SExpr::word("usize")]),
             Type::Builtin(b) => b.to_sexpr(),
         }
     }
