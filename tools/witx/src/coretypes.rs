@@ -41,7 +41,8 @@ impl Type {
                 | BuiltinType::U32
                 | BuiltinType::S8
                 | BuiltinType::S16
-                | BuiltinType::S32 => TypePassedBy::Value(AtomType::I32),
+                | BuiltinType::S32
+                | BuiltinType::Char8 => TypePassedBy::Value(AtomType::I32),
                 BuiltinType::U64 | BuiltinType::S64 => TypePassedBy::Value(AtomType::I64),
                 BuiltinType::F32 => TypePassedBy::Value(AtomType::F32),
                 BuiltinType::F64 => TypePassedBy::Value(AtomType::F64),

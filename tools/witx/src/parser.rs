@@ -19,6 +19,7 @@ mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
     wast::custom_keyword!(array);
+    wast::custom_keyword!(char8);
     wast::custom_keyword!(const_pointer);
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
@@ -48,6 +49,9 @@ impl Parse<'_> for BuiltinType {
         if l.peek::<kw::string>() {
             parser.parse::<kw::string>()?;
             Ok(BuiltinType::String)
+        } else if l.peek::<kw::char8>() {
+            parser.parse::<kw::char8>()?;
+            Ok(BuiltinType::Char8)
         } else if l.peek::<kw::u8>() {
             parser.parse::<kw::u8>()?;
             Ok(BuiltinType::U8)
@@ -87,6 +91,7 @@ impl Parse<'_> for BuiltinType {
 impl wast::parser::Peek for BuiltinType {
     fn peek(cursor: wast::parser::Cursor<'_>) -> bool {
         <kw::string as Peek>::peek(cursor)
+            || <kw::char8 as Peek>::peek(cursor)
             || <kw::u8 as Peek>::peek(cursor)
             || <kw::u16 as Peek>::peek(cursor)
             || <kw::u32 as Peek>::peek(cursor)
