@@ -25,6 +25,7 @@ impl BuiltinType {
     pub fn type_name(&self) -> &'static str {
         match self {
             BuiltinType::String => "string",
+            BuiltinType::Char8 => "char8",
             BuiltinType::U8 => "u8",
             BuiltinType::U16 => "u16",
             BuiltinType::U32 => "u32",

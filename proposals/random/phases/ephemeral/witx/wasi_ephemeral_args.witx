@@ -12,8 +12,8 @@
   ;;; Read command-line argument data.
   ;;; The size of the array should match that returned by `sizes_get`
   (@interface func (export "get")
-    (param $argv (@witx pointer (@witx pointer u8)))
-    (param $argv_buf (@witx pointer u8))
+    (param $argv (@witx pointer (@witx pointer char8)))
+    (param $argv_buf (@witx pointer char8))
     (result $error $errno)
   )
 
