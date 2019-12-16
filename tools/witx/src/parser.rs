@@ -25,6 +25,7 @@ mod kw {
     wast::custom_keyword!(field);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
+    wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#struct = "struct");
@@ -544,6 +545,7 @@ pub struct InterfaceFuncSyntax<'a> {
     pub export_loc: wast::Span,
     pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
     pub results: Vec<Documented<'a, FieldSyntax<'a>>>,
+    pub noreturn: bool,
 }
 
 impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
@@ -558,6 +560,7 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
 
         let mut params = Vec::new();
         let mut results = Vec::new();
+        let mut noreturn = false;
 
         while !parser.is_empty() {
             let func_field = parser.parse::<Documented<InterfaceFuncField>>()?;
@@ -574,6 +577,9 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
                         item,
                     });
                 }
+                InterfaceFuncField::Noreturn => {
+                    noreturn = true;
+                }
             }
         }
 
@@ -582,6 +588,7 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
             export_loc,
             params,
             results,
+            noreturn,
         })
     }
 }
@@ -589,6 +596,7 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
 enum InterfaceFuncField<'a> {
     Param(FieldSyntax<'a>),
     Result(FieldSyntax<'a>),
+    Noreturn,
 }
 impl<'a> Parse<'a> for InterfaceFuncField<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
@@ -606,6 +614,15 @@ impl<'a> Parse<'a> for InterfaceFuncField<'a> {
                     name: parser.parse()?,
                     type_: parser.parse()?,
                 }))
+            } else if l.peek::<AtWitx>() {
+                parser.parse::<AtWitx>()?;
+                let mut l = parser.lookahead1();
+                if l.peek::<kw::noreturn>() {
+                    parser.parse::<kw::noreturn>()?;
+                    Ok(InterfaceFuncField::Noreturn)
+                } else {
+                    Err(l.error())
+                }
             } else {
                 Err(l.error())
             }
@@ -616,7 +633,10 @@ impl<'a> Parse<'a> for InterfaceFuncField<'a> {
 impl PartialEq for InterfaceFuncSyntax<'_> {
     fn eq(&self, other: &InterfaceFuncSyntax<'_>) -> bool {
         // skip the `export_loc` field
-        self.export == other.export && self.params == other.params && self.results == other.results
+        self.export == other.export
+            && self.params == other.params
+            && self.results == other.results
+            && self.noreturn == other.noreturn
     }
 }
 

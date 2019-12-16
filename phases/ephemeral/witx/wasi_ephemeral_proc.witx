@@ -14,5 +14,6 @@
   (@interface func (export "exit")
     ;;; The exit code returned by the process.
     (param $rval $exitcode)
+    (@witx noreturn)
   )
 )

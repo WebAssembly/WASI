@@ -466,11 +466,13 @@ impl<'a> ModuleValidation<'a> {
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
+                let noreturn = syntax.noreturn;
 
                 let rc_func = Rc::new(InterfaceFunc {
                     name: name.clone(),
                     params,
                     results,
+                    noreturn,
                     docs: decl.comments.docs(),
                 });
                 self.entries

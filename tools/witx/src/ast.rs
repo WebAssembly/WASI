@@ -361,6 +361,7 @@ pub struct InterfaceFunc {
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
     pub results: Vec<InterfaceFuncParam>,
+    pub noreturn: bool,
     pub docs: String,
 }
 
