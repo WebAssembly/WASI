@@ -48,7 +48,9 @@ impl Type {
                 BuiltinType::F64 => TypePassedBy::Value(AtomType::F64),
             },
             Type::Array { .. } => TypePassedBy::PointerLengthPair,
-            Type::Pointer { .. } | Type::ConstPointer { .. } => TypePassedBy::Value(AtomType::I32),
+            Type::Pointer { .. } | Type::ConstPointer { .. } | Type::USize => {
+                TypePassedBy::Value(AtomType::I32)
+            }
             Type::Enum(e) => TypePassedBy::Value(e.repr.into()),
             Type::Flags(f) => TypePassedBy::Value(f.repr.into()),
             Type::Struct { .. } | Type::Union { .. } => TypePassedBy::Pointer,

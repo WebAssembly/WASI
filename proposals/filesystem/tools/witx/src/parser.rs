@@ -42,6 +42,7 @@ mod kw {
     wast::custom_keyword!(u32);
     wast::custom_keyword!(u64);
     wast::custom_keyword!(u8);
+    wast::custom_keyword!(usize);
 }
 
 impl Parse<'_> for BuiltinType {
@@ -312,6 +313,7 @@ pub enum TypedefSyntax<'a> {
     Array(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
+    USize,
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
 }
@@ -348,6 +350,9 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     } else if l.peek::<kw::pointer>() {
                         parser.parse::<kw::pointer>()?;
                         Ok(TypedefSyntax::Pointer(Box::new(parser.parse()?)))
+                    } else if l.peek::<kw::usize>() {
+                        parser.parse::<kw::usize>()?;
+                        Ok(TypedefSyntax::USize)
                     } else {
                         Err(l.error())
                     }
