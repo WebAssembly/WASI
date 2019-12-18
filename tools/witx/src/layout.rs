@@ -125,7 +125,22 @@ mod test {
 
 impl UnionDatatype {
     pub fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        unimplemented!()
+        let sas = self
+            .variants
+            .iter()
+            .map(|v| v.tref.layout(cache))
+            .collect::<Vec<SizeAlign>>();
+        let size = sas
+            .iter()
+            .map(|sa| sa.size)
+            .max()
+            .expect("nonzero variants");
+        let align = sas
+            .iter()
+            .map(|sa| sa.align)
+            .max()
+            .expect("nonzero variants");
+        SizeAlign { size, align }
     }
 }
 
