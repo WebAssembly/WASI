@@ -68,7 +68,6 @@ impl std::hash::Hash for Document {
     }
 }
 
-
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Definition {
     Typename(Rc<NamedType>),
