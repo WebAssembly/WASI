@@ -6,6 +6,8 @@ mod coretypes;
 mod docs;
 /// Interface for filesystem or mock IO
 mod io;
+/// Calculate memory layout of types
+pub mod layout;
 /// Witx syntax parsing from SExprs
 mod parser;
 /// Calculate required polyfill between interfaces
