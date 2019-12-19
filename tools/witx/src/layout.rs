@@ -27,7 +27,7 @@ impl TypeRef {
             Type::Flags(f) => f.repr.mem_size_align(),
             Type::Struct(s) => s.layout(cache),
             Type::Union(u) => u.layout(cache),
-            Type::Handle { .. } => BuiltinType::U32.mem_size_align(),
+            Type::Handle(h) => h.mem_size_align(),
             Type::Array { .. } => BuiltinType::String.mem_size_align(),
             Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
             Type::Builtin(b) => b.mem_size_align(),
@@ -156,6 +156,12 @@ impl Layout for UnionDatatype {
     fn mem_size_align(&self) -> SizeAlign {
         let mut cache = HashMap::new();
         self.layout(&mut cache)
+    }
+}
+
+impl Layout for HandleDatatype {
+    fn mem_size_align(&self) -> SizeAlign {
+        BuiltinType::U32.mem_size_align()
     }
 }
 
