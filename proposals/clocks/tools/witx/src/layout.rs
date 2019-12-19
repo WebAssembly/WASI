@@ -3,8 +3,8 @@ use std::collections::HashMap;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SizeAlign {
-    size: usize,
-    align: usize,
+    pub size: usize,
+    pub align: usize,
 }
 
 pub trait Layout {
