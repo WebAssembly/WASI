@@ -23,14 +23,14 @@ impl TypeRef {
             return *hit;
         }
         let layout = match &*self.type_() {
-            Type::Enum(e) => e.repr.layout(),
-            Type::Flags(f) => f.repr.layout(),
+            Type::Enum(e) => e.repr.mem_size_align(),
+            Type::Flags(f) => f.repr.mem_size_align(),
             Type::Struct(s) => s.layout(cache),
             Type::Union(u) => u.layout(cache),
-            Type::Handle { .. } => BuiltinType::U32.layout(),
-            Type::Array { .. } => BuiltinType::String.layout(),
-            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.layout(),
-            Type::Builtin(b) => b.layout(),
+            Type::Handle { .. } => BuiltinType::U32.mem_size_align(),
+            Type::Array { .. } => BuiltinType::String.mem_size_align(),
+            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
+            Type::Builtin(b) => b.mem_size_align(),
         };
         cache.insert(self.clone(), layout);
         layout
@@ -43,28 +43,28 @@ impl Layout for TypeRef {
         self.layout(&mut cache)
     }
 }
-
-impl IntRepr {
-    pub fn layout(&self) -> SizeAlign {
+impl Layout for IntRepr {
+    fn mem_size_align(&self) -> SizeAlign {
         match self {
-            IntRepr::U8 => BuiltinType::U8.layout(),
-            IntRepr::U16 => BuiltinType::U16.layout(),
-            IntRepr::U32 => BuiltinType::U32.layout(),
-            IntRepr::U64 => BuiltinType::U64.layout(),
+            IntRepr::U8 => BuiltinType::U8.mem_size_align(),
+            IntRepr::U16 => BuiltinType::U16.mem_size_align(),
+            IntRepr::U32 => BuiltinType::U32.mem_size_align(),
+            IntRepr::U64 => BuiltinType::U64.mem_size_align(),
         }
     }
 }
 
 pub struct StructMemberLayout<'a> {
-    member: &'a StructMember,
-    offset: usize,
+    pub member: &'a StructMember,
+    pub offset: usize,
 }
 
 impl StructDatatype {
-    pub fn member_layout(
-        &self,
-        cache: &mut HashMap<TypeRef, SizeAlign>,
-    ) -> Vec<StructMemberLayout> {
+    pub fn member_layout(&self) -> Vec<StructMemberLayout> {
+        self.member_layout_(&mut HashMap::new())
+    }
+
+    fn member_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> Vec<StructMemberLayout> {
         let mut members = Vec::new();
         let mut offset = 0;
         for m in self.members.iter() {
@@ -76,16 +76,24 @@ impl StructDatatype {
         members
     }
 
-    pub fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        let members = self.member_layout(cache);
+    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        let members = self.member_layout_(cache);
         let align = members
             .iter()
             .map(|m| m.member.tref.layout(cache).align)
             .max()
             .expect("nonzero struct members");
-        let last_offset = members.last().expect("nonzero struct members").offset;
-        let size = align_to(last_offset, align);
+        let last = members.last().expect("nonzero struct members");
+        let size = last.offset + last.member.tref.layout(cache).size;
+        let size = align_to(size, align);
         SizeAlign { size, align }
+    }
+}
+
+impl Layout for StructDatatype {
+    fn mem_size_align(&self) -> SizeAlign {
+        let mut cache = HashMap::new();
+        self.layout(&mut cache)
     }
 }
 
@@ -124,7 +132,7 @@ mod test {
 }
 
 impl UnionDatatype {
-    pub fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         let sas = self
             .variants
             .iter()
@@ -144,8 +152,15 @@ impl UnionDatatype {
     }
 }
 
-impl BuiltinType {
-    pub fn layout(&self) -> SizeAlign {
+impl Layout for UnionDatatype {
+    fn mem_size_align(&self) -> SizeAlign {
+        let mut cache = HashMap::new();
+        self.layout(&mut cache)
+    }
+}
+
+impl Layout for BuiltinType {
+    fn mem_size_align(&self) -> SizeAlign {
         match self {
             BuiltinType::String => SizeAlign { size: 8, align: 4 }, // Pointer and Length
             BuiltinType::U8 | BuiltinType::S8 => SizeAlign { size: 1, align: 1 },
