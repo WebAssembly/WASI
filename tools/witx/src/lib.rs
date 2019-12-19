@@ -7,7 +7,7 @@ mod docs;
 /// Interface for filesystem or mock IO
 mod io;
 /// Calculate memory layout of types
-pub mod layout;
+mod layout;
 /// Witx syntax parsing from SExprs
 mod parser;
 /// Calculate required polyfill between interfaces
@@ -31,6 +31,7 @@ pub use ast::{
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
+pub use layout::{Layout, SizeAlign, StructMemberLayout};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use representation::{RepEquality, Representable};
