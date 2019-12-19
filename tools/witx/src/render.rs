@@ -47,19 +47,19 @@ impl fmt::Display for SExpr {
 }
 
 impl SExpr {
-    fn word(s: &str) -> SExpr {
+    pub fn word(s: &str) -> SExpr {
         SExpr::Word(s.to_string())
     }
-    fn ident(s: &str) -> SExpr {
+    pub fn ident(s: &str) -> SExpr {
         SExpr::Ident(s.to_string())
     }
-    fn quote(s: &str) -> SExpr {
+    pub fn quote(s: &str) -> SExpr {
         SExpr::Quote(s.to_string())
     }
-    fn annot(s: &str) -> SExpr {
+    pub fn annot(s: &str) -> SExpr {
         SExpr::Annot(s.to_string())
     }
-    fn docs(d: &str, s: SExpr) -> SExpr {
+    pub fn docs(d: &str, s: SExpr) -> SExpr {
         if d.is_empty() {
             s
         } else {
