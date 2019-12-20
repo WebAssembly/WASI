@@ -148,6 +148,7 @@ impl UnionDatatype {
             .map(|sa| sa.align)
             .max()
             .expect("nonzero variants");
+        let size = align_to(size, align);
         SizeAlign { size, align }
     }
 }
