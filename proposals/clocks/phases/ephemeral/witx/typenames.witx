@@ -253,12 +253,16 @@
     $path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
     $path_filestat_set_times
+    ;;; The right to invoke `path_filestat_set_permissions`.
+    $path_permissions_set
     ;;; The right to invoke `fd_filestat_get`.
     $fd_filestat_get
     ;;; The right to invoke `fd_filestat_set_size`.
     $fd_filestat_set_size
     ;;; The right to invoke `fd_filestat_set_times`.
     $fd_filestat_set_times
+    ;;; The right to invoke `fd_filestat_set_permissions`.
+    $fd_permissions_set
     ;;; The right to invoke `path_symlink`.
     $path_symlink
     ;;; The right to invoke `path_remove_directory`.
@@ -455,6 +459,37 @@
 ;;; Number of hard links to an inode.
 (typename $linkcount u64)
 
+;;; File permissions. This represents the permissions associated with a
+;;; file in a filesystem, and don't fully reflect all the conditions
+;;; which determine whether a given WASI program can access the file.
+(typename $permissions
+  (flags u8
+    ;;; For files, permission to read the file.
+    ;;; For directories, permission to do `readdir` and access files
+    ;;; within the directory.
+    ;;;
+    ;;; Note: This is similar to the read bit being set on files, and the
+    ;;; read *and* execute bits being set on directories, in POSIX.
+    $read
+
+    ;;; For files, permission to mutate the file.
+    ;;; For directories, permission to create, remove, and rename items
+    ;;; within the directory.
+    $write
+
+    ;;; For files, permission to "execute" the file, using whatever
+    ;;; concept of "executing" the host filesystem has.
+    ;;; This flag is not valid for directories.
+    $execute
+
+    ;;; For filesystems which have a concept of multiple "users", this flag
+    ;;; indicates that the file is only accessible by the effective "user"
+    ;;; that the WASI store uses to access the filesystem, and inaccessible
+    ;;; to other "users".
+    $private
+  )
+)
+
 ;;; File attributes.
 (typename $filestat
   (struct
@@ -464,6 +499,8 @@
     (field $ino $inode)
     ;;; File type.
     (field $filetype $filetype)
+    ;;; File permissions.
+    (field $permissions $permissions)
     ;;; Number of hard links to the file.
     (field $nlink $linkcount)
     ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
