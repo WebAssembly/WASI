@@ -50,6 +50,29 @@
     (result $error $errno)
   )
 
+  ;;; Set the permissions of a file or directory.
+  ;;;
+  ;;; This sets the permissions associated with a file or directory in
+  ;;; a filesystem at the time it is called. The ability to actually access
+  ;;; a file or directory may depend on additional permissions not reflected
+  ;;; here.
+  ;;;
+  ;;; Note: This is similar to `fchmodat` in POSIX.
+  ;;;
+  ;;; Unlike POSIX, this doesn't expose a user/group/other distinction;
+  ;;; implementations in POSIX environments are suggested to consult the
+  ;;; umask to determine which of the user/group/other flags to modify.
+  (@interface func (export "permissions_set")
+    (param $fd $fd)
+    ;;; Flags determining the method of how the path is resolved.
+    (param $flags $lookupflags)
+    ;;; The path to a file to query.
+    (param $path string)
+    ;;; The permissions to associate with the file.
+    (param $permissions $permissions)
+    (result $error $errno)
+  )
+
   ;;; Create a hard link.
   ;;; Note: This is similar to `linkat` in POSIX.
   (@interface func (export "link")
@@ -94,6 +117,8 @@
     (param $fs_rights_base $rights)
     (param $fs_rights_inherting $rights)
     (param $fdflags $fdflags)
+    ;;; If a file is created, the filesystem permissions to associate with it.
+    (param $permissions $permissions)
     (result $error $errno)
     ;;; The file descriptor of the file that has been opened.
     (result $opened_fd $fd)
@@ -146,7 +171,6 @@
     (param $new_path string)
     (result $error $errno)
   )
-
 
   ;;; Unlink a file.
   ;;; Return `EISDIR` if the path refers to a directory.
