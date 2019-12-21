@@ -23,10 +23,10 @@ mod validate;
 
 pub use ast::{
     BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
-    FlagsMember, HandleDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef, UnionDatatype,
-    UnionVariant,
+    FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
+    ModuleImport, ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef,
+    UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
