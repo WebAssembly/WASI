@@ -2,12 +2,13 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
-    HandleDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition,
-    Location, Module, ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType,
-    StructDatatype, StructMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant,
+    HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
+    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
+    ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
+    UnionDatatype, UnionVariant,
 };
 use std::collections::HashMap;
 use std::path::Path;
@@ -225,6 +226,7 @@ impl DocValidationScope<'_> {
             }
             other => Ok(TypeRef::Value(Rc::new(match other {
                 TypedefSyntax::Enum(syntax) => Type::Enum(self.validate_enum(&syntax, span)?),
+                TypedefSyntax::Int(syntax) => Type::Int(self.validate_int(&syntax, span)?),
                 TypedefSyntax::Flags(syntax) => Type::Flags(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Struct(syntax) => Type::Struct(self.validate_struct(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
@@ -261,6 +263,28 @@ impl DocValidationScope<'_> {
             .collect::<Result<Vec<EnumVariant>, _>>()?;
 
         Ok(EnumDatatype { repr, variants })
+    }
+
+    fn validate_int(
+        &self,
+        syntax: &IntSyntax,
+        span: wast::Span,
+    ) -> Result<IntDatatype, ValidationError> {
+        let mut int_scope = IdentValidation::new();
+        let repr = self.validate_int_repr(&syntax.repr, span)?;
+        let consts = syntax
+            .consts
+            .iter()
+            .map(|i| {
+                let name =
+                    int_scope.introduce(i.item.name.name(), self.location(i.item.name.span()))?;
+                let value = i.item.value;
+                let docs = i.comments.docs();
+                Ok(IntConst { name, value, docs })
+            })
+            .collect::<Result<Vec<IntConst>, _>>()?;
+
+        Ok(IntDatatype { repr, consts })
     }
 
     fn validate_flags(
