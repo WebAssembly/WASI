@@ -45,6 +45,7 @@ impl Documentation for NamedType {
         let body = match &self.tref {
             TypeRef::Value(v) => match &**v {
                 Type::Enum(a) => a.to_md(),
+                Type::Int(a) => a.to_md(),
                 Type::Flags(a) => a.to_md(),
                 Type::Struct(a) => a.to_md(),
                 Type::Union(a) => a.to_md(),
@@ -72,6 +73,7 @@ impl TypeRef {
                 Type::USize => format!("USize"),
                 Type::Builtin(b) => b.type_name().to_string(),
                 Type::Enum { .. }
+                | Type::Int { .. }
                 | Type::Flags { .. }
                 | Type::Struct { .. }
                 | Type::Union { .. }
@@ -95,6 +97,22 @@ impl Documentation for EnumDatatype {
             "Enum represented by `{}`\n\n### Variants:\n{}\n",
             self.repr.type_name(),
             variants
+        )
+    }
+}
+
+impl Documentation for IntDatatype {
+    fn to_md(&self) -> String {
+        let consts = self
+            .consts
+            .iter()
+            .map(|v| format!("#### `{}`: {}\n{}", v.name.as_str(), v.value, v.docs))
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!(
+            "Int represented by `{}`\n\n### Consts:\n{}\n",
+            self.repr.type_name(),
+            consts
         )
     }
 }
