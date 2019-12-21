@@ -41,6 +41,8 @@ pub enum ValidationError {
     },
     #[error("First result type must be pass-by-value")]
     InvalidFirstResultType { location: Location },
+    #[error("Anonymous structured types (struct, union, enum, flags, handle) are not permitted")]
+    AnonymousStructure { location: Location },
 }
 
 impl ValidationError {
@@ -51,7 +53,8 @@ impl ValidationError {
             | WrongKindName { location, .. }
             | Recursive { location, .. }
             | InvalidRepr { location, .. }
-            | InvalidFirstResultType { location, .. } => {
+            | InvalidFirstResultType { location, .. }
+            | AnonymousStructure { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -165,7 +168,7 @@ impl DocValidationScope<'_> {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
                 let docs = comments.docs();
-                let tref = self.validate_datatype(&decl.def, decl.ident.span())?;
+                let tref = self.validate_datatype(&decl.def, true, decl.ident.span())?;
 
                 let rc_datatype = Rc::new(NamedType {
                     name: name.clone(),
@@ -203,6 +206,7 @@ impl DocValidationScope<'_> {
     fn validate_datatype(
         &self,
         syntax: &TypedefSyntax,
+        named: bool,
         span: wast::Span,
     ) -> Result<TypeRef, ValidationError> {
         match syntax {
@@ -224,6 +228,17 @@ impl DocValidationScope<'_> {
                     }),
                 }
             }
+            TypedefSyntax::Enum { .. }
+            | TypedefSyntax::Flags { .. }
+            | TypedefSyntax::Struct { .. }
+            | TypedefSyntax::Union { .. }
+            | TypedefSyntax::Handle { .. }
+                if !named =>
+            {
+                Err(ValidationError::AnonymousStructure {
+                    location: self.location(span),
+                })
+            }
             other => Ok(TypeRef::Value(Rc::new(match other {
                 TypedefSyntax::Enum(syntax) => Type::Enum(self.validate_enum(&syntax, span)?),
                 TypedefSyntax::Int(syntax) => Type::Int(self.validate_int(&syntax, span)?),
@@ -231,12 +246,14 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::Struct(syntax) => Type::Struct(self.validate_struct(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
                 TypedefSyntax::Handle(syntax) => Type::Handle(self.validate_handle(syntax, span)?),
-                TypedefSyntax::Array(syntax) => Type::Array(self.validate_datatype(syntax, span)?),
+                TypedefSyntax::Array(syntax) => {
+                    Type::Array(self.validate_datatype(syntax, false, span)?)
+                }
                 TypedefSyntax::Pointer(syntax) => {
-                    Type::Pointer(self.validate_datatype(syntax, span)?)
+                    Type::Pointer(self.validate_datatype(syntax, false, span)?)
                 }
                 TypedefSyntax::ConstPointer(syntax) => {
-                    Type::ConstPointer(self.validate_datatype(syntax, span)?)
+                    Type::ConstPointer(self.validate_datatype(syntax, false, span)?)
                 }
                 TypedefSyntax::USize => Type::USize,
                 TypedefSyntax::Builtin(builtin) => Type::Builtin(*builtin),
@@ -319,7 +336,7 @@ impl DocValidationScope<'_> {
             .map(|f| {
                 let name = member_scope
                     .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
-                let tref = self.validate_datatype(&f.item.type_, f.item.name.span())?;
+                let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
                 let docs = f.comments.docs();
                 Ok(StructMember { name, tref, docs })
             })
@@ -340,7 +357,7 @@ impl DocValidationScope<'_> {
             .map(|f| {
                 let name = variant_scope
                     .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
-                let tref = self.validate_datatype(&f.item.type_, f.item.name.span())?;
+                let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
                 let docs = f.comments.docs();
                 Ok(UnionVariant { name, tref, docs })
             })
@@ -456,9 +473,11 @@ impl<'a> ModuleValidation<'a> {
                                 f.item.name.name(),
                                 self.doc.location(f.item.name.span()),
                             )?,
-                            tref: self
-                                .doc
-                                .validate_datatype(&f.item.type_, f.item.name.span())?,
+                            tref: self.doc.validate_datatype(
+                                &f.item.type_,
+                                false,
+                                f.item.name.span(),
+                            )?,
                             position: InterfaceFuncParamPosition::Param(ix),
                             docs: f.comments.docs(),
                         })
@@ -469,9 +488,9 @@ impl<'a> ModuleValidation<'a> {
                     .iter()
                     .enumerate()
                     .map(|(ix, f)| {
-                        let tref = self
-                            .doc
-                            .validate_datatype(&f.item.type_, f.item.name.span())?;
+                        let tref =
+                            self.doc
+                                .validate_datatype(&f.item.type_, false, f.item.name.span())?;
                         if ix == 0 {
                             match tref.type_().passed_by() {
                                 TypePassedBy::Value(_) => {}
