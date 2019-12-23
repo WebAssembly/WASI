@@ -170,13 +170,25 @@
   )
 
   ;;; Read from a file descriptor.
-  ;;; Note: This is similar to `readv` in POSIX.
+  ;;;
+  ;;; When reading from a datagram socket, returns `$msgsize` if a datagram
+  ;;; is larger than the provided buffer
+  ;;;
+  ;;; When the end of the file or stream is reached, this function returns
+  ;;; `$success_eos`.
+  ;;;
+  ;;; Note: This is similar to `readv` and `recv` in POSIX, except that a return
+  ;;; value of 0 does not necessarily indicate end of file/stream.
   (@interface func (export "read")
     (param $fd $fd)
     ;;; List of scatter/gather vectors to which to store data.
     (param $iovs $iovec_array)
+    ;;; Message flags.
+    (param $ri_flags $riflags)
     (result $error $errno)
-    ;;; The number of bytes read.
+    ;;; The number of bytes read. If this is greater than the total size of the
+    ;;; provided buffer, it indicates the length of a message on a message-based
+    ;;; socket, and data beyond the size of the buffer is discarded.
     (result $nread $size)
   )
 
@@ -249,13 +261,24 @@
   )
 
   ;;; Write to a file descriptor.
-  ;;; Note: This is similar to `writev` in POSIX.
+  ;;; Note: This is similar to `writev` and `send` in POSIX.
   (@interface func (export "write")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
     (param $iovs $ciovec_array)
+    ;;; Message flags.
+    (param $si_flags $siflags)
     (result $error $errno)
     ;;; The number of bytes written.
     (result $nwritten $size)
+  )
+
+  ;;; Shut down socket send and receive channels.
+  ;;; Note: This is similar to `shutdown` in POSIX.
+  (@interface func (export "shutdown")
+    (param $fd $fd)
+    ;;; Which channels on the socket to shut down.
+    (param $how $sdflags)
+    (result $error $errno)
   )
 )
