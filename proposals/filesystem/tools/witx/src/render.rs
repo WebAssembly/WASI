@@ -79,6 +79,7 @@ impl BuiltinType {
         match self {
             BuiltinType::String => SExpr::word("string"),
             BuiltinType::Char8 => SExpr::word("char8"),
+            BuiltinType::USize => SExpr::Vec(vec![SExpr::annot("witx"), SExpr::word("usize")]),
             BuiltinType::U8 => SExpr::word("u8"),
             BuiltinType::U16 => SExpr::word("u16"),
             BuiltinType::U32 => SExpr::word("u32"),
@@ -132,7 +133,6 @@ impl Type {
                 SExpr::word("const_pointer"),
                 p.to_sexpr(),
             ]),
-            Type::USize => SExpr::Vec(vec![SExpr::annot("witx"), SExpr::word("usize")]),
             Type::Builtin(b) => b.to_sexpr(),
         }
     }
