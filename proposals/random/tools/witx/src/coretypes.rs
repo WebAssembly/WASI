@@ -42,15 +42,14 @@ impl Type {
                 | BuiltinType::S8
                 | BuiltinType::S16
                 | BuiltinType::S32
-                | BuiltinType::Char8 => TypePassedBy::Value(AtomType::I32),
+                | BuiltinType::Char8
+                | BuiltinType::USize => TypePassedBy::Value(AtomType::I32),
                 BuiltinType::U64 | BuiltinType::S64 => TypePassedBy::Value(AtomType::I64),
                 BuiltinType::F32 => TypePassedBy::Value(AtomType::F32),
                 BuiltinType::F64 => TypePassedBy::Value(AtomType::F64),
             },
             Type::Array { .. } => TypePassedBy::PointerLengthPair,
-            Type::Pointer { .. } | Type::ConstPointer { .. } | Type::USize => {
-                TypePassedBy::Value(AtomType::I32)
-            }
+            Type::Pointer { .. } | Type::ConstPointer { .. } => TypePassedBy::Value(AtomType::I32),
             Type::Enum(e) => TypePassedBy::Value(e.repr.into()),
             Type::Int(i) => TypePassedBy::Value(i.repr.into()),
             Type::Flags(f) => TypePassedBy::Value(f.repr.into()),
