@@ -150,7 +150,6 @@ pub enum Type {
     Array(TypeRef),
     Pointer(TypeRef),
     ConstPointer(TypeRef),
-    USize,
     Builtin(BuiltinType),
 }
 
@@ -167,7 +166,6 @@ impl Type {
             Array(_) => "array",
             Pointer(_) => "pointer",
             ConstPointer(_) => "constpointer",
-            USize => "usize",
             Builtin(_) => "builtin",
         }
     }
@@ -177,6 +175,7 @@ impl Type {
 pub enum BuiltinType {
     String,
     Char8,
+    USize,
     U8,
     U16,
     U32,
