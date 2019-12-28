@@ -316,7 +316,6 @@ pub enum TypedefSyntax<'a> {
     Array(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
-    USize,
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
 }
@@ -357,7 +356,7 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                         Ok(TypedefSyntax::Pointer(Box::new(parser.parse()?)))
                     } else if l.peek::<kw::usize>() {
                         parser.parse::<kw::usize>()?;
-                        Ok(TypedefSyntax::USize)
+                        Ok(TypedefSyntax::Builtin(BuiltinType::USize))
                     } else {
                         Err(l.error())
                     }

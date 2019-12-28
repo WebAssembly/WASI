@@ -30,9 +30,7 @@ impl TypeRef {
             Type::Union(u) => u.layout(cache),
             Type::Handle(h) => h.mem_size_align(),
             Type::Array { .. } => BuiltinType::String.mem_size_align(),
-            Type::Pointer { .. } | Type::ConstPointer { .. } | Type::USize => {
-                BuiltinType::U32.mem_size_align()
-            }
+            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
             Type::Builtin(b) => b.mem_size_align(),
         };
         cache.insert(self.clone(), layout);
@@ -177,7 +175,7 @@ impl Layout for BuiltinType {
                 SizeAlign { size: 1, align: 1 }
             }
             BuiltinType::U16 | BuiltinType::S16 => SizeAlign { size: 2, align: 2 },
-            BuiltinType::U32 | BuiltinType::S32 | BuiltinType::F32 => {
+            BuiltinType::USize | BuiltinType::U32 | BuiltinType::S32 | BuiltinType::F32 => {
                 SizeAlign { size: 4, align: 4 }
             }
             BuiltinType::U64 | BuiltinType::S64 | BuiltinType::F64 => {
