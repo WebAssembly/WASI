@@ -2286,10 +2286,6 @@ Members:
 
     - <a href="#subscription.u.clock" name="subscription.u.clock"></a>**`u.clock`**
 
-        - <a href="#subscription.u.clock.identifier" name="subscription.u.clock.identifier"></a><code>[\_\_wasi\_userdata\_t](#userdata) <strong>identifier</strong></code>
-
-            The user-defined unique identifier of the clock.
-
         - <a href="#subscription.u.clock.clock_id" name="subscription.u.clock.clock_id"></a><code>[\_\_wasi\_clockid\_t](#clockid) <strong>clock\_id</strong></code>
 
             The clock against which to compare the timestamp.
