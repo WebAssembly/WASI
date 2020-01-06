@@ -249,8 +249,8 @@
     $path_filestat_get
     ;;; The right to change a file's size.
     ;;; If `path_open` is set, includes the right to invoke `path_open` with `oflags::trunc`.
-    ;;; Note: there is no `path_filestat_set_size`. This follows POSIX design, which only has
-    ;;; `ftruncate` and does not provide `ftruncateat`.
+    ;;; Note: there is no function named `path_filestat_set_size`. This follows POSIX design,
+    ;;; which only has `ftruncate` and does not provide `ftruncateat`.
     $path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
     $path_filestat_set_times
