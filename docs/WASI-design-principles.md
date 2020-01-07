@@ -20,7 +20,7 @@ WASI started out with a very POSIX-like API, however WASI will grow to include m
 
 For example, WASI may include high-level network APIs, such as APIs for HTTP. This is outside the scope of POSIX, and while some WebAssembly engines are very interested in implementing it natively, others will find it too complex and high-level. But one of the great things about WebAssembly is that there's no syscall instruction, so "syscalls" in WebAssembly are just calls to imported functions, which could be native functions provided by the runtime, or could be other WebAssembly modules. We expect to leverage this capability to provide polyfill implementations of things like high-level network APIs on top of low-level APIs, such as a raw socket API, so that engines which wish to keep things simple and just implement the low-level socket APIs can do so.
 
-WASI also aims to include domain-specific APIs, such as database, blockchain, or specialized APIs for embedded systems. Another key building block for WASI is optional imports, which give applications the ability to dynamically test for the availability of APIs.
+WASI also aims to include domain-specific APIs, such as database, blockchain, or specialized APIs for embedded systems. Another key building block for WASI is [optional imports](https://github.com/WebAssembly/WASI/blob/master/design/optional-imports.md), which give applications the ability to dynamically test for the availability of APIs.
 
 ## Relationship to POSIX
 
