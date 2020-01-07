@@ -12,7 +12,7 @@ Some programming languages operate primarily within linear memory, such as C, C+
 
 If all instances shared a single c-list, that would undermine isolation, because any instance could forge an index to any other instance's resources. Fortunately, there can be multiple c-lists, and instances can be given access to some c-lists and not others, or even have instances which don't use any c-lists at all, so it's still possible to establish isolation between instances.
 
-Witx-specified APIs use a special `handle` keyword to mark parameters and return values which are handles. In the short term, these are lowered to integer indices, with an implied table, so that the APIs can be easily used from C and similar languages today. Once [interface types](https://github.com/WebAssembly/interface-types) and [type imports](http://github.com/WebAssembly/type-imports-proposal) are ready, we expect to make use of them to provide APIs which can be used either from languages using references or from languages using integer indices, with tables being used and managed automatically.
+Witx-specified APIs use a special `handle` keyword to mark parameters and return values which are handles. In the short term, these are lowered to integer indices, with an implied table, so that the APIs can be easily used from C and similar languages today. Once [interface types](https://github.com/WebAssembly/interface-types) and [type imports](https://github.com/WebAssembly/proposal-type-imports) are ready, we expect to make use of them to provide APIs which can be used either from languages using references or from languages using integer indices, with tables being used and managed automatically.
 
 ## WASI's Scope
 
@@ -64,7 +64,7 @@ When using Web standards, WASI APIs should be careful to avoid depending on Java
 
 WASI should align with and build on WebAssembly standards and proposals where applicable.
 
-For example, WASI seeks to align with and build on [interface types](https://github.com/WebAssembly/interface-types), [multiple return values](https://github.com/WebAssembly/multi-value/), [reference types](https://github.com/WebAssembly/reference-types), [type imports](http://github.com/WebAssembly/type-imports-proposal), and more. As of this writing, some of these are early-stage proposals, so we're not actually depending on them yet, however we are carefully aligning with them so that we'll be ready when they are.
+For example, WASI seeks to align with and build on [interface types](https://github.com/WebAssembly/interface-types), [multiple return values](https://github.com/WebAssembly/multi-value/), [reference types](https://github.com/WebAssembly/reference-types), [type imports](https://github.com/WebAssembly/proposal-type-imports), and more. As of this writing, some of these are early-stage proposals, so we're not actually depending on them yet, however we are carefully aligning with them so that we'll be ready when they are.
 
 As another example, WASI's [witx](https://github.com/WebAssembly/WASI/blob/master/docs/witx.md) file format is designed to be a straightforward superset of the [module type proposal](https://github.com/WebAssembly/module-types/blob/master/proposals/module-types/Overview.md)'s .wit format and the [annotations proposal](https://github.com/WebAssembly/annotations/)'s annotation syntax.
 
