@@ -2286,7 +2286,7 @@ Members:
 
     - <a href="#subscription.u.clock" name="subscription.u.clock"></a>**`u.clock`**
 
-        - <a href="#subscription.u.clock.clock_id" name="subscription.u.clock.clock_id"></a><code>[\_\_wasi\_clockid\_t](#clockid) <strong>clock\_id</strong></code>
+        - <a href="#subscription.u.clock.clock_id" name="subscription.u.clock.clock_id"></a><code>[\_\_wasi\_clockid\_t](#clockid) <strong>id</strong></code>
 
             The clock against which to compare the timestamp.
 
@@ -2344,4 +2344,3 @@ Possible values:
 - <a href="#whence.end" name="whence.end"></a>**`__WASI_WHENCE_END`**
 
     Seek relative to end-of-file.
-
