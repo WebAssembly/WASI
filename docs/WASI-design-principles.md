@@ -16,7 +16,7 @@ Witx-specified APIs use a special `handle` keyword to mark parameters and return
 
 ## WASI's Scope
 
-WASI started out with a very POSIX-like API, wowever, WASI will grow to include many APIs that are outside of the scope of POSIX. WASI is a forum for cooperatively designing APIs, along with a W3C CG Subgroup for eventually standardizing them.
+WASI started out with a very POSIX-like API, however WASI will grow to include many APIs that are outside of the scope of POSIX. WASI is a forum for cooperatively designing APIs, along with a W3C CG Subgroup for eventually standardizing them.
 
 For example, WASI may include high-level network APIs, such as APIs for HTTP. This is outside the scope of POSIX, and while some WebAssembly engines are very interested in implementing it natively, others will find it too complex and high-level. But one of the great things about WebAssembly is that there's no syscall instruction, so "syscalls" in WebAssembly are just calls to imported functions, which could be native functions provided by the runtime, or could be other WebAssembly modules. We expect to leverage this capability to provide polyfill implementations of things like high-level network APIs on top of low-level APIs, such as a raw socket API, so that engines which wish to keep things simple and just implement the low-level socket APIs can do so.
 
