@@ -12,6 +12,7 @@ pub enum MdElement {
 }
 
 impl MdElement {
+    #[allow(dead_code)]
     pub fn as_section(&self) -> Ref<MdSection> {
         match self {
             Self::Section(t) => t.borrow(),
@@ -26,6 +27,7 @@ impl MdElement {
         }
     }
 
+    #[allow(dead_code)]
     pub fn as_type_listing(&self) -> Ref<MdTypeListing> {
         match self {
             Self::TypeListing(t) => t.borrow(),
@@ -40,6 +42,7 @@ impl MdElement {
         }
     }
 
+    #[allow(dead_code)]
     pub fn as_interface_func(&self) -> Ref<MdInterfaceFunc> {
         match self {
             Self::InterfaceFunc(t) => t.borrow(),
@@ -97,10 +100,10 @@ pub struct MdSection {
 }
 
 impl MdSection {
-    pub fn new(id: &str, title: &str, parent: Option<Weak<MdElement>>) -> MdElement {
+    pub fn new<S: AsRef<str>>(id: S, title: S, parent: Option<Weak<MdElement>>) -> MdElement {
         MdElement::Section(RefCell::new(Self {
-            id: id.to_owned(),
-            title: title.to_owned(),
+            id: id.as_ref().to_owned(),
+            title: title.as_ref().to_owned(),
             description: vec![],
             elements: vec![],
             parent,
@@ -141,6 +144,7 @@ pub struct MdTypeListing {
     pub parent: Option<Weak<MdElement>>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum MdType {
     Enum { repr: String },
@@ -158,7 +162,7 @@ pub enum MdType {
 #[derive(Debug)]
 pub struct MdBullet {
     pub id: String,
-    pub description: String,
+    pub description: Vec<String>,
 }
 
 impl MdTypeListing {
@@ -214,7 +218,9 @@ impl fmt::Display for MdTypeListing {
                 this_id = self.id,
                 id = el.id
             ))?;
-            f.write_fmt(format_args!("\t{}\n", &el.description))?;
+            for desc in &el.description {
+                f.write_fmt(format_args!("\t{}\n", desc))?;
+            }
         }
         Ok(())
     }
@@ -262,14 +268,18 @@ impl fmt::Display for MdInterfaceFunc {
         // Parameters:
         // * `argv`
         //   `argv` has type...
-        f.write_str("\n**Parameters:**\n\n")?;
-        for param in &self.parameters {
-            f.write_fmt(format_args!(
-                "- <a href=\"{id}.{param_id}\" name=\"{id}.{param_id}\"></a> `{param_id}`\n\n",
-                id = self.id,
-                param_id = param.id
-            ))?;
-            f.write_fmt(format_args!("\t{}\n", &param.description))?;
+        if !self.parameters.is_empty() {
+            f.write_str("\n**Parameters:**\n\n")?;
+            for param in &self.parameters {
+                f.write_fmt(format_args!(
+                    "- <a href=\"{id}.{param_id}\" name=\"{id}.{param_id}\"></a> `{param_id}`\n\n",
+                    id = self.id,
+                    param_id = param.id
+                ))?;
+                for desc in &param.description {
+                    f.write_fmt(format_args!("\t{}\n", desc))?;
+                }
+            }
         }
         // Results:
         // * `error`
@@ -281,7 +291,9 @@ impl fmt::Display for MdInterfaceFunc {
                 id = self.id,
                 res_id = result.id
             ))?;
-            f.write_fmt(format_args!("\t{}\n", &result.description))?;
+            for desc in &result.description {
+                f.write_fmt(format_args!("\t{}\n", desc))?;
+            }
         }
         Ok(())
     }
