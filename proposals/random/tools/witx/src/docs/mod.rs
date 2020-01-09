@@ -86,7 +86,7 @@ impl ToMarkdown for NamedType {
                 listing
                     .as_type_listing_mut()
                     .description
-                    .push(self.docs.clone());
+                    .push(MdParagraph::new(&self.docs));
                 listing.as_type_listing_mut().elements.append(&mut elements);
                 listing
             }
@@ -96,9 +96,9 @@ impl ToMarkdown for NamedType {
                     self.name.as_str(),
                     parent,
                 ));
-                sec.as_section_mut().description.extend_from_slice(&[
-                    self.docs.clone(),
-                    format!("Alias to {}", n.name.as_str()),
+                sec.as_section_mut().description.append(&mut vec![
+                    MdParagraph::new(&self.docs),
+                    MdParagraph::new(format!("Alias to {}", n.name.as_str())),
                 ]);
                 sec
             }
@@ -143,7 +143,7 @@ macro_rules! impl_mdbullet {
             fn from(f: $from) -> Self {
                 Self {
                     id: f.name.as_str().to_owned(),
-                    description: vec![f.docs.clone()],
+                    description: vec![MdParagraph::new(&f.docs)],
                 }
             }
         }
@@ -217,7 +217,10 @@ impl ToMarkdown for Module {
             let desc = match import.variant {
                 ModuleImportVariant::Memory => format!("* {}: Memory", import.name.as_str()),
             };
-            imports.as_section_mut().description.push(desc);
+            imports
+                .as_section_mut()
+                .description
+                .push(MdParagraph::new(desc));
         }
         sec.as_section_mut().elements.push(imports);
         let funcs = Rc::new(MdSection::new(
@@ -239,7 +242,7 @@ impl ToMarkdown for InterfaceFunc {
         let func = Rc::new(MdInterfaceFunc::new(self.name.as_str(), parent));
         func.as_interface_func_mut()
             .description
-            .push(self.docs.clone());
+            .push(MdParagraph::new(&self.docs));
         func.as_interface_func_mut()
             .parameters
             .extend(self.params.iter().map(MdBullet::from));
@@ -255,12 +258,12 @@ impl From<&InterfaceFuncParam> for MdBullet {
         Self {
             id: param.name.as_str().to_owned(),
             description: vec![
-                format!(
+                MdParagraph::new(format!(
                     "`{}` has type `{}`",
                     param.name.as_str(),
                     param.tref.type_name(),
-                ),
-                format!("{}", param.docs),
+                )),
+                MdParagraph::new(format!("{}", param.docs)),
             ],
         }
     }
