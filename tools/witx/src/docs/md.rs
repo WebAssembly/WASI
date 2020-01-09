@@ -4,6 +4,24 @@ use std::{
     rc::{Rc, Weak},
 };
 
+fn walk_parents(start: &Weak<MdElement>, cb: &mut impl FnMut(Rc<MdElement>)) {
+    let mut parent = if let Some(parent) = start.upgrade() {
+        cb(parent.clone());
+        parent
+    } else {
+        return;
+    };
+
+    while let Some(p) = parent.parent() {
+        cb(p.clone());
+        parent = p;
+    }
+}
+
+fn gen_link<S: AsRef<str>>(id: S) -> String {
+    format!("<a href=\"{id}\" name=\"{id}\"></a>", id = id.as_ref())
+}
+
 #[derive(Debug)]
 pub enum MdElement {
     Section(RefCell<MdSection>),
@@ -76,20 +94,6 @@ impl fmt::Display for MdElement {
     }
 }
 
-fn walk_parents(start: &Weak<MdElement>, cb: &mut impl FnMut(Rc<MdElement>)) {
-    let mut parent = if let Some(parent) = start.upgrade() {
-        cb(parent.clone());
-        parent
-    } else {
-        return;
-    };
-
-    while let Some(p) = parent.parent() {
-        cb(p.clone());
-        parent = p;
-    }
-}
-
 #[derive(Debug)]
 pub struct MdSection {
     pub id: String,
@@ -120,10 +124,10 @@ impl fmt::Display for MdSection {
             });
         }
         f.write_fmt(format_args!(
-            "{heading} <a href=\"#{id}\" name=\"{id}\"></a> {title}\n",
+            "{heading} {link} {title}\n",
             heading = heading,
-            id = self.id,
-            title = self.title
+            link = gen_link(&self.id),
+            title = &self.title
         ))?;
         for para in &self.description {
             f.write_fmt(format_args!("{}\n", para))?;
@@ -187,9 +191,10 @@ impl fmt::Display for MdTypeListing {
         }
         // ### <a href="#errno" name="errno"></a> `errno`
         f.write_fmt(format_args!(
-            "{heading} <a href=\"#{id}\" name=\"{id}\"></a> `{id}`\n",
+            "{heading} {link} `{id}`\n",
             heading = heading,
-            id = self.id
+            link = gen_link(&self.id),
+            id = &self.id
         ))?;
         // Error codes returned by function...
         for para in &self.description {
@@ -214,9 +219,9 @@ impl fmt::Display for MdTypeListing {
         //   No error occurred. System call completed successfully.
         for el in &self.elements {
             f.write_fmt(format_args!(
-                "- <a href=\"#{this_id}.{id}\" name=\"{this_id}.{id}\"></a> `{id}`\n\n",
-                this_id = self.id,
-                id = el.id
+                "- {link} `{el_id}`\n\n",
+                link = gen_link(format!("{}.{}", self.id, el.id)),
+                el_id = el.id
             ))?;
             for desc in &el.description {
                 f.write_fmt(format_args!("\t{}\n", desc))?;
@@ -272,8 +277,8 @@ impl fmt::Display for MdInterfaceFunc {
             f.write_str("\n**Parameters:**\n\n")?;
             for param in &self.parameters {
                 f.write_fmt(format_args!(
-                    "- <a href=\"{id}.{param_id}\" name=\"{id}.{param_id}\"></a> `{param_id}`\n\n",
-                    id = self.id,
+                    "- {link} `{param_id}`\n\n",
+                    link = gen_link(format!("{}.{}", self.id, param.id)),
                     param_id = param.id
                 ))?;
                 for desc in &param.description {
@@ -287,8 +292,8 @@ impl fmt::Display for MdInterfaceFunc {
         f.write_str("\n**Results:**\n\n")?;
         for result in &self.results {
             f.write_fmt(format_args!(
-                "- <a href=\"{id}.{res_id}\" name=\"{id}.{res_id}\"></a> `{res_id}`\n\n",
-                id = self.id,
+                "- {link} `{res_id}`\n\n",
+                link = gen_link(format!("{}.{}", self.id, result.id)),
                 res_id = result.id
             ))?;
             for desc in &result.description {
