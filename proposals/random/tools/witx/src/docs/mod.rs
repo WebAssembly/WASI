@@ -1,15 +1,16 @@
 mod md;
 
-pub use self::md::*;
 use crate::ast::*;
 use crate::polyfill::*;
 use crate::RepEquality;
+use md::*;
 use std::rc::{Rc, Weak};
 
 pub trait Documentation {
     fn to_md(&self) -> String;
 }
-pub trait ToMarkdown {
+
+trait ToMarkdown {
     fn gen(&self, _parent: Option<Weak<MdElement>>) -> Rc<MdElement>;
 }
 
