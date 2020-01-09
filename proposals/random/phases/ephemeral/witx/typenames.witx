@@ -351,6 +351,8 @@
     $socket_stream
     ;;; The file refers to a symbolic link inode.
     $symbolic_link
+    ;;; The file descriptor or file refers to a FIFO.
+    $fifo
   )
 )
 
