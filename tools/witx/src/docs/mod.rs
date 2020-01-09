@@ -29,7 +29,6 @@ impl ToMarkdown for Document {
                 .elements
                 .push(typename.gen(Some(Rc::downgrade(&types))));
         }
-        doc.as_section_mut().elements.push(types);
         let modules = Rc::new(MdSection::new(
             "modules",
             "Modules",
@@ -41,7 +40,9 @@ impl ToMarkdown for Document {
                 .elements
                 .push(module.gen(Some(Rc::downgrade(&modules))));
         }
-        doc.as_section_mut().elements.push(modules);
+        doc.as_section_mut()
+            .elements
+            .extend_from_slice(&[types, modules]);
         doc
     }
 }
@@ -94,10 +95,10 @@ impl ToMarkdown for NamedType {
                     self.name.as_str(),
                     parent,
                 ));
-                sec.as_section_mut().description.push(self.docs.clone());
-                sec.as_section_mut()
-                    .description
-                    .push(format!("Alias to {}", n.name.as_str()));
+                sec.as_section_mut().description.extend_from_slice(&[
+                    self.docs.clone(),
+                    format!("Alias to {}", n.name.as_str()),
+                ]);
                 sec
             }
         }
@@ -141,7 +142,7 @@ macro_rules! impl_mdbullet {
             fn from(f: $from) -> Self {
                 Self {
                     id: f.name.as_str().to_owned(),
-                    description: f.docs.clone(),
+                    description: vec![f.docs.clone()],
                 }
             }
         }
@@ -158,7 +159,7 @@ impl From<&TypeRef> for MdBullet {
     fn from(t: &TypeRef) -> Self {
         Self {
             id: t.type_name().to_owned(),
-            description: "".to_owned(), // FIXME
+            description: vec![],
         }
     }
 }
@@ -208,7 +209,9 @@ impl ToMarkdown for Module {
             "Imports",
             Some(Rc::downgrade(&sec)),
         ));
-        // FIXME
+        // TODO
+        // This should probably be done using something more specific
+        // than a generic MdSection
         for import in self.imports() {
             let desc = match import.variant {
                 ModuleImportVariant::Memory => format!("* {}: Memory", import.name.as_str()),
@@ -250,17 +253,20 @@ impl From<&InterfaceFuncParam> for MdBullet {
     fn from(param: &InterfaceFuncParam) -> Self {
         Self {
             id: param.name.as_str().to_owned(),
-            description: format!(
-                "`{}` has type `{}`\n{}\n\n",
-                param.name.as_str(),
-                param.tref.type_name(),
-                param.docs
-            ),
+            description: vec![
+                format!(
+                    "`{}` has type `{}`",
+                    param.name.as_str(),
+                    param.tref.type_name(),
+                ),
+                format!("{}", param.docs),
+            ],
         }
     }
 }
 
-// TODO polyfill
+// TODO
+// Implement ToMarkdown for Polyfill
 impl Documentation for Polyfill {
     fn to_md(&self) -> String {
         let module_docs = self
