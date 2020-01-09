@@ -22,6 +22,44 @@ fn gen_link<S: AsRef<str>>(id: S) -> String {
     format!("<a href=\"{id}\" name=\"{id}\"></a>", id = id.as_ref())
 }
 
+fn parse_links<S: AsRef<str>>(s: S) -> String {
+    let to_parse = s.as_ref();
+    let mut parsed = String::with_capacity(to_parse.len());
+    let mut temp = String::with_capacity(to_parse.len());
+    let mut is_link = false;
+    let mut eaten = None;
+    for ch in to_parse.chars() {
+        match (ch, is_link) {
+            ('`', false) => {
+                // Found the beginning of a link!
+                is_link = true;
+            }
+            ('`', true) => {
+                // Reached the end, expand into a link!
+                // TODO
+                // Before committing to pasting the link in,
+                // first verify that it actually exists.
+                let expanded = format!("[`{}`](#{})", temp, temp);
+                parsed.push_str(&expanded);
+                temp.drain(..);
+                is_link = false;
+            }
+            (':', true) => {
+                if let Some(_) = eaten {
+                    // Swap for '.'
+                    temp.push('.');
+                    eaten = None;
+                } else {
+                    eaten = Some(':');
+                }
+            }
+            (ch, false) => parsed.push(ch),
+            (ch, true) => temp.push(ch),
+        }
+    }
+    parsed
+}
+
 #[derive(Debug)]
 pub(super) enum MdElement {
     Section(RefCell<MdSection>),
@@ -98,9 +136,24 @@ impl fmt::Display for MdElement {
 pub(super) struct MdSection {
     pub id: String,
     pub title: String,
-    pub description: Vec<String>,
+    pub description: Vec<MdParagraph>,
     pub elements: Vec<Rc<MdElement>>,
     pub parent: Option<Weak<MdElement>>,
+}
+
+#[derive(Debug)]
+pub(super) struct MdParagraph(String);
+
+impl MdParagraph {
+    pub fn new<S: AsRef<str>>(s: S) -> Self {
+        Self(s.as_ref().to_owned())
+    }
+}
+
+impl fmt::Display for MdParagraph {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        writeln!(f, "{}", parse_links(&self.0))
+    }
 }
 
 impl MdSection {
@@ -143,7 +196,7 @@ impl fmt::Display for MdSection {
 pub(super) struct MdTypeListing {
     pub id: String,
     pub r#type: MdType,
-    pub description: Vec<String>,
+    pub description: Vec<MdParagraph>,
     pub elements: Vec<MdBullet>,
     pub parent: Option<Weak<MdElement>>,
 }
@@ -166,7 +219,7 @@ pub(super) enum MdType {
 #[derive(Debug)]
 pub(super) struct MdBullet {
     pub id: String,
-    pub description: Vec<String>,
+    pub description: Vec<MdParagraph>,
 }
 
 impl MdTypeListing {
@@ -234,7 +287,7 @@ impl fmt::Display for MdTypeListing {
 #[derive(Debug)]
 pub(super) struct MdInterfaceFunc {
     pub id: String,
-    pub description: Vec<String>,
+    pub description: Vec<MdParagraph>,
     pub parameters: Vec<MdBullet>,
     pub results: Vec<MdBullet>,
     pub parent: Option<Weak<MdElement>>,
@@ -274,7 +327,7 @@ impl fmt::Display for MdInterfaceFunc {
         // * `argv`
         //   `argv` has type...
         if !self.parameters.is_empty() {
-            f.write_str("\n**Parameters:**\n\n")?;
+            f.write_str("**Parameters:**\n\n")?;
             for param in &self.parameters {
                 f.write_fmt(format_args!(
                     "- {link} `{param_id}`\n\n",
@@ -289,7 +342,7 @@ impl fmt::Display for MdInterfaceFunc {
         // Results:
         // * `error`
         //   `error` has type `errno`
-        f.write_str("\n**Results:**\n\n")?;
+        f.write_str("**Results:**\n\n")?;
         for result in &self.results {
             f.write_fmt(format_args!(
                 "- {link} `{res_id}`\n\n",
