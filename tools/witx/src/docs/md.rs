@@ -23,7 +23,7 @@ fn gen_link<S: AsRef<str>>(id: S) -> String {
 }
 
 #[derive(Debug)]
-pub enum MdElement {
+pub(super) enum MdElement {
     Section(RefCell<MdSection>),
     TypeListing(RefCell<MdTypeListing>),
     InterfaceFunc(RefCell<MdInterfaceFunc>),
@@ -31,14 +31,14 @@ pub enum MdElement {
 
 impl MdElement {
     #[allow(dead_code)]
-    pub fn as_section(&self) -> Ref<MdSection> {
+    pub(super) fn as_section(&self) -> Ref<MdSection> {
         match self {
             Self::Section(t) => t.borrow(),
             _ => panic!("not a MdSection"),
         }
     }
 
-    pub fn as_section_mut(&self) -> RefMut<MdSection> {
+    pub(super) fn as_section_mut(&self) -> RefMut<MdSection> {
         match self {
             Self::Section(t) => t.borrow_mut(),
             _ => panic!("not a MdSection"),
@@ -46,14 +46,14 @@ impl MdElement {
     }
 
     #[allow(dead_code)]
-    pub fn as_type_listing(&self) -> Ref<MdTypeListing> {
+    pub(super) fn as_type_listing(&self) -> Ref<MdTypeListing> {
         match self {
             Self::TypeListing(t) => t.borrow(),
             _ => panic!("not a MdTypeListing"),
         }
     }
 
-    pub fn as_type_listing_mut(&self) -> RefMut<MdTypeListing> {
+    pub(super) fn as_type_listing_mut(&self) -> RefMut<MdTypeListing> {
         match self {
             Self::TypeListing(t) => t.borrow_mut(),
             _ => panic!("not a MdTypeListing"),
@@ -61,21 +61,21 @@ impl MdElement {
     }
 
     #[allow(dead_code)]
-    pub fn as_interface_func(&self) -> Ref<MdInterfaceFunc> {
+    pub(super) fn as_interface_func(&self) -> Ref<MdInterfaceFunc> {
         match self {
             Self::InterfaceFunc(t) => t.borrow(),
             _ => panic!("not a MdInterfaceFunc"),
         }
     }
 
-    pub fn as_interface_func_mut(&self) -> RefMut<MdInterfaceFunc> {
+    pub(super) fn as_interface_func_mut(&self) -> RefMut<MdInterfaceFunc> {
         match self {
             Self::InterfaceFunc(t) => t.borrow_mut(),
             _ => panic!("not a MdInterfaceFunc"),
         }
     }
 
-    pub fn parent(&self) -> Option<Rc<MdElement>> {
+    pub(super) fn parent(&self) -> Option<Rc<MdElement>> {
         match self {
             Self::Section(t) => t.borrow().parent.as_ref().and_then(|x| x.upgrade()),
             Self::TypeListing(t) => t.borrow().parent.as_ref().and_then(|x| x.upgrade()),
@@ -95,7 +95,7 @@ impl fmt::Display for MdElement {
 }
 
 #[derive(Debug)]
-pub struct MdSection {
+pub(super) struct MdSection {
     pub id: String,
     pub title: String,
     pub description: Vec<String>,
@@ -140,7 +140,7 @@ impl fmt::Display for MdSection {
 }
 
 #[derive(Debug)]
-pub struct MdTypeListing {
+pub(super) struct MdTypeListing {
     pub id: String,
     pub r#type: MdType,
     pub description: Vec<String>,
@@ -150,7 +150,7 @@ pub struct MdTypeListing {
 
 #[allow(dead_code)]
 #[derive(Debug)]
-pub enum MdType {
+pub(super) enum MdType {
     Enum { repr: String },
     Int { repr: String },
     Flags { repr: String },
@@ -164,7 +164,7 @@ pub enum MdType {
 }
 
 #[derive(Debug)]
-pub struct MdBullet {
+pub(super) struct MdBullet {
     pub id: String,
     pub description: Vec<String>,
 }
@@ -232,7 +232,7 @@ impl fmt::Display for MdTypeListing {
 }
 
 #[derive(Debug)]
-pub struct MdInterfaceFunc {
+pub(super) struct MdInterfaceFunc {
     pub id: String,
     pub description: Vec<String>,
     pub parameters: Vec<MdBullet>,
