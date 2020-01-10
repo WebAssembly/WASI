@@ -228,7 +228,7 @@
     $fd_allocate
     ;;; The right to invoke `path_create_directory`.
     $path_create_directory
-    ;;; If `path_open` is set, the right to invoke `path_open` with `oflags::creat`.
+    ;;; If `path_open` is set, the right to invoke `path_open` with `oflags::create`.
     $path_create_file
     ;;; The right to invoke `path_link` with the file descriptor as the
     ;;; source directory.
@@ -451,7 +451,7 @@
 (typename $oflags
   (flags u16
     ;;; Create file if it does not exist.
-    $creat
+    $create
     ;;; Fail if not a directory.
     $directory
     ;;; Fail if file already exists.
