@@ -69,7 +69,7 @@ impl MdNodeRef {
         let mut child_node = MdNode::new(item);
         child_node.parent = Some(Rc::downgrade(&self.0));
         let child_ref = Self(Rc::new(RefCell::new(child_node)));
-        self.0.borrow_mut().children.push(child_ref.clone());
+        self.borrow_mut().children.push(child_ref.clone());
         child_ref
     }
 
@@ -242,7 +242,9 @@ impl fmt::Display for MdType {
             }
             Self::Builtin { repr } => f.write_fmt(format_args!(": `{}`", repr))?,
             Self::Handle => {}
-            Self::Alias { r#type } => f.write_fmt(format_args!(": `{}`", r#type))?,
+            Self::Alias { r#type } => {
+                f.write_fmt(format_args!(": [`{tt}`](#{tt})", tt = r#type))?
+            }
         };
 
         Ok(())
@@ -347,6 +349,9 @@ impl MdElement for MdFunc {
             1 => format!(" -> {}", outputs[0]),
             _ => format!(" -> ({})", outputs.join(", ")),
         };
+        // Format
+        writeln!(f, "\n---\n")?;
+
         f.write_fmt(format_args!(
             "{header} <a href=\"#{name}\" name=\"{name}\"></a> Fn {name}({inputs}){outputs}",
             header = header,
