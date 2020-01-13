@@ -15,4 +15,3 @@ impl Documentation for Document {
         format!("{}", root)
     }
 }
-
