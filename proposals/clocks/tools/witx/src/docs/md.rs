@@ -1,207 +1,217 @@
 use std::{
-    cell::{Ref, RefCell, RefMut},
+    any::Any,
+    cell::{self, RefCell},
     fmt,
     rc::{Rc, Weak},
 };
 
-fn walk_parents(start: &Weak<MdElement>, cb: &mut impl FnMut(Rc<MdElement>)) {
-    let mut parent = if let Some(parent) = start.upgrade() {
-        cb(parent.clone());
-        parent
-    } else {
-        return;
-    };
-
-    while let Some(p) = parent.parent() {
-        cb(p.clone());
-        parent = p;
-    }
+pub(super) trait ToMarkdown {
+    fn generate(&self, node: MdNodeRef);
 }
 
-fn gen_link<S: AsRef<str>>(id: S) -> String {
-    format!("<a href=\"{id}\" name=\"{id}\"></a>", id = id.as_ref())
-}
-
-fn parse_links<S: AsRef<str>>(s: S) -> String {
-    let to_parse = s.as_ref();
-    let mut parsed = String::with_capacity(to_parse.len());
-    let mut temp = String::with_capacity(to_parse.len());
-    let mut is_link = false;
-    let mut eaten = None;
-    for ch in to_parse.chars() {
-        match (ch, is_link) {
-            ('`', false) => {
-                // Found the beginning of a link!
-                is_link = true;
-            }
-            ('`', true) => {
-                // Reached the end, expand into a link!
-                // TODO
-                // Before committing to pasting the link in,
-                // first verify that it actually exists.
-                let expanded = format!("[`{}`](#{})", temp, temp);
-                parsed.push_str(&expanded);
-                temp.drain(..);
-                is_link = false;
-            }
-            (':', true) => {
-                if let Some(_) = eaten {
-                    // Swap for '.'
-                    temp.push('.');
-                    eaten = None;
-                } else {
-                    eaten = Some(':');
-                }
-            }
-            (ch, false) => parsed.push(ch),
-            (ch, true) => temp.push(ch),
-        }
-    }
-    parsed
+pub(super) trait MdElement: fmt::Debug + 'static {
+    fn id(&self) -> Option<&str>;
+    fn as_any(&self) -> &dyn Any;
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+    fn fmt(&self, f: &mut fmt::Formatter, parents: Vec<MdNodeRef>) -> fmt::Result;
 }
 
 #[derive(Debug)]
-pub(super) enum MdElement {
-    Section(RefCell<MdSection>),
-    TypeListing(RefCell<MdTypeListing>),
-    InterfaceFunc(RefCell<MdInterfaceFunc>),
+struct MdNode {
+    content: Box<dyn MdElement>,
+    parent: Option<Weak<RefCell<MdNode>>>,
+    children: Vec<MdNodeRef>,
 }
 
-impl MdElement {
-    #[allow(dead_code)]
-    pub(super) fn as_section(&self) -> Ref<MdSection> {
-        match self {
-            Self::Section(t) => t.borrow(),
-            _ => panic!("not a MdSection"),
-        }
-    }
-
-    pub(super) fn as_section_mut(&self) -> RefMut<MdSection> {
-        match self {
-            Self::Section(t) => t.borrow_mut(),
-            _ => panic!("not a MdSection"),
-        }
-    }
-
-    #[allow(dead_code)]
-    pub(super) fn as_type_listing(&self) -> Ref<MdTypeListing> {
-        match self {
-            Self::TypeListing(t) => t.borrow(),
-            _ => panic!("not a MdTypeListing"),
-        }
-    }
-
-    pub(super) fn as_type_listing_mut(&self) -> RefMut<MdTypeListing> {
-        match self {
-            Self::TypeListing(t) => t.borrow_mut(),
-            _ => panic!("not a MdTypeListing"),
-        }
-    }
-
-    #[allow(dead_code)]
-    pub(super) fn as_interface_func(&self) -> Ref<MdInterfaceFunc> {
-        match self {
-            Self::InterfaceFunc(t) => t.borrow(),
-            _ => panic!("not a MdInterfaceFunc"),
-        }
-    }
-
-    pub(super) fn as_interface_func_mut(&self) -> RefMut<MdInterfaceFunc> {
-        match self {
-            Self::InterfaceFunc(t) => t.borrow_mut(),
-            _ => panic!("not a MdInterfaceFunc"),
-        }
-    }
-
-    pub(super) fn parent(&self) -> Option<Rc<MdElement>> {
-        match self {
-            Self::Section(t) => t.borrow().parent.as_ref().and_then(|x| x.upgrade()),
-            Self::TypeListing(t) => t.borrow().parent.as_ref().and_then(|x| x.upgrade()),
-            Self::InterfaceFunc(t) => t.borrow().parent.as_ref().and_then(|x| x.upgrade()),
+impl MdNode {
+    fn new<T: MdElement + 'static>(item: T) -> Self {
+        Self {
+            content: Box::new(item),
+            parent: None,
+            children: vec![],
         }
     }
 }
 
-impl fmt::Display for MdElement {
+fn walk_parents(parent: Option<&Weak<RefCell<MdNode>>>, cb: &mut impl FnMut(MdNodeRef)) {
+    if let Some(parent) = parent.and_then(|x| x.upgrade()) {
+        cb(parent.clone().into());
+        walk_parents(parent.borrow().parent.as_ref(), cb)
+    }
+}
+
+impl fmt::Display for MdNode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Section(t) => t.borrow().fmt(f),
-            Self::TypeListing(t) => t.borrow().fmt(f),
-            Self::InterfaceFunc(t) => t.borrow().fmt(f),
+        let mut parents = Vec::new();
+        walk_parents(self.parent.as_ref(), &mut |parent| {
+            parents.push(parent);
+        });
+
+        MdElement::fmt(&*self.content, f, parents)?;
+
+        for child in &self.children {
+            child.fmt(f)?;
         }
-    }
-}
 
-#[derive(Debug)]
-pub(super) struct MdSection {
-    pub id: String,
-    pub title: String,
-    pub description: Vec<MdParagraph>,
-    pub elements: Vec<Rc<MdElement>>,
-    pub parent: Option<Weak<MdElement>>,
-}
-
-#[derive(Debug)]
-pub(super) struct MdParagraph(String);
-
-impl MdParagraph {
-    pub fn new<S: AsRef<str>>(s: S) -> Self {
-        Self(s.as_ref().to_owned())
-    }
-}
-
-impl fmt::Display for MdParagraph {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        writeln!(f, "{}", parse_links(&self.0))
-    }
-}
-
-impl MdSection {
-    pub fn new<S: AsRef<str>>(id: S, title: S, parent: Option<Weak<MdElement>>) -> MdElement {
-        MdElement::Section(RefCell::new(Self {
-            id: id.as_ref().to_owned(),
-            title: title.as_ref().to_owned(),
-            description: vec![],
-            elements: vec![],
-            parent,
-        }))
-    }
-}
-
-impl fmt::Display for MdSection {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut heading = "#".to_owned();
-        if let Some(parent) = self.parent.as_ref() {
-            walk_parents(parent, &mut |_| {
-                heading += "#";
-            });
-        }
-        f.write_fmt(format_args!(
-            "{heading} {link} {title}\n",
-            heading = heading,
-            link = gen_link(&self.id),
-            title = &self.title
-        ))?;
-        for para in &self.description {
-            f.write_fmt(format_args!("{}\n", para))?;
-        }
-        for el in &self.elements {
-            f.write_fmt(format_args!("{}\n", el))?;
-        }
         Ok(())
     }
 }
 
 #[derive(Debug)]
-pub(super) struct MdTypeListing {
-    pub id: String,
-    pub r#type: MdType,
-    pub description: Vec<MdParagraph>,
-    pub elements: Vec<MdBullet>,
-    pub parent: Option<Weak<MdElement>>,
+pub(super) struct MdNodeRef(Rc<RefCell<MdNode>>);
+
+impl MdNodeRef {
+    pub fn new<T: MdElement + 'static>(item: T) -> Self {
+        Self(Rc::new(RefCell::new(MdNode::new(item))))
+    }
+
+    pub fn new_child<T: MdElement + 'static>(&self, item: T) -> Self {
+        let mut child_node = MdNode::new(item);
+        child_node.parent = Some(Rc::downgrade(&self.0));
+        let child_ref = Self(Rc::new(RefCell::new(child_node)));
+        self.0.borrow_mut().children.push(child_ref.clone());
+        child_ref
+    }
+
+    fn borrow(&self) -> cell::Ref<MdNode> {
+        self.0.borrow()
+    }
+
+    fn borrow_mut(&self) -> cell::RefMut<MdNode> {
+        self.0.borrow_mut()
+    }
+
+    pub fn content_ref<T: MdElement + 'static>(&self) -> cell::Ref<T> {
+        cell::Ref::map(self.borrow(), |b| {
+            let r = b.content.as_any();
+            r.downcast_ref::<T>().expect("reference is not T type")
+        })
+    }
+
+    pub fn content_mut<T: MdElement + 'static>(&self) -> cell::RefMut<T> {
+        cell::RefMut::map(self.borrow_mut(), |b| {
+            let r = b.content.as_any_mut();
+            r.downcast_mut::<T>().expect("reference is not T type")
+        })
+    }
+
+    pub fn get_content<T: MdElement + 'static>(&self) -> Option<cell::Ref<T>> {
+        if self.borrow().content.as_any().is::<T>() {
+            Some(self.content_ref::<T>())
+        } else {
+            None
+        }
+    }
+
+    #[allow(unused)]
+    pub fn get_content_mut<T: MdElement + 'static>(&self) -> Option<cell::RefMut<T>> {
+        if self.borrow_mut().content.as_any().is::<T>() {
+            Some(self.content_mut::<T>())
+        } else {
+            None
+        }
+    }
 }
 
-#[allow(dead_code)]
+impl Clone for MdNodeRef {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
+impl From<Rc<RefCell<MdNode>>> for MdNodeRef {
+    fn from(node: Rc<RefCell<MdNode>>) -> Self {
+        Self(node)
+    }
+}
+
+impl fmt::Display for MdNodeRef {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.borrow().fmt(f)
+    }
+}
+
+#[derive(Debug, Default)]
+pub(super) struct MdRoot;
+
+impl MdElement for MdRoot {
+    fn id(&self) -> Option<&str> {
+        None
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn Any {
+        self
+    }
+
+    fn fmt(&self, _f: &mut fmt::Formatter, _parents: Vec<MdNodeRef>) -> fmt::Result {
+        Ok(())
+    }
+}
+
+#[derive(Debug, Default)]
+pub(super) struct MdSection {
+    pub id: Option<String>,
+    pub title: String,
+}
+
+impl MdSection {
+    pub fn new<S: AsRef<str>>(title: S) -> Self {
+        Self {
+            id: None,
+            title: title.as_ref().to_owned(),
+        }
+    }
+}
+
+impl MdElement for MdSection {
+    fn id(&self) -> Option<&str> {
+        self.id.as_ref().map(|s| s.as_str())
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn Any {
+        self
+    }
+
+    fn fmt(&self, f: &mut fmt::Formatter, parents: Vec<MdNodeRef>) -> fmt::Result {
+        let header = "#".repeat(parents.len());
+        f.write_fmt(format_args!("{} ", header))?;
+
+        if let Some(id) = &self.id {
+            f.write_fmt(format_args!(
+                "<a href=\"#{id}\" name=\"{id}\"></a> ",
+                id = id
+            ))?;
+        }
+
+        writeln!(f, "{}", self.title)
+    }
+}
+
+#[derive(Debug)]
+pub(super) struct MdNamedType {
+    pub name: String,
+    pub docs: String,
+    pub r#type: Option<MdType>,
+}
+
+impl MdNamedType {
+    pub fn new<S1: AsRef<str>, S2: AsRef<str>>(name: S1, docs: S2) -> Self {
+        Self {
+            name: name.as_ref().to_owned(),
+            docs: docs.as_ref().to_owned(),
+            r#type: None,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub(super) enum MdType {
     Enum { repr: String },
@@ -209,150 +219,142 @@ pub(super) enum MdType {
     Flags { repr: String },
     Struct,
     Union,
-    Handle,
     Array { r#type: String },
-    Pointer { to: String },
-    ConstPointer { to: String },
-    Builtin { r#type: String },
+    Pointer { r#type: String },
+    ConstPointer { r#type: String },
+    Builtin { repr: String },
+    Handle,
+    Alias { r#type: String },
 }
 
-#[derive(Debug)]
-pub(super) struct MdBullet {
-    pub id: String,
-    pub description: Vec<MdParagraph>,
-}
-
-impl MdTypeListing {
-    pub fn new(id: &str, r#type: MdType, parent: Option<Weak<MdElement>>) -> MdElement {
-        MdElement::TypeListing(RefCell::new(Self {
-            id: id.to_owned(),
-            r#type,
-            description: vec![],
-            elements: vec![],
-            parent,
-        }))
-    }
-}
-
-impl fmt::Display for MdTypeListing {
+impl fmt::Display for MdType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut heading = "#".to_owned();
-        if let Some(parent) = self.parent.as_ref() {
-            walk_parents(parent, &mut |_| {
-                heading += "#";
-            });
-        }
-        // ### <a href="#errno" name="errno"></a> `errno`
-        f.write_fmt(format_args!(
-            "{heading} {link} `{id}`\n",
-            heading = heading,
-            link = gen_link(&self.id),
-            id = &self.id
-        ))?;
-        // Error codes returned by function...
-        for para in &self.description {
-            f.write_fmt(format_args!("{}\n", para))?;
-        }
-        // Enum represented by `u16`
-        // Variants:
-        let type_specific = match &self.r#type {
-            MdType::Enum { repr } => format!("Enum represented by `{}`\n\n**Variants:**\n", repr),
-            MdType::Int { repr } => format!("Int represented by `{}`\n\n**Const:**\n", repr),
-            MdType::Flags { repr } => format!("Flags represented by `{}`\n\n**Flags:**\n", repr),
-            MdType::Struct => "\n**Struct members:**\n".to_owned(),
-            MdType::Union => "\n**Union variants:**\n".to_owned(),
-            MdType::Handle => "\n**Supertypes:**\n".to_owned(),
-            MdType::Array { r#type } => format!("Array of `{}`", r#type),
-            MdType::Pointer { to } => format!("Pointer to `{}`", to),
-            MdType::ConstPointer { to } => format!("Const pointer to `{}`", to),
-            MdType::Builtin { r#type } => format!("Builtin type `{}`", r#type),
+        match self {
+            Self::Enum { repr } => f.write_fmt(format_args!(": Enum(`{}`)", repr))?,
+            Self::Int { repr } => f.write_fmt(format_args!(": Int(`{}`)", repr))?,
+            Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
+            Self::Struct => f.write_fmt(format_args!(": Struct"))?,
+            Self::Union => f.write_fmt(format_args!(": Union"))?,
+            Self::Array { r#type } => f.write_fmt(format_args!(": `Array<{}>`", r#type))?,
+            Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
+            Self::ConstPointer { r#type } => {
+                f.write_fmt(format_args!(": `ConstPointer<{}>`", r#type))?
+            }
+            Self::Builtin { repr } => f.write_fmt(format_args!(": `{}`", repr))?,
+            Self::Handle => {}
+            Self::Alias { r#type } => f.write_fmt(format_args!(": `{}`", r#type))?,
         };
-        f.write_str(&type_specific)?;
-        // - <a href="#errno::success", name="errno::success"></a> `success`
-        //   No error occurred. System call completed successfully.
-        for el in &self.elements {
-            f.write_fmt(format_args!(
-                "- {link} `{el_id}`\n\n",
-                link = gen_link(format!("{}.{}", self.id, el.id)),
-                el_id = el.id
-            ))?;
-            for desc in &el.description {
-                f.write_fmt(format_args!("\t{}\n", desc))?;
-            }
-        }
+
         Ok(())
+    }
+}
+
+impl MdElement for MdNamedType {
+    fn id(&self) -> Option<&str> {
+        Some(&self.name)
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn Any {
+        self
+    }
+
+    fn fmt(&self, f: &mut fmt::Formatter, parents: Vec<MdNodeRef>) -> fmt::Result {
+        // Firstly, check if our parent is an MdSection or another MdNamedType in which
+        // case, we're already nesting and should be represented as bullets
+        let (header, link) = if let Some(p) = parents.first() {
+            if let Some(_sec) = p.get_content::<MdSection>() {
+                ("#".repeat(parents.len()), self.name.clone())
+            } else if let Some(tt) = p.get_content::<MdNamedType>() {
+                ("-".to_owned(), format!("{}.{}", tt.name, self.name))
+            } else if let Some(f) = p.get_content::<MdFunc>() {
+                ("-".to_owned(), format!("{}.{}", f.name, self.name))
+            } else {
+                ("#".to_owned(), self.name.clone())
+            }
+        } else {
+            ("#".to_owned(), self.name.clone())
+        };
+
+        f.write_fmt(format_args!(
+            "{header} <a href=\"#{link}\" name=\"{link}\"></a> `{name}`",
+            header = header,
+            link = link,
+            name = self.name,
+        ))?;
+
+        if let Some(tt) = &self.r#type {
+            f.write_fmt(format_args!("{}", tt))?;
+        }
+
+        writeln!(f, "\n{}", self.docs)
     }
 }
 
 #[derive(Debug)]
-pub(super) struct MdInterfaceFunc {
-    pub id: String,
-    pub description: Vec<MdParagraph>,
-    pub parameters: Vec<MdBullet>,
-    pub results: Vec<MdBullet>,
-    pub parent: Option<Weak<MdElement>>,
+pub(super) struct MdFunc {
+    pub name: String,
+    pub inputs: Vec<(String, String)>,
+    pub outputs: Vec<String>,
+    pub docs: String,
 }
 
-impl MdInterfaceFunc {
-    pub fn new(id: &str, parent: Option<Weak<MdElement>>) -> MdElement {
-        MdElement::InterfaceFunc(RefCell::new(Self {
-            id: id.to_owned(),
-            description: vec![],
-            parameters: vec![],
-            results: vec![],
-            parent,
-        }))
+impl MdFunc {
+    pub fn new<S1: AsRef<str>, S2: AsRef<str>>(name: S1, docs: S2) -> Self {
+        Self {
+            name: name.as_ref().to_owned(),
+            inputs: vec![],
+            outputs: vec![],
+            docs: docs.as_ref().to_owned(),
+        }
     }
 }
 
-impl fmt::Display for MdInterfaceFunc {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut heading = "#".to_owned();
-        if let Some(parent) = self.parent.as_ref() {
-            walk_parents(parent, &mut |_| {
-                heading += "#";
-            });
-        }
-        // ### <a href="#args_get" name="args_get"></a> `args_get`
+impl MdElement for MdFunc {
+    fn id(&self) -> Option<&str> {
+        Some(&self.name)
+    }
+
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn Any {
+        self
+    }
+
+    fn fmt(&self, f: &mut fmt::Formatter, parents: Vec<MdNodeRef>) -> fmt::Result {
+        // Expand header
+        let header = "#".repeat(parents.len());
+        // Expand inputs
+        let inputs = self
+            .inputs
+            .iter()
+            .map(|(name, r#type)| format!("{}: `{}`", name, r#type))
+            .collect::<Vec<_>>()
+            .join(", ");
+        // Expand outputs
+        let outputs: Vec<_> = self
+            .outputs
+            .iter()
+            .map(|r#type| format!("`{}`", r#type))
+            .collect();
+        let outputs = match outputs.len() {
+            0 => "".to_owned(),
+            1 => format!(" -> {}", outputs[0]),
+            _ => format!(" -> ({})", outputs.join(", ")),
+        };
         f.write_fmt(format_args!(
-            "{heading} <a href=\"#{id}\" name=\"{id}\"></a> `{id}`\n\n",
-            heading = heading,
-            id = self.id
+            "{header} <a href=\"#{name}\" name=\"{name}\"></a> Fn {name}({inputs}){outputs}",
+            header = header,
+            name = self.name,
+            inputs = inputs,
+            outputs = outputs,
         ))?;
-        // Read command-line argument data...
-        for desc in &self.description {
-            f.write_fmt(format_args!("{}\n", desc))?;
-        }
-        // Parameters:
-        // * `argv`
-        //   `argv` has type...
-        if !self.parameters.is_empty() {
-            f.write_str("**Parameters:**\n\n")?;
-            for param in &self.parameters {
-                f.write_fmt(format_args!(
-                    "- {link} `{param_id}`\n\n",
-                    link = gen_link(format!("{}.{}", self.id, param.id)),
-                    param_id = param.id
-                ))?;
-                for desc in &param.description {
-                    f.write_fmt(format_args!("\t{}\n", desc))?;
-                }
-            }
-        }
-        // Results:
-        // * `error`
-        //   `error` has type `errno`
-        f.write_str("**Results:**\n\n")?;
-        for result in &self.results {
-            f.write_fmt(format_args!(
-                "- {link} `{res_id}`\n\n",
-                link = gen_link(format!("{}.{}", self.id, result.id)),
-                res_id = result.id
-            ))?;
-            for desc in &result.description {
-                f.write_fmt(format_args!("\t{}\n", desc))?;
-            }
-        }
-        Ok(())
+
+        writeln!(f, "\n{}", self.docs)
     }
 }
