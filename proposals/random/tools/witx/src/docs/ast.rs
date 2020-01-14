@@ -6,7 +6,7 @@ use crate::RepEquality;
 
 impl ToMarkdown for Document {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         let types = node.new_child(MdSection::new(header.as_str(), "Types"));
         for d in self.typenames() {
             let name = d.name.as_str();
@@ -34,7 +34,7 @@ impl ToMarkdown for TypeRef {
         match self {
             TypeRef::Value(v) => v.generate(node.clone()),
             TypeRef::Name(n) => {
-                node.content_mut::<MdNamedType>().r#type = Some(MdType::Alias {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Alias {
                     r#type: n.name.as_str().to_owned(),
                 })
             }
@@ -58,22 +58,22 @@ impl ToMarkdown for Type {
             Self::Union(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
             Self::Array(a) => {
-                node.content_mut::<MdNamedType>().r#type = Some(MdType::Array {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Array {
                     r#type: a.type_name().to_owned(),
                 })
             }
             Self::Pointer(a) => {
-                node.content_mut::<MdNamedType>().r#type = Some(MdType::Pointer {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Pointer {
                     r#type: a.type_name().to_owned(),
                 })
             }
             Self::ConstPointer(a) => {
-                node.content_mut::<MdNamedType>().r#type = Some(MdType::ConstPointer {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::ConstPointer {
                     r#type: a.type_name().to_owned(),
                 })
             }
             Self::Builtin(a) => {
-                node.content_mut::<MdNamedType>().r#type = Some(MdType::Builtin {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Builtin {
                     repr: a.type_name().to_owned(),
                 })
             }
@@ -83,7 +83,7 @@ impl ToMarkdown for Type {
 
 impl ToMarkdown for EnumDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Variants"));
 
         for variant in &self.variants {
@@ -96,7 +96,7 @@ impl ToMarkdown for EnumDatatype {
             node.new_child(MdNamedType::new("-", id.as_str(), name, &variant.docs));
         }
 
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Enum {
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Enum {
             repr: self.repr.type_name().to_owned(),
         });
     }
@@ -104,7 +104,7 @@ impl ToMarkdown for EnumDatatype {
 
 impl ToMarkdown for IntDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Consts"));
 
         for r#const in &self.consts {
@@ -119,7 +119,7 @@ impl ToMarkdown for IntDatatype {
             node.new_child(tt);
         }
 
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Int {
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Int {
             repr: self.repr.type_name().to_owned(),
         });
     }
@@ -127,7 +127,7 @@ impl ToMarkdown for IntDatatype {
 
 impl ToMarkdown for FlagsDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Flags"));
 
         for flag in &self.flags {
@@ -140,7 +140,7 @@ impl ToMarkdown for FlagsDatatype {
             node.new_child(MdNamedType::new("-", id.as_str(), name, &flag.docs));
         }
 
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Flags {
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Flags {
             repr: self.repr.type_name().to_owned(),
         });
     }
@@ -148,7 +148,7 @@ impl ToMarkdown for FlagsDatatype {
 
 impl ToMarkdown for StructDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Struct members"));
 
         for member in &self.members {
@@ -162,13 +162,13 @@ impl ToMarkdown for StructDatatype {
             member.tref.generate(n.clone());
         }
 
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Struct);
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Struct);
     }
 }
 
 impl ToMarkdown for UnionDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Union variants"));
 
         for variant in &self.variants {
@@ -182,22 +182,22 @@ impl ToMarkdown for UnionDatatype {
             variant.tref.generate(n.clone());
         }
 
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Union);
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Union);
     }
 }
 
 impl ToMarkdown for HandleDatatype {
     fn generate(&self, node: MdNodeRef) {
         // TODO this needs more work
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Supertypes"));
-        node.content_mut::<MdNamedType>().r#type = Some(MdType::Handle);
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Handle);
     }
 }
 
 impl ToMarkdown for Module {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         let imports = node.new_child(MdSection::new(header.as_str(), "Imports"));
         for import in self.imports() {
             let child = imports.new_child(MdSection::new((header.clone() + "#").as_str(), ""));
@@ -222,7 +222,7 @@ impl ToMarkdown for ModuleImport {
     fn generate(&self, node: MdNodeRef) {
         match self.variant {
             ModuleImportVariant::Memory => {
-                node.content_mut::<MdSection>().title = "Memory".to_owned();
+                node.content_ref_mut::<MdSection>().title = "Memory".to_owned();
             }
         }
     }
@@ -230,7 +230,7 @@ impl ToMarkdown for ModuleImport {
 
 impl ToMarkdown for InterfaceFunc {
     fn generate(&self, node: MdNodeRef) {
-        let header = "#".repeat(node.borrow().parents().len() + 1);
+        let header = "#".repeat(node.borrow().ancestors().len() + 1);
         node.new_child(MdSection::new(header.as_str(), "Params"));
         for param in &self.params {
             let name = param.name.as_str();
@@ -247,7 +247,7 @@ impl ToMarkdown for InterfaceFunc {
             ));
             param.generate(child.clone());
             // TODO should this be expanded recursively instead of using flattened type names?
-            node.content_mut::<MdFunc>()
+            node.content_ref_mut::<MdFunc>()
                 .inputs
                 .push((param.name.as_str().to_owned(), param.tref.type_name()));
         }
@@ -268,7 +268,7 @@ impl ToMarkdown for InterfaceFunc {
             ));
             result.generate(child.clone());
             // TODO should this be expanded recursively instead of using flattened type names?
-            node.content_mut::<MdFunc>()
+            node.content_ref_mut::<MdFunc>()
                 .outputs
                 .push(result.tref.type_name());
         }
@@ -278,7 +278,7 @@ impl ToMarkdown for InterfaceFunc {
 impl ToMarkdown for InterfaceFuncParam {
     fn generate(&self, node: MdNodeRef) {
         self.tref.generate(node.clone());
-        node.content_mut::<MdNamedType>().docs = self.docs.clone();
+        node.content_ref_mut::<MdNamedType>().docs = self.docs.clone();
     }
 }
 
