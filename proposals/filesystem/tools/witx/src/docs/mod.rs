@@ -8,10 +8,17 @@ use std::{
     iter::FromIterator,
 };
 
+/// Enables generating Markdown formatted content.
 pub trait Documentation {
     fn to_md(&self) -> String;
 }
 
+/// Helper function which given input `text` and a `HashSet` of existing links converts
+/// any slice of the form '`{link}`' into either
+/// 1. "[`{link}`](#{md_link})" where `md_link` is `link` with "::" replaced with "."
+///    (in Markdown, scoping should be done with ".") if `md_link` exists in the `HashSet`
+/// 2. "`{link}`" otherwise. That is, if `md_link` could not be found in the `HashSet`, we
+///    just leave what we've consumed.
 fn parse_links<S: AsRef<str>>(text: S, existing_links: &HashSet<String>) -> String {
     let text = text.as_ref();
     let mut parsed_text = String::with_capacity(text.len());
@@ -56,16 +63,16 @@ impl Documentation for Document {
     fn to_md(&self) -> String {
         let root = MdNodeRef::new(MdRoot::default());
         self.generate(root.clone());
-        // Get all children of the `root` element
+        // Get all children of the `root` element.
         let children = root.borrow().children();
-        // Gather all existing links in the document into a set
+        // Gather all existing links in the document into a set.
         let existing_links: HashSet<String, hash_map::RandomState> = HashSet::from_iter(
             children
                 .iter()
                 .filter_map(|x| x.any_ref().id().map(String::from)),
         );
         // Traverse each docs section of each child, and parse links
-        // logging a warning in case the generated is invalid
+        // logging a warning in case the generated is invalid.
         for child in children {
             let docs_with_links = child
                 .any_ref()
