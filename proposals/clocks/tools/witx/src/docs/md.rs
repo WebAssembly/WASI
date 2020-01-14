@@ -5,18 +5,41 @@ use std::{
     rc::{Rc, Weak},
 };
 
+/// Helper trait which simplifies generation of the Markdown document represented
+/// as a tree of `MdNodeRef`s.
 pub(super) trait ToMarkdown {
+    /// Drives the generation of the `MdNodeRef` tree by either mutating
+    /// the outer (parent) `MdNodeRef`, shared reference to the `MdNode` `node`,
+    /// or spawning new child `MdNodeRef` references to nodes.
     fn generate(&self, node: MdNodeRef);
 }
 
+/// Interface required for any "content" that is expected to be generated into a
+/// Markdown valid format, hence the constraint of `fmt::Display`.
+///
+/// In essence, any AST element that is meant to be rendered into Markdown, should
+/// define a type implementing this trait.
 pub(super) trait MdElement: fmt::Display + fmt::Debug + 'static {
+    /// Returns `Some(id)` of this `MdElement`. Here `id` is synonym for a Markdown actionable
+    /// link.
     fn id(&self) -> Option<&str>;
+
+    /// Returns `Some(docs)`, the "docs" of this `MdElement`.
     fn docs(&self) -> Option<&str>;
+
+    /// Sets `docs`, the "docs" of this `MdElement`.
     fn set_docs(&mut self, docs: &str);
+
     fn as_any(&self) -> &dyn Any;
     fn as_any_mut(&mut self) -> &mut dyn Any;
 }
 
+/// A Markdown node containing:
+/// * the Markdown renderable `content`,
+/// * a weak reference to the `parent` `MdNode` (if any), and
+/// * children `MdNodeRef`s
+///
+/// `content` is expected to implement the `MdElement` trait.
 #[derive(Debug)]
 pub(super) struct MdNode {
     content: Box<dyn MdElement>,
@@ -24,10 +47,12 @@ pub(super) struct MdNode {
     children: Vec<MdNodeRef>,
 }
 
-fn walk_parents(parent: Option<&Weak<RefCell<MdNode>>>, cb: &mut impl FnMut(MdNodeRef)) {
+/// Helper function for walking the tree up from some starting `MdNode`, all the way up
+/// to the root of the tree.
+fn walk_ancestors(parent: Option<&Weak<RefCell<MdNode>>>, cb: &mut impl FnMut(MdNodeRef)) {
     if let Some(parent) = parent.and_then(|x| x.upgrade()) {
         cb(parent.clone().into());
-        walk_parents(parent.borrow().parent.as_ref(), cb)
+        walk_ancestors(parent.borrow().parent.as_ref(), cb)
     }
 }
 
@@ -40,12 +65,14 @@ impl MdNode {
         }
     }
 
-    pub fn parents(&self) -> Vec<MdNodeRef> {
-        let mut parents = Vec::new();
-        walk_parents(self.parent.as_ref(), &mut |parent| parents.push(parent));
-        parents
+    /// Returns all ancestors of this `MdNode` all the way to the tree's root.
+    pub fn ancestors(&self) -> Vec<MdNodeRef> {
+        let mut ancestors = Vec::new();
+        walk_ancestors(self.parent.as_ref(), &mut |parent| ancestors.push(parent));
+        ancestors
     }
 
+    /// Returns all children of this `MdNode` in a BFS order.
     pub fn children(&self) -> Vec<MdNodeRef> {
         let mut children = self.children.clone();
         for child in &self.children {
@@ -67,6 +94,7 @@ impl fmt::Display for MdNode {
     }
 }
 
+/// Helper struct for storing a shared mutable reference to `MdNode`.
 #[derive(Debug)]
 pub(super) struct MdNodeRef(Rc<RefCell<MdNode>>);
 
@@ -75,6 +103,8 @@ impl MdNodeRef {
         Self(Rc::new(RefCell::new(MdNode::new(item))))
     }
 
+    /// Spawns new `MdNode` child node, automatically wrapping it in a
+    /// `MdNodeRef` and creating a weak link from child to itself.
     pub fn new_child<T: MdElement + 'static>(&self, item: T) -> Self {
         let mut child_node = MdNode::new(item);
         child_node.parent = Some(Rc::downgrade(&self.0));
@@ -91,15 +121,23 @@ impl MdNodeRef {
         self.0.borrow_mut()
     }
 
+    /// Returns an immutable reference to `MdNode`'s `content` as-is, that
+    /// is as some type implementing the `MdElement` trait.
     pub fn any_ref(&self) -> cell::Ref<Box<dyn MdElement>> {
         cell::Ref::map(self.borrow(), |b| &b.content)
     }
 
+    /// Returns a mutable reference to `MdNode`'s `content` as-is, that
+    /// is as some type implementing the `MdElement` trait.
     pub fn any_ref_mut(&self) -> cell::RefMut<Box<dyn MdElement>> {
         cell::RefMut::map(self.borrow_mut(), |b| &mut b.content)
     }
 
-    pub fn content_mut<T: MdElement + 'static>(&self) -> cell::RefMut<T> {
+    /// Returns a mutable reference to `MdNode`'s `content` cast to some type
+    /// `T` which implements `MdElement` trait.
+    ///
+    /// Panics if `content` cannot be downcast to `T`.
+    pub fn content_ref_mut<T: MdElement + 'static>(&self) -> cell::RefMut<T> {
         cell::RefMut::map(self.borrow_mut(), |b| {
             let r = b.content.as_any_mut();
             r.downcast_mut::<T>().expect("reference is not T type")
@@ -125,6 +163,9 @@ impl fmt::Display for MdNodeRef {
     }
 }
 
+/// Struct representing the Markdown tree's root.
+///
+/// Doesn't render to anything.
 #[derive(Debug, Default)]
 pub(super) struct MdRoot;
 
@@ -154,6 +195,14 @@ impl fmt::Display for MdRoot {
     }
 }
 
+/// Struct representing a Markdown section without any `docs`, consisting
+/// of only a `header` (e.g., "###"), maybe some referencable `id` (i.e.,
+/// a Markdown link), and some `title`.
+///
+/// Example rendering:
+///
+/// ### Typenames
+///
 #[derive(Debug)]
 pub(super) struct MdSection {
     pub header: String,
@@ -207,6 +256,24 @@ impl fmt::Display for MdSection {
     }
 }
 
+/// Struct representing a Markdown section representing any `NamedType` element
+/// of the AST.
+/// Consists of:
+/// * `header`, e.g., "###", or "-" for Enum variants, etc.,
+/// * referencable `id`,
+/// * some `name`, e.g., `errno`,
+/// * `docs` paragraph, and
+/// * maybe `MdType`.
+///
+/// Example rendering (recursive):
+///
+/// ### <a href="#errno" name="errno"></a> `errno`: Enum(`u16`)
+/// Error codes returned by...
+///
+/// #### Variants
+/// - `success` No error occurred...
+/// - `2big` Argument list too long...
+///
 #[derive(Debug)]
 pub(super) struct MdNamedType {
     pub header: String,
@@ -228,6 +295,7 @@ impl MdNamedType {
     }
 }
 
+/// Helper struct encapsulating the `TypeRef` value.
 // TODO `MdType` should probably store `TypeRef` and recursively
 // unwind itself into final `String` representation rather than
 // being outright flattened.
@@ -309,6 +377,28 @@ impl fmt::Display for MdNamedType {
     }
 }
 
+/// Struct representing a Markdown section representing any `InterfaceFunc` element
+/// of the AST.
+/// Consists of:
+/// * `header`, e.g., "###",
+/// * referencable `id`,
+/// * some `name`, e.g., `path_open`,
+/// * function `inputs`, i.e., arguments,
+/// * function `outputs`, i.e., results, and
+/// * `docs` paragraph.
+///
+/// Example rendering:
+///
+/// ### <a href="#args_get" name="args_get"></a> Fn args_get(argv: `Pointer<Pointer<u8>>`, ...) -> `errno`
+/// Read command-line...
+///
+/// #### Params
+/// - `argv`: `Pointer<Pointer<u8>>` Some docs...
+/// - ...
+///
+/// #### Results
+/// - `error`: `errno` Error code...
+///
 #[derive(Debug)]
 pub(super) struct MdFunc {
     pub header: String,
@@ -360,14 +450,14 @@ impl fmt::Display for MdFunc {
         let inputs = self
             .inputs
             .iter()
-            .map(|(name, r#type)| format!("{}: `{}`", name, r#type))
+            .map(|(name, r#type)| format!("{}: {}", name, r#type))
             .collect::<Vec<_>>()
             .join(", ");
         // Expand outputs
         let outputs: Vec<_> = self
             .outputs
             .iter()
-            .map(|r#type| format!("`{}`", r#type))
+            .map(|r#type| format!("{}", r#type))
             .collect();
         let outputs = match outputs.len() {
             0 => "".to_owned(),
@@ -378,7 +468,7 @@ impl fmt::Display for MdFunc {
         writeln!(f, "\n---\n")?;
 
         f.write_fmt(format_args!(
-            "{header} {link} Fn {name}({inputs}){outputs}",
+            "{header} {link} `{name}({inputs}){outputs}`",
             header = self.header,
             link = gen_link(&self.id),
             name = self.name,
