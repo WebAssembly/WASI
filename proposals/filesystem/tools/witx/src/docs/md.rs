@@ -12,6 +12,7 @@ pub(super) trait ToMarkdown {
 pub(super) trait MdElement: fmt::Display + fmt::Debug + 'static {
     fn id(&self) -> Option<&str>;
     fn docs(&self) -> Option<&str>;
+    fn set_docs(&mut self, docs: &str);
     fn as_any(&self) -> &dyn Any;
     fn as_any_mut(&mut self) -> &mut dyn Any;
 }
@@ -43,6 +44,14 @@ impl MdNode {
         let mut parents = Vec::new();
         walk_parents(self.parent.as_ref(), &mut |parent| parents.push(parent));
         parents
+    }
+
+    pub fn children(&self) -> Vec<MdNodeRef> {
+        let mut children = self.children.clone();
+        for child in &self.children {
+            children.append(&mut child.borrow().children());
+        }
+        children
     }
 }
 
@@ -86,6 +95,10 @@ impl MdNodeRef {
         cell::Ref::map(self.borrow(), |b| &b.content)
     }
 
+    pub fn any_ref_mut(&self) -> cell::RefMut<Box<dyn MdElement>> {
+        cell::RefMut::map(self.borrow_mut(), |b| &mut b.content)
+    }
+
     pub fn content_mut<T: MdElement + 'static>(&self) -> cell::RefMut<T> {
         cell::RefMut::map(self.borrow_mut(), |b| {
             let r = b.content.as_any_mut();
@@ -123,6 +136,8 @@ impl MdElement for MdRoot {
     fn docs(&self) -> Option<&str> {
         None
     }
+
+    fn set_docs(&mut self, _: &str) {}
 
     fn as_any(&self) -> &dyn Any {
         self
@@ -164,6 +179,8 @@ impl MdElement for MdSection {
     fn docs(&self) -> Option<&str> {
         None
     }
+
+    fn set_docs(&mut self, _: &str) {}
 
     fn as_any(&self) -> &dyn Any {
         self
@@ -262,6 +279,10 @@ impl MdElement for MdNamedType {
         Some(&self.docs)
     }
 
+    fn set_docs(&mut self, docs: &str) {
+        self.docs = docs.to_owned();
+    }
+
     fn as_any(&self) -> &dyn Any {
         self
     }
@@ -318,6 +339,10 @@ impl MdElement for MdFunc {
 
     fn docs(&self) -> Option<&str> {
         Some(&self.docs)
+    }
+
+    fn set_docs(&mut self, docs: &str) {
+        self.docs = docs.to_owned();
     }
 
     fn as_any(&self) -> &dyn Any {

@@ -72,6 +72,8 @@ pub fn main() {
         }
     };
 
+    pretty_env_logger::init();
+
     let doc = load_docs(&inputs);
     if app.is_present("verbose") {
         println!("{:?}", doc)
