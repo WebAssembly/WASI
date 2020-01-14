@@ -174,15 +174,16 @@ impl MdElement for MdSection {
     }
 }
 
+fn gen_link<S: AsRef<str>>(id: S) -> String {
+    format!("<a href=\"#{id}\" name=\"{id}\"></a>", id = id.as_ref())
+}
+
 impl fmt::Display for MdSection {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_fmt(format_args!("{} ", self.header))?;
 
         if let Some(id) = &self.id {
-            f.write_fmt(format_args!(
-                "<a href=\"#{id}\" name=\"{id}\"></a> ",
-                id = id
-            ))?;
+            f.write_fmt(format_args!("{} ", gen_link(id)))?;
         }
 
         writeln!(f, "{}", self.title)
@@ -273,9 +274,9 @@ impl MdElement for MdNamedType {
 impl fmt::Display for MdNamedType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_fmt(format_args!(
-            "{header} <a href=\"#{id}\" name=\"{id}\"></a> `{name}`",
+            "{header} {link} `{name}`",
             header = self.header,
-            id = self.id,
+            link = gen_link(&self.id),
             name = self.name,
         ))?;
 
@@ -352,9 +353,9 @@ impl fmt::Display for MdFunc {
         writeln!(f, "\n---\n")?;
 
         f.write_fmt(format_args!(
-            "{header} <a href=\"#{id}\" name=\"{id}\"></a> Fn {name}({inputs}){outputs}",
+            "{header} {link} Fn {name}({inputs}){outputs}",
             header = self.header,
-            id = self.id,
+            link = gen_link(&self.id),
             name = self.name,
             inputs = inputs,
             outputs = outputs,
