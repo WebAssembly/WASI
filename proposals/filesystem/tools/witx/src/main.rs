@@ -1,20 +1,15 @@
-use clap::{App, Arg, SubCommand};
+use clap::{App, Arg, ArgMatches, SubCommand};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 use std::process;
-use witx::{load, Documentation};
+use witx::{load, phases, Document, Documentation};
 
 pub fn main() {
     let app = App::new("witx")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Validate and process witx files")
-        .arg(
-            Arg::with_name("input")
-                .required(true)
-                .multiple(true)
-                .help("path to root of witx document"),
-        )
         .arg(
             Arg::with_name("verbose")
                 .short("v")
@@ -26,6 +21,12 @@ pub fn main() {
             SubCommand::with_name("docs")
                 .about("Output documentation")
                 .arg(
+                    Arg::with_name("input")
+                        .required(true)
+                        .multiple(true)
+                        .help("path to root of witx document"),
+                )
+                .arg(
                     Arg::with_name("output")
                         .short("o")
                         .long("output")
@@ -36,6 +37,12 @@ pub fn main() {
         .subcommand(
             SubCommand::with_name("polyfill")
                 .about("Examine differences between interfaces")
+                .arg(
+                    Arg::with_name("input")
+                        .required(true)
+                        .multiple(true)
+                        .help("path to root of witx document"),
+                )
                 .arg(
                     Arg::with_name("older_interface")
                         .required(true)
@@ -52,49 +59,50 @@ pub fn main() {
                         .help("module to examine. Use newname=oldname syntax if name is different between new and old interfaces"),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("repo-docs")
+                .about("Update documentation in WASI repository to reflect witx specs")
+        )
         .get_matches();
 
-    let inputs = app
-        .values_of("input")
-        .expect("at least one input required")
-        .collect::<Vec<&str>>();
-
-    let load_docs = {
-        |inputs: &[&str]| match load(inputs) {
-            Ok(doc) => doc,
-            Err(e) => {
-                println!("{}", e.report());
-                if app.is_present("verbose") {
-                    println!("{:?}", e);
+    let load_witx = {
+        |args: &ArgMatches, field: &str| -> Document {
+            let inputs = args
+                .values_of(field)
+                .expect(&format!("required argument: {}", field))
+                .collect::<Vec<_>>();
+            match load(&inputs) {
+                Ok(doc) => {
+                    if app.is_present("verbose") {
+                        println!("{}: {:?}", field, doc)
+                    }
+                    doc
                 }
-                process::exit(1)
+                Err(e) => {
+                    println!("{}", e.report());
+                    if app.is_present("verbose") {
+                        println!("{:?}", e);
+                    }
+                    process::exit(1)
+                }
             }
         }
     };
 
     pretty_env_logger::init();
 
-    let doc = load_docs(&inputs);
-    if app.is_present("verbose") {
-        println!("{:?}", doc)
-    }
-
-    if let Some(docs_command) = app.subcommand_matches("docs") {
-        let md = doc.to_md();
-        if let Some(output) = docs_command.value_of("output") {
-            let mut file = File::create(output).expect("create output file");
-            file.write_all(md.as_bytes()).expect("write output file");
+    if let Some(docs_args) = app.subcommand_matches("docs") {
+        let doc = load_witx(&docs_args, "input");
+        if let Some(output) = docs_args.value_of("output") {
+            write_docs(&doc, output)
         } else {
-            println!("{}", md)
+            println!("{}", doc.to_md())
         }
-    } else if let Some(polyfill_command) = app.subcommand_matches("polyfill") {
-        let older_inputs = polyfill_command
-            .values_of("older_interface")
-            .expect("at least one older_interface argument required")
-            .collect::<Vec<&str>>();
-        let older_doc = load_docs(&older_inputs);
+    } else if let Some(polyfill_args) = app.subcommand_matches("polyfill") {
+        let doc = load_witx(&polyfill_args, "input");
+        let older_doc = load_witx(&polyfill_args, "older_interface");
 
-        let module_mapping_args = polyfill_command
+        let module_mapping_args = polyfill_args
             .values_of("module_mapping")
             .expect("at least one module_mapping argument required")
             .collect::<Vec<&str>>();
@@ -106,7 +114,28 @@ pub fn main() {
         if app.is_present("verbose") {
             println!("{:?}", polyfill);
         }
+    } else if app.subcommand_matches("repo-docs").is_some() {
+        for phase in &[
+            phases::snapshot().unwrap(),
+            phases::ephemeral().unwrap(),
+            phases::old::snapshot_0().unwrap(),
+        ] {
+            let doc = load(&phase).expect("parse phase");
+            let path = phase
+                .get(0)
+                .expect("at least one path")
+                .parent()
+                .expect("drop file")
+                .join("../docs.md");
+            write_docs(&doc, &path);
+        }
     }
+}
+
+fn write_docs<P: AsRef<Path>>(document: &Document, path: P) {
+    let mut file = File::create(path.as_ref()).expect("create output file");
+    file.write_all(document.to_md().as_bytes())
+        .expect("write output file");
 }
 
 fn parse_module_mapping(ms: &[&str]) -> HashMap<String, String> {
