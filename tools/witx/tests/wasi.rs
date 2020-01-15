@@ -78,9 +78,22 @@ fn document_wasi_snapshot() {
     );
 }
 
+fn dos2unix(s: &str) -> String {
+    let mut t = String::new();
+    t.reserve(s.len());
+    for c in s.chars() {
+        if c != '\r' {
+            t.push(c)
+        }
+    }
+    t
+}
+
 fn diff_against_filesystem(expected: &str, path: &Path) {
     let actual =
         fs::read_to_string(path).unwrap_or_else(|e| panic!("couldn't read {:?}: {:?}", path, e));
+    // Git may checkout the file with dos line endings on windows. Strip all \r:
+    let actual = dos2unix(&actual);
     if &actual == expected {
         return;
     }
