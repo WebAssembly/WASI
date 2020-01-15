@@ -13,7 +13,7 @@
   (import "memory" (memory))
 
   ;;; Read command-line argument data.
-  ;;; The size of the array should match that returned by `wasi_args_sizes_get()`
+  ;;; The size of the array should match that returned by `args_sizes_get`
   (@interface func (export "args_get")
     (param $argv (@witx pointer (@witx pointer u8)))
     (param $argv_buf (@witx pointer u8))
@@ -29,7 +29,7 @@
   )
 
   ;;; Read environment variable data.
-  ;;; The sizes of the buffers should match that returned by `environ.sizes_get()`.
+  ;;; The sizes of the buffers should match that returned by `environ_sizes_get`.
   (@interface func (export "environ_get")
     (param $environ (@witx pointer (@witx pointer u8)))
     (param $environ_buf (@witx pointer u8))
@@ -45,7 +45,8 @@
   )
 
   ;;; Return the resolution of a clock.
-  ;;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks, return `WASI_EINVAL`
+  ;;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,
+  ;;; return `errno::inval`.
   ;;; Note: This is similar to `clock_getres` in POSIX.
   (@interface func (export "clock_res_get")
     (result $error $errno)
@@ -123,7 +124,7 @@
   )
 
   ;;; Adjust the rights associated with a file descriptor.
-  ;;; This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
+  ;;; This can only be used to remove rights, and returns `errno::notcapable` if called in a way that would attempt to add rights
   (@interface func (export "fd_fdstat_set_rights")
     (param $fd $fd)
     ;;; The desired rights of the file descriptor.
@@ -363,7 +364,7 @@
     ;;; Flags determining the method of how the path is resolved.
     (param $dirflags $lookupflags)
     ;;; The relative path of the file or directory to open, relative to the
-    ;;; `dirfd` directory.
+    ;;; `path_open::fd` directory.
     (param $path string)
     ;;; The method by which to open the file.
     (param $oflags $oflags)
@@ -398,7 +399,7 @@
   )
 
   ;;; Remove a directory.
-  ;;; Return `ENOTEMPTY` if the directory is not empty.
+  ;;; Return `errno::notempty` if the directory is not empty.
   ;;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
   (@interface func (export "path_remove_directory")
     (param $fd $fd)
@@ -433,7 +434,7 @@
 
 
   ;;; Unlink a file.
-  ;;; Return `EISDIR` if the path refers to a directory.
+  ;;; Return `errno::isdir` if the path refers to a directory.
   ;;; Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
   (@interface func (export "path_unlink_file")
     (param $fd $fd)
