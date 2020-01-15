@@ -1,8 +1,16 @@
-use super::md::*;
-use super::Documentation;
-use crate::ast::*;
-use crate::polyfill::*;
-use crate::RepEquality;
+use super::{
+    md::{MdFunc, MdNamedType, MdNodeRef, MdSection, MdType, ToMarkdown},
+    Documentation,
+};
+use crate::{
+    ast::{
+        BuiltinType, Document, EnumDatatype, FlagsDatatype, HandleDatatype, IntDatatype, IntRepr,
+        InterfaceFunc, InterfaceFuncParam, Module, ModuleImport, ModuleImportVariant, NamedType,
+        StructDatatype, Type, TypeRef, UnionDatatype,
+    },
+    polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
+    RepEquality,
+};
 
 impl ToMarkdown for Document {
     fn generate(&self, node: MdNodeRef) {
