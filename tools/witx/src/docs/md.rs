@@ -195,6 +195,48 @@ impl fmt::Display for MdRoot {
     }
 }
 
+/// Helper enum representing either a Markdown header "#" nested at some
+/// `level` down the tree, or a bullet "-" in a list which is idempotent
+/// to changing the nesting level.
+#[derive(Debug, Clone, Copy)]
+pub(super) enum MdHeading {
+    Header { level: usize },
+    Bullet,
+}
+
+impl MdHeading {
+    /// Creates new instance of `MdHeading::Header` variant nested at some
+    /// `level` down the Markdown tree.
+    pub fn new_header(level: usize) -> Self {
+        MdHeading::Header { level }
+    }
+
+    /// Creates new instance of `MdHeading::Bullet` variant.
+    pub fn new_bullet() -> Self {
+        MdHeading::Bullet
+    }
+
+    /// Copies `MdHeading` and if `MdHeading::Header`, pushes it down one
+    /// level in the Markdown tree by incrementing `level`.
+    pub fn new_level_down(&self) -> Self {
+        let mut copy = *self;
+        if let Self::Header { ref mut level } = &mut copy {
+            *level += 1;
+        }
+        copy
+    }
+}
+
+impl fmt::Display for MdHeading {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let as_string = match self {
+            Self::Header { level } => "#".repeat(*level),
+            Self::Bullet => "-".to_owned(),
+        };
+        f.write_str(&as_string)
+    }
+}
+
 /// Struct representing a Markdown section without any `docs`, consisting
 /// of only a `header` (e.g., "###"), maybe some referencable `id` (i.e.,
 /// a Markdown link), and some `title`.
@@ -205,15 +247,15 @@ impl fmt::Display for MdRoot {
 ///
 #[derive(Debug)]
 pub(super) struct MdSection {
-    pub header: String,
+    pub heading: MdHeading,
     pub id: Option<String>,
     pub title: String,
 }
 
 impl MdSection {
-    pub fn new<S: AsRef<str>>(header: S, title: S) -> Self {
+    pub fn new<S: AsRef<str>>(heading: MdHeading, title: S) -> Self {
         Self {
-            header: header.as_ref().to_owned(),
+            heading,
             id: None,
             title: title.as_ref().to_owned(),
         }
@@ -246,7 +288,7 @@ fn gen_link<S: AsRef<str>>(id: S) -> String {
 
 impl fmt::Display for MdSection {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_fmt(format_args!("{} ", self.header))?;
+        f.write_fmt(format_args!("{} ", self.heading))?;
 
         if let Some(id) = &self.id {
             f.write_fmt(format_args!("{} ", gen_link(id)))?;
@@ -276,7 +318,7 @@ impl fmt::Display for MdSection {
 ///
 #[derive(Debug)]
 pub(super) struct MdNamedType {
-    pub header: String,
+    pub heading: MdHeading,
     pub id: String,
     pub name: String,
     pub docs: String,
@@ -284,9 +326,9 @@ pub(super) struct MdNamedType {
 }
 
 impl MdNamedType {
-    pub fn new<S: AsRef<str>>(header: S, id: S, name: S, docs: S) -> Self {
+    pub fn new<S: AsRef<str>>(heading: MdHeading, id: S, name: S, docs: S) -> Self {
         Self {
-            header: header.as_ref().to_owned(),
+            heading,
             id: id.as_ref().to_owned(),
             name: name.as_ref().to_owned(),
             docs: docs.as_ref().to_owned(),
@@ -363,8 +405,8 @@ impl MdElement for MdNamedType {
 impl fmt::Display for MdNamedType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_fmt(format_args!(
-            "{header} {link} `{name}`",
-            header = self.header,
+            "{heading} {link} `{name}`",
+            heading = self.heading,
             link = gen_link(&self.id),
             name = self.name,
         ))?;
@@ -401,7 +443,7 @@ impl fmt::Display for MdNamedType {
 ///
 #[derive(Debug)]
 pub(super) struct MdFunc {
-    pub header: String,
+    pub heading: MdHeading,
     pub id: String,
     pub name: String,
     pub inputs: Vec<(String, String)>,
@@ -410,9 +452,9 @@ pub(super) struct MdFunc {
 }
 
 impl MdFunc {
-    pub fn new<S: AsRef<str>>(header: S, id: S, name: S, docs: S) -> Self {
+    pub fn new<S: AsRef<str>>(heading: MdHeading, id: S, name: S, docs: S) -> Self {
         Self {
-            header: header.as_ref().to_owned(),
+            heading,
             id: id.as_ref().to_owned(),
             name: name.as_ref().to_owned(),
             inputs: vec![],
@@ -468,8 +510,8 @@ impl fmt::Display for MdFunc {
         writeln!(f, "\n---\n")?;
 
         f.write_fmt(format_args!(
-            "{header} {link} `{name}({inputs}){outputs}`",
-            header = self.header,
+            "{heading} {link} `{name}({inputs}){outputs}`",
+            heading = self.heading,
             link = gen_link(&self.id),
             name = self.name,
             inputs = inputs,
