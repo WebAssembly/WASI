@@ -2,6 +2,15 @@ use anyhow::{anyhow, Result};
 use std::env;
 use std::path::PathBuf;
 
+pub fn docs_path(phase_paths: &[PathBuf]) -> PathBuf {
+    phase_paths
+        .get(0)
+        .expect("at least one path")
+        .parent()
+        .expect("drop file")
+        .join("../docs.md")
+}
+
 pub fn snapshot() -> Result<Vec<PathBuf>> {
     let root = repo_root()?;
     let snapshot = root.join("phases/snapshot/witx");
