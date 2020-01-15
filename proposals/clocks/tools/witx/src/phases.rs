@@ -1,6 +1,6 @@
-use anyhow::{anyhow, Result};
+use anyhow::{bail, Result};
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub fn docs_path(phase_paths: &[PathBuf]) -> PathBuf {
     phase_paths
@@ -58,19 +58,17 @@ fn repo_root() -> Result<PathBuf> {
     if repo_root.exists() {
         Ok(repo_root)
     } else {
-        Err(anyhow!(
-            "could not find WASI repo root - try setting WASI_REPO env variable"
-        ))
+        bail!("could not find WASI repo root - try setting WASI_REPO env variable")
     }
 }
 
 fn ensure_exists(paths: &[PathBuf]) -> Result<()> {
     for p in paths.iter() {
         if !p.exists() {
-            Err(anyhow!(
-                "{:?} does not exist - is WASI_REPO set to repository root?",
-                p
-            ))?;
+            bail!(
+                "{} does not exist - is WASI_REPO set to repository root?",
+                Path::display(p)
+            )
         }
     }
     Ok(())
