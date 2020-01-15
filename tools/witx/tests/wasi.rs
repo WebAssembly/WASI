@@ -2,36 +2,25 @@ use witx;
 
 #[test]
 fn validate_wasi_snapshot() {
-    witx::load(&["../../phases/snapshot/witx/wasi_snapshot_preview1.witx"])
+    witx::load(&witx::phases::snapshot().unwrap())
         .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
 fn validate_wasi_ephemeral() {
-    witx::load(&[
-        "../../phases/ephemeral/witx/wasi_ephemeral_args.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_clock.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_environ.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_fd.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_path.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_poll.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_proc.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_random.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_sched.witx",
-        "../../phases/ephemeral/witx/wasi_ephemeral_sock.witx",
-    ])
-    .unwrap_or_else(|e| panic!("failed to parse: {}", e));
+    witx::load(&witx::phases::ephemeral().unwrap())
+        .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
 fn validate_wasi_old_snapshot_0() {
-    witx::load(&["../../phases/old/snapshot_0/witx/wasi_unstable.witx"])
+    witx::load(&witx::phases::old::snapshot_0().unwrap())
         .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 }
 
 #[test]
 fn render_roundtrip() {
-    let doc = witx::load(&["../../phases/snapshot/witx/wasi_snapshot_preview1.witx"])
+    let doc = witx::load(&witx::phases::snapshot().unwrap())
         .unwrap_or_else(|e| panic!("failed to parse: {}", e));
 
     let back_to_sexprs = format!("{}", doc);
@@ -69,7 +58,7 @@ fn document_wasi_snapshot() {
     use witx::Documentation;
     println!(
         "{}",
-        witx::load(&["../../phases/snapshot/witx/wasi_snapshot_preview1.witx"])
+        witx::load(&witx::phases::snapshot().unwrap())
             .unwrap_or_else(|e| panic!("failed to parse: {}", e))
             .to_md()
     );
