@@ -90,8 +90,8 @@ fn dos2unix(s: &str) -> String {
 }
 
 fn diff_against_filesystem(expected: &str, path: &Path) {
-    let actual =
-        fs::read_to_string(path).unwrap_or_else(|e| panic!("couldn't read {:?}: {:?}", path, e));
+    let actual = fs::read_to_string(path)
+        .unwrap_or_else(|e| panic!("couldn't read {}: {:?}", Path::display(path), e));
     // Git may checkout the file with dos line endings on windows. Strip all \r:
     let actual = dos2unix(&actual);
     if &actual == expected {
