@@ -121,13 +121,7 @@ pub fn main() {
             phases::old::snapshot_0().unwrap(),
         ] {
             let doc = load(&phase).expect("parse phase");
-            let path = phase
-                .get(0)
-                .expect("at least one path")
-                .parent()
-                .expect("drop file")
-                .join("../docs.md");
-            write_docs(&doc, &path);
+            write_docs(&doc, phases::docs_path(&phase));
         }
     }
 }
