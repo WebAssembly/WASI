@@ -229,6 +229,7 @@ impl DocValidationScope<'_> {
                 }
             }
             TypedefSyntax::Enum { .. }
+            | TypedefSyntax::Int { .. }
             | TypedefSyntax::Flags { .. }
             | TypedefSyntax::Struct { .. }
             | TypedefSyntax::Union { .. }
