@@ -200,7 +200,7 @@
     ;;; The right to invoke `fd_datasync`.
     ;;
     ;;; If `path_open` is set, includes the right to invoke
-    ;;; `path_open` with `fdflag::dsync`.
+    ;;; `path_open` with `fdflags::dsync`.
     $fd_datasync
     ;;; The right to invoke `fd_read` and `sock_recv`.
     ;;
@@ -213,10 +213,10 @@
     ;;; The right to invoke `fd_sync`.
     ;;
     ;;; If `path_open` is set, includes the right to invoke
-    ;;; `path_open` with `fdflag::rsync` and `fdflag::dsync`.
+    ;;; `path_open` with `fdflags::rsync` and `fdflags::dsync`.
     $fd_sync
     ;;; The right to invoke `fd_seek` in such a way that the file offset
-    ;;; remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
+    ;;; remains unaltered (i.e., `whence::cur` with offset zero), or to
     ;;; invoke `fd_tell`.
     $fd_tell
     ;;; The right to invoke `fd_write` and `sock_send`.
@@ -419,13 +419,13 @@
 ;;; Which file time attributes to adjust.
 (typename $fstflags
   (flags u16
-    ;;; Adjust the last data access timestamp to the value stored in `filestat::st_atim`.
+    ;;; Adjust the last data access timestamp to the value stored in `filestat::atim`.
     $atim
-    ;;; Adjust the last data access timestamp to the time of clock `clock::realtime`.
+    ;;; Adjust the last data access timestamp to the time of clock `clockid::realtime`.
     $atim_now
-    ;;; Adjust the last data modification timestamp to the value stored in `filestat::st_mtim`.
+    ;;; Adjust the last data modification timestamp to the value stored in `filestat::mtim`.
     $mtim
-    ;;; Adjust the last data modification timestamp to the time of clock `clock::realtime`.
+    ;;; Adjust the last data modification timestamp to the time of clock `clockid::realtime`.
     $mtim_now
   )
 )
@@ -484,13 +484,13 @@
 ;;; Type of a subscription to an event or its occurrence.
 (typename $eventtype
   (enum u8
-    ;;; The time value of clock `subscription::u.clock.clock_id` has
-    ;;; reached timestamp `subscription::u.clock.timeout`.
+    ;;; The time value of clock `subscription_clock::id` has
+    ;;; reached timestamp `subscription_clock::timeout`.
     $clock
-    ;;; File descriptor `subscription::u.fd_readwrite.fd` has data
+    ;;; File descriptor `subscription_fd_readwrite::file_descriptor` has data
     ;;; available for reading. This event always triggers for regular files.
     $fd_read
-    ;;; File descriptor `subscription::u.fd_readwrite.fd` has capacity
+    ;;; File descriptor `subscription_fd_readwrite::file_descriptor` has capacity
     ;;; available for writing. This event always triggers for regular files.
     $fd_write
   )
@@ -539,14 +539,14 @@
 )
 
 ;;; Flags determining how to interpret the timestamp provided in
-;;; `subscription::u.clock.timeout.`
+;;; `subscription_clock::timeout`.
 (typename $subclockflags
   (flags u16
     ;;; If set, treat the timestamp provided in
-    ;;; `subscription::u.clock.timeout` as an absolute timestamp of clock
-    ;;; `subscription::u.clock.clock_id.` If clear, treat the timestamp
-    ;;; provided in `subscription::u.clock.timeout` relative to the
-    ;;; current time value of clock `subscription::u.clock.clock_id.`
+    ;;; `subscription_clock::timeout` as an absolute timestamp of clock
+    ;;; `subscription_clock::id`. If clear, treat the timestamp
+    ;;; provided in `subscription_clock::timeout` relative to the
+    ;;; current time value of clock `subscription_clock::id`.
     $subscription_clock_abstime
   )
 )
