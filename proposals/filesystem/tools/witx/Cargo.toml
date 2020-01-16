@@ -18,7 +18,7 @@ name = "witx"
 path = "src/main.rs"
 
 [dependencies]
-clap = "2"
+structopt = "0.3"
 wast = "3.0.4"
 thiserror = "1.0"
 log = "0.4"
