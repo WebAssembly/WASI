@@ -690,3 +690,28 @@
     (field $dir $prestat_dir)
   )
 )
+
+;;; Handles for encryption and decryption operations.
+(typename $cipher_state_initial (handle))
+(typename $cipher_state_encrypting (handle))
+(typename $cipher_state_encrypted (handle))
+(typename $cipher_state_decrypting (handle))
+(typename $cipher_state_decrypted (handle))
+(typename $cipher_state_final (handle))
+
+;;; A handle for secure hashing operation.
+(typename $hash_state_initial (handle))
+
+;;; A handle for signing operation.
+(typename $sign_state_initial (handle))
+(typename $sign_state_signing (handle))
+(typename $sign_state_final (handle))
+
+;;; A handle for key or secret derivation operation.
+(typename $derive_key_state_initial (handle))
+
+;;; A handle for private key generation operation.
+(typename $generate_key_state_initial (handle))
+
+;;; A handle for a private key.
+(typename $private_key (handle))

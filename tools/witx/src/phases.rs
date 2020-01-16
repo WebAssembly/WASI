@@ -25,6 +25,7 @@ pub fn ephemeral() -> Result<Vec<PathBuf>> {
     let paths = vec![
         ephemeral.join("wasi_ephemeral_args.witx"),
         ephemeral.join("wasi_ephemeral_clock.witx"),
+        ephemeral.join("wasi_ephemeral_crypto.witx"),
         ephemeral.join("wasi_ephemeral_environ.witx"),
         ephemeral.join("wasi_ephemeral_fd.witx"),
         ephemeral.join("wasi_ephemeral_path.witx"),
