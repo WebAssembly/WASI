@@ -173,4 +173,3 @@ fn parse_module_mapping(m: &str) -> Result<(String, String)> {
     };
     Ok((n.to_string(), o.to_string()))
 }
-
