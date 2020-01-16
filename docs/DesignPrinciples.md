@@ -182,7 +182,7 @@ mapping.
 
 We recognize that this approach has tradeoffs. It often does take more
 work to design and implement the compatibility layers needed to support
-existing applications than if we just always made WASI always expose
+existing applications than if we just made WASI always expose
 POSIX-style APIs directly. And, even when we do have compatibility
 mechanisms, they aren't always the most locally optimal ones. The
 compatibility layer overhead is usually quite modest, but it is present.
