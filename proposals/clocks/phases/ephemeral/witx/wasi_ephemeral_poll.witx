@@ -12,6 +12,8 @@
   (import "memory" (memory))
 
   ;;; Concurrently poll for the occurrence of a set of events.
+  ;;;
+  ;;; If `nsubscriptions` is 0, returns `errno::inval`.
   (@interface func (export "oneoff")
     ;;; The events to which to subscribe.
     (param $in (@witx const_pointer $subscription))
