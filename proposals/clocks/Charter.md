@@ -21,7 +21,7 @@ The Subgroup will consider topics related to system interface APIs, including:
 - APIs for host filesystems, network stacks, and other resources.
 - APIs for graphics, audio, input devices
 - APIs for encryption, format conversion, and other transformations
-  (particularly where hardware accelleration may be available on some plaforms)
+  (particularly where hardware accelleration may be available on some platforms)
 
 
 ## Deliverables
