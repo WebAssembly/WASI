@@ -40,7 +40,7 @@ No error occurred. System call completed successfully.
 - <a href="#errno.2big" name="errno.2big"></a> `2big`
 Argument list too long.
 
-- <a href="#errno.acces" name="errno.acces"></a> `acces`
+- <a href="#errno.access" name="errno.access"></a> `access`
 Permission denied.
 
 - <a href="#errno.addrinuse" name="errno.addrinuse"></a> `addrinuse`
