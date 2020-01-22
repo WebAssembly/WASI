@@ -1646,6 +1646,8 @@ The path to a file to unlink.
 #### <a href="#oneoff" name="oneoff"></a> `oneoff(in: ConstPointer<subscription>, out: Pointer<event>, nsubscriptions: size) -> (errno, size)`
 Concurrently poll for the occurrence of a set of events.
 
+If `nsubscriptions` is 0, returns [`errno::inval`](#errno.inval).
+
 ##### Params
 - <a href="#oneoff.in" name="oneoff.in"></a> `in`: `ConstPointer<subscription>`
 The events to which to subscribe.
