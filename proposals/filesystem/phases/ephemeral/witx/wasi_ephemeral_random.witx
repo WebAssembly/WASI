@@ -19,7 +19,7 @@
   ;;; number generator, rather than to provide the random data directly.
   (@interface func (export "get")
     ;;; The buffer to fill with random data.
-    (param $buf (@witx pointer char8))
+    (param $buf (@witx pointer u8))
     (param $buf_len $size)
     (result $error $errno)
   )
