@@ -613,7 +613,7 @@
 (typename $subscription_fd_readwrite
   (struct
     ;;; The file descriptor on which to wait for it to become ready for reading or writing.
-    (field $file_descriptor $fd)
+    (field $fd $fd)
   )
 )
 
