@@ -121,9 +121,9 @@
   ;;; umask to determine which of the user/group/other flags to modify.
   (@interface func (export "permissions_set")
     (param $fd $fd)
+    (result $error $errno)
     ;;; The permissions associated with the file.
     (result $permissions $permissions)
-    (result $error $errno)
   )
 
   ;;; Read from a file descriptor, without using and updating the file descriptor's offset.
