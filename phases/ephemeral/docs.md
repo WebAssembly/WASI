@@ -308,7 +308,7 @@ The right to invoke `fd_allocate`.
 The right to invoke `path_create_directory`.
 
 - <a href="#rights.path_create_file" name="rights.path_create_file"></a> `path_create_file`
-If `path_open` is set, the right to invoke `path_open` with [`oflags::creat`](#oflags.creat).
+If `path_open` is set, the right to invoke `path_open` with [`oflags::create`](#oflags.create).
 
 - <a href="#rights.path_link_source" name="rights.path_link_source"></a> `path_link_source`
 The right to invoke `path_link` with the file descriptor as the
@@ -568,7 +568,7 @@ As long as the resolved path corresponds to a symbolic link, it is expanded.
 Open flags used by `path_open`.
 
 ### Flags
-- <a href="#oflags.creat" name="oflags.creat"></a> `creat`
+- <a href="#oflags.create" name="oflags.create"></a> `create`
 Create file if it does not exist.
 
 - <a href="#oflags.directory" name="oflags.directory"></a> `directory`
@@ -740,7 +740,7 @@ The contents of a $subscription when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 ### Struct members
-- <a href="#subscription_fd_readwrite.file_descriptor" name="subscription_fd_readwrite.file_descriptor"></a> `file_descriptor`: [`fd`](#fd)
+- <a href="#subscription_fd_readwrite.fd" name="subscription_fd_readwrite.fd"></a> `fd`: [`fd`](#fd)
 The file descriptor on which to wait for it to become ready for reading or writing.
 
 ## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
@@ -1122,7 +1122,7 @@ A bitmask indicating which timestamps to adjust.
 
 ---
 
-#### <a href="#permissions_set" name="permissions_set"></a> `permissions_set(fd: fd) -> (permissions, errno)`
+#### <a href="#permissions_set" name="permissions_set"></a> `permissions_set(fd: fd, permissions: permissions) -> errno`
 Set the permissions of a file or directory.
 
 This sets the permissions associated with a file or directory in
@@ -1139,10 +1139,10 @@ umask to determine which of the user/group/other flags to modify.
 ##### Params
 - <a href="#permissions_set.fd" name="permissions_set.fd"></a> `fd`: [`fd`](#fd)
 
-##### Results
 - <a href="#permissions_set.permissions" name="permissions_set.permissions"></a> `permissions`: [`permissions`](#permissions)
 The permissions associated with the file.
 
+##### Results
 - <a href="#permissions_set.error" name="permissions_set.error"></a> `error`: [`errno`](#errno)
 
 
@@ -1687,7 +1687,7 @@ The exit code returned by the process.
 
 ---
 
-#### <a href="#get" name="get"></a> `get(buf: Pointer<char8>, buf_len: size) -> errno`
+#### <a href="#get" name="get"></a> `get(buf: Pointer<u8>, buf_len: size) -> errno`
 Write high-quality random data into a buffer.
 This function blocks when the implementation is unable to immediately
 provide sufficient high-quality random data.
@@ -1696,7 +1696,7 @@ required, it's advisable to use this function to seed a pseudo-random
 number generator, rather than to provide the random data directly.
 
 ##### Params
-- <a href="#get.buf" name="get.buf"></a> `buf`: `Pointer<char8>`
+- <a href="#get.buf" name="get.buf"></a> `buf`: `Pointer<u8>`
 The buffer to fill with random data.
 
 - <a href="#get.buf_len" name="get.buf_len"></a> `buf_len`: [`size`](#size)
