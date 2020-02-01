@@ -1122,7 +1122,7 @@ A bitmask indicating which timestamps to adjust.
 
 ---
 
-#### <a href="#permissions_set" name="permissions_set"></a> `permissions_set(fd: fd) -> (permissions, errno)`
+#### <a href="#permissions_set" name="permissions_set"></a> `permissions_set(fd: fd, permissions: permissions) -> errno`
 Set the permissions of a file or directory.
 
 This sets the permissions associated with a file or directory in
@@ -1139,10 +1139,10 @@ umask to determine which of the user/group/other flags to modify.
 ##### Params
 - <a href="#permissions_set.fd" name="permissions_set.fd"></a> `fd`: [`fd`](#fd)
 
-##### Results
 - <a href="#permissions_set.permissions" name="permissions_set.permissions"></a> `permissions`: [`permissions`](#permissions)
 The permissions associated with the file.
 
+##### Results
 - <a href="#permissions_set.error" name="permissions_set.error"></a> `error`: [`errno`](#errno)
 
 
