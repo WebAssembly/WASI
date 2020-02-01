@@ -253,7 +253,7 @@
     $path_filestat_set_size
     ;;; The right to invoke `path_filestat_set_times`.
     $path_filestat_set_times
-    ;;; The right to invoke `path_filestat_set_permissions`.
+    ;;; The right to invoke `path_permissions_set`.
     $path_permissions_set
     ;;; The right to invoke `fd_filestat_get`.
     $fd_filestat_get
@@ -261,7 +261,7 @@
     $fd_filestat_set_size
     ;;; The right to invoke `fd_filestat_set_times`.
     $fd_filestat_set_times
-    ;;; The right to invoke `fd_filestat_set_permissions`.
+    ;;; The right to invoke `fd_permissions_set`.
     $fd_permissions_set
     ;;; The right to invoke `path_symlink`.
     $path_symlink
