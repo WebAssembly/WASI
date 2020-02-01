@@ -122,7 +122,7 @@
   (@interface func (export "permissions_set")
     (param $fd $fd)
     ;;; The permissions associated with the file.
-    (result $permissions $permissions)
+    (param $permissions $permissions)
     (result $error $errno)
   )
 
