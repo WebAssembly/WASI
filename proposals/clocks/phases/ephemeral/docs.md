@@ -308,7 +308,7 @@ The right to invoke `fd_allocate`.
 The right to invoke `path_create_directory`.
 
 - <a href="#rights.path_create_file" name="rights.path_create_file"></a> `path_create_file`
-If `path_open` is set, the right to invoke `path_open` with [`oflags::creat`](#oflags.creat).
+If `path_open` is set, the right to invoke `path_open` with [`oflags::create`](#oflags.create).
 
 - <a href="#rights.path_link_source" name="rights.path_link_source"></a> `path_link_source`
 The right to invoke `path_link` with the file descriptor as the
@@ -344,7 +344,7 @@ If `path_open` is set, includes the right to invoke `path_open` with [`oflags::t
 The right to invoke `path_filestat_set_times`.
 
 - <a href="#rights.path_permissions_set" name="rights.path_permissions_set"></a> `path_permissions_set`
-The right to invoke `path_filestat_set_permissions`.
+The right to invoke `path_permissions_set`.
 
 - <a href="#rights.fd_filestat_get" name="rights.fd_filestat_get"></a> `fd_filestat_get`
 The right to invoke `fd_filestat_get`.
@@ -356,7 +356,7 @@ The right to invoke `fd_filestat_set_size`.
 The right to invoke `fd_filestat_set_times`.
 
 - <a href="#rights.fd_permissions_set" name="rights.fd_permissions_set"></a> `fd_permissions_set`
-The right to invoke `fd_filestat_set_permissions`.
+The right to invoke `fd_permissions_set`.
 
 - <a href="#rights.path_symlink" name="rights.path_symlink"></a> `path_symlink`
 The right to invoke `path_symlink`.
@@ -568,7 +568,7 @@ As long as the resolved path corresponds to a symbolic link, it is expanded.
 Open flags used by `path_open`.
 
 ### Flags
-- <a href="#oflags.creat" name="oflags.creat"></a> `creat`
+- <a href="#oflags.create" name="oflags.create"></a> `create`
 Create file if it does not exist.
 
 - <a href="#oflags.directory" name="oflags.directory"></a> `directory`
@@ -740,7 +740,7 @@ The contents of a $subscription when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 ### Struct members
-- <a href="#subscription_fd_readwrite.file_descriptor" name="subscription_fd_readwrite.file_descriptor"></a> `file_descriptor`: [`fd`](#fd)
+- <a href="#subscription_fd_readwrite.fd" name="subscription_fd_readwrite.fd"></a> `fd`: [`fd`](#fd)
 The file descriptor on which to wait for it to become ready for reading or writing.
 
 ## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
@@ -1687,7 +1687,7 @@ The exit code returned by the process.
 
 ---
 
-#### <a href="#get" name="get"></a> `get(buf: Pointer<char8>, buf_len: size) -> errno`
+#### <a href="#get" name="get"></a> `get(buf: Pointer<u8>, buf_len: size) -> errno`
 Write high-quality random data into a buffer.
 This function blocks when the implementation is unable to immediately
 provide sufficient high-quality random data.
@@ -1696,7 +1696,7 @@ required, it's advisable to use this function to seed a pseudo-random
 number generator, rather than to provide the random data directly.
 
 ##### Params
-- <a href="#get.buf" name="get.buf"></a> `buf`: `Pointer<char8>`
+- <a href="#get.buf" name="get.buf"></a> `buf`: `Pointer<u8>`
 The buffer to fill with random data.
 
 - <a href="#get.buf_len" name="get.buf_len"></a> `buf_len`: [`size`](#size)
