@@ -643,8 +643,11 @@ The state of the file descriptor.
 The contents of an $event.
 
 ### Union variants
-- <a href="#event_u.fd_readwrite" name="event_u.fd_readwrite"></a> `fd_readwrite`: [`event_fd_readwrite`](#event_fd_readwrite)
-When type is [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write):
+- <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
+
+- <a href="#event_u.fd_write" name="event_u.fd_write"></a> `fd_write`: [`event_fd_readwrite`](#event_fd_readwrite)
+
+- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
 
 ## <a href="#event" name="event"></a> `event`: Struct
 An event that occurred.
@@ -656,11 +659,8 @@ User-provided value that got attached to [`subscription::userdata`](#subscriptio
 - <a href="#event.error" name="event.error"></a> `error`: [`errno`](#errno)
 If non-zero, an error that occurred while processing the subscription request.
 
-- <a href="#event.type" name="event.type"></a> `type`: [`eventtype`](#eventtype)
-The type of the event that occurred.
-
 - <a href="#event.u" name="event.u"></a> `u`: [`event_u`](#event_u)
-The contents of the event.
+The type of the event that occurred, and its contents.
 
 ## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: Flags(`u16`)
 Flags determining how to interpret the timestamp provided in
@@ -704,10 +704,10 @@ The contents of a $subscription.
 
 ### Union variants
 - <a href="#subscription_u.clock" name="subscription_u.clock"></a> `clock`: [`subscription_clock`](#subscription_clock)
-When type is [`eventtype::clock`](#eventtype.clock):
 
-- <a href="#subscription_u.fd_readwrite" name="subscription_u.fd_readwrite"></a> `fd_readwrite`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
-When type is [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write):
+- <a href="#subscription_u.fd_read" name="subscription_u.fd_read"></a> `fd_read`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
+
+- <a href="#subscription_u.fd_write" name="subscription_u.fd_write"></a> `fd_write`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
 
 ## <a href="#subscription" name="subscription"></a> `subscription`: Struct
 Subscription to an event.
@@ -899,22 +899,11 @@ The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
 - <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
 The length of the directory name for use with [`fd_prestat_dir_name`](#fd_prestat_dir_name).
 
-## <a href="#prestat_u" name="prestat_u"></a> `prestat_u`: Union
-The contents of an $prestat.
-
-### Union variants
-- <a href="#prestat_u.dir" name="prestat_u.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
-When type is [`preopentype::dir`](#preopentype.dir):
-
-## <a href="#prestat" name="prestat"></a> `prestat`: Struct
+## <a href="#prestat" name="prestat"></a> `prestat`: Union
 Information about a pre-opened capability.
 
-### Struct members
-- <a href="#prestat.pr_type" name="prestat.pr_type"></a> `pr_type`: [`preopentype`](#preopentype)
-The type of the pre-opened capability.
-
-- <a href="#prestat.u" name="prestat.u"></a> `u`: [`prestat_u`](#prestat_u)
-The contents of the information.
+### Union variants
+- <a href="#prestat.dir" name="prestat.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
 
 # Modules
 ## <a href="#wasi_snapshot_preview1" name="wasi_snapshot_preview1"></a> wasi_snapshot_preview1
