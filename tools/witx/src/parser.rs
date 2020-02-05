@@ -479,18 +479,20 @@ impl<'a> Parse<'a> for FieldSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionSyntax<'a> {
+    pub tag: wast::Id<'a>,
     pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for UnionSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#union>()?;
+        let tag = parser.parse()?;
         let mut fields = Vec::new();
         fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
-        Ok(UnionSyntax { fields })
+        Ok(UnionSyntax { tag, fields })
     }
 }
 

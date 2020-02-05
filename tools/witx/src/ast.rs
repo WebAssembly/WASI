@@ -247,6 +247,7 @@ pub struct StructMember {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionDatatype {
+    pub tag: TypeRef,
     pub variants: Vec<UnionVariant>,
 }
 

@@ -185,9 +185,19 @@ impl Representable for UnionDatatype {
             }
         }
         if by.variants.len() > self.variants.len() {
-            RepEquality::Superset
+            // By is a superset of self only if the tags are as well:
+            if self.tag.type_().representable(&*by.tag.type_()) == RepEquality::Superset {
+                RepEquality::Superset
+            } else {
+                RepEquality::NotEq
+            }
         } else {
-            RepEquality::Eq
+            // By and self have matching variants, so they are equal if tags are:
+            if self.tag.type_().representable(&*by.tag.type_()) == RepEquality::Eq {
+                RepEquality::Eq
+            } else {
+                RepEquality::NotEq
+            }
         }
     }
 }
@@ -287,16 +297,25 @@ mod test {
 
     #[test]
     fn union() {
-        let base = def_type("a", "(typename $a (union (field $b u32) (field $c f32)))");
+        let base = def_type(
+            "a",
+            "(typename $tag (enum u8 $b $c))
+            (typename $a (union $tag (field $b u32) (field $c f32)))",
+        );
         let extra_variant = def_type(
             "a",
-            "(typename $a (union (field $b u32) (field $c f32) (field $d f64)))",
+            "(typename $tag (enum u8 $b $c $d))
+            (typename $a (union $tag (field $b u32) (field $c f32) (field $d f64)))",
         );
 
         assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
         assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
 
-        let other_ordering = def_type("a", "(typename $a (union (field $c f32) (field $b u32)))");
+        let other_ordering = def_type(
+            "a",
+            "(typename $tag (enum u8 $b $c))
+            (typename $a (union $tag (field $c f32) (field $b u32)))",
+        );
         assert_eq!(base.representable(&other_ordering), RepEquality::Eq);
         assert_eq!(other_ordering.representable(&base), RepEquality::Eq);
         assert_eq!(
