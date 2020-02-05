@@ -177,7 +177,21 @@ impl Representable for UnionDatatype {
         }
         for v in self.variants.iter() {
             if let Some(byv) = by.variants.iter().find(|byv| byv.name == v.name) {
-                if v.tref.type_().representable(&*byv.tref.type_()) != RepEquality::Eq {
+                if v.tref.is_none() && byv.tref.is_none() {
+                    // Both empty is OK
+                } else if v.tref.is_some() && byv.tref.is_some() {
+                    if v.tref
+                        .as_ref()
+                        .unwrap()
+                        .type_()
+                        .representable(&*byv.tref.as_ref().unwrap().type_())
+                        != RepEquality::Eq
+                    {
+                        // Fields must be Eq
+                        return RepEquality::NotEq;
+                    }
+                } else {
+                    // Either one empty means not representable
                     return RepEquality::NotEq;
                 }
             } else {

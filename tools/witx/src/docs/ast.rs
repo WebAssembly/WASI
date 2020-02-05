@@ -211,7 +211,11 @@ impl ToMarkdown for UnionDatatype {
                 name,
                 &variant.docs,
             ));
-            variant.tref.generate(n.clone());
+            if let Some(ref tref) = variant.tref {
+                tref.generate(n.clone());
+            } else {
+                n.content_ref_mut::<MdNamedType>().r#type = None;
+            }
         }
 
         node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Union);

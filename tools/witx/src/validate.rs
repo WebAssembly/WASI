@@ -3,6 +3,7 @@ use crate::{
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
         ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        VariantSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
     HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
@@ -394,30 +395,39 @@ impl DocValidationScope<'_> {
         let variants = syntax
             .fields
             .iter()
-            .map(|f| {
+            .map(|v| {
+                let variant_name = match v.item {
+                    VariantSyntax::Field(ref f) => &f.name,
+                    VariantSyntax::Empty(ref name) => name,
+                };
                 let name = variant_scope
-                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
-                let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
-                let docs = f.comments.docs();
+                    .introduce(variant_name.name(), self.location(variant_name.span()))?;
+                let tref = match &v.item {
+                    VariantSyntax::Field(f) => {
+                        Some(self.validate_datatype(&f.type_, false, variant_name.span())?)
+                    }
+                    VariantSyntax::Empty { .. } => None,
+                };
+                let docs = v.comments.docs();
                 match variant_name_uses.entry(name.clone()) {
                     hash_map::Entry::Occupied(mut e) => {
                         if *e.get() {
                             Err(ValidationError::InvalidUnionField {
-                                name: f.item.name.name().to_string(),
+                                name: variant_name.name().to_string(),
                                 reason: "variant already defined".to_owned(),
-                                location: self.location(f.item.name.span()),
+                                location: self.location(variant_name.span()),
                             })?;
                         } else {
                             e.insert(true);
                         }
                     }
                     hash_map::Entry::Vacant { .. } => Err(ValidationError::InvalidUnionField {
-                        name: f.item.name.name().to_string(),
+                        name: variant_name.name().to_string(),
                         reason: format!(
                             "does not correspond to variant in tag `{}`",
                             tagname.as_str()
                         ),
-                        location: self.location(f.item.name.span()),
+                        location: self.location(variant_name.span()),
                     })?,
                 }
                 Ok(UnionVariant { name, tref, docs })

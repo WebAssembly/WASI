@@ -254,7 +254,7 @@ pub struct UnionDatatype {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionVariant {
     pub name: Id,
-    pub tref: TypeRef,
+    pub tref: Option<TypeRef>,
     pub docs: String,
 }
 

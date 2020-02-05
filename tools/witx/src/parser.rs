@@ -24,6 +24,7 @@ mod kw {
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
     wast::custom_keyword!(field);
+    wast::custom_keyword!(empty);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
     wast::custom_keyword!(int);
@@ -478,9 +479,35 @@ impl<'a> Parse<'a> for FieldSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub enum VariantSyntax<'a> {
+    Field(FieldSyntax<'a>),
+    Empty(wast::Id<'a>),
+}
+
+impl<'a> Parse<'a> for VariantSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parens(|p| {
+            let mut l = p.lookahead1();
+            if l.peek::<kw::field>() {
+                parser.parse::<kw::field>()?;
+                let name = p.parse()?;
+                let type_ = p.parse()?;
+                Ok(VariantSyntax::Field(FieldSyntax { name, type_ }))
+            } else if l.peek::<kw::empty>() {
+                parser.parse::<kw::empty>()?;
+                let name = p.parse()?;
+                Ok(VariantSyntax::Empty(name))
+            } else {
+                Err(l.error())
+            }
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionSyntax<'a> {
     pub tag: wast::Id<'a>,
-    pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
+    pub fields: Vec<Documented<'a, VariantSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for UnionSyntax<'a> {

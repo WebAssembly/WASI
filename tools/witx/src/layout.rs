@@ -133,24 +133,32 @@ mod test {
 }
 
 impl UnionDatatype {
+    // TODO also need to expose the layout / existence of the indivdual tag/u members.
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        let tag = self.tag.layout(cache);
         let sas = self
             .variants
             .iter()
-            .map(|v| v.tref.layout(cache))
+            .filter_map(|v| v.tref.as_ref().map(|t| t.layout(cache)))
             .collect::<Vec<SizeAlign>>();
-        let size = sas
-            .iter()
-            .map(|sa| sa.size)
-            .max()
-            .expect("nonzero variants");
-        let align = sas
-            .iter()
-            .map(|sa| sa.align)
-            .max()
-            .expect("nonzero variants");
-        let size = align_to(size, align);
-        SizeAlign { size, align }
+        if sas.is_empty() {
+            tag
+        } else {
+            let u_size = sas
+                .iter()
+                .map(|sa| sa.size)
+                .max()
+                .expect("nonzero variants");
+            let u_align = sas
+                .iter()
+                .map(|sa| sa.align)
+                .max()
+                .expect("nonzero variants");
+            let u_offset = align_to(tag.size, u_align);
+            let align = std::cmp::max(tag.align, u_align);
+            let size = align_to(u_offset + u_size, align);
+            SizeAlign { size, align }
+        }
     }
 }
 
