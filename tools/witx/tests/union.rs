@@ -55,6 +55,46 @@ fn two_variant_union() {
 }
 
 #[test]
+fn empty_variant_unions() {
+    let d1 = witx::parse(
+        "(typename $tag (enum u8 $a $b))
+         (typename $u (union $tag (empty $a) (field $b u16)))",
+    );
+    assert!(d1.is_ok(), "d1 is ok");
+
+    let d2 = witx::parse(
+        "(typename $tag (enum u8 $a $b))
+         (typename $u (union $tag (empty $a) (empty $b)))",
+    );
+    assert!(d2.is_ok(), "d2 is ok");
+}
+
+#[test]
+fn many_variant_unions() {
+    let d1 = witx::parse(
+        "(typename $tag (enum u32 $a $b $c $d $e $f $g $h $i $j $k $l $m))
+         (typename $u
+           (union $tag
+            (field $a u8)
+            (field $b u16)
+            (field $c u32)
+            (field $d u64)
+            (field $e s8)
+            (field $f s16)
+            (field $g s32)
+            (field $h s64)
+            (field $i f32)
+            (field $j f64)
+            (field $k (@witx usize))
+            (field $l char8)
+            (empty $m)
+           )
+         )",
+    );
+    assert!(d1.is_ok(), "d1 is ok");
+}
+
+#[test]
 fn no_tag_union() {
     let d = witx::parse("(typename $u (union $tag (field $a u8) (field $b u16)))");
     assert!(d.is_err());
