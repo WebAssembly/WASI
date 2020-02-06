@@ -589,9 +589,7 @@
     ;;; User-provided value that is attached to the subscription in the
     ;;; implementation and returned through `event::userdata`.
     (field $userdata $userdata)
-    ;;; The type of the event to which to subscribe.
-    (field $type $eventtype)
-    ;;; The contents of the subscription.
+    ;;; The type of the event to which to subscribe, and its contents
     (field $u $subscription_u)
   )
 )
