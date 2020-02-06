@@ -809,7 +809,7 @@ Identifiers for preopened capabilities.
 A pre-opened directory.
 
 ## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Struct
-The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
+The contents of a $prestat when its $pr_type is [`preopentype::dir`](#preopentype.dir).
 
 ### Struct members
 - <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
@@ -820,7 +820,7 @@ The contents of an $prestat.
 
 ### Union variants
 - <a href="#prestat_u.dir" name="prestat_u.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
-When type is [`preopentype::dir`](#preopentype.dir):
+When $pr_type of the $prestat is [`preopentype::dir`](#preopentype.dir):
 
 ## <a href="#prestat" name="prestat"></a> `prestat`: Struct
 Information about a pre-opened capability.
