@@ -183,11 +183,13 @@ mapping.
 We recognize that this approach has tradeoffs. It often does take more
 work to design and implement the compatibility layers needed to support
 existing applications than if we just made WASI always expose
-POSIX-style APIs directly. And, even when we do have compatibility
-mechanisms, they aren't always the most locally optimal ones. The
-compatibility layer overhead is usually quite modest, but it is present.
+POSIX-style APIs directly. It will take more work to port existing
+libraries to work with shared-nothing linking. And, even when we do have
+compatibility mechanisms, they aren't always the most locally optimal
+ones. The compatibility layer overhead is usually quite modest, but it
+is present.
 
-However, shared-nothing linking makes it easier to use libraries in
+However, libraries built to use shared-nothing linking can be used in
 more circumstances, because you don't have to have the trust implied by
 a shared filesystem view, or the complexity of configuring filesystem
 rules for each library. With a better story for libraries and tools to
