@@ -132,6 +132,7 @@ mod test {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct UnionLayout {
     pub tag_size: usize,
     pub tag_align: usize,
