@@ -39,12 +39,13 @@ and engines don't always use actual WebAssembly tables to do this,
 however those are implementation details. Conceptually, they work as if
 they had tables.)
 
-If all instances shared a single c-list, that would undermine isolation,
-because any instance could forge an index to any other instance's
-resources. Fortunately, there can be multiple c-lists, and instances can
-be given access to some c-lists and not others, or even have instances
-which don't use any c-lists at all, so it's still possible to establish
-isolation between instances.
+Integer indices are themselves forgeable, however a program can only
+access handles within the c-list it has access to, so isolation can still
+be achieved, even between libraries which internally use integer indices,
+by witholding access to each library's c-list to the other libraries.
+Instances can be given access to some c-lists and not others, or even
+no c-lists at all, so it's still possible to establish isolation between
+instances.
 
 Witx-specified APIs use a special `handle` keyword to mark parameters
 and return values which are handles. In the short term, these are
