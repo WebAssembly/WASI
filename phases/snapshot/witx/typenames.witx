@@ -516,15 +516,6 @@
   )
 )
 
-;;; The contents of an $event.
-(typename $event_u
-  (union $eventtype
-    (field $fd_read  $event_fd_readwrite)
-    (field $fd_write $event_fd_readwrite)
-    (empty $clock)
-  )
-)
-
 ;;; An event that occurred.
 (typename $event
   (struct
@@ -532,8 +523,11 @@
     (field $userdata $userdata)
     ;;; If non-zero, an error that occurred while processing the subscription request.
     (field $error $errno)
-    ;;; The type of the event that occurred, and its contents.
-    (field $u $event_u)
+    ;;; The type of event that occured
+    (field $type $eventtype)
+    ;;; The contents of the event, if it is an `eventtype::fd_read` or
+    ;;; `eventtype::fd_write`. `eventtype::clock` events ignore this field.
+    (field $fd_readwrite $event_fd_readwrite)
   )
 )
 

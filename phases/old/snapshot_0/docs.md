@@ -637,16 +637,6 @@ The number of bytes available for reading or writing.
 - <a href="#event_fd_readwrite.flags" name="event_fd_readwrite.flags"></a> `flags`: [`eventrwflags`](#eventrwflags)
 The state of the file descriptor.
 
-## <a href="#event_u" name="event_u"></a> `event_u`: Union
-The contents of an $event.
-
-### Union variants
-- <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
-
-- <a href="#event_u.fd_write" name="event_u.fd_write"></a> `fd_write`: [`event_fd_readwrite`](#event_fd_readwrite)
-
-- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
-
 ## <a href="#event" name="event"></a> `event`: Struct
 An event that occurred.
 
@@ -657,8 +647,12 @@ User-provided value that got attached to [`subscription::userdata`](#subscriptio
 - <a href="#event.error" name="event.error"></a> `error`: [`errno`](#errno)
 If non-zero, an error that occurred while processing the subscription request.
 
-- <a href="#event.u" name="event.u"></a> `u`: [`event_u`](#event_u)
-The type of event that occured, and its contents.
+- <a href="#event.type" name="event.type"></a> `type`: [`eventtype`](#eventtype)
+The type of event that occured
+
+- <a href="#event.fd_readwrite" name="event.fd_readwrite"></a> `fd_readwrite`: [`event_fd_readwrite`](#event_fd_readwrite)
+The contents of the event, if it is an [`eventtype::fd_read`](#eventtype.fd_read) or
+[`eventtype::fd_write`](#eventtype.fd_write). [`eventtype::clock`](#eventtype.clock) events ignore this field.
 
 ## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: Flags(`u16`)
 Flags determining how to interpret the timestamp provided in
