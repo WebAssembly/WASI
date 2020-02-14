@@ -360,7 +360,7 @@ impl DocValidationScope<'_> {
     ) -> Result<UnionDatatype, ValidationError> {
         let mut variant_scope = IdentValidation::new();
         let tag_id = self.get(&syntax.tag)?;
-        let (tag, tagname, mut variant_name_uses) = match self.doc.entries.get(&tag_id) {
+        let (tag, mut variant_name_uses) = match self.doc.entries.get(&tag_id) {
             Some(Entry::Typename(weak_ref)) => {
                 let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
                 match &*named_dt.type_() {
@@ -370,8 +370,7 @@ impl DocValidationScope<'_> {
                             .iter()
                             .map(|v| (v.name.clone(), false))
                             .collect::<HashMap<Id, bool>>();
-                        let name = named_dt.name.clone();
-                        Ok((TypeRef::Name(named_dt), name, uses))
+                        Ok((named_dt, uses))
                     }
                     other => Err(ValidationError::WrongKindName {
                         name: syntax.tag.name().to_string(),
@@ -425,7 +424,7 @@ impl DocValidationScope<'_> {
                         name: variant_name.name().to_string(),
                         reason: format!(
                             "does not correspond to variant in tag `{}`",
-                            tagname.as_str()
+                            tag.name.as_str()
                         ),
                         location: self.location(variant_name.span()),
                     })?,
@@ -446,7 +445,7 @@ impl DocValidationScope<'_> {
                     .map(|i| i.as_str())
                     .collect::<Vec<_>>()
                     .join(", "),
-                reason: format!("missing variants from tag `{}`", tagname.as_str()),
+                reason: format!("missing variants from tag `{}`", tag.name.as_str()),
                 location: self.location(span),
             })?;
         }

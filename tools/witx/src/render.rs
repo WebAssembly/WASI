@@ -206,11 +206,7 @@ impl StructDatatype {
 
 impl UnionDatatype {
     pub fn to_sexpr(&self) -> SExpr {
-        let tag_name = match self.tag {
-            TypeRef::Name(ref tn) => &tn.name,
-            TypeRef::Value { .. } => unreachable!("union tags must be named types"),
-        };
-        let header = vec![SExpr::word("union"), tag_name.to_sexpr()];
+        let header = vec![SExpr::word("union"), self.tag.name.to_sexpr()];
         let variants = self
             .variants
             .iter()
