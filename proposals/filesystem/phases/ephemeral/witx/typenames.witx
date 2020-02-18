@@ -321,7 +321,7 @@
 ;;; A reference to the offset of a directory entry.
 (typename $dircookie
   (int u64
-    ;; In an `fd_readdir` call, this value signifies the start of the directory.
+    ;;; In an `fd_readdir` call, this value signifies the start of the directory.
     (const $start 0)
   )
 )
