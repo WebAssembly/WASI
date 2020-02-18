@@ -423,6 +423,7 @@ A reference to the offset of a directory entry.
 
 ### Consts
 - <a href="#dircookie.start" name="dircookie.start"></a> `start`
+In an `fd_readdir` call, this value signifies the start of the directory.
 
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
 The type for the $d_namlen field of $dirent.
