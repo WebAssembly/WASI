@@ -247,13 +247,14 @@ pub struct StructMember {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionDatatype {
+    pub tag: Rc<NamedType>,
     pub variants: Vec<UnionVariant>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionVariant {
     pub name: Id,
-    pub tref: TypeRef,
+    pub tref: Option<TypeRef>,
     pub docs: String,
 }
 

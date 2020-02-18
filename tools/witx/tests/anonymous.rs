@@ -12,7 +12,9 @@ fn anonymous_types() {
     let pointer_to_struct = witx::parse("(typename $a (@witx pointer (struct (field $b u8))))");
     assert!(is_anonymous_struct_err(pointer_to_struct));
 
-    let pointer_to_union = witx::parse("(typename $a (@witx pointer (union (field $b u8))))");
+    let pointer_to_union = witx::parse(
+        "(typename $tag (enum u8 $b)) (typename $a (@witx pointer (union $tag (field $b u8))))",
+    );
     assert!(is_anonymous_struct_err(pointer_to_union));
 
     let pointer_to_enum = witx::parse("(typename $a (@witx pointer (enum u32 $b)))");
@@ -33,7 +35,9 @@ fn anonymous_types() {
     let struct_in_struct = witx::parse("(typename $a (struct (field $b (struct (field $c u8)))))");
     assert!(is_anonymous_struct_err(struct_in_struct));
 
-    let union_in_struct = witx::parse("(typename $a (struct (field $b (union (field $c u8)))))");
+    let union_in_struct = witx::parse(
+        "(typename $tag (enum u8 $c)) (typename $a (struct (field $b (union $tag (field $c u8)))))",
+    );
     assert!(is_anonymous_struct_err(union_in_struct));
 
     let pointer_in_struct = witx::parse("(typename $a (struct (field $b (@witx pointer u8))))");

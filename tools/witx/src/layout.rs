@@ -22,16 +22,9 @@ impl TypeRef {
         if let Some(hit) = cache.get(self) {
             return *hit;
         }
-        let layout = match &*self.type_() {
-            Type::Enum(e) => e.repr.mem_size_align(),
-            Type::Int(i) => i.repr.mem_size_align(),
-            Type::Flags(f) => f.repr.mem_size_align(),
-            Type::Struct(s) => s.layout(cache),
-            Type::Union(u) => u.layout(cache),
-            Type::Handle(h) => h.mem_size_align(),
-            Type::Array { .. } => BuiltinType::String.mem_size_align(),
-            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
-            Type::Builtin(b) => b.mem_size_align(),
+        let layout = match &self {
+            TypeRef::Name(nt) => nt.layout(cache),
+            TypeRef::Value(v) => v.layout(cache),
         };
         cache.insert(self.clone(), layout);
         layout
@@ -44,6 +37,42 @@ impl Layout for TypeRef {
         self.layout(&mut cache)
     }
 }
+
+impl NamedType {
+    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        self.tref.layout(cache)
+    }
+}
+impl Layout for NamedType {
+    fn mem_size_align(&self) -> SizeAlign {
+        let mut cache = HashMap::new();
+        self.layout(&mut cache)
+    }
+}
+
+impl Type {
+    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        match &self {
+            Type::Enum(e) => e.repr.mem_size_align(),
+            Type::Int(i) => i.repr.mem_size_align(),
+            Type::Flags(f) => f.repr.mem_size_align(),
+            Type::Struct(s) => s.layout(cache),
+            Type::Union(u) => u.layout(cache),
+            Type::Handle(h) => h.mem_size_align(),
+            Type::Array { .. } => BuiltinType::String.mem_size_align(),
+            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
+            Type::Builtin(b) => b.mem_size_align(),
+        }
+    }
+}
+
+impl Layout for Type {
+    fn mem_size_align(&self) -> SizeAlign {
+        let mut cache = HashMap::new();
+        self.layout(&mut cache)
+    }
+}
+
 impl Layout for IntRepr {
     fn mem_size_align(&self) -> SizeAlign {
         match self {
@@ -132,25 +161,51 @@ mod test {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct UnionLayout {
+    pub tag_size: usize,
+    pub tag_align: usize,
+    pub contents_offset: usize,
+    pub contents_size: usize,
+    pub contents_align: usize,
+}
+
+impl Layout for UnionLayout {
+    fn mem_size_align(&self) -> SizeAlign {
+        let align = std::cmp::max(self.tag_align, self.contents_align);
+        let size = align_to(self.contents_offset + self.contents_size, align);
+        SizeAlign { size, align }
+    }
+}
+
 impl UnionDatatype {
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        let sas = self
+    pub fn union_layout(&self) -> UnionLayout {
+        let mut cache = HashMap::new();
+        self.union_layout_(&mut cache)
+    }
+    fn union_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> UnionLayout {
+        let tag = self.tag.layout(cache);
+
+        let variant_sas = self
             .variants
             .iter()
-            .map(|v| v.tref.layout(cache))
+            .filter_map(|v| v.tref.as_ref().map(|t| t.layout(cache)))
             .collect::<Vec<SizeAlign>>();
-        let size = sas
-            .iter()
-            .map(|sa| sa.size)
-            .max()
-            .expect("nonzero variants");
-        let align = sas
-            .iter()
-            .map(|sa| sa.align)
-            .max()
-            .expect("nonzero variants");
-        let size = align_to(size, align);
-        SizeAlign { size, align }
+
+        let contents_size = variant_sas.iter().map(|sa| sa.size).max().unwrap_or(0);
+        let contents_align = variant_sas.iter().map(|sa| sa.align).max().unwrap_or(1);
+
+        UnionLayout {
+            tag_size: tag.size,
+            tag_align: tag.align,
+            contents_offset: align_to(tag.size, contents_align),
+            contents_size,
+            contents_align,
+        }
+    }
+
+    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        self.union_layout_(cache).mem_size_align()
     }
 }
 
