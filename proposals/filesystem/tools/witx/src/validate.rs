@@ -3,6 +3,7 @@ use crate::{
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
         ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        VariantSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
     HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
@@ -10,7 +11,7 @@ use crate::{
     ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
     UnionDatatype, UnionVariant,
 };
-use std::collections::HashMap;
+use std::collections::{hash_map, HashMap};
 use std::path::Path;
 use std::rc::Rc;
 use thiserror::Error;
@@ -43,6 +44,12 @@ pub enum ValidationError {
     InvalidFirstResultType { location: Location },
     #[error("Anonymous structured types (struct, union, enum, flags, handle) are not permitted")]
     AnonymousStructure { location: Location },
+    #[error("Invalid union field `{name}`: {reason}")]
+    InvalidUnionField {
+        name: String,
+        reason: String,
+        location: Location,
+    },
 }
 
 impl ValidationError {
@@ -54,7 +61,8 @@ impl ValidationError {
             | Recursive { location, .. }
             | InvalidRepr { location, .. }
             | InvalidFirstResultType { location, .. }
-            | AnonymousStructure { location, .. } => {
+            | AnonymousStructure { location, .. }
+            | InvalidUnionField { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -348,22 +356,100 @@ impl DocValidationScope<'_> {
     fn validate_union(
         &self,
         syntax: &UnionSyntax,
-        _span: wast::Span,
+        span: wast::Span,
     ) -> Result<UnionDatatype, ValidationError> {
         let mut variant_scope = IdentValidation::new();
+        let tag_id = self.get(&syntax.tag)?;
+        let (tag, mut variant_name_uses) = match self.doc.entries.get(&tag_id) {
+            Some(Entry::Typename(weak_ref)) => {
+                let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
+                match &*named_dt.type_() {
+                    Type::Enum(e) => {
+                        let uses = e
+                            .variants
+                            .iter()
+                            .map(|v| (v.name.clone(), false))
+                            .collect::<HashMap<Id, bool>>();
+                        Ok((named_dt, uses))
+                    }
+                    other => Err(ValidationError::WrongKindName {
+                        name: syntax.tag.name().to_string(),
+                        location: self.location(syntax.tag.span()),
+                        expected: "enum",
+                        got: other.kind(),
+                    }),
+                }
+            }
+            other => Err(ValidationError::WrongKindName {
+                name: syntax.tag.name().to_string(),
+                location: self.location(syntax.tag.span()),
+                expected: "enum",
+                got: match other {
+                    Some(e) => e.kind(),
+                    None => "unknown",
+                },
+            }),
+        }?;
+
         let variants = syntax
             .fields
             .iter()
-            .map(|f| {
+            .map(|v| {
+                let variant_name = match v.item {
+                    VariantSyntax::Field(ref f) => &f.name,
+                    VariantSyntax::Empty(ref name) => name,
+                };
                 let name = variant_scope
-                    .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
-                let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
-                let docs = f.comments.docs();
+                    .introduce(variant_name.name(), self.location(variant_name.span()))?;
+                let tref = match &v.item {
+                    VariantSyntax::Field(f) => {
+                        Some(self.validate_datatype(&f.type_, false, variant_name.span())?)
+                    }
+                    VariantSyntax::Empty { .. } => None,
+                };
+                let docs = v.comments.docs();
+                match variant_name_uses.entry(name.clone()) {
+                    hash_map::Entry::Occupied(mut e) => {
+                        if *e.get() {
+                            Err(ValidationError::InvalidUnionField {
+                                name: variant_name.name().to_string(),
+                                reason: "variant already defined".to_owned(),
+                                location: self.location(variant_name.span()),
+                            })?;
+                        } else {
+                            e.insert(true);
+                        }
+                    }
+                    hash_map::Entry::Vacant { .. } => Err(ValidationError::InvalidUnionField {
+                        name: variant_name.name().to_string(),
+                        reason: format!(
+                            "does not correspond to variant in tag `{}`",
+                            tag.name.as_str()
+                        ),
+                        location: self.location(variant_name.span()),
+                    })?,
+                }
                 Ok(UnionVariant { name, tref, docs })
             })
             .collect::<Result<Vec<UnionVariant>, _>>()?;
 
-        Ok(UnionDatatype { variants })
+        let unused_variants = variant_name_uses
+            .iter()
+            .filter(|(_k, used)| **used == false)
+            .map(|(k, _)| k.clone())
+            .collect::<Vec<Id>>();
+        if !unused_variants.is_empty() {
+            Err(ValidationError::InvalidUnionField {
+                name: unused_variants
+                    .iter()
+                    .map(|i| i.as_str())
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                reason: format!("missing variants from tag `{}`", tag.name.as_str()),
+                location: self.location(span),
+            })?;
+        }
+        Ok(UnionDatatype { tag, variants })
     }
 
     fn validate_handle(
