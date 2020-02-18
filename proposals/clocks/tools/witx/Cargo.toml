@@ -1,6 +1,6 @@
 [package]
 name = "witx"
-version = "0.7.0"
+version = "0.8.0"
 description = "Parse and validate witx file format"
 homepage = "https://github.com/WebAssembly/WASI"
 repository = "https://github.com/WebAssembly/WASI"
