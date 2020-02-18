@@ -206,19 +206,26 @@ impl StructDatatype {
 
 impl UnionDatatype {
     pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("union")];
+        let header = vec![SExpr::word("union"), self.tag.name.to_sexpr()];
         let variants = self
             .variants
             .iter()
             .map(|v| {
-                SExpr::docs(
-                    &v.docs,
-                    SExpr::Vec(vec![
-                        SExpr::word("field"),
-                        v.name.to_sexpr(),
-                        v.tref.to_sexpr(),
-                    ]),
-                )
+                if let Some(ref tref) = v.tref {
+                    SExpr::docs(
+                        &v.docs,
+                        SExpr::Vec(vec![
+                            SExpr::word("field"),
+                            v.name.to_sexpr(),
+                            tref.to_sexpr(),
+                        ]),
+                    )
+                } else {
+                    SExpr::docs(
+                        &v.docs,
+                        SExpr::Vec(vec![SExpr::word("empty"), v.name.to_sexpr()]),
+                    )
+                }
             })
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, variants].concat())
