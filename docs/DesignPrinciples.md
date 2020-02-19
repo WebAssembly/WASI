@@ -181,7 +181,7 @@ filesystem. When needed, compatibility with POSIX-style APIs is then
 provided as a thin layer on top implementing a simple name-to-handle
 mapping.
 
-We recognize that this approach has tradeoffs. It often does take more
+We recognize that this approach has trade-offs. It often does take more
 work to design and implement the compatibility layers needed to support
 existing applications than if we just made WASI always expose
 POSIX-style APIs directly. It will take more work to port existing
