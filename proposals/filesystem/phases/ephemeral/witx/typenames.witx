@@ -42,7 +42,7 @@
     ;;; Argument list too long.
     $2big
     ;;; Permission denied.
-    $acces
+    $access
     ;;; Address in use.
     $addrinuse
     ;;; Address not available.
