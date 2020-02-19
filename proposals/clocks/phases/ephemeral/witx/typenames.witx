@@ -24,10 +24,6 @@
     ;;; clock jumps. The epoch of this clock is undefined. The absolute time
     ;;; value of this clock therefore has no meaning.
     $monotonic
-    ;;; The CPU-time clock associated with the current process.
-    $process_cputime_id
-    ;;; The CPU-time clock associated with the current thread.
-    $thread_cputime_id
   )
 )
 
