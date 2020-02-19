@@ -21,12 +21,6 @@ real time, whose value cannot be adjusted and which cannot have negative
 clock jumps. The epoch of this clock is undefined. The absolute time
 value of this clock therefore has no meaning.
 
-- <a href="#clockid.process_cputime_id" name="clockid.process_cputime_id"></a> `process_cputime_id`
-The CPU-time clock associated with the current process.
-
-- <a href="#clockid.thread_cputime_id" name="clockid.thread_cputime_id"></a> `thread_cputime_id`
-The CPU-time clock associated with the current thread.
-
 ## <a href="#errno" name="errno"></a> `errno`: Enum(`u16`)
 Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
