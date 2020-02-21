@@ -12,7 +12,8 @@
   (import "memory" (memory))
 
   ;;; Return the resolution of a clock.
-  ;;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks, return `WASI_EINVAL`
+  ;;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,
+  ;;; return `errno::inval`.
   ;;; Note: This is similar to `clock_getres` in POSIX.
   (@interface func (export "res_get")
     (result $error $errno)

@@ -544,7 +544,7 @@
   )
 )
 
-;;; The contents of a $subscription when type is `eventtype::clock`.
+;;; The contents of a `subscription` when type is `eventtype::clock`.
 (typename $subscription_clock
   (struct
     ;;; The clock against which to compare the timestamp.
@@ -559,7 +559,7 @@
   )
 )
 
-;;; The contents of a $subscription when type is type is
+;;; The contents of a `subscription` when type is type is
 ;;; `eventtype::fd_read` or `eventtype::fd_write`.
 (typename $subscription_fd_readwrite
   (struct
@@ -568,7 +568,7 @@
   )
 )
 
-;;; The contents of a $subscription.
+;;; The contents of a `subscription`.
 (typename $subscription_u
   (union $eventtype
     (field $clock $subscription_clock)
