@@ -68,7 +68,7 @@
   )
 
   ;;; Adjust the rights associated with a file descriptor.
-  ;;; This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
+  ;;; This can only be used to remove rights, and returns `errno::notcapable` if called in a way that would attempt to add rights
   (@interface func (export "fdstat_set_rights")
     (param $fd $fd)
     ;;; The desired rights of the file descriptor.
@@ -182,8 +182,8 @@
 
   ;;; Read directory entries from a directory.
   ;;; When successful, the contents of the output buffer consist of a sequence of
-  ;;; directory entries. Each directory entry consists of a dirent_t object,
-  ;;; followed by dirent_t::d_namlen bytes holding the name of the directory
+  ;;; directory entries. Each directory entry consists of a `dirent` object,
+  ;;; followed by `dirent::d_namlen` bytes holding the name of the directory
   ;;; entry.
   ;;
   ;;; This function fills the output buffer as much as possible, potentially
