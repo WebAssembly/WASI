@@ -669,7 +669,7 @@ provided in [`subscription_clock::timeout`](#subscription_clock.timeout) relativ
 current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
 ## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Struct
-The contents of a $subscription when type is [`eventtype::clock`](#eventtype.clock).
+The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
 
 ### Struct members
 - <a href="#subscription_clock.id" name="subscription_clock.id"></a> `id`: [`clockid`](#clockid)
@@ -686,7 +686,7 @@ to coalesce with other events.
 Flags specifying whether the timeout is absolute or relative
 
 ## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Struct
-The contents of a $subscription when type is type is
+The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 ### Struct members
@@ -694,7 +694,7 @@ The contents of a $subscription when type is type is
 The file descriptor on which to wait for it to become ready for reading or writing.
 
 ## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
-The contents of a $subscription.
+The contents of a [`subscription`](#subscription).
 
 ### Union variants
 - <a href="#subscription_u.clock" name="subscription_u.clock"></a> `clock`: [`subscription_clock`](#subscription_clock)

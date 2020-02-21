@@ -266,7 +266,7 @@ File descriptor rights, determining which actions may be performed.
 - <a href="#rights.fd_datasync" name="rights.fd_datasync"></a> `fd_datasync`
 The right to invoke `fd_datasync`.
 If `path_open` is set, includes the right to invoke
-`path_open` with `fdflag::dsync`.
+`path_open` with [`fdflags::dsync`](#fdflags.dsync).
 
 - <a href="#rights.fd_read" name="rights.fd_read"></a> `fd_read`
 The right to invoke `fd_read` and `sock_recv`.
@@ -281,11 +281,11 @@ The right to invoke `fd_fdstat_set_flags`.
 - <a href="#rights.fd_sync" name="rights.fd_sync"></a> `fd_sync`
 The right to invoke `fd_sync`.
 If `path_open` is set, includes the right to invoke
-`path_open` with `fdflag::rsync` and `fdflag::dsync`.
+`path_open` with [`fdflags::rsync`](#fdflags.rsync) and [`fdflags::dsync`](#fdflags.dsync).
 
 - <a href="#rights.fd_tell" name="rights.fd_tell"></a> `fd_tell`
 The right to invoke `fd_seek` in such a way that the file offset
-remains unaltered (i.e., `WHENCE_CUR` with offset zero), or to
+remains unaltered (i.e., [`whence::cur`](#whence.cur) with offset zero), or to
 invoke `fd_tell`.
 
 - <a href="#rights.fd_write" name="rights.fd_write"></a> `fd_write`
@@ -420,7 +420,7 @@ A reference to the offset of a directory entry.
 In an `fd_readdir` call, this value signifies the start of the directory.
 
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
-The type for the $d_namlen field of $dirent.
+The type for the [`dirent::d_namlen`](#dirent.d_namlen) field of [`dirent`](#dirent).
 
 ## <a href="#inode" name="inode"></a> `inode`: `u64`
 File serial number that is unique within its file system.
@@ -541,16 +541,16 @@ Which file time attributes to adjust.
 
 ### Flags
 - <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`
-Adjust the last data access timestamp to the value stored in `filestat::st_atim`.
+Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
 
 - <a href="#fstflags.atim_now" name="fstflags.atim_now"></a> `atim_now`
-Adjust the last data access timestamp to the time of clock `clock::realtime`.
+Adjust the last data access timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
 
 - <a href="#fstflags.mtim" name="fstflags.mtim"></a> `mtim`
-Adjust the last data modification timestamp to the value stored in `filestat::st_mtim`.
+Adjust the last data modification timestamp to the value stored in [`filestat::mtim`](#filestat.mtim).
 
 - <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`
-Adjust the last data modification timestamp to the time of clock `clock::realtime`.
+Adjust the last data modification timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
 
 ## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: Flags(`u32`)
 Flags determining the method of how paths are resolved.
@@ -648,15 +648,15 @@ Type of a subscription to an event or its occurrence.
 
 ### Variants
 - <a href="#eventtype.clock" name="eventtype.clock"></a> `clock`
-The time value of clock `subscription::u.clock.clock_id` has
-reached timestamp `subscription::u.clock.timeout`.
+The time value of clock [`subscription_clock::id`](#subscription_clock.id) has
+reached timestamp [`subscription_clock::timeout`](#subscription_clock.timeout).
 
 - <a href="#eventtype.fd_read" name="eventtype.fd_read"></a> `fd_read`
-File descriptor `subscription::u.fd_readwrite.fd` has data
+File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has data
 available for reading. This event always triggers for regular files.
 
 - <a href="#eventtype.fd_write" name="eventtype.fd_write"></a> `fd_write`
-File descriptor `subscription::u.fd_readwrite.fd` has capacity
+File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has capacity
 available for writing. This event always triggers for regular files.
 
 ## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: Flags(`u16`)
@@ -668,7 +668,7 @@ The state of the file descriptor subscribed to with
 The peer of this socket has closed or disconnected.
 
 ## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Struct
-The contents of an $event when type is [`eventtype::fd_read`](#eventtype.fd_read) or
+The contents of an [`event`](#event) when type is [`eventtype::fd_read`](#eventtype.fd_read) or
 [`eventtype::fd_write`](#eventtype.fd_write).
 
 ### Struct members
@@ -679,7 +679,7 @@ The number of bytes available for reading or writing.
 The state of the file descriptor.
 
 ## <a href="#event_u" name="event_u"></a> `event_u`: Union
-The contents of an $event.
+The contents of an [`event`](#event).
 
 ### Union variants
 - <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
@@ -703,18 +703,18 @@ The type of the event that occurred, and the contents of the event
 
 ## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: Flags(`u16`)
 Flags determining how to interpret the timestamp provided in
-`subscription::u.clock.timeout.`
+[`subscription_clock::timeout`](#subscription_clock.timeout).
 
 ### Flags
 - <a href="#subclockflags.subscription_clock_abstime" name="subclockflags.subscription_clock_abstime"></a> `subscription_clock_abstime`
 If set, treat the timestamp provided in
-`subscription::u.clock.timeout` as an absolute timestamp of clock
-`subscription::u.clock.clock_id.` If clear, treat the timestamp
-provided in `subscription::u.clock.timeout` relative to the
-current time value of clock `subscription::u.clock.clock_id.`
+[`subscription_clock::timeout`](#subscription_clock.timeout) as an absolute timestamp of clock
+[`subscription_clock::id`](#subscription_clock.id). If clear, treat the timestamp
+provided in [`subscription_clock::timeout`](#subscription_clock.timeout) relative to the
+current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
 ## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Struct
-The contents of a $subscription when type is [`eventtype::clock`](#eventtype.clock).
+The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
 
 ### Struct members
 - <a href="#subscription_clock.id" name="subscription_clock.id"></a> `id`: [`clockid`](#clockid)
@@ -731,7 +731,7 @@ to coalesce with other events.
 Flags specifying whether the timeout is absolute or relative
 
 ## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Struct
-The contents of a $subscription when type is type is
+The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 ### Struct members
@@ -739,7 +739,7 @@ The contents of a $subscription when type is type is
 The file descriptor on which to wait for it to become ready for reading or writing.
 
 ## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
-The contents of a $subscription.
+The contents of a [`subscription`](#subscription).
 
 ### Union variants
 - <a href="#subscription_u.clock" name="subscription_u.clock"></a> `clock`: [`subscription_clock`](#subscription_clock)
@@ -801,7 +801,7 @@ Identifiers for preopened capabilities.
 A pre-opened directory.
 
 ## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Struct
-The contents of a $prestat when its $pr_type is [`preopentype::dir`](#preopentype.dir).
+The contents of a [`prestat`](#prestat) when its type is [`preopentype::dir`](#preopentype.dir).
 
 ### Struct members
 - <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
@@ -859,7 +859,8 @@ The size of the argument string data.
 
 #### <a href="#res_get" name="res_get"></a> `res_get(id: clockid) -> (errno, timestamp)`
 Return the resolution of a clock.
-Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks, return `WASI_EINVAL`
+Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,
+return [`errno::inval`](#errno.inval).
 Note: This is similar to `clock_getres` in POSIX.
 
 ##### Params
@@ -1035,7 +1036,7 @@ The desired values of the file descriptor flags.
 
 #### <a href="#fdstat_set_rights" name="fdstat_set_rights"></a> `fdstat_set_rights(fd: fd, fs_rights_base: rights, fs_rights_inheriting: rights) -> errno`
 Adjust the rights associated with a file descriptor.
-This can only be used to remove rights, and returns `ENOTCAPABLE` if called in a way that would attempt to add rights
+This can only be used to remove rights, and returns [`errno::notcapable`](#errno.notcapable) if called in a way that would attempt to add rights
 
 ##### Params
 - <a href="#fdstat_set_rights.fd" name="fdstat_set_rights.fd"></a> `fd`: [`fd`](#fd)
@@ -1228,8 +1229,8 @@ The number of bytes read.
 #### <a href="#readdir" name="readdir"></a> `readdir(fd: fd, buf: Pointer<u8>, buf_len: size, cookie: dircookie) -> (errno, size)`
 Read directory entries from a directory.
 When successful, the contents of the output buffer consist of a sequence of
-directory entries. Each directory entry consists of a dirent_t object,
-followed by dirent_t::d_namlen bytes holding the name of the directory
+directory entries. Each directory entry consists of a [`dirent`](#dirent) object,
+followed by [`dirent::d_namlen`](#dirent.d_namlen) bytes holding the name of the directory
 entry.
 This function fills the output buffer as much as possible, potentially
 truncating the last directory entry. This allows the caller to grow its
@@ -1492,7 +1493,7 @@ Flags determining the method of how the path is resolved.
 
 - <a href="#open.path" name="open.path"></a> `path`: `string`
 The relative path of the file or directory to open, relative to the
-`dirfd` directory.
+[`fd`](#fd) directory.
 
 - <a href="#open.oflags" name="open.oflags"></a> `oflags`: [`oflags`](#oflags)
 The method by which to open the file.
@@ -1548,7 +1549,7 @@ The number of bytes placed in the buffer.
 
 #### <a href="#remove_directory" name="remove_directory"></a> `remove_directory(fd: fd, path: string) -> errno`
 Remove a directory.
-Return `ENOTEMPTY` if the directory is not empty.
+Return [`errno::notempty`](#errno.notempty) if the directory is not empty.
 Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 
 ##### Params
@@ -1606,7 +1607,7 @@ The destination path at which to create the symbolic link.
 
 #### <a href="#unlink_file" name="unlink_file"></a> `unlink_file(fd: fd, path: string) -> errno`
 Unlink a file.
-Return `EISDIR` if the path refers to a directory.
+Return [`errno::isdir`](#errno.isdir) if the path refers to a directory.
 Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
 
 ##### Params
