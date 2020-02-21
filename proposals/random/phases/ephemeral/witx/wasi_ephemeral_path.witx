@@ -102,7 +102,7 @@
     ;;; Flags determining the method of how the path is resolved.
     (param $dirflags $lookupflags)
     ;;; The relative path of the file or directory to open, relative to the
-    ;;; `dirfd` directory.
+    ;;; `fd` directory.
     (param $path string)
     ;;; The method by which to open the file.
     (param $oflags $oflags)
@@ -139,7 +139,7 @@
   )
 
   ;;; Remove a directory.
-  ;;; Return `ENOTEMPTY` if the directory is not empty.
+  ;;; Return `errno::notempty` if the directory is not empty.
   ;;; Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
   (@interface func (export "remove_directory")
     (param $fd $fd)
@@ -173,7 +173,7 @@
   )
 
   ;;; Unlink a file.
-  ;;; Return `EISDIR` if the path refers to a directory.
+  ;;; Return `errno::isdir` if the path refers to a directory.
   ;;; Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
   (@interface func (export "unlink_file")
     (param $fd $fd)
