@@ -1,0 +1,21 @@
+;; WASI Environment Variables.
+;;
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; for an explanation of what that means.
+
+(use "typenames.witx")
+
+(module $wasi_ephemeral_framebuffer
+ ;;; Linear memory to be accessed by WASI functions that need it.
+ (import "memory" (memory))
+
+ ;;; Function to output rgba array to the framebuffer
+ (@interface func (export "draw")
+  ;; Pointer to the buffer
+  (param $frame_buf (@witx pointer u8))
+  ;; Length of the buffer
+  (param $buf_length u64)
+  ;; The error code of the operation
+  (result $error $errno)
+ )
+)
