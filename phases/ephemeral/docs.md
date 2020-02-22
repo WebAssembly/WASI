@@ -916,17 +916,17 @@ The sizes of the buffers should match that returned by [`sizes_get`](#sizes_get)
 ---
 
 #### <a href="#sizes_get" name="sizes_get"></a> `sizes_get() -> (errno, size, size)`
-Return command-line argument data sizes.
+Return environment variable data sizes.
 
 ##### Params
 ##### Results
 - <a href="#sizes_get.error" name="sizes_get.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sizes_get.argc" name="sizes_get.argc"></a> `argc`: [`size`](#size)
-The number of arguments.
+- <a href="#sizes_get.environc" name="sizes_get.environc"></a> `environc`: [`size`](#size)
+The number of environment variable arguments.
 
-- <a href="#sizes_get.argv_buf_size" name="sizes_get.argv_buf_size"></a> `argv_buf_size`: [`size`](#size)
-The size of the argument string data.
+- <a href="#sizes_get.environ_buf_size" name="sizes_get.environ_buf_size"></a> `environ_buf_size`: [`size`](#size)
+The size of the environment variable data.
 
 ## <a href="#wasi_ephemeral_fd" name="wasi_ephemeral_fd"></a> wasi_ephemeral_fd
 ### Imports
