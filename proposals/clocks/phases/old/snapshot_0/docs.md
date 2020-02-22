@@ -952,17 +952,17 @@ The sizes of the buffers should match that returned by [`environ_sizes_get`](#en
 ---
 
 #### <a href="#environ_sizes_get" name="environ_sizes_get"></a> `environ_sizes_get() -> (errno, size, size)`
-Return command-line argument data sizes.
+Return environment variable data sizes.
 
 ##### Params
 ##### Results
 - <a href="#environ_sizes_get.error" name="environ_sizes_get.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#environ_sizes_get.argc" name="environ_sizes_get.argc"></a> `argc`: [`size`](#size)
-The number of arguments.
+- <a href="#environ_sizes_get.environc" name="environ_sizes_get.environc"></a> `environc`: [`size`](#size)
+The number of environment variable arguments.
 
-- <a href="#environ_sizes_get.argv_buf_size" name="environ_sizes_get.argv_buf_size"></a> `argv_buf_size`: [`size`](#size)
-The size of the argument string data.
+- <a href="#environ_sizes_get.environ_buf_size" name="environ_sizes_get.environ_buf_size"></a> `environ_buf_size`: [`size`](#size)
+The size of the environment variable data.
 
 
 ---
