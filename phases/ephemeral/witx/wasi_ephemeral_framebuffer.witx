@@ -14,7 +14,7 @@
   ;; Pointer to the buffer
   (param $frame_buf (@witx pointer u8))
   ;; Length of the buffer
-  (param $buf_length u64)
+  (param $buf_length $size)
   ;; The error code of the operation
   (result $error $errno)
  )
