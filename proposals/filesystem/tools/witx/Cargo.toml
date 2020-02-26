@@ -19,7 +19,7 @@ path = "src/main.rs"
 
 [dependencies]
 structopt = "0.3"
-wast = "8.0.0"
+wast = { version = "9.0.0", default-features = false }
 thiserror = "1.0"
 log = "0.4"
 pretty_env_logger = "0.3"
