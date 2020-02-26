@@ -52,9 +52,9 @@
   ;;; `errno::inval`.
   ;;; Note: This is similar to `clock_getres` in POSIX.
   (@interface func (export "clock_res_get")
-    (result $error $errno)
     ;;; The clock for which to return the resolution.
     (param $id $clockid)
+    (result $error $errno)
     ;;; The resolution of the clock.
     (result $resolution $timestamp)
   )
