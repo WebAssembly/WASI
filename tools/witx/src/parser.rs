@@ -1,6 +1,6 @@
 use crate::BuiltinType;
 use wast::lexer::Comment;
-use wast::parser::{Cursor, Parse, Parser, Peek, Result};
+use wast::parser::{Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
 ///! conventions:
@@ -46,6 +46,11 @@ mod kw {
     wast::custom_keyword!(u64);
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
+}
+
+mod annotation {
+    wast::annotation!(interface);
+    wast::annotation!(witx);
 }
 
 impl Parse<'_> for BuiltinType {
@@ -186,55 +191,11 @@ pub struct Documented<'a, T> {
 
 impl<'a, T: Parse<'a>> Parse<'a> for Documented<'a, T> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
+        let _r1 = parser.register_annotation("witx");
+        let _r1 = parser.register_annotation("interface");
         let comments = parser.parse()?;
         let item = parser.parse()?;
         Ok(Documented { comments, item })
-    }
-}
-
-struct AtWitx;
-
-impl Parse<'_> for AtWitx {
-    fn parse(parser: Parser<'_>) -> Result<Self> {
-        parser.step(|c| {
-            if let Some(("@witx", rest)) = c.reserved() {
-                return Ok((AtWitx, rest));
-            }
-            Err(c.error("expected `@witx`"))
-        })
-    }
-}
-
-impl Peek for AtWitx {
-    fn peek(cursor: Cursor<'_>) -> bool {
-        cursor.reserved().map(|s| s.0) == Some("@witx")
-    }
-
-    fn display() -> &'static str {
-        "`@witx`"
-    }
-}
-
-struct AtInterface;
-
-impl Parse<'_> for AtInterface {
-    fn parse(parser: Parser<'_>) -> Result<Self> {
-        parser.step(|c| {
-            if let Some(("@interface", rest)) = c.reserved() {
-                return Ok((AtInterface, rest));
-            }
-            Err(c.error("expected `@interface`"))
-        })
-    }
-}
-
-impl Peek for AtInterface {
-    fn peek(cursor: Cursor<'_>) -> bool {
-        cursor.reserved().map(|s| s.0) == Some("@interface")
-    }
-
-    fn display() -> &'static str {
-        "`@interface`"
     }
 }
 
@@ -346,8 +307,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                 } else if l.peek::<kw::array>() {
                     parser.parse::<kw::array>()?;
                     Ok(TypedefSyntax::Array(Box::new(parser.parse()?)))
-                } else if l.peek::<AtWitx>() {
-                    parser.parse::<AtWitx>()?;
+                } else if l.peek::<annotation::witx>() {
+                    parser.parse::<annotation::witx>()?;
                     let mut l = parser.lookahead1();
                     if l.peek::<kw::const_pointer>() {
                         parser.parse::<kw::const_pointer>()?;
@@ -569,7 +530,7 @@ impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
             let mut l = p.lookahead1();
             if l.peek::<kw::import>() {
                 Ok(ModuleDeclSyntax::Import(p.parse()?))
-            } else if l.peek::<AtInterface>() {
+            } else if l.peek::<annotation::interface>() {
                 Ok(ModuleDeclSyntax::Func(p.parse()?))
             } else {
                 Err(l.error())
@@ -629,7 +590,7 @@ pub struct InterfaceFuncSyntax<'a> {
 
 impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<AtInterface>()?;
+        parser.parse::<annotation::interface>()?;
         parser.parse::<kw::func>()?;
 
         let (export_loc, export) = parser.parens(|p| {
@@ -693,8 +654,8 @@ impl<'a> Parse<'a> for InterfaceFuncField<'a> {
                     name: parser.parse()?,
                     type_: parser.parse()?,
                 }))
-            } else if l.peek::<AtWitx>() {
-                parser.parse::<AtWitx>()?;
+            } else if l.peek::<annotation::witx>() {
+                parser.parse::<annotation::witx>()?;
                 let mut l = parser.lookahead1();
                 if l.peek::<kw::noreturn>() {
                     parser.parse::<kw::noreturn>()?;
