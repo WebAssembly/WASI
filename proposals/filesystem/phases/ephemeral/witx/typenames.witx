@@ -5,6 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
+;;; An array size.
+;;;
+;;; Note: This is similar to `size_t` in POSIX.
 (typename $size (@witx usize))
 
 ;;; Non-negative file size or length of a region within a file.
