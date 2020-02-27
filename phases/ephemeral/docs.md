@@ -2393,7 +2393,7 @@ Terminate the process normally. An exit code of `$exitcode::success`
 reports successful completion of the program. An exit code of
 `$exitcode::failure` or any other value less than 126 reports a
 failure, and the value is provided to the environment. If a value
-of at least 126 is given, this function behaves as if it were
+of 126 or greater is given, this function behaves as if it were
 implemented by an `unreachable` instruction.
 
 ##### Params
