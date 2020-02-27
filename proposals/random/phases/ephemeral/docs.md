@@ -1,5 +1,8 @@
 # Types
 ## <a href="#size" name="size"></a> `size`: `usize`
+An array size.
+
+Note: This is similar to `size_t` in POSIX.
 
 ## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
 Non-negative file size or length of a region within a file.
