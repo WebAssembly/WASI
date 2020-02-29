@@ -368,9 +368,10 @@ If [`rights::fd_write`](#rights.fd_write) is set, includes the right to invoke [
 - <a href="#rights.sock_shutdown" name="rights.sock_shutdown"></a> `sock_shutdown`
 The right to invoke [`sock_shutdown`](#sock_shutdown).
 
-## <a href="#fd" name="fd"></a> `fd`: `u32`
-A file descriptor index.
+## <a href="#fd" name="fd"></a> `fd`
+A file descriptor handle.
 
+### Supertypes
 ## <a href="#iovec" name="iovec"></a> `iovec`: Struct
 A region of memory for scatter/gather reads.
 
