@@ -273,8 +273,8 @@
   )
 )
 
-;;; A file descriptor index.
-(typename $fd u32)
+;;; A file descriptor handle.
+(typename $fd (handle))
 
 ;;; A region of memory for scatter/gather reads.
 (typename $iovec
