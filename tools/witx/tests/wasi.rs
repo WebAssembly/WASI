@@ -155,7 +155,9 @@ fn diff_against_filesystem(expected: &str, path: &Path) {
     }
 
     eprintln!();
-    eprintln!("To regenerate the files, run `cd tools/witx && cargo run -- repo-docs`.");
+    eprintln!(
+        "To regenerate the files, run `cd tools/witx && cargo run --example witx repo-docs`."
+    );
     eprintln!();
     panic!();
 }
