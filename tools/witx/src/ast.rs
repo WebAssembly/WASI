@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::rc::{Rc, Weak};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -38,6 +38,18 @@ impl Document {
             Definition::Typename(nt) => Some(nt.clone()),
             _ => None,
         })
+    }
+    /// All of the (unique) types used as the first result value of a function.
+    pub fn error_types<'a>(&'a self) -> impl Iterator<Item = TypeRef> + 'a {
+        let errors: HashSet<TypeRef> = self
+            .modules()
+            .flat_map(|m| {
+                m.funcs()
+                    .filter_map(|f| f.results.get(0).as_ref().map(|r| r.tref.clone()))
+                    .collect::<HashSet<TypeRef>>()
+            })
+            .collect();
+        errors.into_iter()
     }
     pub fn module(&self, name: &Id) -> Option<Rc<Module>> {
         self.entries.get(&name).and_then(|e| match e {
