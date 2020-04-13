@@ -1,6 +1,17 @@
-# WASI development process
+# WASI's ephemeral/snapshot/old Process
 
-## WASI uses a 3-phase process:
+For the standardization process, WASI overall uses a [process]
+modeled after the WebAssembly CG's phased process.
+
+For development of features in Phase 2 and later of that process, WASI
+has a ephemeral/snapshot/old process, which is designed to allow
+for a balance between the need for stability to allow people to build
+compatible implementations, libraries, and tools and gain implementation
+experience, and the need for proposals to evolve.
+
+[phases process]: https://github.com/WebAssembly/WASI/blob/master/phases/README.md
+
+## The ephemeral/snapshot/old Phases
 
 - [`ephemeral`](ephemeral): The development staging area. New API
   proposals API-changing fixes to existing APIs should be submitted
@@ -37,25 +48,3 @@
   versions, the old API modules are moved to the `old` directory. When
   possible, `old` APIs may be accompanied by polyfill modules which
   implement their API in terms of newer versions of the API.
-
-## Rationale
-
-### Relationship to the CG's phases
-
-When WASI becomes more mature, such that we have an established base
-and we're adding incremental functionality to it, we may want to adopt
-a process like [the CG's phases]. However, right now, everything in
-WASI is undergoing changes, so we have a greater need to iterate with
-flexibility.
-
-### Relationship to standards
-
-WASI should eventually become a standard at the level of WebAssembly
-itself. Right now, it needs a lot of work before it's ready. The
-`snapshot` tree is meant to serve a practical purpose for people who
-want to work with APIs today, with the understanding that everything
-is still evolving. It's not meant as a replacement for proper
-standardization, which will happen once the overall API is more
-mature.
-
-[the CG's phases]: https://github.com/WebAssembly/meetings/blob/master/process/phases.md
