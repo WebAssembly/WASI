@@ -25,6 +25,10 @@ There are two kinds of modules:
    the module and all of its dependencies. After this function exits, the instance
    remains live, and its exports may be accessed.
 
+These kinds are mutually exclusive; implementations should report an error if
+asked to instantiate a module containing exports which declare it to be of
+multiple kinds.
+
 Regardless of the kind, all programs accessing WASI APIs also export a linear
 memory with the name `memory`. Pointers in WASI API calls are relative to this
 memory's index space.
