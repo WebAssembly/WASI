@@ -12,20 +12,25 @@ include.
 Current Unstable ABI
 --------------------
 
-The current WASI unstable ABI specifies only two exports from a WASI
-application:
+There are two kinds of modules:
 
-- `_start` - the program entry point
-- `memory` - linear memory used by the program
+ - A *command* exports a function named `_start`, with no arguments and no return
+   values. Environments shall call this function once, after instantiating the
+   module and all of its dependencies. After this function exits, the instance
+   is considered terminated and no further use of any of its exports should be
+   permitted.
 
-The `_start` export must be WebAssembly function and will be used as the program
-entry point.  This is the default name used by `lld` when linking WebAssembly
-modules.  The embedder is expected to call this function once the module is
-instantiated.
+ - A *reactor* exports a function named `_activate`, with no arguments and no
+   return values. Environments shall call this function once, after instantiating
+   the module and all of its dependencies. After this function exits, the instance
+   remains live, and its exports may be accessed.
 
-Many of the current WASI unstable APIs require sharing of linear memory between
-the application and the embedder.  In order to use any such APIs the WASI module
-is expected to export its linear memory under the name `memory`.
+Regardless of the kind, all programs accessing WASI APIs also export a linear
+memory with the name `memory`. Pointers in WASI API calls are relative to this
+memory's index space.
+
+In the future, as the underlying WebAssembly platform offers more features, we
+we hope to eliminate the requirement to export all of linear memory.
 
 Planned Stable ABI
 ------------------
