@@ -20,7 +20,7 @@ There are two kinds of modules:
    is considered terminated and no further use of any of its exports should be
    permitted.
 
- - A *reactor* exports a function named `_activate`, with no arguments and no
+ - A *reactor* exports a function named `_initialize`, with no arguments and no
    return values. Environments shall call this function once, after instantiating
    the module and all of its dependencies. After this function exits, the instance
    remains live, and its exports may be accessed.
