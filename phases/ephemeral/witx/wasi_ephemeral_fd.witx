@@ -127,7 +127,7 @@
   )
 
   ;;; Read from a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `preadv` in POSIX.
+  ;;; Note: This is similar to `preadv` in Linux (and other Unix-es).
   (@interface func (export "pread")
     (param $fd $fd)
     ;;; List of scatter/gather vectors in which to store data.
@@ -157,7 +157,7 @@
   )
 
   ;;; Write to a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `pwritev` in POSIX.
+  ;;; Note: This is similar to `pwritev` in Linux (and other Unix-es).
   (@interface func (export "pwrite")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
