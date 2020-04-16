@@ -160,9 +160,9 @@
   ;;; Note: This is similar to `pwritev` in Linux (and other Unix-es).
   ;;;
   ;;; Like Linux (and other Unix-es), `pwrite` should write all data in `$iovs`
-  ;;; atomically: Any concurrent calls of `pwrite` (and other functions to
-  ;;; read or write on the file) should see the data in `$iovs` either written all or
-  ;;; not written at all.
+  ;;; atomically: Any concurrent calls of `pwrite` (and other functions to read or write
+  ;;; on the file) by other threads in the WASI process should see the data in `$iovs`
+  ;;; either written all or not written at all.
   (@interface func (export "pwrite")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
@@ -257,9 +257,9 @@
   ;;; Note: This is similar to `writev` in POSIX.
   ;;;
   ;;; Like POSIX, `write` should write all data in `$iovs`
-  ;;; atomically: Any concurrent calls of `write` (and other functions to
-  ;;; read or write on the file) should see the data in `$iovs` either written all or
-  ;;; not written at all.
+  ;;; atomically: Any concurrent calls of `write` (and other functions to read or write
+  ;;; on the file) by other threads in the WASI process should see the data in `$iovs`
+  ;;; either written all or not written at all.
   (@interface func (export "write")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
