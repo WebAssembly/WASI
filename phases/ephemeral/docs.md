@@ -1410,7 +1410,7 @@ The permissions associated with the file.
 
 #### <a href="#pread" name="pread"></a> `pread(fd: fd, iovs: iovec_array, offset: filesize) -> (errno, size)`
 Read from a file descriptor, without using and updating the file descriptor's offset.
-Note: This is similar to `preadv` in POSIX.
+Note: This is similar to `preadv` in Linux (and other Unix-es).
 
 ##### Params
 - <a href="#pread.fd" name="pread.fd"></a> `fd`: [`fd`](#fd)
@@ -1464,7 +1464,12 @@ A buffer into which to write the preopened directory name.
 
 #### <a href="#pwrite" name="pwrite"></a> `pwrite(fd: fd, iovs: ciovec_array, offset: filesize) -> (errno, size)`
 Write to a file descriptor, without using and updating the file descriptor's offset.
-Note: This is similar to `pwritev` in POSIX.
+Note: This is similar to `pwritev` in Linux (and other Unix-es).
+
+Like Linux (and other Unix-es), [`pwrite`](#pwrite) should write all data in `$iovs`
+atomically: Any concurrent calls of [`pwrite`](#pwrite) (and other functions to read or write
+on the file) by other threads in the WASI process should see the data in `$iovs`
+either written all or not written at all.
 
 ##### Params
 - <a href="#pwrite.fd" name="pwrite.fd"></a> `fd`: [`fd`](#fd)
@@ -1610,6 +1615,11 @@ The current offset of the file descriptor, relative to the start of the file.
 #### <a href="#write" name="write"></a> `write(fd: fd, iovs: ciovec_array) -> (errno, size)`
 Write to a file descriptor.
 Note: This is similar to `writev` in POSIX.
+
+Like POSIX, [`write`](#write) should write all data in `$iovs`
+atomically: Any concurrent calls of [`write`](#write) (and other functions to read or write
+on the file) by other threads in the WASI process should see the data in `$iovs`
+either written all or not written at all.
 
 ##### Params
 - <a href="#write.fd" name="write.fd"></a> `fd`: [`fd`](#fd)
