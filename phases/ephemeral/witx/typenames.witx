@@ -367,10 +367,10 @@
     (field $d_next $dircookie)
     ;;; The serial number of the file referred to by this directory entry.
     (field $d_ino $inode)
-    ;;; The length of the name of the directory entry.
-    (field $d_namlen $dirnamlen)
     ;;; The type of the file referred to by this directory entry.
     (field $d_type $filetype)
+    ;;; The length of the name of the directory entry.
+    (field $d_namlen $dirnamlen)
   )
 )
 
