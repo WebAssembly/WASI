@@ -46,6 +46,7 @@ mod kw {
     wast::custom_keyword!(u64);
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
+    wast::custom_keyword!(profile);
 }
 
 mod annotation {
@@ -237,6 +238,7 @@ impl<'a> Parse<'a> for TopLevelSyntax<'a> {
 pub enum DeclSyntax<'a> {
     Typename(TypenameSyntax<'a>),
     Module(ModuleSyntax<'a>),
+    Profile(ProfileSyntax<'a>),
 }
 
 impl<'a> Parse<'a> for DeclSyntax<'a> {
@@ -246,6 +248,8 @@ impl<'a> Parse<'a> for DeclSyntax<'a> {
             Ok(DeclSyntax::Module(parser.parse()?))
         } else if l.peek::<kw::typename>() {
             Ok(DeclSyntax::Typename(parser.parse()?))
+        } else if l.peek::<kw::profile>() {
+            Ok(DeclSyntax::Profile(parser.parse()?))
         } else {
             Err(l.error())
         }
@@ -529,6 +533,7 @@ impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
         parser.parens(|p| {
             let mut l = p.lookahead1();
             if l.peek::<kw::import>() {
+                let _ = parser.parse::<kw::import>().expect("just peeked it");
                 Ok(ModuleDeclSyntax::Import(p.parse()?))
             } else if l.peek::<annotation::interface>() {
                 Ok(ModuleDeclSyntax::Func(p.parse()?))
@@ -548,7 +553,6 @@ pub struct ModuleImportSyntax<'a> {
 
 impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::import>()?;
         let name_loc = parser.cur_span();
         Ok(ModuleImportSyntax {
             name: parser.parse()?,
@@ -681,3 +685,43 @@ impl PartialEq for InterfaceFuncSyntax<'_> {
 }
 
 impl Eq for InterfaceFuncSyntax<'_> {}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ProfileSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub decls: Vec<Documented<'a, ProfileDeclSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for ProfileSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::profile>()?;
+        let name = parser.parse()?;
+        let mut decls = Vec::new();
+        while !parser.is_empty() {
+            decls.push(parser.parse()?);
+        }
+        Ok(ProfileSyntax { name, decls })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ProfileDeclSyntax<'a> {
+    Import(wast::Id<'a>),
+    Func(InterfaceFuncSyntax<'a>),
+}
+
+impl<'a> Parse<'a> for ProfileDeclSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parens(|p| {
+            let mut l = p.lookahead1();
+            if l.peek::<kw::import>() {
+                let _ = p.parse::<kw::import>().expect("just peeked kw");
+                Ok(ProfileDeclSyntax::Import(p.parse()?))
+            } else if l.peek::<annotation::interface>() {
+                Ok(ProfileDeclSyntax::Func(p.parse()?))
+            } else {
+                Err(l.error())
+            }
+        })
+    }
+}

@@ -63,6 +63,18 @@ impl Document {
             _ => None,
         })
     }
+    pub fn profile(&self, name: &Id) -> Option<Rc<Profile>> {
+        self.entries.get(&name).and_then(|e| match e {
+            Entry::Profile(m) => Some(m.upgrade().expect("always possible to upgrade entry")),
+            _ => None,
+        })
+    }
+    pub fn profiles<'a>(&'a self) -> impl Iterator<Item = Rc<Profile>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            Definition::Profile(m) => Some(m.clone()),
+            _ => None,
+        })
+    }
 }
 
 impl PartialEq for Document {
@@ -84,12 +96,14 @@ impl std::hash::Hash for Document {
 pub enum Definition {
     Typename(Rc<NamedType>),
     Module(Rc<Module>),
+    Profile(Rc<Profile>),
 }
 
 #[derive(Debug, Clone)]
 pub enum Entry {
     Typename(Weak<NamedType>),
     Module(Weak<Module>),
+    Profile(Weak<Profile>),
 }
 
 impl Entry {
@@ -97,6 +111,7 @@ impl Entry {
         match self {
             Entry::Typename { .. } => "typename",
             Entry::Module { .. } => "module",
+            Entry::Profile { .. } => "profile",
         }
     }
 }
@@ -115,6 +130,13 @@ impl PartialEq for Entry {
                 m.upgrade()
                     .expect("possible to upgrade entry when part of document")
                     == m_rhs
+                        .upgrade()
+                        .expect("possible to upgrade entry when part of document")
+            }
+            (Entry::Profile(p), Entry::Profile(p_rhs)) => {
+                p.upgrade()
+                    .expect("possible to upgrade entry when part of document")
+                    == p_rhs
                         .upgrade()
                         .expect("possible to upgrade entry when part of document")
             }
@@ -407,4 +429,111 @@ pub struct InterfaceFuncParam {
 pub enum InterfaceFuncParamPosition {
     Param(usize),
     Result(usize),
+}
+
+#[derive(Debug, Clone)]
+pub struct Profile {
+    pub name: Id,
+    definitions: Vec<ProfileDefinition>,
+    entries: HashMap<Id, ProfileEntry>,
+    pub docs: String,
+}
+
+impl Profile {
+    pub fn new(
+        name: Id,
+        definitions: Vec<ProfileDefinition>,
+        entries: HashMap<Id, ProfileEntry>,
+        docs: String,
+    ) -> Self {
+        Self {
+            name,
+            definitions,
+            entries,
+            docs,
+        }
+    }
+    pub fn import(&self, name: &Id) -> Option<Rc<ProfileImport>> {
+        self.entries.get(name).and_then(|e| match e {
+            ProfileEntry::Import(weak) => {
+                Some(weak.upgrade().expect("always possible to upgrade entry"))
+            }
+            _ => None,
+        })
+    }
+    pub fn imports<'a>(&'a self) -> impl Iterator<Item = Rc<ProfileImport>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            ProfileDefinition::Import(def) => Some(def.clone()),
+            _ => None,
+        })
+    }
+    pub fn func(&self, name: &Id) -> Option<Rc<InterfaceFunc>> {
+        self.entries.get(name).and_then(|e| match e {
+            ProfileEntry::Func(weak) => {
+                Some(weak.upgrade().expect("always possible to upgrade entry"))
+            }
+            _ => None,
+        })
+    }
+    pub fn funcs<'a>(&'a self) -> impl Iterator<Item = Rc<InterfaceFunc>> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            ProfileDefinition::Func(def) => Some(def.clone()),
+            _ => None,
+        })
+    }
+}
+
+impl PartialEq for Profile {
+    fn eq(&self, rhs: &Profile) -> bool {
+        // For equality, we don't care about the ordering of definitions,
+        // so we only need to check that the entries map is equal
+        self.entries == rhs.entries
+    }
+}
+impl Eq for Profile {}
+
+impl std::hash::Hash for Profile {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        std::hash::Hash::hash(&self.definitions, state);
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ProfileImport {
+    pub module: Rc<Module>,
+    pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum ProfileDefinition {
+    Import(Rc<ProfileImport>),
+    Func(Rc<InterfaceFunc>),
+}
+
+#[derive(Debug, Clone)]
+pub enum ProfileEntry {
+    Import(Weak<ProfileImport>),
+    Func(Weak<InterfaceFunc>),
+}
+
+impl PartialEq for ProfileEntry {
+    fn eq(&self, rhs: &ProfileEntry) -> bool {
+        match (self, rhs) {
+            (ProfileEntry::Import(i), ProfileEntry::Import(i_rhs)) => {
+                i.upgrade()
+                    .expect("always possible to upgrade profileentry when part of profile")
+                    == i_rhs
+                        .upgrade()
+                        .expect("always possible to upgrade profileentry when part of profile")
+            }
+            (ProfileEntry::Func(i), ProfileEntry::Func(i_rhs)) => {
+                i.upgrade()
+                    .expect("always possible to upgrade profileentry when part of profile")
+                    == i_rhs
+                        .upgrade()
+                        .expect("always possible to upgrade profileentry when part of profile")
+            }
+            _ => false,
+        }
+    }
 }

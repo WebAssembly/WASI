@@ -9,6 +9,9 @@ impl fmt::Display for Document {
         for m in self.modules() {
             write!(f, "{}\n", m.to_sexpr())?;
         }
+        for p in self.profiles() {
+            write!(f, "{}\n", p.to_sexpr())?;
+        }
         Ok(())
     }
 }
@@ -266,17 +269,22 @@ impl Module {
     }
 }
 
+impl ModuleImportVariant {
+    pub fn to_sexpr(&self) -> SExpr {
+        match self {
+            ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
+        }
+    }
+}
+
 impl ModuleImport {
     pub fn to_sexpr(&self) -> SExpr {
-        let variant = match self.variant {
-            ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
-        };
         SExpr::docs(
             &self.docs,
             SExpr::Vec(vec![
                 SExpr::word("import"),
                 SExpr::quote(self.name.as_str()),
-                variant,
+                self.variant.to_sexpr(),
             ]),
         )
     }
@@ -328,6 +336,27 @@ impl InterfaceFunc {
         SExpr::docs(
             &self.docs,
             SExpr::Vec([header, params, results, attrs].concat()),
+        )
+    }
+}
+
+impl Profile {
+    pub fn to_sexpr(&self) -> SExpr {
+        let header = vec![SExpr::word("profile"), self.name.to_sexpr()];
+        let definitions = self
+            .imports()
+            .map(|i| i.to_sexpr())
+            .chain(self.funcs().map(|f| f.to_sexpr()))
+            .collect::<Vec<SExpr>>();
+        SExpr::docs(&self.docs, SExpr::Vec([header, definitions].concat()))
+    }
+}
+
+impl ProfileImport {
+    pub fn to_sexpr(&self) -> SExpr {
+        SExpr::docs(
+            &self.docs,
+            SExpr::Vec(vec![SExpr::word("import"), self.module.name.to_sexpr()]),
         )
     }
 }

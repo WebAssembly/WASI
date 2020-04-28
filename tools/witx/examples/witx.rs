@@ -40,6 +40,20 @@ enum Command {
         )]
         output: Option<PathBuf>,
     },
+    /// Parse and then render document as s-exprs - should be equivelant, modulo whitespace.
+    Render {
+        /// Path to root of witx document
+        #[structopt(number_of_values = 1, value_name = "INPUT", parse(from_os_str))]
+        input: Vec<PathBuf>,
+        /// Path to generated documentation in Markdown format
+        #[structopt(
+            short = "o",
+            long = "output",
+            value_name = "OUTPUT",
+            parse(from_os_str)
+        )]
+        output: Option<PathBuf>,
+    },
     /// Update documentation in WASI repository to reflect witx specs
     RepoDocs,
     /// Examine differences between interfaces
@@ -86,6 +100,17 @@ pub fn main() {
                 write_docs(&doc, output)
             } else {
                 println!("{}", doc.to_md())
+            }
+        }
+        Command::Render { input, output } => {
+            let doc = load_witx(&input, "input", verbose);
+            let rendered = format!("{}", doc);
+            if let Some(output) = output {
+                let mut file = File::create(output).expect("create output file");
+                file.write_all(rendered.as_str().as_bytes())
+                    .expect("write output file");
+            } else {
+                println!("{}", rendered);
             }
         }
         Command::RepoDocs => {

@@ -62,6 +62,10 @@ fn render_roundtrip() {
                 assert_eq!(func, func2);
             }
         }
+        for profile in doc.profiles() {
+            let profile2 = doc2.profile(&profile.name).expect("doc2 missing profile");
+            assert_eq!(profile, profile2);
+        }
     }
     // This should be equivelant to the above, but just in case some code changes where it isnt:
     assert_eq!(doc, doc2);

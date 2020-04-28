@@ -27,8 +27,8 @@ pub use ast::{
     BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
     FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
-    ModuleImport, ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef,
-    UnionDatatype, UnionVariant,
+    ModuleImport, ModuleImportVariant, NamedType, Profile, ProfileDefinition, ProfileEntry,
+    ProfileImport, StructDatatype, StructMember, Type, TypeRef, UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;

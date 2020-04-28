@@ -2,14 +2,14 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
-        VariantSyntax,
+        ImportTypeSyntax, IntSyntax, InterfaceFuncSyntax, ModuleDeclSyntax, ProfileDeclSyntax,
+        StructSyntax, TypedefSyntax, UnionSyntax, VariantSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
     HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
     InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
-    UnionDatatype, UnionVariant,
+    ModuleImportVariant, NamedType, Profile, ProfileDefinition, ProfileEntry, ProfileImport,
+    StructDatatype, StructMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant,
 };
 use std::collections::{hash_map, HashMap};
 use std::path::Path;
@@ -167,6 +167,10 @@ impl DocValidationScope<'_> {
         self.doc.scope.get(name.name(), loc)
     }
 
+    fn entry(&self, name: &Id) -> Option<&Entry> {
+        self.doc.entries.get(name)
+    }
+
     pub fn validate_decl(
         &mut self,
         decl: &DeclSyntax,
@@ -207,6 +211,26 @@ impl DocValidationScope<'_> {
                     .entries
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
                 Ok(Definition::Module(rc_module))
+            }
+            DeclSyntax::Profile(syntax) => {
+                let name = self.introduce(&syntax.name)?;
+
+                let mut profile_validator = ProfileValidation::new(self);
+                let definitions = syntax
+                    .decls
+                    .iter()
+                    .map(|d| profile_validator.validate_decl(&d))
+                    .collect::<Result<Vec<_>, _>>()?;
+                let rc_profile = Rc::new(Profile::new(
+                    name.clone(),
+                    definitions,
+                    profile_validator.entries,
+                    comments.docs(),
+                ));
+                self.doc
+                    .entries
+                    .insert(name, Entry::Profile(Rc::downgrade(&rc_profile)));
+                Ok(Definition::Profile(rc_profile))
             }
         }
     }
@@ -546,68 +570,135 @@ impl<'a> ModuleValidation<'a> {
                 Ok(ModuleDefinition::Import(rc_import))
             }
             ModuleDeclSyntax::Func(syntax) => {
-                let loc = self.doc.location(syntax.export_loc);
-                let name = self.scope.introduce(syntax.export, loc)?;
-                let mut argnames = IdentValidation::new();
-                let params = syntax
-                    .params
-                    .iter()
-                    .enumerate()
-                    .map(|(ix, f)| {
-                        Ok(InterfaceFuncParam {
-                            name: argnames.introduce(
-                                f.item.name.name(),
-                                self.doc.location(f.item.name.span()),
-                            )?,
-                            tref: self.doc.validate_datatype(
-                                &f.item.type_,
-                                false,
-                                f.item.name.span(),
-                            )?,
-                            position: InterfaceFuncParamPosition::Param(ix),
-                            docs: f.comments.docs(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, _>>()?;
-                let results = syntax
-                    .results
-                    .iter()
-                    .enumerate()
-                    .map(|(ix, f)| {
-                        let tref =
-                            self.doc
-                                .validate_datatype(&f.item.type_, false, f.item.name.span())?;
-                        if ix == 0 {
-                            match tref.type_().passed_by() {
-                                TypePassedBy::Value(_) => {}
-                                _ => Err(ValidationError::InvalidFirstResultType {
-                                    location: self.doc.location(f.item.name.span()),
-                                })?,
-                            }
-                        }
-                        Ok(InterfaceFuncParam {
-                            name: argnames.introduce(
-                                f.item.name.name(),
-                                self.doc.location(f.item.name.span()),
-                            )?,
-                            tref,
-                            position: InterfaceFuncParamPosition::Result(ix),
-                            docs: f.comments.docs(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, _>>()?;
-                let noreturn = syntax.noreturn;
+                let func = Rc::new(func_validation(
+                    syntax,
+                    &decl.comments,
+                    &mut self.scope,
+                    &self.doc,
+                )?);
+                self.entries
+                    .insert(func.name.clone(), ModuleEntry::Func(Rc::downgrade(&func)));
+                Ok(ModuleDefinition::Func(func))
+            }
+        }
+    }
+}
 
-                let rc_func = Rc::new(InterfaceFunc {
-                    name: name.clone(),
-                    params,
-                    results,
-                    noreturn,
+fn func_validation(
+    syntax: &InterfaceFuncSyntax,
+    comments: &CommentSyntax,
+    scope: &mut IdentValidation,
+    doc: &DocValidationScope,
+) -> Result<InterfaceFunc, ValidationError> {
+    let loc = doc.location(syntax.export_loc);
+    let name = scope.introduce(syntax.export, loc)?;
+    let mut argnames = IdentValidation::new();
+    let params = syntax
+        .params
+        .iter()
+        .enumerate()
+        .map(|(ix, f)| {
+            Ok(InterfaceFuncParam {
+                name: argnames.introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
+                tref: doc.validate_datatype(&f.item.type_, false, f.item.name.span())?,
+                position: InterfaceFuncParamPosition::Param(ix),
+                docs: f.comments.docs(),
+            })
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    let results = syntax
+        .results
+        .iter()
+        .enumerate()
+        .map(|(ix, f)| {
+            let tref = doc.validate_datatype(&f.item.type_, false, f.item.name.span())?;
+            if ix == 0 {
+                match tref.type_().passed_by() {
+                    TypePassedBy::Value(_) => {}
+                    _ => Err(ValidationError::InvalidFirstResultType {
+                        location: doc.location(f.item.name.span()),
+                    })?,
+                }
+            }
+            Ok(InterfaceFuncParam {
+                name: argnames.introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
+                tref,
+                position: InterfaceFuncParamPosition::Result(ix),
+                docs: f.comments.docs(),
+            })
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    let noreturn = syntax.noreturn;
+    Ok(InterfaceFunc {
+        name: name.clone(),
+        params,
+        results,
+        noreturn,
+        docs: comments.docs(),
+    })
+}
+
+struct ProfileValidation<'a> {
+    doc: &'a DocValidationScope<'a>,
+    scope: IdentValidation,
+    pub entries: HashMap<Id, ProfileEntry>,
+}
+
+impl<'a> ProfileValidation<'a> {
+    fn new(doc: &'a DocValidationScope<'a>) -> Self {
+        Self {
+            doc,
+            scope: IdentValidation::new(),
+            entries: HashMap::new(),
+        }
+    }
+
+    fn validate_decl(
+        &mut self,
+        decl: &Documented<ProfileDeclSyntax>,
+    ) -> Result<ProfileDefinition, ValidationError> {
+        match &decl.item {
+            ProfileDeclSyntax::Import(syntax) => {
+                let name = self.doc.get(syntax)?;
+                let entry = self
+                    .doc
+                    .entry(&name)
+                    // Only way we have a name that lacks an entry is a recursive definition:
+                    .ok_or_else(|| ValidationError::Recursive {
+                        name: name.as_str().to_string(),
+                        location: self.doc.location(syntax.span()),
+                    })?;
+                let module = match entry {
+                    Entry::Module(weak_ref) => {
+                        weak_ref.upgrade().expect("weak backref to defined type")
+                    }
+                    _ => Err(ValidationError::WrongKindName {
+                        expected: "module",
+                        got: entry.kind(),
+                        name: name.as_str().to_string(),
+                        location: self.doc.location(syntax.span()),
+                    })?,
+                };
+                let prof_import = Rc::new(ProfileImport {
+                    module,
                     docs: decl.comments.docs(),
                 });
+                self.entries.insert(
+                    name.clone(),
+                    ProfileEntry::Import(Rc::downgrade(&prof_import)),
+                );
+                Ok(ProfileDefinition::Import(prof_import))
+            }
+            ProfileDeclSyntax::Func(syntax) => {
+                let func = Rc::new(func_validation(
+                    syntax,
+                    &decl.comments,
+                    &mut self.scope,
+                    &self.doc,
+                )?);
                 self.entries
-                    .insert(name, ModuleEntry::Func(Rc::downgrade(&rc_func)));
-                Ok(ModuleDefinition::Func(rc_func))
+                    .insert(func.name.clone(), ProfileEntry::Func(Rc::downgrade(&func)));
+                Ok(ProfileDefinition::Func(func))
             }
         }
     }
