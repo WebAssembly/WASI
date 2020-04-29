@@ -530,3 +530,13 @@
     (result $error $errno)
   )
 )
+
+;;; The WASI standard specifies executables as having all of the
+;;; WASI modules available for import, and exporting a start function.
+(profile $wasi_snapshot_preview1_executable
+  ;;; Executables must export a start function:
+  (@interface func (export "_start"))
+  ;;; Can import from wasi snapshot preview1:
+  (import $wasi_snapshot_preview1)
+)
+
