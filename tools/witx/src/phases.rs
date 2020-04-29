@@ -23,9 +23,9 @@ pub fn ephemeral() -> Result<Vec<PathBuf>> {
     let root = repo_root()?;
     let ephemeral = root.join("phases/ephemeral/witx");
     let paths = vec![
-        // Ephemeral is split into many files (one per module) but the profile witx `use`s them
+        // Ephemeral is split into many files (one per module) but the command witx `use`s them
         // all:
-        ephemeral.join("wasi_ephemeral_profile.witx"),
+        ephemeral.join("wasi_ephemeral_command.witx"),
     ];
     ensure_exists(&paths)?;
     Ok(paths)

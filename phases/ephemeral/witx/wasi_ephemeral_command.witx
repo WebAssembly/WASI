@@ -9,10 +9,10 @@
 (use "wasi_ephemeral_sched.witx")
 (use "wasi_ephemeral_sock.witx")
 
-;;; The WASI standard specifies executables as having all of the
+;;; The WASI standard specifies commands as having all of the
 ;;; WASI modules available for import, and exporting a start function.
-(profile $wasi_ephemeral_executable
-  ;;; Executables must export a start function:
+(profile $wasi_ephemeral_command
+  ;;; Commands must export a start function:
   (@interface func (export "_start"))
   (import $wasi_ephemeral_args)
   (import $wasi_ephemeral_clock)
