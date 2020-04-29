@@ -47,6 +47,8 @@ mod kw {
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
     wast::custom_keyword!(profile);
+    wast::custom_keyword!(expose);
+    wast::custom_keyword!(require);
 }
 
 mod annotation {
@@ -706,19 +708,20 @@ impl<'a> Parse<'a> for ProfileSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ProfileDeclSyntax<'a> {
-    Import(wast::Id<'a>),
-    Func(InterfaceFuncSyntax<'a>),
+    Expose(wast::Id<'a>),
+    Require(Documented<'a, InterfaceFuncSyntax<'a>>),
 }
 
 impl<'a> Parse<'a> for ProfileDeclSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parens(|p| {
             let mut l = p.lookahead1();
-            if l.peek::<kw::import>() {
-                let _ = p.parse::<kw::import>().expect("just peeked kw");
-                Ok(ProfileDeclSyntax::Import(p.parse()?))
-            } else if l.peek::<annotation::interface>() {
-                Ok(ProfileDeclSyntax::Func(p.parse()?))
+            if l.peek::<kw::expose>() {
+                let _ = p.parse::<kw::expose>().expect("just peeked kw");
+                Ok(ProfileDeclSyntax::Expose(p.parse()?))
+            } else if l.peek::<kw::require>() {
+                let _ = p.parse::<kw::require>().expect("just peeked kw");
+                p.parens(|pp| Ok(ProfileDeclSyntax::Require(pp.parse()?)))
             } else {
                 Err(l.error())
             }

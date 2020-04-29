@@ -64,6 +64,19 @@ fn render_roundtrip() {
         }
         for profile in doc.profiles() {
             let profile2 = doc2.profile(&profile.name).expect("doc2 missing profile");
+            for expose in profile.exposes() {
+                let expose2 = profile2
+                    .expose(&expose.module.name)
+                    .expect("profile2 missing expose");
+                assert_eq!(expose, expose2);
+            }
+            for require in profile.requires() {
+                let require2 = profile2
+                    .require(&require.func.name)
+                    .expect("profile2 missing require");
+                assert_eq!(require, require2);
+            }
+
             assert_eq!(profile, profile2);
         }
     }

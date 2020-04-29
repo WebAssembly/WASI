@@ -5,11 +5,12 @@ use crate::{
         ImportTypeSyntax, IntSyntax, InterfaceFuncSyntax, ModuleDeclSyntax, ProfileDeclSyntax,
         StructSyntax, TypedefSyntax, UnionSyntax, VariantSyntax,
     },
-    BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
-    HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, NamedType, Profile, ProfileDefinition, ProfileEntry, ProfileImport,
-    StructDatatype, StructMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant,
+    BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, ExposedModule, FlagsDatatype,
+    FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
+    ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, Profile, ProfileDefinition,
+    ProfileEntry, RequiredFunc, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
+    UnionDatatype, UnionVariant,
 };
 use std::collections::{hash_map, HashMap};
 use std::path::Path;
@@ -658,7 +659,7 @@ impl<'a> ProfileValidation<'a> {
         decl: &Documented<ProfileDeclSyntax>,
     ) -> Result<ProfileDefinition, ValidationError> {
         match &decl.item {
-            ProfileDeclSyntax::Import(syntax) => {
+            ProfileDeclSyntax::Expose(syntax) => {
                 let name = self.doc.get(syntax)?;
                 let entry = self
                     .doc
@@ -679,26 +680,32 @@ impl<'a> ProfileValidation<'a> {
                         location: self.doc.location(syntax.span()),
                     })?,
                 };
-                let prof_import = Rc::new(ProfileImport {
+                let exposed_mod = Rc::new(ExposedModule {
                     module,
                     docs: decl.comments.docs(),
                 });
                 self.entries.insert(
                     name.clone(),
-                    ProfileEntry::Import(Rc::downgrade(&prof_import)),
+                    ProfileEntry::Expose(Rc::downgrade(&exposed_mod)),
                 );
-                Ok(ProfileDefinition::Import(prof_import))
+                Ok(ProfileDefinition::Expose(exposed_mod))
             }
-            ProfileDeclSyntax::Func(syntax) => {
+            ProfileDeclSyntax::Require(syntax) => {
                 let func = Rc::new(func_validation(
-                    syntax,
-                    &decl.comments,
+                    &syntax.item,
+                    &syntax.comments,
                     &mut self.scope,
                     &self.doc,
                 )?);
-                self.entries
-                    .insert(func.name.clone(), ProfileEntry::Func(Rc::downgrade(&func)));
-                Ok(ProfileDefinition::Func(func))
+                let required_func = Rc::new(RequiredFunc {
+                    func,
+                    docs: decl.comments.docs(),
+                });
+                self.entries.insert(
+                    required_func.func.name.clone(),
+                    ProfileEntry::Require(Rc::downgrade(&required_func)),
+                );
+                Ok(ProfileDefinition::Require(required_func))
             }
         }
     }

@@ -24,11 +24,11 @@ mod toplevel;
 mod validate;
 
 pub use ast::{
-    BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
-    FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
+    BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, ExposedModule,
+    FlagsDatatype, FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
     ModuleImport, ModuleImportVariant, NamedType, Profile, ProfileDefinition, ProfileEntry,
-    ProfileImport, StructDatatype, StructMember, Type, TypeRef, UnionDatatype, UnionVariant,
+    RequiredFunc, StructDatatype, StructMember, Type, TypeRef, UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;

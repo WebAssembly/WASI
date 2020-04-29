@@ -453,31 +453,31 @@ impl Profile {
             docs,
         }
     }
-    pub fn import(&self, name: &Id) -> Option<Rc<ProfileImport>> {
+    pub fn expose(&self, name: &Id) -> Option<Rc<ExposedModule>> {
         self.entries.get(name).and_then(|e| match e {
-            ProfileEntry::Import(weak) => {
+            ProfileEntry::Expose(weak) => {
                 Some(weak.upgrade().expect("always possible to upgrade entry"))
             }
             _ => None,
         })
     }
-    pub fn imports<'a>(&'a self) -> impl Iterator<Item = Rc<ProfileImport>> + 'a {
+    pub fn exposes<'a>(&'a self) -> impl Iterator<Item = Rc<ExposedModule>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            ProfileDefinition::Import(def) => Some(def.clone()),
+            ProfileDefinition::Expose(def) => Some(def.clone()),
             _ => None,
         })
     }
-    pub fn func(&self, name: &Id) -> Option<Rc<InterfaceFunc>> {
+    pub fn require(&self, name: &Id) -> Option<Rc<RequiredFunc>> {
         self.entries.get(name).and_then(|e| match e {
-            ProfileEntry::Func(weak) => {
+            ProfileEntry::Require(weak) => {
                 Some(weak.upgrade().expect("always possible to upgrade entry"))
             }
             _ => None,
         })
     }
-    pub fn funcs<'a>(&'a self) -> impl Iterator<Item = Rc<InterfaceFunc>> + 'a {
+    pub fn requires<'a>(&'a self) -> impl Iterator<Item = Rc<RequiredFunc>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            ProfileDefinition::Func(def) => Some(def.clone()),
+            ProfileDefinition::Require(def) => Some(def.clone()),
             _ => None,
         })
     }
@@ -499,34 +499,40 @@ impl std::hash::Hash for Profile {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ProfileImport {
+pub struct ExposedModule {
     pub module: Rc<Module>,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct RequiredFunc {
+    pub func: Rc<InterfaceFunc>,
+    pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ProfileDefinition {
-    Import(Rc<ProfileImport>),
-    Func(Rc<InterfaceFunc>),
+    Expose(Rc<ExposedModule>),
+    Require(Rc<RequiredFunc>),
 }
 
 #[derive(Debug, Clone)]
 pub enum ProfileEntry {
-    Import(Weak<ProfileImport>),
-    Func(Weak<InterfaceFunc>),
+    Expose(Weak<ExposedModule>),
+    Require(Weak<RequiredFunc>),
 }
 
 impl PartialEq for ProfileEntry {
     fn eq(&self, rhs: &ProfileEntry) -> bool {
         match (self, rhs) {
-            (ProfileEntry::Import(i), ProfileEntry::Import(i_rhs)) => {
+            (ProfileEntry::Expose(i), ProfileEntry::Expose(i_rhs)) => {
                 i.upgrade()
                     .expect("always possible to upgrade profileentry when part of profile")
                     == i_rhs
                         .upgrade()
                         .expect("always possible to upgrade profileentry when part of profile")
             }
-            (ProfileEntry::Func(i), ProfileEntry::Func(i_rhs)) => {
+            (ProfileEntry::Require(i), ProfileEntry::Require(i_rhs)) => {
                 i.upgrade()
                     .expect("always possible to upgrade profileentry when part of profile")
                     == i_rhs
