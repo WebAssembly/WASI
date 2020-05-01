@@ -2,24 +2,28 @@
 ## <a href="#size" name="size"></a> `size`: `u32`
 
 Size: 4
+
 Alignment: 4
 
 ## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
 Non-negative file size or length of a region within a file.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#timestamp" name="timestamp"></a> `timestamp`: `u64`
 Timestamp in nanoseconds.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#clockid" name="clockid"></a> `clockid`: Enum(`u32`)
 Identifiers for clocks.
 
 Size: 4
+
 Alignment: 4
 
 ### Variants
@@ -46,6 +50,7 @@ API; some are used in higher-level library layers, and others are provided
 merely for alignment with POSIX.
 
 Size: 2
+
 Alignment: 2
 
 ### Variants
@@ -284,6 +289,7 @@ Extension: Capabilities insufficient.
 File descriptor rights, determining which actions may be performed.
 
 Size: 8
+
 Alignment: 8
 
 ### Flags
@@ -390,6 +396,7 @@ The right to invoke [`sock_shutdown`](#sock_shutdown).
 A file descriptor handle.
 
 Size: 4
+
 Alignment: 4
 
 ### Supertypes
@@ -397,6 +404,7 @@ Alignment: 4
 A region of memory for scatter/gather reads.
 
 Size: 8
+
 Alignment: 4
 
 ### Struct members
@@ -414,6 +422,7 @@ Offset: 4
 A region of memory for scatter/gather writes.
 
 Size: 8
+
 Alignment: 4
 
 ### Struct members
@@ -430,23 +439,27 @@ Offset: 4
 ## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `Array<iovec>`
 
 Size: 8
+
 Alignment: 4
 
 ## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `Array<ciovec>`
 
 Size: 8
+
 Alignment: 4
 
 ## <a href="#filedelta" name="filedelta"></a> `filedelta`: `s64`
 Relative offset within a file.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#whence" name="whence"></a> `whence`: Enum(`u8`)
 The position relative to which to set the offset of the file descriptor.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -465,24 +478,28 @@ A reference to the offset of a directory entry.
 The value 0 signifies the start of the directory.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
 The type for the $d_namlen field of $dirent.
 
 Size: 4
+
 Alignment: 4
 
 ## <a href="#inode" name="inode"></a> `inode`: `u64`
 File serial number that is unique within its file system.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#filetype" name="filetype"></a> `filetype`: Enum(`u8`)
 The type of a file descriptor or file.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -514,6 +531,7 @@ The file refers to a symbolic link inode.
 A directory entry.
 
 Size: 24
+
 Alignment: 8
 
 ### Struct members
@@ -541,6 +559,7 @@ Offset: 20
 File or memory access pattern advisory information.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -566,6 +585,7 @@ The application expects to access the specified data once and then not reuse it 
 File descriptor flags.
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -590,6 +610,7 @@ may also synchronously update the file's metadata.
 File descriptor attributes.
 
 Size: 24
+
 Alignment: 8
 
 ### Struct members
@@ -619,12 +640,14 @@ Identifier for a device containing a file system. Can be used in combination
 with [`inode`](#inode) to uniquely identify a file or directory in the filesystem.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#fstflags" name="fstflags"></a> `fstflags`: Flags(`u16`)
 Which file time attributes to adjust.
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -644,6 +667,7 @@ Adjust the last data modification timestamp to the time of clock [`clockid::real
 Flags determining the method of how paths are resolved.
 
 Size: 4
+
 Alignment: 4
 
 ### Flags
@@ -654,6 +678,7 @@ As long as the resolved path corresponds to a symbolic link, it is expanded.
 Open flags used by [`path_open`](#path_open).
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -673,12 +698,14 @@ Truncate file to size 0.
 Number of hard links to an inode.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#filestat" name="filestat"></a> `filestat`: Struct
 File attributes.
 
 Size: 64
+
 Alignment: 8
 
 ### Struct members
@@ -727,12 +754,14 @@ User-provided value that may be attached to objects that is retained when
 extracted from the implementation.
 
 Size: 8
+
 Alignment: 8
 
 ## <a href="#eventtype" name="eventtype"></a> `eventtype`: Enum(`u8`)
 Type of a subscription to an event or its occurrence.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -753,6 +782,7 @@ The state of the file descriptor subscribed to with
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -764,6 +794,7 @@ The contents of an $event when type is [`eventtype::fd_read`](#eventtype.fd_read
 [`eventtype::fd_write`](#eventtype.fd_write).
 
 Size: 16
+
 Alignment: 8
 
 ### Struct members
@@ -781,6 +812,7 @@ Offset: 8
 An event that occurred.
 
 Size: 32
+
 Alignment: 8
 
 ### Struct members
@@ -810,6 +842,7 @@ Flags determining how to interpret the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout).
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -824,6 +857,7 @@ current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
 
 Size: 32
+
 Alignment: 8
 
 ### Struct members
@@ -853,6 +887,7 @@ The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
 Size: 4
+
 Alignment: 4
 
 ### Struct members
@@ -865,6 +900,7 @@ Offset: 0
 The contents of a [`subscription`](#subscription).
 
 Size: 40
+
 Alignment: 8
 
 ### Union Layout
@@ -884,6 +920,7 @@ Alignment: 8
 Subscription to an event.
 
 Size: 48
+
 Alignment: 8
 
 ### Struct members
@@ -902,12 +939,14 @@ Offset: 8
 Exit code generated by a process when exiting.
 
 Size: 4
+
 Alignment: 4
 
 ## <a href="#signal" name="signal"></a> `signal`: Enum(`u8`)
 Signal condition.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -1039,6 +1078,7 @@ Action: Terminates the process.
 Flags provided to [`sock_recv`](#sock_recv).
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -1052,6 +1092,7 @@ On byte-stream sockets, block until the full amount of data can be returned.
 Flags returned by [`sock_recv`](#sock_recv).
 
 Size: 2
+
 Alignment: 2
 
 ### Flags
@@ -1063,12 +1104,14 @@ Flags provided to [`sock_send`](#sock_send). As there are currently no flags
 defined, it must be set to zero.
 
 Size: 2
+
 Alignment: 2
 
 ## <a href="#sdflags" name="sdflags"></a> `sdflags`: Flags(`u8`)
 Which channels on a socket to shut down.
 
 Size: 1
+
 Alignment: 1
 
 ### Flags
@@ -1082,6 +1125,7 @@ Disables further send operations.
 Identifiers for preopened capabilities.
 
 Size: 1
+
 Alignment: 1
 
 ### Variants
@@ -1092,6 +1136,7 @@ A pre-opened directory.
 The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
 
 Size: 4
+
 Alignment: 4
 
 ### Struct members
@@ -1104,6 +1149,7 @@ Offset: 0
 Information about a pre-opened capability.
 
 Size: 8
+
 Alignment: 4
 
 ### Union Layout

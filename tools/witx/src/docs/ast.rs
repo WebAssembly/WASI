@@ -28,7 +28,7 @@ impl ToMarkdown for Document {
                 name,
                 name,
                 format!(
-                    "{}\nSize: {}\nAlignment: {}\n",
+                    "{}\nSize: {}\n\nAlignment: {}\n",
                     &d.docs,
                     &d.mem_size(),
                     &d.mem_align()
