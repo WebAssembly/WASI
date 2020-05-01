@@ -28,7 +28,7 @@ impl ToMarkdown for Document {
                 name,
                 name,
                 format!(
-                    "{}Size: {}\n Alignment: {}",
+                    "{}\nSize: {}\nAlignment: {}\n",
                     &d.docs,
                     &d.mem_size(),
                     &d.mem_align()
@@ -193,7 +193,7 @@ impl ToMarkdown for StructDatatype {
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}Offset: {}", &member.docs, &offset).as_str(),
+                format!("{}\nOffset: {}\n", &member.docs, &offset).as_str(),
             ));
             member.tref.generate(n.clone());
         }

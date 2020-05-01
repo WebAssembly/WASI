@@ -1,19 +1,27 @@
 # Types
 ## <a href="#size" name="size"></a> `size`: `u32`
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
 Non-negative file size or length of a region within a file.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#timestamp" name="timestamp"></a> `timestamp`: `u64`
 Timestamp in nanoseconds.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#clockid" name="clockid"></a> `clockid`: Enum(`u32`)
 Identifiers for clocks.
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ### Variants
 - <a href="#clockid.realtime" name="clockid.realtime"></a> `realtime`
 The clock measuring real time. Time value zero corresponds with
@@ -36,8 +44,10 @@ Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
 API; some are used in higher-level library layers, and others are provided
 merely for alignment with POSIX.
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Variants
 - <a href="#errno.success" name="errno.success"></a> `success`
 No error occurred. System call completed successfully.
@@ -272,8 +282,10 @@ Extension: Capabilities insufficient.
 
 ## <a href="#rights" name="rights"></a> `rights`: Flags(`u64`)
 File descriptor rights, determining which actions may be performed.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ### Flags
 - <a href="#rights.fd_datasync" name="rights.fd_datasync"></a> `fd_datasync`
 The right to invoke [`fd_datasync`](#fd_datasync).
@@ -376,45 +388,67 @@ The right to invoke [`sock_shutdown`](#sock_shutdown).
 
 ## <a href="#fd" name="fd"></a> `fd`
 A file descriptor handle.
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ### Supertypes
 ## <a href="#iovec" name="iovec"></a> `iovec`: Struct
 A region of memory for scatter/gather reads.
+
 Size: 8
- Alignment: 4
+Alignment: 4
+
 ### Struct members
 - <a href="#iovec.buf" name="iovec.buf"></a> `buf`: `Pointer<u8>`
 The address of the buffer to be filled.
+
 Offset: 0
+
 - <a href="#iovec.buf_len" name="iovec.buf_len"></a> `buf_len`: [`size`](#size)
 The length of the buffer to be filled.
+
 Offset: 4
+
 ## <a href="#ciovec" name="ciovec"></a> `ciovec`: Struct
 A region of memory for scatter/gather writes.
+
 Size: 8
- Alignment: 4
+Alignment: 4
+
 ### Struct members
 - <a href="#ciovec.buf" name="ciovec.buf"></a> `buf`: `ConstPointer<u8>`
 The address of the buffer to be written.
+
 Offset: 0
+
 - <a href="#ciovec.buf_len" name="ciovec.buf_len"></a> `buf_len`: [`size`](#size)
 The length of the buffer to be written.
+
 Offset: 4
+
 ## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `Array<iovec>`
+
 Size: 8
- Alignment: 4
+Alignment: 4
+
 ## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `Array<ciovec>`
+
 Size: 8
- Alignment: 4
+Alignment: 4
+
 ## <a href="#filedelta" name="filedelta"></a> `filedelta`: `s64`
 Relative offset within a file.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#whence" name="whence"></a> `whence`: Enum(`u8`)
 The position relative to which to set the offset of the file descriptor.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#whence.set" name="whence.set"></a> `set`
 Seek relative to start-of-file.
@@ -429,20 +463,28 @@ Seek relative to end-of-file.
 A reference to the offset of a directory entry.
 
 The value 0 signifies the start of the directory.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
 The type for the $d_namlen field of $dirent.
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ## <a href="#inode" name="inode"></a> `inode`: `u64`
 File serial number that is unique within its file system.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#filetype" name="filetype"></a> `filetype`: Enum(`u8`)
 The type of a file descriptor or file.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#filetype.unknown" name="filetype.unknown"></a> `unknown`
 The type of the file descriptor or file is unknown or is different from any of the other types specified.
@@ -470,25 +512,37 @@ The file refers to a symbolic link inode.
 
 ## <a href="#dirent" name="dirent"></a> `dirent`: Struct
 A directory entry.
+
 Size: 24
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#dirent.d_next" name="dirent.d_next"></a> `d_next`: [`dircookie`](#dircookie)
 The offset of the next directory entry stored in this directory.
+
 Offset: 0
+
 - <a href="#dirent.d_ino" name="dirent.d_ino"></a> `d_ino`: [`inode`](#inode)
 The serial number of the file referred to by this directory entry.
+
 Offset: 8
+
 - <a href="#dirent.d_namlen" name="dirent.d_namlen"></a> `d_namlen`: [`dirnamlen`](#dirnamlen)
 The length of the name of the directory entry.
+
 Offset: 16
+
 - <a href="#dirent.d_type" name="dirent.d_type"></a> `d_type`: [`filetype`](#filetype)
 The type of the file referred to by this directory entry.
+
 Offset: 20
+
 ## <a href="#advice" name="advice"></a> `advice`: Enum(`u8`)
 File or memory access pattern advisory information.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#advice.normal" name="advice.normal"></a> `normal`
 The application has no advice to give on its behavior with respect to the specified data.
@@ -510,8 +564,10 @@ The application expects to access the specified data once and then not reuse it 
 
 ## <a href="#fdflags" name="fdflags"></a> `fdflags`: Flags(`u16`)
 File descriptor flags.
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#fdflags.append" name="fdflags.append"></a> `append`
 Append mode: Data written to the file is always appended to the file's end.
@@ -532,31 +588,45 @@ may also synchronously update the file's metadata.
 
 ## <a href="#fdstat" name="fdstat"></a> `fdstat`: Struct
 File descriptor attributes.
+
 Size: 24
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#fdstat.fs_filetype" name="fdstat.fs_filetype"></a> `fs_filetype`: [`filetype`](#filetype)
 File type.
+
 Offset: 0
+
 - <a href="#fdstat.fs_flags" name="fdstat.fs_flags"></a> `fs_flags`: [`fdflags`](#fdflags)
 File descriptor flags.
+
 Offset: 2
+
 - <a href="#fdstat.fs_rights_base" name="fdstat.fs_rights_base"></a> `fs_rights_base`: [`rights`](#rights)
 Rights that apply to this file descriptor.
+
 Offset: 8
+
 - <a href="#fdstat.fs_rights_inheriting" name="fdstat.fs_rights_inheriting"></a> `fs_rights_inheriting`: [`rights`](#rights)
 Maximum set of rights that may be installed on new file descriptors that
 are created through this file descriptor, e.g., through [`path_open`](#path_open).
+
 Offset: 16
+
 ## <a href="#device" name="device"></a> `device`: `u64`
 Identifier for a device containing a file system. Can be used in combination
 with [`inode`](#inode) to uniquely identify a file or directory in the filesystem.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#fstflags" name="fstflags"></a> `fstflags`: Flags(`u16`)
 Which file time attributes to adjust.
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`
 Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
@@ -572,16 +642,20 @@ Adjust the last data modification timestamp to the time of clock [`clockid::real
 
 ## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: Flags(`u32`)
 Flags determining the method of how paths are resolved.
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ### Flags
 - <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`
 As long as the resolved path corresponds to a symbolic link, it is expanded.
 
 ## <a href="#oflags" name="oflags"></a> `oflags`: Flags(`u16`)
 Open flags used by [`path_open`](#path_open).
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#oflags.creat" name="oflags.creat"></a> `creat`
 Create file if it does not exist.
@@ -597,46 +671,70 @@ Truncate file to size 0.
 
 ## <a href="#linkcount" name="linkcount"></a> `linkcount`: `u64`
 Number of hard links to an inode.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#filestat" name="filestat"></a> `filestat`: Struct
 File attributes.
+
 Size: 64
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#filestat.dev" name="filestat.dev"></a> `dev`: [`device`](#device)
 Device ID of device containing the file.
+
 Offset: 0
+
 - <a href="#filestat.ino" name="filestat.ino"></a> `ino`: [`inode`](#inode)
 File serial number.
+
 Offset: 8
+
 - <a href="#filestat.filetype" name="filestat.filetype"></a> `filetype`: [`filetype`](#filetype)
 File type.
+
 Offset: 16
+
 - <a href="#filestat.nlink" name="filestat.nlink"></a> `nlink`: [`linkcount`](#linkcount)
 Number of hard links to the file.
+
 Offset: 24
+
 - <a href="#filestat.size" name="filestat.size"></a> `size`: [`filesize`](#filesize)
 For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+
 Offset: 32
+
 - <a href="#filestat.atim" name="filestat.atim"></a> `atim`: [`timestamp`](#timestamp)
 Last data access timestamp.
+
 Offset: 40
+
 - <a href="#filestat.mtim" name="filestat.mtim"></a> `mtim`: [`timestamp`](#timestamp)
 Last data modification timestamp.
+
 Offset: 48
+
 - <a href="#filestat.ctim" name="filestat.ctim"></a> `ctim`: [`timestamp`](#timestamp)
 Last file status change timestamp.
+
 Offset: 56
+
 ## <a href="#userdata" name="userdata"></a> `userdata`: `u64`
 User-provided value that may be attached to objects that is retained when
 extracted from the implementation.
+
 Size: 8
- Alignment: 8
+Alignment: 8
+
 ## <a href="#eventtype" name="eventtype"></a> `eventtype`: Enum(`u8`)
 Type of a subscription to an event or its occurrence.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#eventtype.clock" name="eventtype.clock"></a> `clock`
 The time value of clock [`subscription_clock::id`](#subscription_clock.id) has
@@ -653,8 +751,10 @@ available for writing. This event always triggers for regular files.
 ## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: Flags(`u16`)
 The state of the file descriptor subscribed to with
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`
 The peer of this socket has closed or disconnected.
@@ -662,38 +762,56 @@ The peer of this socket has closed or disconnected.
 ## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Struct
 The contents of an $event when type is [`eventtype::fd_read`](#eventtype.fd_read) or
 [`eventtype::fd_write`](#eventtype.fd_write).
+
 Size: 16
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#event_fd_readwrite.nbytes" name="event_fd_readwrite.nbytes"></a> `nbytes`: [`filesize`](#filesize)
 The number of bytes available for reading or writing.
+
 Offset: 0
+
 - <a href="#event_fd_readwrite.flags" name="event_fd_readwrite.flags"></a> `flags`: [`eventrwflags`](#eventrwflags)
 The state of the file descriptor.
+
 Offset: 8
+
 ## <a href="#event" name="event"></a> `event`: Struct
 An event that occurred.
+
 Size: 32
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#event.userdata" name="event.userdata"></a> `userdata`: [`userdata`](#userdata)
 User-provided value that got attached to [`subscription::userdata`](#subscription.userdata).
+
 Offset: 0
+
 - <a href="#event.error" name="event.error"></a> `error`: [`errno`](#errno)
 If non-zero, an error that occurred while processing the subscription request.
+
 Offset: 8
+
 - <a href="#event.type" name="event.type"></a> `type`: [`eventtype`](#eventtype)
 The type of event that occured
+
 Offset: 10
+
 - <a href="#event.fd_readwrite" name="event.fd_readwrite"></a> `fd_readwrite`: [`event_fd_readwrite`](#event_fd_readwrite)
 The contents of the event, if it is an [`eventtype::fd_read`](#eventtype.fd_read) or
 [`eventtype::fd_write`](#eventtype.fd_write). [`eventtype::clock`](#eventtype.clock) events ignore this field.
+
 Offset: 16
+
 ## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: Flags(`u16`)
 Flags determining how to interpret the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout).
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#subclockflags.subscription_clock_abstime" name="subclockflags.subscription_clock_abstime"></a> `subscription_clock_abstime`
 If set, treat the timestamp provided in
@@ -704,35 +822,51 @@ current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
 ## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Struct
 The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
+
 Size: 32
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#subscription_clock.id" name="subscription_clock.id"></a> `id`: [`clockid`](#clockid)
 The clock against which to compare the timestamp.
+
 Offset: 0
+
 - <a href="#subscription_clock.timeout" name="subscription_clock.timeout"></a> `timeout`: [`timestamp`](#timestamp)
 The absolute or relative timestamp.
+
 Offset: 8
+
 - <a href="#subscription_clock.precision" name="subscription_clock.precision"></a> `precision`: [`timestamp`](#timestamp)
 The amount of time that the implementation may wait additionally
 to coalesce with other events.
+
 Offset: 16
+
 - <a href="#subscription_clock.flags" name="subscription_clock.flags"></a> `flags`: [`subclockflags`](#subclockflags)
 Flags specifying whether the timeout is absolute or relative
+
 Offset: 24
+
 ## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Struct
 The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ### Struct members
 - <a href="#subscription_fd_readwrite.file_descriptor" name="subscription_fd_readwrite.file_descriptor"></a> `file_descriptor`: [`fd`](#fd)
 The file descriptor on which to wait for it to become ready for reading or writing.
+
 Offset: 0
+
 ## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
 The contents of a [`subscription`](#subscription).
+
 Size: 40
- Alignment: 8
+Alignment: 8
+
 ### Union Layout
 - tag_size: 1
 - tag_align: 1
@@ -748,24 +882,34 @@ Size: 40
 
 ## <a href="#subscription" name="subscription"></a> `subscription`: Struct
 Subscription to an event.
+
 Size: 48
- Alignment: 8
+Alignment: 8
+
 ### Struct members
 - <a href="#subscription.userdata" name="subscription.userdata"></a> `userdata`: [`userdata`](#userdata)
 User-provided value that is attached to the subscription in the
 implementation and returned through [`event::userdata`](#event.userdata).
+
 Offset: 0
+
 - <a href="#subscription.u" name="subscription.u"></a> `u`: [`subscription_u`](#subscription_u)
 The type of the event to which to subscribe, and its contents
+
 Offset: 8
+
 ## <a href="#exitcode" name="exitcode"></a> `exitcode`: `u32`
 Exit code generated by a process when exiting.
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ## <a href="#signal" name="signal"></a> `signal`: Enum(`u8`)
 Signal condition.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#signal.none" name="signal.none"></a> `none`
 No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
@@ -893,8 +1037,10 @@ Action: Terminates the process.
 
 ## <a href="#riflags" name="riflags"></a> `riflags`: Flags(`u16`)
 Flags provided to [`sock_recv`](#sock_recv).
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`
 Returns the message without removing it from the socket's receive queue.
@@ -904,8 +1050,10 @@ On byte-stream sockets, block until the full amount of data can be returned.
 
 ## <a href="#roflags" name="roflags"></a> `roflags`: Flags(`u16`)
 Flags returned by [`sock_recv`](#sock_recv).
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ### Flags
 - <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`
 Returned by [`sock_recv`](#sock_recv): Message data has been truncated.
@@ -913,12 +1061,16 @@ Returned by [`sock_recv`](#sock_recv): Message data has been truncated.
 ## <a href="#siflags" name="siflags"></a> `siflags`: `u16`
 Flags provided to [`sock_send`](#sock_send). As there are currently no flags
 defined, it must be set to zero.
+
 Size: 2
- Alignment: 2
+Alignment: 2
+
 ## <a href="#sdflags" name="sdflags"></a> `sdflags`: Flags(`u8`)
 Which channels on a socket to shut down.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Flags
 - <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`
 Disables further receive operations.
@@ -928,24 +1080,32 @@ Disables further send operations.
 
 ## <a href="#preopentype" name="preopentype"></a> `preopentype`: Enum(`u8`)
 Identifiers for preopened capabilities.
+
 Size: 1
- Alignment: 1
+Alignment: 1
+
 ### Variants
 - <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
 A pre-opened directory.
 
 ## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Struct
 The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
+
 Size: 4
- Alignment: 4
+Alignment: 4
+
 ### Struct members
 - <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
 The length of the directory name for use with [`fd_prestat_dir_name`](#fd_prestat_dir_name).
+
 Offset: 0
+
 ## <a href="#prestat" name="prestat"></a> `prestat`: Union
 Information about a pre-opened capability.
+
 Size: 8
- Alignment: 4
+Alignment: 4
+
 ### Union Layout
 - tag_size: 1
 - tag_align: 1
