@@ -51,6 +51,10 @@ pub enum ValidationError {
         reason: String,
         location: Location,
     },
+    #[error("Missing export")]
+    MissingExport { location: Location },
+    #[error("Duplicate exports: only one export permitted")]
+    DuplicateExports { location: Location },
 }
 
 impl ValidationError {
@@ -63,7 +67,9 @@ impl ValidationError {
             | InvalidRepr { location, .. }
             | InvalidFirstResultType { location, .. }
             | AnonymousStructure { location, .. }
-            | InvalidUnionField { location, .. } => {
+            | InvalidUnionField { location, .. }
+            | MissingExport { location, .. }
+            | DuplicateExports { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -591,8 +597,18 @@ fn func_validation(
     scope: &mut IdentValidation,
     doc: &DocValidationScope,
 ) -> Result<InterfaceFunc, ValidationError> {
-    let loc = doc.location(syntax.export_loc);
-    let name = scope.introduce(syntax.export, loc)?;
+    let loc = doc.location(syntax.loc);
+    let name = if syntax.exports.is_empty() {
+        Err(ValidationError::MissingExport {
+            location: loc.clone(),
+        })
+    } else if syntax.exports.len() > 1 {
+        Err(ValidationError::DuplicateExports {
+            location: doc.location(syntax.exports[1].loc),
+        })
+    } else {
+        scope.introduce(syntax.exports[0].name, doc.location(syntax.exports[0].loc))
+    }?;
     let mut argnames = IdentValidation::new();
     let params = syntax
         .params

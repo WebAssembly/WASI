@@ -1,6 +1,7 @@
 use crate::BuiltinType;
 use wast::lexer::Comment;
 use wast::parser::{Parse, Parser, Peek, Result};
+use wast::Error;
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
 ///! conventions:
@@ -123,6 +124,12 @@ impl wast::parser::Peek for BuiltinType {
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CommentSyntax<'a> {
     pub comments: Vec<&'a str>,
+}
+
+impl<'a> CommentSyntax<'a> {
+    pub fn is_empty(&self) -> bool {
+        self.comments.is_empty()
+    }
 }
 
 impl<'a> Parse<'a> for CommentSyntax<'a> {
@@ -587,30 +594,38 @@ impl Parse<'_> for ImportTypeSyntax {
 
 #[derive(Debug, Clone)]
 pub struct InterfaceFuncSyntax<'a> {
-    pub export: &'a str,
-    pub export_loc: wast::Span,
+    pub exports: Vec<ExportSyntax<'a>>,
     pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
     pub results: Vec<Documented<'a, FieldSyntax<'a>>>,
     pub noreturn: bool,
+    pub loc: wast::Span,
 }
 
 impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
+        let loc = parser.cur_span();
         parser.parse::<annotation::interface>()?;
         parser.parse::<kw::func>()?;
 
-        let (export_loc, export) = parser.parens(|p| {
-            p.parse::<kw::export>()?;
-            Ok((p.cur_span(), p.parse()?))
-        })?;
-
+        let mut exports = Vec::new();
         let mut params = Vec::new();
         let mut results = Vec::new();
         let mut noreturn = false;
 
         while !parser.is_empty() {
+            let loc = parser.cur_span();
             let func_field = parser.parse::<Documented<InterfaceFuncField>>()?;
             match func_field.item {
+                InterfaceFuncField::Export(export) => {
+                    if func_field.comments.is_empty() {
+                        exports.push(export);
+                    } else {
+                        Err(Error::new(
+                            loc,
+                            "Doc comments on exports are not supported".to_owned(),
+                        ))?;
+                    }
+                }
                 InterfaceFuncField::Param(item) => {
                     params.push(Documented {
                         comments: func_field.comments,
@@ -624,22 +639,44 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
                     });
                 }
                 InterfaceFuncField::Noreturn => {
-                    noreturn = true;
+                    if func_field.comments.is_empty() {
+                        noreturn = true;
+                    } else {
+                        Err(Error::new(
+                            loc,
+                            "Doc comments noreturn is not supported".to_owned(),
+                        ))?;
+                    }
                 }
             }
         }
 
         Ok(InterfaceFuncSyntax {
-            export,
-            export_loc,
+            exports,
             params,
             results,
             noreturn,
+            loc,
         })
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct ExportSyntax<'a> {
+    pub name: &'a str,
+    pub loc: wast::Span,
+}
+
+impl<'a> PartialEq for ExportSyntax<'a> {
+    fn eq(&self, other: &ExportSyntax<'_>) -> bool {
+        // Don't compare location
+        self.name == other.name
+    }
+}
+impl<'a> Eq for ExportSyntax<'a> {}
+
 enum InterfaceFuncField<'a> {
+    Export(ExportSyntax<'a>),
     Param(FieldSyntax<'a>),
     Result(FieldSyntax<'a>),
     Noreturn,
@@ -660,6 +697,13 @@ impl<'a> Parse<'a> for InterfaceFuncField<'a> {
                     name: parser.parse()?,
                     type_: parser.parse()?,
                 }))
+            } else if l.peek::<kw::export>() {
+                parser.parse::<kw::export>()?;
+                let loc = parser.cur_span();
+                Ok(InterfaceFuncField::Export(ExportSyntax {
+                    name: parser.parse()?,
+                    loc,
+                }))
             } else if l.peek::<annotation::witx>() {
                 parser.parse::<annotation::witx>()?;
                 let mut l = parser.lookahead1();
@@ -678,8 +722,8 @@ impl<'a> Parse<'a> for InterfaceFuncField<'a> {
 
 impl PartialEq for InterfaceFuncSyntax<'_> {
     fn eq(&self, other: &InterfaceFuncSyntax<'_>) -> bool {
-        // skip the `export_loc` field
-        self.export == other.export
+        // Ignore loc
+        self.exports == other.exports
             && self.params == other.params
             && self.results == other.results
             && self.noreturn == other.noreturn
