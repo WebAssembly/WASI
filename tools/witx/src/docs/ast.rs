@@ -10,6 +10,7 @@ use crate::{
     },
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
     RepEquality,
+    layout::Layout,
 };
 
 fn heading_from_node(node: &MdNodeRef, levels_down: usize) -> MdHeading {
@@ -26,7 +27,7 @@ impl ToMarkdown for Document {
                 heading.new_level_down(),
                 name,
                 name,
-                &d.docs,
+                format!("{}Size: {}\n Alignment: {}", &d.docs, &d.mem_size(), &d.mem_align()).as_str(),
             ));
             d.generate(child.clone());
         }
@@ -173,7 +174,9 @@ impl ToMarkdown for StructDatatype {
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Struct members"));
 
-        for member in &self.members {
+        for member_layout in &self.member_layout() {
+            let member = member_layout.member;
+            let offset = member_layout.offset;
             let name = member.name.as_str();
             let id = if let Some(id) = node.any_ref().id() {
                 format!("{}.{}", id, name)
@@ -184,7 +187,7 @@ impl ToMarkdown for StructDatatype {
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                &member.docs,
+                format!("{}Offset: {}", &member.docs, &offset).as_str(),
             ));
             member.tref.generate(n.clone());
         }
@@ -195,8 +198,45 @@ impl ToMarkdown for StructDatatype {
 
 impl ToMarkdown for UnionDatatype {
     fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Union variants"));
+        
+        // Sizes & Alignments
+        let sizes_heading = heading_from_node(&node, 1);
+        node.new_child(MdSection::new(sizes_heading, "Union Layout"));
+        let union_layout = &self.union_layout();
+        node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                "tag_size",
+                format!("tag_size: {}", union_layout.tag_size).as_str(),
+                "",
+        ));
+        node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                "tag_align",
+                format!("tag_align: {}", union_layout.tag_align).as_str(),
+                "",
+        ));
+        node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                "contents_offset",
+                format!("contents_offset: {}", union_layout.contents_offset).as_str(),
+                "",
+        ));
+        node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                "contents_size",
+                format!("contents_size: {}", union_layout.contents_size).as_str(),
+                "",
+        ));
+        node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                "contents_align",
+                format!("contents_align: {}", union_layout.contents_align).as_str(),
+                "",
+        ));
+
+        // Variants
+        let variants_heading = heading_from_node(&node, 1);
+        node.new_child(MdSection::new(variants_heading, "Union variants"));
 
         for variant in &self.variants {
             let name = variant.name.as_str();
