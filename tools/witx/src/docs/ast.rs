@@ -8,9 +8,9 @@ use crate::{
         InterfaceFunc, InterfaceFuncParam, Module, ModuleImport, ModuleImportVariant, NamedType,
         StructDatatype, Type, TypeRef, UnionDatatype,
     },
+    layout::Layout,
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
     RepEquality,
-    layout::Layout,
 };
 
 fn heading_from_node(node: &MdNodeRef, levels_down: usize) -> MdHeading {
@@ -27,7 +27,13 @@ impl ToMarkdown for Document {
                 heading.new_level_down(),
                 name,
                 name,
-                format!("{}Size: {}\n Alignment: {}", &d.docs, &d.mem_size(), &d.mem_align()).as_str(),
+                format!(
+                    "{}Size: {}\n Alignment: {}",
+                    &d.docs,
+                    &d.mem_size(),
+                    &d.mem_align()
+                )
+                .as_str(),
             ));
             d.generate(child.clone());
         }
@@ -198,40 +204,39 @@ impl ToMarkdown for StructDatatype {
 
 impl ToMarkdown for UnionDatatype {
     fn generate(&self, node: MdNodeRef) {
-        
         // Sizes & Alignments
         let sizes_heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(sizes_heading, "Union Layout"));
         let union_layout = &self.union_layout();
         node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                "tag_size",
-                format!("tag_size: {}", union_layout.tag_size).as_str(),
-                "",
+            MdHeading::new_bullet(),
+            "tag_size",
+            format!("tag_size: {}", union_layout.tag_size).as_str(),
+            "",
         ));
         node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                "tag_align",
-                format!("tag_align: {}", union_layout.tag_align).as_str(),
-                "",
+            MdHeading::new_bullet(),
+            "tag_align",
+            format!("tag_align: {}", union_layout.tag_align).as_str(),
+            "",
         ));
         node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                "contents_offset",
-                format!("contents_offset: {}", union_layout.contents_offset).as_str(),
-                "",
+            MdHeading::new_bullet(),
+            "contents_offset",
+            format!("contents_offset: {}", union_layout.contents_offset).as_str(),
+            "",
         ));
         node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                "contents_size",
-                format!("contents_size: {}", union_layout.contents_size).as_str(),
-                "",
+            MdHeading::new_bullet(),
+            "contents_size",
+            format!("contents_size: {}", union_layout.contents_size).as_str(),
+            "",
         ));
         node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                "contents_align",
-                format!("contents_align: {}", union_layout.contents_align).as_str(),
-                "",
+            MdHeading::new_bullet(),
+            "contents_align",
+            format!("contents_align: {}", union_layout.contents_align).as_str(),
+            "",
         ));
 
         // Variants
