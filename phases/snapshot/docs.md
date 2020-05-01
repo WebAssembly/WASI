@@ -734,16 +734,11 @@ The contents of a [`subscription`](#subscription).
 Size: 40
  Alignment: 8
 ### Union Layout
-- <a href="#tag_size" name="tag_size"></a> `tag_size: 1`
-
-- <a href="#tag_align" name="tag_align"></a> `tag_align: 1`
-
-- <a href="#contents_offset" name="contents_offset"></a> `contents_offset: 8`
-
-- <a href="#contents_size" name="contents_size"></a> `contents_size: 32`
-
-- <a href="#contents_align" name="contents_align"></a> `contents_align: 8`
-
+- tag_size: 1
+- tag_align: 1
+- contents_offset: 8
+- contents_size: 32
+- contents_align: 8
 ### Union variants
 - <a href="#subscription_u.clock" name="subscription_u.clock"></a> `clock`: [`subscription_clock`](#subscription_clock)
 
@@ -952,16 +947,11 @@ Information about a pre-opened capability.
 Size: 8
  Alignment: 4
 ### Union Layout
-- <a href="#tag_size" name="tag_size"></a> `tag_size: 1`
-
-- <a href="#tag_align" name="tag_align"></a> `tag_align: 1`
-
-- <a href="#contents_offset" name="contents_offset"></a> `contents_offset: 4`
-
-- <a href="#contents_size" name="contents_size"></a> `contents_size: 4`
-
-- <a href="#contents_align" name="contents_align"></a> `contents_align: 4`
-
+- tag_size: 1
+- tag_align: 1
+- contents_offset: 4
+- contents_size: 4
+- contents_align: 4
 ### Union variants
 - <a href="#prestat.dir" name="prestat.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
 

@@ -208,35 +208,25 @@ impl ToMarkdown for UnionDatatype {
         let sizes_heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(sizes_heading, "Union Layout"));
         let union_layout = &self.union_layout();
-        node.new_child(MdNamedType::new(
+        node.new_child(MdSection::new(
             MdHeading::new_bullet(),
-            "tag_size",
             format!("tag_size: {}", union_layout.tag_size).as_str(),
-            "",
         ));
-        node.new_child(MdNamedType::new(
+        node.new_child(MdSection::new(
             MdHeading::new_bullet(),
-            "tag_align",
             format!("tag_align: {}", union_layout.tag_align).as_str(),
-            "",
         ));
-        node.new_child(MdNamedType::new(
+        node.new_child(MdSection::new(
             MdHeading::new_bullet(),
-            "contents_offset",
             format!("contents_offset: {}", union_layout.contents_offset).as_str(),
-            "",
         ));
-        node.new_child(MdNamedType::new(
+        node.new_child(MdSection::new(
             MdHeading::new_bullet(),
-            "contents_size",
             format!("contents_size: {}", union_layout.contents_size).as_str(),
-            "",
         ));
-        node.new_child(MdNamedType::new(
+        node.new_child(MdSection::new(
             MdHeading::new_bullet(),
-            "contents_align",
             format!("contents_align: {}", union_layout.contents_align).as_str(),
-            "",
         ));
 
         // Variants

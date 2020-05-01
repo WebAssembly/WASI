@@ -429,19 +429,12 @@ The contents of a <a href="#subscription"><code>subscription</code></a> when typ
 <li>&lt;a href=&quot;#subscription_fd_readwrite.file_descriptor&quot; name=&quot;subscription_fd_readwrite.file_descriptor&quot;&gt;&lt;/a&gt; <code>file_descriptor</code>: <a href="#fd"><code>fd</code></a><br>The file descriptor on which to wait for it to become ready for reading or writing.<br>Offset: 0<h2 id="a-href-subscription_u-name-subscription_u-a-subscription_u-union">&lt;a href=&quot;#subscription_u&quot; name=&quot;subscription_u&quot;&gt;&lt;/a&gt; <code>subscription_u</code>: Union</h2>
 The contents of a <a href="#subscription"><code>subscription</code></a>.<br>Size: 40<br>Alignment: 8<h3 id="union-layout">Union Layout</h3>
 </li>
-<li><p>&lt;a href=&quot;#tag_size&quot; name=&quot;tag_size&quot;&gt;&lt;/a&gt; <code>tag_size: 1</code></p>
+<li>tag_size: 1</li>
+<li>tag_align: 1</li>
+<li>contents_offset: 8</li>
+<li>contents_size: 32</li>
+<li>contents_align: 8<h3 id="union-variants">Union variants</h3>
 </li>
-<li><p>&lt;a href=&quot;#tag_align&quot; name=&quot;tag_align&quot;&gt;&lt;/a&gt; <code>tag_align: 1</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_offset&quot; name=&quot;contents_offset&quot;&gt;&lt;/a&gt; <code>contents_offset: 8</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_size&quot; name=&quot;contents_size&quot;&gt;&lt;/a&gt; <code>contents_size: 32</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_align&quot; name=&quot;contents_align&quot;&gt;&lt;/a&gt; <code>contents_align: 8</code></p>
-</li>
-</ul>
-<h3 id="union-variants">Union variants</h3>
-<ul>
 <li><p>&lt;a href=&quot;#subscription_u.clock&quot; name=&quot;subscription_u.clock&quot;&gt;&lt;/a&gt; <code>clock</code>: <a href="#subscription_clock"><code>subscription_clock</code></a></p>
 </li>
 <li><p>&lt;a href=&quot;#subscription_u.fd_read&quot; name=&quot;subscription_u.fd_read&quot;&gt;&lt;/a&gt; <code>fd_read</code>: <a href="#subscription_fd_readwrite"><code>subscription_fd_readwrite</code></a></p>
@@ -560,19 +553,12 @@ Signal condition.<br>Size: 1<br>Alignment: 1<h3 id="variants">Variants</h3>
 <li>&lt;a href=&quot;#prestat_dir.pr_name_len&quot; name=&quot;prestat_dir.pr_name_len&quot;&gt;&lt;/a&gt; <code>pr_name_len</code>: <a href="#size"><code>size</code></a><br>The length of the directory name for use with <a href="#fd_prestat_dir_name"><code>fd_prestat_dir_name</code></a>.<br>Offset: 0<h2 id="a-href-prestat-name-prestat-a-prestat-union">&lt;a href=&quot;#prestat&quot; name=&quot;prestat&quot;&gt;&lt;/a&gt; <code>prestat</code>: Union</h2>
 Information about a pre-opened capability.<br>Size: 8<br>Alignment: 4<h3 id="union-layout">Union Layout</h3>
 </li>
-<li><p>&lt;a href=&quot;#tag_size&quot; name=&quot;tag_size&quot;&gt;&lt;/a&gt; <code>tag_size: 1</code></p>
+<li>tag_size: 1</li>
+<li>tag_align: 1</li>
+<li>contents_offset: 4</li>
+<li>contents_size: 4</li>
+<li>contents_align: 4<h3 id="union-variants">Union variants</h3>
 </li>
-<li><p>&lt;a href=&quot;#tag_align&quot; name=&quot;tag_align&quot;&gt;&lt;/a&gt; <code>tag_align: 1</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_offset&quot; name=&quot;contents_offset&quot;&gt;&lt;/a&gt; <code>contents_offset: 4</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_size&quot; name=&quot;contents_size&quot;&gt;&lt;/a&gt; <code>contents_size: 4</code></p>
-</li>
-<li><p>&lt;a href=&quot;#contents_align&quot; name=&quot;contents_align&quot;&gt;&lt;/a&gt; <code>contents_align: 4</code></p>
-</li>
-</ul>
-<h3 id="union-variants">Union variants</h3>
-<ul>
 <li>&lt;a href=&quot;#prestat.dir&quot; name=&quot;prestat.dir&quot;&gt;&lt;/a&gt; <code>dir</code>: <a href="#prestat_dir"><code>prestat_dir</code></a></li>
 </ul>
 <h1 id="modules">Modules</h1>
