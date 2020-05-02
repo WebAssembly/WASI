@@ -70,11 +70,11 @@ fn render_roundtrip() {
                     .expect("profile2 missing expose");
                 assert_eq!(expose, expose2);
             }
-            for require in profile.requires() {
-                let require2 = profile2
-                    .require(&require.func.name)
-                    .expect("profile2 missing require");
-                assert_eq!(require, require2);
+            for import in profile.imports() {
+                let import2 = profile2
+                    .import(&import.name)
+                    .expect("profile2 missing import");
+                assert_eq!(import, import2);
             }
 
             assert_eq!(profile, profile2);

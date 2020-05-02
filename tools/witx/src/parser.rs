@@ -49,7 +49,6 @@ mod kw {
     wast::custom_keyword!(usize);
     wast::custom_keyword!(profile);
     wast::custom_keyword!(expose);
-    wast::custom_keyword!(require);
 }
 
 mod annotation {
@@ -557,7 +556,7 @@ impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
 pub struct ModuleImportSyntax<'a> {
     pub name: &'a str,
     pub name_loc: wast::Span,
-    pub type_: ImportTypeSyntax,
+    pub variant: ModuleImportVariantSyntax<'a>,
 }
 
 impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
@@ -566,7 +565,7 @@ impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
         Ok(ModuleImportSyntax {
             name: parser.parse()?,
             name_loc,
-            type_: parser.parens(|p| p.parse())?,
+            variant: parser.parens(|p| p.parse())?,
         })
     }
 }
@@ -574,21 +573,29 @@ impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
 impl PartialEq for ModuleImportSyntax<'_> {
     fn eq(&self, other: &ModuleImportSyntax<'_>) -> bool {
         // skip the `name_loc` field
-        self.name == other.name && self.type_ == other.type_
+        self.name == other.name && self.variant == other.variant
     }
 }
 
 impl Eq for ModuleImportSyntax<'_> {}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ImportTypeSyntax {
+pub enum ModuleImportVariantSyntax<'a> {
     Memory,
+    Func(InterfaceFuncSyntax<'a>),
 }
 
-impl Parse<'_> for ImportTypeSyntax {
-    fn parse(parser: Parser<'_>) -> Result<Self> {
-        parser.parse::<kw::memory>()?;
-        Ok(ImportTypeSyntax::Memory)
+impl<'a> Parse<'a> for ModuleImportVariantSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<annotation::interface>() {
+            Ok(ModuleImportVariantSyntax::Func(parser.parse()?))
+        } else if l.peek::<kw::memory>() {
+            parser.parse::<kw::memory>()?;
+            Ok(ModuleImportVariantSyntax::Memory)
+        } else {
+            Err(l.error())
+        }
     }
 }
 
@@ -753,7 +760,7 @@ impl<'a> Parse<'a> for ProfileSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ProfileDeclSyntax<'a> {
     Expose(wast::Id<'a>),
-    Require(Documented<'a, InterfaceFuncSyntax<'a>>),
+    Import(Documented<'a, ModuleImportSyntax<'a>>),
 }
 
 impl<'a> Parse<'a> for ProfileDeclSyntax<'a> {
@@ -763,9 +770,9 @@ impl<'a> Parse<'a> for ProfileDeclSyntax<'a> {
             if l.peek::<kw::expose>() {
                 let _ = p.parse::<kw::expose>().expect("just peeked kw");
                 Ok(ProfileDeclSyntax::Expose(p.parse()?))
-            } else if l.peek::<kw::require>() {
-                let _ = p.parse::<kw::require>().expect("just peeked kw");
-                p.parens(|pp| Ok(ProfileDeclSyntax::Require(pp.parse()?)))
+            } else if l.peek::<kw::import>() {
+                let _ = parser.parse::<kw::import>().expect("just peeked kw");
+                Ok(ProfileDeclSyntax::Import(p.parse()?))
             } else {
                 Err(l.error())
             }

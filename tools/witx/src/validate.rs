@@ -1,16 +1,16 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, IntSyntax, InterfaceFuncSyntax, ModuleDeclSyntax, ProfileDeclSyntax,
+        CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax, IntSyntax,
+        InterfaceFuncSyntax, ModuleDeclSyntax, ModuleImportVariantSyntax, ProfileDeclSyntax,
         StructSyntax, TypedefSyntax, UnionSyntax, VariantSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, ExposedModule, FlagsDatatype,
     FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
     ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, Profile, ProfileDefinition,
-    ProfileEntry, RequiredFunc, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
-    UnionDatatype, UnionVariant,
+    ProfileEntry, StructDatatype, StructMember, Type, TypePassedBy, TypeRef, UnionDatatype,
+    UnionVariant,
 };
 use std::collections::{hash_map, HashMap};
 use std::path::Path;
@@ -53,8 +53,10 @@ pub enum ValidationError {
     },
     #[error("Missing export")]
     MissingExport { location: Location },
-    #[error("Duplicate exports: only one export permitted")]
-    DuplicateExports { location: Location },
+    #[error("Unpermitted export")]
+    UnpermittedExport { location: Location },
+    #[error("Invalid import: {name} not supported in this context")]
+    InvalidImport { name: String, location: Location },
 }
 
 impl ValidationError {
@@ -69,7 +71,8 @@ impl ValidationError {
             | AnonymousStructure { location, .. }
             | InvalidUnionField { location, .. }
             | MissingExport { location, .. }
-            | DuplicateExports { location, .. } => {
+            | UnpermittedExport { location, .. }
+            | InvalidImport { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -563,9 +566,15 @@ impl<'a> ModuleValidation<'a> {
         match &decl.item {
             ModuleDeclSyntax::Import(syntax) => {
                 let loc = self.doc.location(syntax.name_loc);
-                let name = self.scope.introduce(syntax.name, loc)?;
-                let variant = match syntax.type_ {
-                    ImportTypeSyntax::Memory => ModuleImportVariant::Memory,
+                let name = self.scope.introduce(syntax.name, loc.clone())?;
+                let variant = match syntax.variant {
+                    ModuleImportVariantSyntax::Memory => ModuleImportVariant::Memory,
+                    ModuleImportVariantSyntax::Func { .. } => {
+                        Err(ValidationError::InvalidImport {
+                            name: "func".to_owned(),
+                            location: loc.clone(),
+                        })?
+                    }
                 };
                 let rc_import = Rc::new(ModuleImport {
                     name: name.clone(),
@@ -577,7 +586,7 @@ impl<'a> ModuleValidation<'a> {
                 Ok(ModuleDefinition::Import(rc_import))
             }
             ModuleDeclSyntax::Func(syntax) => {
-                let func = Rc::new(func_validation(
+                let func = Rc::new(FuncContext::Export.validate(
                     syntax,
                     &decl.comments,
                     &mut self.scope,
@@ -591,68 +600,91 @@ impl<'a> ModuleValidation<'a> {
     }
 }
 
-fn func_validation(
-    syntax: &InterfaceFuncSyntax,
-    comments: &CommentSyntax,
-    scope: &mut IdentValidation,
-    doc: &DocValidationScope,
-) -> Result<InterfaceFunc, ValidationError> {
-    let loc = doc.location(syntax.loc);
-    let name = if syntax.exports.is_empty() {
-        Err(ValidationError::MissingExport {
-            location: loc.clone(),
-        })
-    } else if syntax.exports.len() > 1 {
-        Err(ValidationError::DuplicateExports {
-            location: doc.location(syntax.exports[1].loc),
-        })
-    } else {
-        scope.introduce(syntax.exports[0].name, doc.location(syntax.exports[0].loc))
-    }?;
-    let mut argnames = IdentValidation::new();
-    let params = syntax
-        .params
-        .iter()
-        .enumerate()
-        .map(|(ix, f)| {
-            Ok(InterfaceFuncParam {
-                name: argnames.introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
-                tref: doc.validate_datatype(&f.item.type_, false, f.item.name.span())?,
-                position: InterfaceFuncParamPosition::Param(ix),
-                docs: f.comments.docs(),
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-    let results = syntax
-        .results
-        .iter()
-        .enumerate()
-        .map(|(ix, f)| {
-            let tref = doc.validate_datatype(&f.item.type_, false, f.item.name.span())?;
-            if ix == 0 {
-                match tref.type_().passed_by() {
-                    TypePassedBy::Value(_) => {}
-                    _ => Err(ValidationError::InvalidFirstResultType {
-                        location: doc.location(f.item.name.span()),
-                    })?,
+enum FuncContext {
+    Export,
+    Import(Id),
+}
+
+impl FuncContext {
+    fn validate(
+        self,
+        syntax: &InterfaceFuncSyntax,
+        comments: &CommentSyntax,
+        scope: &mut IdentValidation,
+        doc: &DocValidationScope,
+    ) -> Result<InterfaceFunc, ValidationError> {
+        let loc = doc.location(syntax.loc);
+        let name = match self {
+            FuncContext::Export => {
+                if syntax.exports.is_empty() {
+                    Err(ValidationError::MissingExport {
+                        location: loc.clone(),
+                    })
+                } else if syntax.exports.len() > 1 {
+                    Err(ValidationError::UnpermittedExport {
+                        location: doc.location(syntax.exports[1].loc),
+                    })
+                } else {
+                    scope.introduce(syntax.exports[0].name, doc.location(syntax.exports[0].loc))
                 }
             }
-            Ok(InterfaceFuncParam {
-                name: argnames.introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
-                tref,
-                position: InterfaceFuncParamPosition::Result(ix),
-                docs: f.comments.docs(),
+            FuncContext::Import(name) => {
+                if syntax.exports.is_empty() {
+                    Ok(name)
+                } else {
+                    Err(ValidationError::UnpermittedExport {
+                        location: doc.location(syntax.exports[0].loc),
+                    })
+                }
+            }
+        }?;
+        let mut argnames = IdentValidation::new();
+        let params = syntax
+            .params
+            .iter()
+            .enumerate()
+            .map(|(ix, f)| {
+                Ok(InterfaceFuncParam {
+                    name: argnames
+                        .introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
+                    tref: doc.validate_datatype(&f.item.type_, false, f.item.name.span())?,
+                    position: InterfaceFuncParamPosition::Param(ix),
+                    docs: f.comments.docs(),
+                })
             })
+            .collect::<Result<Vec<_>, _>>()?;
+        let results = syntax
+            .results
+            .iter()
+            .enumerate()
+            .map(|(ix, f)| {
+                let tref = doc.validate_datatype(&f.item.type_, false, f.item.name.span())?;
+                if ix == 0 {
+                    match tref.type_().passed_by() {
+                        TypePassedBy::Value(_) => {}
+                        _ => Err(ValidationError::InvalidFirstResultType {
+                            location: doc.location(f.item.name.span()),
+                        })?,
+                    }
+                }
+                Ok(InterfaceFuncParam {
+                    name: argnames
+                        .introduce(f.item.name.name(), doc.location(f.item.name.span()))?,
+                    tref,
+                    position: InterfaceFuncParamPosition::Result(ix),
+                    docs: f.comments.docs(),
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        let noreturn = syntax.noreturn;
+        Ok(InterfaceFunc {
+            name: name.clone(),
+            params,
+            results,
+            noreturn,
+            docs: comments.docs(),
         })
-        .collect::<Result<Vec<_>, _>>()?;
-    let noreturn = syntax.noreturn;
-    Ok(InterfaceFunc {
-        name: name.clone(),
-        params,
-        results,
-        noreturn,
-        docs: comments.docs(),
-    })
+    }
 }
 
 struct ProfileValidation<'a> {
@@ -706,22 +738,34 @@ impl<'a> ProfileValidation<'a> {
                 );
                 Ok(ProfileDefinition::Expose(exposed_mod))
             }
-            ProfileDeclSyntax::Require(syntax) => {
-                let func = Rc::new(func_validation(
-                    &syntax.item,
-                    &syntax.comments,
-                    &mut self.scope,
-                    &self.doc,
-                )?);
-                let required_func = Rc::new(RequiredFunc {
-                    func,
+            ProfileDeclSyntax::Import(syntax) => {
+                let loc = self.doc.location(syntax.item.name_loc);
+                let name = self.scope.introduce(syntax.item.name, loc.clone())?;
+                let variant = match &syntax.item.variant {
+                    ModuleImportVariantSyntax::Memory => Err(ValidationError::InvalidImport {
+                        name: "memory".to_owned(),
+                        location: loc.clone(),
+                    })?,
+                    ModuleImportVariantSyntax::Func(f) => {
+                        ModuleImportVariant::Func(FuncContext::Import(name.clone()).validate(
+                            &f,
+                            &syntax.comments,
+                            &mut self.scope,
+                            &self.doc,
+                        )?)
+                    }
+                };
+                let rc_import = Rc::new(ModuleImport {
+                    name: name.clone(),
+                    variant,
                     docs: decl.comments.docs(),
                 });
+
                 self.entries.insert(
-                    required_func.func.name.clone(),
-                    ProfileEntry::Require(Rc::downgrade(&required_func)),
+                    rc_import.name.clone(),
+                    ProfileEntry::Import(Rc::downgrade(&rc_import)),
                 );
-                Ok(ProfileDefinition::Require(required_func))
+                Ok(ProfileDefinition::Import(rc_import))
             }
         }
     }

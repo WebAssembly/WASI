@@ -273,6 +273,7 @@ impl ModuleImportVariant {
     pub fn to_sexpr(&self) -> SExpr {
         match self {
             ModuleImportVariant::Memory => SExpr::Vec(vec![SExpr::word("memory")]),
+            ModuleImportVariant::Func(f) => f.to_sexpr(),
         }
     }
 }
@@ -346,7 +347,7 @@ impl Profile {
         let definitions = self
             .exposes()
             .map(|i| i.to_sexpr())
-            .chain(self.requires().map(|f| f.to_sexpr()))
+            .chain(self.imports().map(|f| f.to_sexpr()))
             .collect::<Vec<SExpr>>();
         SExpr::docs(&self.docs, SExpr::Vec([header, definitions].concat()))
     }
@@ -357,15 +358,6 @@ impl ExposedModule {
         SExpr::docs(
             &self.docs,
             SExpr::Vec(vec![SExpr::word("expose"), self.module.name.to_sexpr()]),
-        )
-    }
-}
-
-impl RequiredFunc {
-    pub fn to_sexpr(&self) -> SExpr {
-        SExpr::docs(
-            &self.docs,
-            SExpr::Vec(vec![SExpr::word("require"), self.func.to_sexpr()]),
         )
     }
 }

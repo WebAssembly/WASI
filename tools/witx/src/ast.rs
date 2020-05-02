@@ -406,6 +406,7 @@ pub struct ModuleImport {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ModuleImportVariant {
     Memory,
+    Func(InterfaceFunc),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -467,17 +468,17 @@ impl Profile {
             _ => None,
         })
     }
-    pub fn require(&self, name: &Id) -> Option<Rc<RequiredFunc>> {
+    pub fn import(&self, name: &Id) -> Option<Rc<ModuleImport>> {
         self.entries.get(name).and_then(|e| match e {
-            ProfileEntry::Require(weak) => {
+            ProfileEntry::Import(weak) => {
                 Some(weak.upgrade().expect("always possible to upgrade entry"))
             }
             _ => None,
         })
     }
-    pub fn requires<'a>(&'a self) -> impl Iterator<Item = Rc<RequiredFunc>> + 'a {
+    pub fn imports<'a>(&'a self) -> impl Iterator<Item = Rc<ModuleImport>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
-            ProfileDefinition::Require(def) => Some(def.clone()),
+            ProfileDefinition::Import(def) => Some(def.clone()),
             _ => None,
         })
     }
@@ -505,21 +506,15 @@ pub struct ExposedModule {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct RequiredFunc {
-    pub func: Rc<InterfaceFunc>,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ProfileDefinition {
     Expose(Rc<ExposedModule>),
-    Require(Rc<RequiredFunc>),
+    Import(Rc<ModuleImport>),
 }
 
 #[derive(Debug, Clone)]
 pub enum ProfileEntry {
     Expose(Weak<ExposedModule>),
-    Require(Weak<RequiredFunc>),
+    Import(Weak<ModuleImport>),
 }
 
 impl PartialEq for ProfileEntry {
@@ -532,7 +527,7 @@ impl PartialEq for ProfileEntry {
                         .upgrade()
                         .expect("always possible to upgrade profileentry when part of profile")
             }
-            (ProfileEntry::Require(i), ProfileEntry::Require(i_rhs)) => {
+            (ProfileEntry::Import(i), ProfileEntry::Import(i_rhs)) => {
                 i.upgrade()
                     .expect("always possible to upgrade profileentry when part of profile")
                     == i_rhs

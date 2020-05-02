@@ -260,6 +260,7 @@ impl ToMarkdown for ModuleImport {
             ModuleImportVariant::Memory => {
                 node.content_ref_mut::<MdSection>().title = "Memory".to_owned();
             }
+            ModuleImportVariant::Func(_) => unimplemented!(), // FIXME
         }
     }
 }

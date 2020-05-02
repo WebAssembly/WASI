@@ -28,7 +28,7 @@ pub use ast::{
     FlagsDatatype, FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
     ModuleImport, ModuleImportVariant, NamedType, Profile, ProfileDefinition, ProfileEntry,
-    RequiredFunc, StructDatatype, StructMember, Type, TypeRef, UnionDatatype, UnionVariant,
+    StructDatatype, StructMember, Type, TypeRef, UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
