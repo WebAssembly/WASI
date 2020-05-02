@@ -1,0 +1,1279 @@
+<h1 id="types">Types</h1>
+<h2 id="a-href-size-name-size-a-size-u32">&lt;a href=&quot;#size&quot; name=&quot;size&quot;&gt;&lt;/a&gt; <code>size</code>: <code>u32</code></h2>
+<p>Size: 4<br> Alignment: 4</p>
+<h2 id="a-href-filesize-name-filesize-a-filesize-u64">&lt;a href=&quot;#filesize&quot; name=&quot;filesize&quot;&gt;&lt;/a&gt; <code>filesize</code>: <code>u64</code></h2>
+<p>Non-negative file size or length of a region within a file.<br>Size: 8<br> Alignment: 8</p>
+<h2 id="a-href-timestamp-name-timestamp-a-timestamp-u64">&lt;a href=&quot;#timestamp&quot; name=&quot;timestamp&quot;&gt;&lt;/a&gt; <code>timestamp</code>: <code>u64</code></h2>
+<p>Timestamp in nanoseconds.<br>Size: 8<br> Alignment: 8</p>
+<h2 id="a-href-clockid-name-clockid-a-clockid-enum-u32-">&lt;a href=&quot;#clockid&quot; name=&quot;clockid&quot;&gt;&lt;/a&gt; <code>clockid</code>: Enum(<code>u32</code>)</h2>
+<p>Identifiers for clocks.<br>Size: 4<br> Alignment: 4</p>
+<h3 id="variants">Variants</h3>
+<ul>
+<li><p>&lt;a href=&quot;#clockid.realtime&quot; name=&quot;clockid.realtime&quot;&gt;&lt;/a&gt; <code>realtime</code><br>The clock measuring real time. Time value zero corresponds with<br>1970-01-01T00:00:00Z.</p>
+</li>
+<li><p>&lt;a href=&quot;#clockid.monotonic&quot; name=&quot;clockid.monotonic&quot;&gt;&lt;/a&gt; <code>monotonic</code><br>The store-wide monotonic clock, which is defined as a clock measuring<br>real time, whose value cannot be adjusted and which cannot have negative<br>clock jumps. The epoch of this clock is undefined. The absolute time<br>value of this clock therefore has no meaning.</p>
+</li>
+<li><p>&lt;a href=&quot;#clockid.process_cputime_id&quot; name=&quot;clockid.process_cputime_id&quot;&gt;&lt;/a&gt; <code>process_cputime_id</code><br>The CPU-time clock associated with the current process.</p>
+</li>
+<li><p>&lt;a href=&quot;#clockid.thread_cputime_id&quot; name=&quot;clockid.thread_cputime_id&quot;&gt;&lt;/a&gt; <code>thread_cputime_id</code><br>The CPU-time clock associated with the current thread.</p>
+</li>
+</ul>
+<h2 id="a-href-errno-name-errno-a-errno-enum-u16-">&lt;a href=&quot;#errno&quot; name=&quot;errno&quot;&gt;&lt;/a&gt; <code>errno</code>: Enum(<code>u16</code>)</h2>
+<p>Error codes returned by functions.<br>Not all of these error codes are returned by the functions provided by this<br>API; some are used in higher-level library layers, and others are provided<br>merely for alignment with POSIX.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="variants">Variants</h3>
+<ul>
+<li><p>&lt;a href=&quot;#errno.success&quot; name=&quot;errno.success&quot;&gt;&lt;/a&gt; <code>success</code><br>No error occurred. System call completed successfully.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.2big&quot; name=&quot;errno.2big&quot;&gt;&lt;/a&gt; <code>2big</code><br>Argument list too long.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.acces&quot; name=&quot;errno.acces&quot;&gt;&lt;/a&gt; <code>acces</code><br>Permission denied.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.addrinuse&quot; name=&quot;errno.addrinuse&quot;&gt;&lt;/a&gt; <code>addrinuse</code><br>Address in use.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.addrnotavail&quot; name=&quot;errno.addrnotavail&quot;&gt;&lt;/a&gt; <code>addrnotavail</code><br>Address not available.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.afnosupport&quot; name=&quot;errno.afnosupport&quot;&gt;&lt;/a&gt; <code>afnosupport</code><br>Address family not supported.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.again&quot; name=&quot;errno.again&quot;&gt;&lt;/a&gt; <code>again</code><br>Resource unavailable, or operation would block.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.already&quot; name=&quot;errno.already&quot;&gt;&lt;/a&gt; <code>already</code><br>Connection already in progress.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.badf&quot; name=&quot;errno.badf&quot;&gt;&lt;/a&gt; <code>badf</code><br>Bad file descriptor.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.badmsg&quot; name=&quot;errno.badmsg&quot;&gt;&lt;/a&gt; <code>badmsg</code><br>Bad message.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.busy&quot; name=&quot;errno.busy&quot;&gt;&lt;/a&gt; <code>busy</code><br>Device or resource busy.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.canceled&quot; name=&quot;errno.canceled&quot;&gt;&lt;/a&gt; <code>canceled</code><br>Operation canceled.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.child&quot; name=&quot;errno.child&quot;&gt;&lt;/a&gt; <code>child</code><br>No child processes.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.connaborted&quot; name=&quot;errno.connaborted&quot;&gt;&lt;/a&gt; <code>connaborted</code><br>Connection aborted.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.connrefused&quot; name=&quot;errno.connrefused&quot;&gt;&lt;/a&gt; <code>connrefused</code><br>Connection refused.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.connreset&quot; name=&quot;errno.connreset&quot;&gt;&lt;/a&gt; <code>connreset</code><br>Connection reset.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.deadlk&quot; name=&quot;errno.deadlk&quot;&gt;&lt;/a&gt; <code>deadlk</code><br>Resource deadlock would occur.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.destaddrreq&quot; name=&quot;errno.destaddrreq&quot;&gt;&lt;/a&gt; <code>destaddrreq</code><br>Destination address required.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.dom&quot; name=&quot;errno.dom&quot;&gt;&lt;/a&gt; <code>dom</code><br>Mathematics argument out of domain of function.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.dquot&quot; name=&quot;errno.dquot&quot;&gt;&lt;/a&gt; <code>dquot</code><br>Reserved.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.exist&quot; name=&quot;errno.exist&quot;&gt;&lt;/a&gt; <code>exist</code><br>File exists.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.fault&quot; name=&quot;errno.fault&quot;&gt;&lt;/a&gt; <code>fault</code><br>Bad address.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.fbig&quot; name=&quot;errno.fbig&quot;&gt;&lt;/a&gt; <code>fbig</code><br>File too large.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.hostunreach&quot; name=&quot;errno.hostunreach&quot;&gt;&lt;/a&gt; <code>hostunreach</code><br>Host is unreachable.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.idrm&quot; name=&quot;errno.idrm&quot;&gt;&lt;/a&gt; <code>idrm</code><br>Identifier removed.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.ilseq&quot; name=&quot;errno.ilseq&quot;&gt;&lt;/a&gt; <code>ilseq</code><br>Illegal byte sequence.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.inprogress&quot; name=&quot;errno.inprogress&quot;&gt;&lt;/a&gt; <code>inprogress</code><br>Operation in progress.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.intr&quot; name=&quot;errno.intr&quot;&gt;&lt;/a&gt; <code>intr</code><br>Interrupted function.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.inval&quot; name=&quot;errno.inval&quot;&gt;&lt;/a&gt; <code>inval</code><br>Invalid argument.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.io&quot; name=&quot;errno.io&quot;&gt;&lt;/a&gt; <code>io</code><br>I/O error.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.isconn&quot; name=&quot;errno.isconn&quot;&gt;&lt;/a&gt; <code>isconn</code><br>Socket is connected.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.isdir&quot; name=&quot;errno.isdir&quot;&gt;&lt;/a&gt; <code>isdir</code><br>Is a directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.loop&quot; name=&quot;errno.loop&quot;&gt;&lt;/a&gt; <code>loop</code><br>Too many levels of symbolic links.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.mfile&quot; name=&quot;errno.mfile&quot;&gt;&lt;/a&gt; <code>mfile</code><br>File descriptor value too large.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.mlink&quot; name=&quot;errno.mlink&quot;&gt;&lt;/a&gt; <code>mlink</code><br>Too many links.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.msgsize&quot; name=&quot;errno.msgsize&quot;&gt;&lt;/a&gt; <code>msgsize</code><br>Message too large.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.multihop&quot; name=&quot;errno.multihop&quot;&gt;&lt;/a&gt; <code>multihop</code><br>Reserved.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nametoolong&quot; name=&quot;errno.nametoolong&quot;&gt;&lt;/a&gt; <code>nametoolong</code><br>Filename too long.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.netdown&quot; name=&quot;errno.netdown&quot;&gt;&lt;/a&gt; <code>netdown</code><br>Network is down.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.netreset&quot; name=&quot;errno.netreset&quot;&gt;&lt;/a&gt; <code>netreset</code><br>Connection aborted by network.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.netunreach&quot; name=&quot;errno.netunreach&quot;&gt;&lt;/a&gt; <code>netunreach</code><br>Network unreachable.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nfile&quot; name=&quot;errno.nfile&quot;&gt;&lt;/a&gt; <code>nfile</code><br>Too many files open in system.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nobufs&quot; name=&quot;errno.nobufs&quot;&gt;&lt;/a&gt; <code>nobufs</code><br>No buffer space available.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nodev&quot; name=&quot;errno.nodev&quot;&gt;&lt;/a&gt; <code>nodev</code><br>No such device.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.noent&quot; name=&quot;errno.noent&quot;&gt;&lt;/a&gt; <code>noent</code><br>No such file or directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.noexec&quot; name=&quot;errno.noexec&quot;&gt;&lt;/a&gt; <code>noexec</code><br>Executable file format error.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nolck&quot; name=&quot;errno.nolck&quot;&gt;&lt;/a&gt; <code>nolck</code><br>No locks available.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nolink&quot; name=&quot;errno.nolink&quot;&gt;&lt;/a&gt; <code>nolink</code><br>Reserved.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nomem&quot; name=&quot;errno.nomem&quot;&gt;&lt;/a&gt; <code>nomem</code><br>Not enough space.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nomsg&quot; name=&quot;errno.nomsg&quot;&gt;&lt;/a&gt; <code>nomsg</code><br>No message of the desired type.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.noprotoopt&quot; name=&quot;errno.noprotoopt&quot;&gt;&lt;/a&gt; <code>noprotoopt</code><br>Protocol not available.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nospc&quot; name=&quot;errno.nospc&quot;&gt;&lt;/a&gt; <code>nospc</code><br>No space left on device.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nosys&quot; name=&quot;errno.nosys&quot;&gt;&lt;/a&gt; <code>nosys</code><br>Function not supported.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notconn&quot; name=&quot;errno.notconn&quot;&gt;&lt;/a&gt; <code>notconn</code><br>The socket is not connected.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notdir&quot; name=&quot;errno.notdir&quot;&gt;&lt;/a&gt; <code>notdir</code><br>Not a directory or a symbolic link to a directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notempty&quot; name=&quot;errno.notempty&quot;&gt;&lt;/a&gt; <code>notempty</code><br>Directory not empty.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notrecoverable&quot; name=&quot;errno.notrecoverable&quot;&gt;&lt;/a&gt; <code>notrecoverable</code><br>State not recoverable.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notsock&quot; name=&quot;errno.notsock&quot;&gt;&lt;/a&gt; <code>notsock</code><br>Not a socket.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notsup&quot; name=&quot;errno.notsup&quot;&gt;&lt;/a&gt; <code>notsup</code><br>Not supported, or operation not supported on socket.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notty&quot; name=&quot;errno.notty&quot;&gt;&lt;/a&gt; <code>notty</code><br>Inappropriate I/O control operation.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.nxio&quot; name=&quot;errno.nxio&quot;&gt;&lt;/a&gt; <code>nxio</code><br>No such device or address.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.overflow&quot; name=&quot;errno.overflow&quot;&gt;&lt;/a&gt; <code>overflow</code><br>Value too large to be stored in data type.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.ownerdead&quot; name=&quot;errno.ownerdead&quot;&gt;&lt;/a&gt; <code>ownerdead</code><br>Previous owner died.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.perm&quot; name=&quot;errno.perm&quot;&gt;&lt;/a&gt; <code>perm</code><br>Operation not permitted.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.pipe&quot; name=&quot;errno.pipe&quot;&gt;&lt;/a&gt; <code>pipe</code><br>Broken pipe.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.proto&quot; name=&quot;errno.proto&quot;&gt;&lt;/a&gt; <code>proto</code><br>Protocol error.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.protonosupport&quot; name=&quot;errno.protonosupport&quot;&gt;&lt;/a&gt; <code>protonosupport</code><br>Protocol not supported.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.prototype&quot; name=&quot;errno.prototype&quot;&gt;&lt;/a&gt; <code>prototype</code><br>Protocol wrong type for socket.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.range&quot; name=&quot;errno.range&quot;&gt;&lt;/a&gt; <code>range</code><br>Result too large.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.rofs&quot; name=&quot;errno.rofs&quot;&gt;&lt;/a&gt; <code>rofs</code><br>Read-only file system.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.spipe&quot; name=&quot;errno.spipe&quot;&gt;&lt;/a&gt; <code>spipe</code><br>Invalid seek.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.srch&quot; name=&quot;errno.srch&quot;&gt;&lt;/a&gt; <code>srch</code><br>No such process.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.stale&quot; name=&quot;errno.stale&quot;&gt;&lt;/a&gt; <code>stale</code><br>Reserved.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.timedout&quot; name=&quot;errno.timedout&quot;&gt;&lt;/a&gt; <code>timedout</code><br>Connection timed out.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.txtbsy&quot; name=&quot;errno.txtbsy&quot;&gt;&lt;/a&gt; <code>txtbsy</code><br>Text file busy.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.xdev&quot; name=&quot;errno.xdev&quot;&gt;&lt;/a&gt; <code>xdev</code><br>Cross-device link.</p>
+</li>
+<li><p>&lt;a href=&quot;#errno.notcapable&quot; name=&quot;errno.notcapable&quot;&gt;&lt;/a&gt; <code>notcapable</code><br>Extension: Capabilities insufficient.</p>
+</li>
+</ul>
+<h2 id="a-href-rights-name-rights-a-rights-flags-u64-">&lt;a href=&quot;#rights&quot; name=&quot;rights&quot;&gt;&lt;/a&gt; <code>rights</code>: Flags(<code>u64</code>)</h2>
+<p>File descriptor rights, determining which actions may be performed.<br>Size: 8<br> Alignment: 8</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li><p>&lt;a href=&quot;#rights.fd_datasync&quot; name=&quot;rights.fd_datasync&quot;&gt;&lt;/a&gt; <code>fd_datasync</code><br>The right to invoke <a href="#fd_datasync"><code>fd_datasync</code></a>.<br>If <a href="#path_open"><code>path_open</code></a> is set, includes the right to invoke<br><a href="#path_open"><code>path_open</code></a> with <a href="#fdflags.dsync"><code>fdflags::dsync</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_read&quot; name=&quot;rights.fd_read&quot;&gt;&lt;/a&gt; <code>fd_read</code><br>The right to invoke <a href="#fd_read"><code>fd_read</code></a> and <a href="#sock_recv"><code>sock_recv</code></a>.<br>If <a href="#rights.fd_seek"><code>rights::fd_seek</code></a> is set, includes the right to invoke <a href="#fd_pread"><code>fd_pread</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_seek&quot; name=&quot;rights.fd_seek&quot;&gt;&lt;/a&gt; <code>fd_seek</code><br>The right to invoke <a href="#fd_seek"><code>fd_seek</code></a>. This flag implies <a href="#rights.fd_tell"><code>rights::fd_tell</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_fdstat_set_flags&quot; name=&quot;rights.fd_fdstat_set_flags&quot;&gt;&lt;/a&gt; <code>fd_fdstat_set_flags</code><br>The right to invoke <a href="#fd_fdstat_set_flags"><code>fd_fdstat_set_flags</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_sync&quot; name=&quot;rights.fd_sync&quot;&gt;&lt;/a&gt; <code>fd_sync</code><br>The right to invoke <a href="#fd_sync"><code>fd_sync</code></a>.<br>If <a href="#path_open"><code>path_open</code></a> is set, includes the right to invoke<br><a href="#path_open"><code>path_open</code></a> with <a href="#fdflags.rsync"><code>fdflags::rsync</code></a> and <a href="#fdflags.dsync"><code>fdflags::dsync</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_tell&quot; name=&quot;rights.fd_tell&quot;&gt;&lt;/a&gt; <code>fd_tell</code><br>The right to invoke <a href="#fd_seek"><code>fd_seek</code></a> in such a way that the file offset<br>remains unaltered (i.e., <a href="#whence.cur"><code>whence::cur</code></a> with offset zero), or to<br>invoke <a href="#fd_tell"><code>fd_tell</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_write&quot; name=&quot;rights.fd_write&quot;&gt;&lt;/a&gt; <code>fd_write</code><br>The right to invoke <a href="#fd_write"><code>fd_write</code></a> and <a href="#sock_send"><code>sock_send</code></a>.<br>If <a href="#rights.fd_seek"><code>rights::fd_seek</code></a> is set, includes the right to invoke <a href="#fd_pwrite"><code>fd_pwrite</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_advise&quot; name=&quot;rights.fd_advise&quot;&gt;&lt;/a&gt; <code>fd_advise</code><br>The right to invoke <a href="#fd_advise"><code>fd_advise</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_allocate&quot; name=&quot;rights.fd_allocate&quot;&gt;&lt;/a&gt; <code>fd_allocate</code><br>The right to invoke <a href="#fd_allocate"><code>fd_allocate</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_create_directory&quot; name=&quot;rights.path_create_directory&quot;&gt;&lt;/a&gt; <code>path_create_directory</code><br>The right to invoke <a href="#path_create_directory"><code>path_create_directory</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_create_file&quot; name=&quot;rights.path_create_file&quot;&gt;&lt;/a&gt; <code>path_create_file</code><br>If <a href="#path_open"><code>path_open</code></a> is set, the right to invoke <a href="#path_open"><code>path_open</code></a> with <a href="#oflags.creat"><code>oflags::creat</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_link_source&quot; name=&quot;rights.path_link_source&quot;&gt;&lt;/a&gt; <code>path_link_source</code><br>The right to invoke <a href="#path_link"><code>path_link</code></a> with the file descriptor as the<br>source directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_link_target&quot; name=&quot;rights.path_link_target&quot;&gt;&lt;/a&gt; <code>path_link_target</code><br>The right to invoke <a href="#path_link"><code>path_link</code></a> with the file descriptor as the<br>target directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_open&quot; name=&quot;rights.path_open&quot;&gt;&lt;/a&gt; <code>path_open</code><br>The right to invoke <a href="#path_open"><code>path_open</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_readdir&quot; name=&quot;rights.fd_readdir&quot;&gt;&lt;/a&gt; <code>fd_readdir</code><br>The right to invoke <a href="#fd_readdir"><code>fd_readdir</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_readlink&quot; name=&quot;rights.path_readlink&quot;&gt;&lt;/a&gt; <code>path_readlink</code><br>The right to invoke <a href="#path_readlink"><code>path_readlink</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_rename_source&quot; name=&quot;rights.path_rename_source&quot;&gt;&lt;/a&gt; <code>path_rename_source</code><br>The right to invoke <a href="#path_rename"><code>path_rename</code></a> with the file descriptor as the source directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_rename_target&quot; name=&quot;rights.path_rename_target&quot;&gt;&lt;/a&gt; <code>path_rename_target</code><br>The right to invoke <a href="#path_rename"><code>path_rename</code></a> with the file descriptor as the target directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_filestat_get&quot; name=&quot;rights.path_filestat_get&quot;&gt;&lt;/a&gt; <code>path_filestat_get</code><br>The right to invoke <a href="#path_filestat_get"><code>path_filestat_get</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_filestat_set_size&quot; name=&quot;rights.path_filestat_set_size&quot;&gt;&lt;/a&gt; <code>path_filestat_set_size</code><br>The right to change a file&#39;s size (there is no <code>path_filestat_set_size</code>).<br>If <a href="#path_open"><code>path_open</code></a> is set, includes the right to invoke <a href="#path_open"><code>path_open</code></a> with <a href="#oflags.trunc"><code>oflags::trunc</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_filestat_set_times&quot; name=&quot;rights.path_filestat_set_times&quot;&gt;&lt;/a&gt; <code>path_filestat_set_times</code><br>The right to invoke <a href="#path_filestat_set_times"><code>path_filestat_set_times</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_filestat_get&quot; name=&quot;rights.fd_filestat_get&quot;&gt;&lt;/a&gt; <code>fd_filestat_get</code><br>The right to invoke <a href="#fd_filestat_get"><code>fd_filestat_get</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_filestat_set_size&quot; name=&quot;rights.fd_filestat_set_size&quot;&gt;&lt;/a&gt; <code>fd_filestat_set_size</code><br>The right to invoke <a href="#fd_filestat_set_size"><code>fd_filestat_set_size</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.fd_filestat_set_times&quot; name=&quot;rights.fd_filestat_set_times&quot;&gt;&lt;/a&gt; <code>fd_filestat_set_times</code><br>The right to invoke <a href="#fd_filestat_set_times"><code>fd_filestat_set_times</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_symlink&quot; name=&quot;rights.path_symlink&quot;&gt;&lt;/a&gt; <code>path_symlink</code><br>The right to invoke <a href="#path_symlink"><code>path_symlink</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_remove_directory&quot; name=&quot;rights.path_remove_directory&quot;&gt;&lt;/a&gt; <code>path_remove_directory</code><br>The right to invoke <a href="#path_remove_directory"><code>path_remove_directory</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.path_unlink_file&quot; name=&quot;rights.path_unlink_file&quot;&gt;&lt;/a&gt; <code>path_unlink_file</code><br>The right to invoke <a href="#path_unlink_file"><code>path_unlink_file</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.poll_fd_readwrite&quot; name=&quot;rights.poll_fd_readwrite&quot;&gt;&lt;/a&gt; <code>poll_fd_readwrite</code><br>If <a href="#rights.fd_read"><code>rights::fd_read</code></a> is set, includes the right to invoke <a href="#poll_oneoff"><code>poll_oneoff</code></a> to subscribe to <a href="#eventtype.fd_read"><code>eventtype::fd_read</code></a>.<br>If <a href="#rights.fd_write"><code>rights::fd_write</code></a> is set, includes the right to invoke <a href="#poll_oneoff"><code>poll_oneoff</code></a> to subscribe to <a href="#eventtype.fd_write"><code>eventtype::fd_write</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#rights.sock_shutdown&quot; name=&quot;rights.sock_shutdown&quot;&gt;&lt;/a&gt; <code>sock_shutdown</code><br>The right to invoke <a href="#sock_shutdown"><code>sock_shutdown</code></a>.</p>
+</li>
+</ul>
+<h2 id="a-href-fd-name-fd-a-fd">&lt;a href=&quot;#fd&quot; name=&quot;fd&quot;&gt;&lt;/a&gt; <code>fd</code></h2>
+<p>A file descriptor handle.<br>Size: 4<br> Alignment: 4</p>
+<h3 id="supertypes">Supertypes</h3>
+<h2 id="a-href-iovec-name-iovec-a-iovec-struct">&lt;a href=&quot;#iovec&quot; name=&quot;iovec&quot;&gt;&lt;/a&gt; <code>iovec</code>: Struct</h2>
+<p>A region of memory for scatter/gather reads.<br>Size: 8<br> Alignment: 4</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#iovec.buf&quot; name=&quot;iovec.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <code>Pointer&lt;u8&gt;</code><br>The address of the buffer to be filled.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#iovec.buf_len&quot; name=&quot;iovec.buf_len&quot;&gt;&lt;/a&gt; <code>buf_len</code>: <a href="#size"><code>size</code></a><br>The length of the buffer to be filled.<br>Offset: 4<h2 id="a-href-ciovec-name-ciovec-a-ciovec-struct">&lt;a href=&quot;#ciovec&quot; name=&quot;ciovec&quot;&gt;&lt;/a&gt; <code>ciovec</code>: Struct</h2>
+A region of memory for scatter/gather writes.<br>Size: 8<br>Alignment: 4<h3 id="struct-members">Struct members</h3>
+</li>
+<li>&lt;a href=&quot;#ciovec.buf&quot; name=&quot;ciovec.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <code>ConstPointer&lt;u8&gt;</code><br>The address of the buffer to be written.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#ciovec.buf_len&quot; name=&quot;ciovec.buf_len&quot;&gt;&lt;/a&gt; <code>buf_len</code>: <a href="#size"><code>size</code></a><br>The length of the buffer to be written.<br>Offset: 4<h2 id="a-href-iovec_array-name-iovec_array-a-iovec_array-arrayiovec">&lt;a href=&quot;#iovec_array&quot; name=&quot;iovec_array&quot;&gt;&lt;/a&gt; <code>iovec_array</code>: <code>Array&lt;iovec&gt;</code></h2>
+Size: 8<br>Alignment: 4<h2 id="a-href-ciovec_array-name-ciovec_array-a-ciovec_array-arrayciovec">&lt;a href=&quot;#ciovec_array&quot; name=&quot;ciovec_array&quot;&gt;&lt;/a&gt; <code>ciovec_array</code>: <code>Array&lt;ciovec&gt;</code></h2>
+Size: 8<br>Alignment: 4<h2 id="a-href-filedelta-name-filedelta-a-filedelta-s64">&lt;a href=&quot;#filedelta&quot; name=&quot;filedelta&quot;&gt;&lt;/a&gt; <code>filedelta</code>: <code>s64</code></h2>
+Relative offset within a file.<br>Size: 8<br>Alignment: 8<h2 id="a-href-whence-name-whence-a-whence-enum-u8-">&lt;a href=&quot;#whence&quot; name=&quot;whence&quot;&gt;&lt;/a&gt; <code>whence</code>: Enum(<code>u8</code>)</h2>
+The position relative to which to set the offset of the file descriptor.<br>Size: 1<br>Alignment: 1<h3 id="variants">Variants</h3>
+</li>
+<li><p>&lt;a href=&quot;#whence.set&quot; name=&quot;whence.set&quot;&gt;&lt;/a&gt; <code>set</code><br>Seek relative to start-of-file.</p>
+</li>
+<li><p>&lt;a href=&quot;#whence.cur&quot; name=&quot;whence.cur&quot;&gt;&lt;/a&gt; <code>cur</code><br>Seek relative to current position.</p>
+</li>
+<li><p>&lt;a href=&quot;#whence.end&quot; name=&quot;whence.end&quot;&gt;&lt;/a&gt; <code>end</code><br>Seek relative to end-of-file.</p>
+</li>
+</ul>
+<h2 id="a-href-dircookie-name-dircookie-a-dircookie-u64">&lt;a href=&quot;#dircookie&quot; name=&quot;dircookie&quot;&gt;&lt;/a&gt; <code>dircookie</code>: <code>u64</code></h2>
+<p>A reference to the offset of a directory entry.</p>
+<p>The value 0 signifies the start of the directory.<br>Size: 8<br> Alignment: 8</p>
+<h2 id="a-href-dirnamlen-name-dirnamlen-a-dirnamlen-u32">&lt;a href=&quot;#dirnamlen&quot; name=&quot;dirnamlen&quot;&gt;&lt;/a&gt; <code>dirnamlen</code>: <code>u32</code></h2>
+<p>The type for the $d_namlen field of $dirent.<br>Size: 4<br> Alignment: 4</p>
+<h2 id="a-href-inode-name-inode-a-inode-u64">&lt;a href=&quot;#inode&quot; name=&quot;inode&quot;&gt;&lt;/a&gt; <code>inode</code>: <code>u64</code></h2>
+<p>File serial number that is unique within its file system.<br>Size: 8<br> Alignment: 8</p>
+<h2 id="a-href-filetype-name-filetype-a-filetype-enum-u8-">&lt;a href=&quot;#filetype&quot; name=&quot;filetype&quot;&gt;&lt;/a&gt; <code>filetype</code>: Enum(<code>u8</code>)</h2>
+<p>The type of a file descriptor or file.<br>Size: 1<br> Alignment: 1</p>
+<h3 id="variants">Variants</h3>
+<ul>
+<li><p>&lt;a href=&quot;#filetype.unknown&quot; name=&quot;filetype.unknown&quot;&gt;&lt;/a&gt; <code>unknown</code><br>The type of the file descriptor or file is unknown or is different from any of the other types specified.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.block_device&quot; name=&quot;filetype.block_device&quot;&gt;&lt;/a&gt; <code>block_device</code><br>The file descriptor or file refers to a block device inode.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.character_device&quot; name=&quot;filetype.character_device&quot;&gt;&lt;/a&gt; <code>character_device</code><br>The file descriptor or file refers to a character device inode.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.directory&quot; name=&quot;filetype.directory&quot;&gt;&lt;/a&gt; <code>directory</code><br>The file descriptor or file refers to a directory inode.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.regular_file&quot; name=&quot;filetype.regular_file&quot;&gt;&lt;/a&gt; <code>regular_file</code><br>The file descriptor or file refers to a regular file inode.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.socket_dgram&quot; name=&quot;filetype.socket_dgram&quot;&gt;&lt;/a&gt; <code>socket_dgram</code><br>The file descriptor or file refers to a datagram socket.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.socket_stream&quot; name=&quot;filetype.socket_stream&quot;&gt;&lt;/a&gt; <code>socket_stream</code><br>The file descriptor or file refers to a byte-stream socket.</p>
+</li>
+<li><p>&lt;a href=&quot;#filetype.symbolic_link&quot; name=&quot;filetype.symbolic_link&quot;&gt;&lt;/a&gt; <code>symbolic_link</code><br>The file refers to a symbolic link inode.</p>
+</li>
+</ul>
+<h2 id="a-href-dirent-name-dirent-a-dirent-struct">&lt;a href=&quot;#dirent&quot; name=&quot;dirent&quot;&gt;&lt;/a&gt; <code>dirent</code>: Struct</h2>
+<p>A directory entry.<br>Size: 24<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#dirent.d_next&quot; name=&quot;dirent.d_next&quot;&gt;&lt;/a&gt; <code>d_next</code>: <a href="#dircookie"><code>dircookie</code></a><br>The offset of the next directory entry stored in this directory.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#dirent.d_ino&quot; name=&quot;dirent.d_ino&quot;&gt;&lt;/a&gt; <code>d_ino</code>: <a href="#inode"><code>inode</code></a><br>The serial number of the file referred to by this directory entry.<br>Offset: 8</li>
+<li>&lt;a href=&quot;#dirent.d_namlen&quot; name=&quot;dirent.d_namlen&quot;&gt;&lt;/a&gt; <code>d_namlen</code>: <a href="#dirnamlen"><code>dirnamlen</code></a><br>The length of the name of the directory entry.<br>Offset: 16</li>
+<li>&lt;a href=&quot;#dirent.d_type&quot; name=&quot;dirent.d_type&quot;&gt;&lt;/a&gt; <code>d_type</code>: <a href="#filetype"><code>filetype</code></a><br>The type of the file referred to by this directory entry.<br>Offset: 20<h2 id="a-href-advice-name-advice-a-advice-enum-u8-">&lt;a href=&quot;#advice&quot; name=&quot;advice&quot;&gt;&lt;/a&gt; <code>advice</code>: Enum(<code>u8</code>)</h2>
+File or memory access pattern advisory information.<br>Size: 1<br>Alignment: 1<h3 id="variants">Variants</h3>
+</li>
+<li><p>&lt;a href=&quot;#advice.normal&quot; name=&quot;advice.normal&quot;&gt;&lt;/a&gt; <code>normal</code><br>The application has no advice to give on its behavior with respect to the specified data.</p>
+</li>
+<li><p>&lt;a href=&quot;#advice.sequential&quot; name=&quot;advice.sequential&quot;&gt;&lt;/a&gt; <code>sequential</code><br>The application expects to access the specified data sequentially from lower offsets to higher offsets.</p>
+</li>
+<li><p>&lt;a href=&quot;#advice.random&quot; name=&quot;advice.random&quot;&gt;&lt;/a&gt; <code>random</code><br>The application expects to access the specified data in a random order.</p>
+</li>
+<li><p>&lt;a href=&quot;#advice.willneed&quot; name=&quot;advice.willneed&quot;&gt;&lt;/a&gt; <code>willneed</code><br>The application expects to access the specified data in the near future.</p>
+</li>
+<li><p>&lt;a href=&quot;#advice.dontneed&quot; name=&quot;advice.dontneed&quot;&gt;&lt;/a&gt; <code>dontneed</code><br>The application expects that it will not access the specified data in the near future.</p>
+</li>
+<li><p>&lt;a href=&quot;#advice.noreuse&quot; name=&quot;advice.noreuse&quot;&gt;&lt;/a&gt; <code>noreuse</code><br>The application expects to access the specified data once and then not reuse it thereafter.</p>
+</li>
+</ul>
+<h2 id="a-href-fdflags-name-fdflags-a-fdflags-flags-u16-">&lt;a href=&quot;#fdflags&quot; name=&quot;fdflags&quot;&gt;&lt;/a&gt; <code>fdflags</code>: Flags(<code>u16</code>)</h2>
+<p>File descriptor flags.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li><p>&lt;a href=&quot;#fdflags.append&quot; name=&quot;fdflags.append&quot;&gt;&lt;/a&gt; <code>append</code><br>Append mode: Data written to the file is always appended to the file&#39;s end.</p>
+</li>
+<li><p>&lt;a href=&quot;#fdflags.dsync&quot; name=&quot;fdflags.dsync&quot;&gt;&lt;/a&gt; <code>dsync</code><br>Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.</p>
+</li>
+<li><p>&lt;a href=&quot;#fdflags.nonblock&quot; name=&quot;fdflags.nonblock&quot;&gt;&lt;/a&gt; <code>nonblock</code><br>Non-blocking mode.</p>
+</li>
+<li><p>&lt;a href=&quot;#fdflags.rsync&quot; name=&quot;fdflags.rsync&quot;&gt;&lt;/a&gt; <code>rsync</code><br>Synchronized read I/O operations.</p>
+</li>
+<li><p>&lt;a href=&quot;#fdflags.sync&quot; name=&quot;fdflags.sync&quot;&gt;&lt;/a&gt; <code>sync</code><br>Write according to synchronized I/O file integrity completion. In<br>addition to synchronizing the data stored in the file, the implementation<br>may also synchronously update the file&#39;s metadata.</p>
+</li>
+</ul>
+<h2 id="a-href-fdstat-name-fdstat-a-fdstat-struct">&lt;a href=&quot;#fdstat&quot; name=&quot;fdstat&quot;&gt;&lt;/a&gt; <code>fdstat</code>: Struct</h2>
+<p>File descriptor attributes.<br>Size: 24<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#fdstat.fs_filetype&quot; name=&quot;fdstat.fs_filetype&quot;&gt;&lt;/a&gt; <code>fs_filetype</code>: <a href="#filetype"><code>filetype</code></a><br>File type.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#fdstat.fs_flags&quot; name=&quot;fdstat.fs_flags&quot;&gt;&lt;/a&gt; <code>fs_flags</code>: <a href="#fdflags"><code>fdflags</code></a><br>File descriptor flags.<br>Offset: 2</li>
+<li>&lt;a href=&quot;#fdstat.fs_rights_base&quot; name=&quot;fdstat.fs_rights_base&quot;&gt;&lt;/a&gt; <code>fs_rights_base</code>: <a href="#rights"><code>rights</code></a><br>Rights that apply to this file descriptor.<br>Offset: 8</li>
+<li>&lt;a href=&quot;#fdstat.fs_rights_inheriting&quot; name=&quot;fdstat.fs_rights_inheriting&quot;&gt;&lt;/a&gt; <code>fs_rights_inheriting</code>: <a href="#rights"><code>rights</code></a><br>Maximum set of rights that may be installed on new file descriptors that<br>are created through this file descriptor, e.g., through <a href="#path_open"><code>path_open</code></a>.<br>Offset: 16<h2 id="a-href-device-name-device-a-device-u64">&lt;a href=&quot;#device&quot; name=&quot;device&quot;&gt;&lt;/a&gt; <code>device</code>: <code>u64</code></h2>
+Identifier for a device containing a file system. Can be used in combination<br>with <a href="#inode"><code>inode</code></a> to uniquely identify a file or directory in the filesystem.<br>Size: 8<br>Alignment: 8<h2 id="a-href-fstflags-name-fstflags-a-fstflags-flags-u16-">&lt;a href=&quot;#fstflags&quot; name=&quot;fstflags&quot;&gt;&lt;/a&gt; <code>fstflags</code>: Flags(<code>u16</code>)</h2>
+Which file time attributes to adjust.<br>Size: 2<br>Alignment: 2<h3 id="flags">Flags</h3>
+</li>
+<li><p>&lt;a href=&quot;#fstflags.atim&quot; name=&quot;fstflags.atim&quot;&gt;&lt;/a&gt; <code>atim</code><br>Adjust the last data access timestamp to the value stored in <a href="#filestat.atim"><code>filestat::atim</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#fstflags.atim_now&quot; name=&quot;fstflags.atim_now&quot;&gt;&lt;/a&gt; <code>atim_now</code><br>Adjust the last data access timestamp to the time of clock <a href="#clockid.realtime"><code>clockid::realtime</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#fstflags.mtim&quot; name=&quot;fstflags.mtim&quot;&gt;&lt;/a&gt; <code>mtim</code><br>Adjust the last data modification timestamp to the value stored in <a href="#filestat.mtim"><code>filestat::mtim</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#fstflags.mtim_now&quot; name=&quot;fstflags.mtim_now&quot;&gt;&lt;/a&gt; <code>mtim_now</code><br>Adjust the last data modification timestamp to the time of clock <a href="#clockid.realtime"><code>clockid::realtime</code></a>.</p>
+</li>
+</ul>
+<h2 id="a-href-lookupflags-name-lookupflags-a-lookupflags-flags-u32-">&lt;a href=&quot;#lookupflags&quot; name=&quot;lookupflags&quot;&gt;&lt;/a&gt; <code>lookupflags</code>: Flags(<code>u32</code>)</h2>
+<p>Flags determining the method of how paths are resolved.<br>Size: 4<br> Alignment: 4</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li>&lt;a href=&quot;#lookupflags.symlink_follow&quot; name=&quot;lookupflags.symlink_follow&quot;&gt;&lt;/a&gt; <code>symlink_follow</code><br>As long as the resolved path corresponds to a symbolic link, it is expanded.</li>
+</ul>
+<h2 id="a-href-oflags-name-oflags-a-oflags-flags-u16-">&lt;a href=&quot;#oflags&quot; name=&quot;oflags&quot;&gt;&lt;/a&gt; <code>oflags</code>: Flags(<code>u16</code>)</h2>
+<p>Open flags used by <a href="#path_open"><code>path_open</code></a>.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li><p>&lt;a href=&quot;#oflags.creat&quot; name=&quot;oflags.creat&quot;&gt;&lt;/a&gt; <code>creat</code><br>Create file if it does not exist.</p>
+</li>
+<li><p>&lt;a href=&quot;#oflags.directory&quot; name=&quot;oflags.directory&quot;&gt;&lt;/a&gt; <code>directory</code><br>Fail if not a directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#oflags.excl&quot; name=&quot;oflags.excl&quot;&gt;&lt;/a&gt; <code>excl</code><br>Fail if file already exists.</p>
+</li>
+<li><p>&lt;a href=&quot;#oflags.trunc&quot; name=&quot;oflags.trunc&quot;&gt;&lt;/a&gt; <code>trunc</code><br>Truncate file to size 0.</p>
+</li>
+</ul>
+<h2 id="a-href-linkcount-name-linkcount-a-linkcount-u64">&lt;a href=&quot;#linkcount&quot; name=&quot;linkcount&quot;&gt;&lt;/a&gt; <code>linkcount</code>: <code>u64</code></h2>
+<p>Number of hard links to an inode.<br>Size: 8<br> Alignment: 8</p>
+<h2 id="a-href-filestat-name-filestat-a-filestat-struct">&lt;a href=&quot;#filestat&quot; name=&quot;filestat&quot;&gt;&lt;/a&gt; <code>filestat</code>: Struct</h2>
+<p>File attributes.<br>Size: 64<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#filestat.dev&quot; name=&quot;filestat.dev&quot;&gt;&lt;/a&gt; <code>dev</code>: <a href="#device"><code>device</code></a><br>Device ID of device containing the file.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#filestat.ino&quot; name=&quot;filestat.ino&quot;&gt;&lt;/a&gt; <code>ino</code>: <a href="#inode"><code>inode</code></a><br>File serial number.<br>Offset: 8</li>
+<li>&lt;a href=&quot;#filestat.filetype&quot; name=&quot;filestat.filetype&quot;&gt;&lt;/a&gt; <code>filetype</code>: <a href="#filetype"><code>filetype</code></a><br>File type.<br>Offset: 16</li>
+<li>&lt;a href=&quot;#filestat.nlink&quot; name=&quot;filestat.nlink&quot;&gt;&lt;/a&gt; <code>nlink</code>: <a href="#linkcount"><code>linkcount</code></a><br>Number of hard links to the file.<br>Offset: 24</li>
+<li>&lt;a href=&quot;#filestat.size&quot; name=&quot;filestat.size&quot;&gt;&lt;/a&gt; <code>size</code>: <a href="#filesize"><code>filesize</code></a><br>For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.<br>Offset: 32</li>
+<li>&lt;a href=&quot;#filestat.atim&quot; name=&quot;filestat.atim&quot;&gt;&lt;/a&gt; <code>atim</code>: <a href="#timestamp"><code>timestamp</code></a><br>Last data access timestamp.<br>Offset: 40</li>
+<li>&lt;a href=&quot;#filestat.mtim&quot; name=&quot;filestat.mtim&quot;&gt;&lt;/a&gt; <code>mtim</code>: <a href="#timestamp"><code>timestamp</code></a><br>Last data modification timestamp.<br>Offset: 48</li>
+<li>&lt;a href=&quot;#filestat.ctim&quot; name=&quot;filestat.ctim&quot;&gt;&lt;/a&gt; <code>ctim</code>: <a href="#timestamp"><code>timestamp</code></a><br>Last file status change timestamp.<br>Offset: 56<h2 id="a-href-userdata-name-userdata-a-userdata-u64">&lt;a href=&quot;#userdata&quot; name=&quot;userdata&quot;&gt;&lt;/a&gt; <code>userdata</code>: <code>u64</code></h2>
+User-provided value that may be attached to objects that is retained when<br>extracted from the implementation.<br>Size: 8<br>Alignment: 8<h2 id="a-href-eventtype-name-eventtype-a-eventtype-enum-u8-">&lt;a href=&quot;#eventtype&quot; name=&quot;eventtype&quot;&gt;&lt;/a&gt; <code>eventtype</code>: Enum(<code>u8</code>)</h2>
+Type of a subscription to an event or its occurrence.<br>Size: 1<br>Alignment: 1<h3 id="variants">Variants</h3>
+</li>
+<li><p>&lt;a href=&quot;#eventtype.clock&quot; name=&quot;eventtype.clock&quot;&gt;&lt;/a&gt; <code>clock</code><br>The time value of clock <a href="#subscription_clock.id"><code>subscription_clock::id</code></a> has<br>reached timestamp <a href="#subscription_clock.timeout"><code>subscription_clock::timeout</code></a>.</p>
+</li>
+<li><p>&lt;a href=&quot;#eventtype.fd_read&quot; name=&quot;eventtype.fd_read&quot;&gt;&lt;/a&gt; <code>fd_read</code><br>File descriptor <a href="#subscription_fd_readwrite.file_descriptor"><code>subscription_fd_readwrite::file_descriptor</code></a> has data<br>available for reading. This event always triggers for regular files.</p>
+</li>
+<li><p>&lt;a href=&quot;#eventtype.fd_write&quot; name=&quot;eventtype.fd_write&quot;&gt;&lt;/a&gt; <code>fd_write</code><br>File descriptor <a href="#subscription_fd_readwrite.file_descriptor"><code>subscription_fd_readwrite::file_descriptor</code></a> has capacity<br>available for writing. This event always triggers for regular files.</p>
+</li>
+</ul>
+<h2 id="a-href-eventrwflags-name-eventrwflags-a-eventrwflags-flags-u16-">&lt;a href=&quot;#eventrwflags&quot; name=&quot;eventrwflags&quot;&gt;&lt;/a&gt; <code>eventrwflags</code>: Flags(<code>u16</code>)</h2>
+<p>The state of the file descriptor subscribed to with<br><a href="#eventtype.fd_read"><code>eventtype::fd_read</code></a> or <a href="#eventtype.fd_write"><code>eventtype::fd_write</code></a>.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li>&lt;a href=&quot;#eventrwflags.fd_readwrite_hangup&quot; name=&quot;eventrwflags.fd_readwrite_hangup&quot;&gt;&lt;/a&gt; <code>fd_readwrite_hangup</code><br>The peer of this socket has closed or disconnected.</li>
+</ul>
+<h2 id="a-href-event_fd_readwrite-name-event_fd_readwrite-a-event_fd_readwrite-struct">&lt;a href=&quot;#event_fd_readwrite&quot; name=&quot;event_fd_readwrite&quot;&gt;&lt;/a&gt; <code>event_fd_readwrite</code>: Struct</h2>
+<p>The contents of an $event when type is <a href="#eventtype.fd_read"><code>eventtype::fd_read</code></a> or<br><a href="#eventtype.fd_write"><code>eventtype::fd_write</code></a>.<br>Size: 16<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#event_fd_readwrite.nbytes&quot; name=&quot;event_fd_readwrite.nbytes&quot;&gt;&lt;/a&gt; <code>nbytes</code>: <a href="#filesize"><code>filesize</code></a><br>The number of bytes available for reading or writing.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#event_fd_readwrite.flags&quot; name=&quot;event_fd_readwrite.flags&quot;&gt;&lt;/a&gt; <code>flags</code>: <a href="#eventrwflags"><code>eventrwflags</code></a><br>The state of the file descriptor.<br>Offset: 8<h2 id="a-href-event-name-event-a-event-struct">&lt;a href=&quot;#event&quot; name=&quot;event&quot;&gt;&lt;/a&gt; <code>event</code>: Struct</h2>
+An event that occurred.<br>Size: 32<br>Alignment: 8<h3 id="struct-members">Struct members</h3>
+</li>
+<li>&lt;a href=&quot;#event.userdata&quot; name=&quot;event.userdata&quot;&gt;&lt;/a&gt; <code>userdata</code>: <a href="#userdata"><code>userdata</code></a><br>User-provided value that got attached to <a href="#subscription.userdata"><code>subscription::userdata</code></a>.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#event.error&quot; name=&quot;event.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a><br>If non-zero, an error that occurred while processing the subscription request.<br>Offset: 8</li>
+<li>&lt;a href=&quot;#event.type&quot; name=&quot;event.type&quot;&gt;&lt;/a&gt; <code>type</code>: <a href="#eventtype"><code>eventtype</code></a><br>The type of event that occured<br>Offset: 10</li>
+<li>&lt;a href=&quot;#event.fd_readwrite&quot; name=&quot;event.fd_readwrite&quot;&gt;&lt;/a&gt; <code>fd_readwrite</code>: <a href="#event_fd_readwrite"><code>event_fd_readwrite</code></a><br>The contents of the event, if it is an <a href="#eventtype.fd_read"><code>eventtype::fd_read</code></a> or<br><a href="#eventtype.fd_write"><code>eventtype::fd_write</code></a>. <a href="#eventtype.clock"><code>eventtype::clock</code></a> events ignore this field.<br>Offset: 16<h2 id="a-href-subclockflags-name-subclockflags-a-subclockflags-flags-u16-">&lt;a href=&quot;#subclockflags&quot; name=&quot;subclockflags&quot;&gt;&lt;/a&gt; <code>subclockflags</code>: Flags(<code>u16</code>)</h2>
+Flags determining how to interpret the timestamp provided in<br><a href="#subscription_clock.timeout"><code>subscription_clock::timeout</code></a>.<br>Size: 2<br>Alignment: 2<h3 id="flags">Flags</h3>
+</li>
+<li>&lt;a href=&quot;#subclockflags.subscription_clock_abstime&quot; name=&quot;subclockflags.subscription_clock_abstime&quot;&gt;&lt;/a&gt; <code>subscription_clock_abstime</code><br>If set, treat the timestamp provided in<br><a href="#subscription_clock.timeout"><code>subscription_clock::timeout</code></a> as an absolute timestamp of clock<br><a href="#subscription_clock.id"><code>subscription_clock::id</code></a>. If clear, treat the timestamp<br>provided in <a href="#subscription_clock.timeout"><code>subscription_clock::timeout</code></a> relative to the<br>current time value of clock <a href="#subscription_clock.id"><code>subscription_clock::id</code></a>.</li>
+</ul>
+<h2 id="a-href-subscription_clock-name-subscription_clock-a-subscription_clock-struct">&lt;a href=&quot;#subscription_clock&quot; name=&quot;subscription_clock&quot;&gt;&lt;/a&gt; <code>subscription_clock</code>: Struct</h2>
+<p>The contents of a <a href="#subscription"><code>subscription</code></a> when type is <a href="#eventtype.clock"><code>eventtype::clock</code></a>.<br>Size: 32<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#subscription_clock.id&quot; name=&quot;subscription_clock.id&quot;&gt;&lt;/a&gt; <code>id</code>: <a href="#clockid"><code>clockid</code></a><br>The clock against which to compare the timestamp.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#subscription_clock.timeout&quot; name=&quot;subscription_clock.timeout&quot;&gt;&lt;/a&gt; <code>timeout</code>: <a href="#timestamp"><code>timestamp</code></a><br>The absolute or relative timestamp.<br>Offset: 8</li>
+<li>&lt;a href=&quot;#subscription_clock.precision&quot; name=&quot;subscription_clock.precision&quot;&gt;&lt;/a&gt; <code>precision</code>: <a href="#timestamp"><code>timestamp</code></a><br>The amount of time that the implementation may wait additionally<br>to coalesce with other events.<br>Offset: 16</li>
+<li>&lt;a href=&quot;#subscription_clock.flags&quot; name=&quot;subscription_clock.flags&quot;&gt;&lt;/a&gt; <code>flags</code>: <a href="#subclockflags"><code>subclockflags</code></a><br>Flags specifying whether the timeout is absolute or relative<br>Offset: 24<h2 id="a-href-subscription_fd_readwrite-name-subscription_fd_readwrite-a-subscription_fd_readwrite-struct">&lt;a href=&quot;#subscription_fd_readwrite&quot; name=&quot;subscription_fd_readwrite&quot;&gt;&lt;/a&gt; <code>subscription_fd_readwrite</code>: Struct</h2>
+The contents of a <a href="#subscription"><code>subscription</code></a> when type is type is<br><a href="#eventtype.fd_read"><code>eventtype::fd_read</code></a> or <a href="#eventtype.fd_write"><code>eventtype::fd_write</code></a>.<br>Size: 4<br>Alignment: 4<h3 id="struct-members">Struct members</h3>
+</li>
+<li>&lt;a href=&quot;#subscription_fd_readwrite.file_descriptor&quot; name=&quot;subscription_fd_readwrite.file_descriptor&quot;&gt;&lt;/a&gt; <code>file_descriptor</code>: <a href="#fd"><code>fd</code></a><br>The file descriptor on which to wait for it to become ready for reading or writing.<br>Offset: 0<h2 id="a-href-subscription_u-name-subscription_u-a-subscription_u-union">&lt;a href=&quot;#subscription_u&quot; name=&quot;subscription_u&quot;&gt;&lt;/a&gt; <code>subscription_u</code>: Union</h2>
+The contents of a <a href="#subscription"><code>subscription</code></a>.<br>Size: 40<br>Alignment: 8<h3 id="union-layout">Union Layout</h3>
+</li>
+<li>tag_size: 1</li>
+<li>tag_align: 1</li>
+<li>contents_offset: 8</li>
+<li>contents_size: 32</li>
+<li>contents_align: 8<h3 id="union-variants">Union variants</h3>
+</li>
+<li><p>&lt;a href=&quot;#subscription_u.clock&quot; name=&quot;subscription_u.clock&quot;&gt;&lt;/a&gt; <code>clock</code>: <a href="#subscription_clock"><code>subscription_clock</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#subscription_u.fd_read&quot; name=&quot;subscription_u.fd_read&quot;&gt;&lt;/a&gt; <code>fd_read</code>: <a href="#subscription_fd_readwrite"><code>subscription_fd_readwrite</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#subscription_u.fd_write&quot; name=&quot;subscription_u.fd_write&quot;&gt;&lt;/a&gt; <code>fd_write</code>: <a href="#subscription_fd_readwrite"><code>subscription_fd_readwrite</code></a></p>
+</li>
+</ul>
+<h2 id="a-href-subscription-name-subscription-a-subscription-struct">&lt;a href=&quot;#subscription&quot; name=&quot;subscription&quot;&gt;&lt;/a&gt; <code>subscription</code>: Struct</h2>
+<p>Subscription to an event.<br>Size: 48<br> Alignment: 8</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#subscription.userdata&quot; name=&quot;subscription.userdata&quot;&gt;&lt;/a&gt; <code>userdata</code>: <a href="#userdata"><code>userdata</code></a><br>User-provided value that is attached to the subscription in the<br>implementation and returned through <a href="#event.userdata"><code>event::userdata</code></a>.<br>Offset: 0</li>
+<li>&lt;a href=&quot;#subscription.u&quot; name=&quot;subscription.u&quot;&gt;&lt;/a&gt; <code>u</code>: <a href="#subscription_u"><code>subscription_u</code></a><br>The type of the event to which to subscribe, and its contents<br>Offset: 8<h2 id="a-href-exitcode-name-exitcode-a-exitcode-u32">&lt;a href=&quot;#exitcode&quot; name=&quot;exitcode&quot;&gt;&lt;/a&gt; <code>exitcode</code>: <code>u32</code></h2>
+Exit code generated by a process when exiting.<br>Size: 4<br>Alignment: 4<h2 id="a-href-signal-name-signal-a-signal-enum-u8-">&lt;a href=&quot;#signal&quot; name=&quot;signal&quot;&gt;&lt;/a&gt; <code>signal</code>: Enum(<code>u8</code>)</h2>
+Signal condition.<br>Size: 1<br>Alignment: 1<h3 id="variants">Variants</h3>
+</li>
+<li><p>&lt;a href=&quot;#signal.none&quot; name=&quot;signal.none&quot;&gt;&lt;/a&gt; <code>none</code><br>No signal. Note that POSIX has special semantics for <code>kill(pid, 0)</code>,<br>so this value is reserved.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.hup&quot; name=&quot;signal.hup&quot;&gt;&lt;/a&gt; <code>hup</code><br>Hangup.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.int&quot; name=&quot;signal.int&quot;&gt;&lt;/a&gt; <code>int</code><br>Terminate interrupt signal.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.quit&quot; name=&quot;signal.quit&quot;&gt;&lt;/a&gt; <code>quit</code><br>Terminal quit signal.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.ill&quot; name=&quot;signal.ill&quot;&gt;&lt;/a&gt; <code>ill</code><br>Illegal instruction.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.trap&quot; name=&quot;signal.trap&quot;&gt;&lt;/a&gt; <code>trap</code><br>Trace/breakpoint trap.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.abrt&quot; name=&quot;signal.abrt&quot;&gt;&lt;/a&gt; <code>abrt</code><br>Process abort signal.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.bus&quot; name=&quot;signal.bus&quot;&gt;&lt;/a&gt; <code>bus</code><br>Access to an undefined portion of a memory object.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.fpe&quot; name=&quot;signal.fpe&quot;&gt;&lt;/a&gt; <code>fpe</code><br>Erroneous arithmetic operation.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.kill&quot; name=&quot;signal.kill&quot;&gt;&lt;/a&gt; <code>kill</code><br>Kill.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.usr1&quot; name=&quot;signal.usr1&quot;&gt;&lt;/a&gt; <code>usr1</code><br>User-defined signal 1.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.segv&quot; name=&quot;signal.segv&quot;&gt;&lt;/a&gt; <code>segv</code><br>Invalid memory reference.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.usr2&quot; name=&quot;signal.usr2&quot;&gt;&lt;/a&gt; <code>usr2</code><br>User-defined signal 2.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.pipe&quot; name=&quot;signal.pipe&quot;&gt;&lt;/a&gt; <code>pipe</code><br>Write on a pipe with no one to read it.<br>Action: Ignored.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.alrm&quot; name=&quot;signal.alrm&quot;&gt;&lt;/a&gt; <code>alrm</code><br>Alarm clock.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.term&quot; name=&quot;signal.term&quot;&gt;&lt;/a&gt; <code>term</code><br>Termination signal.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.chld&quot; name=&quot;signal.chld&quot;&gt;&lt;/a&gt; <code>chld</code><br>Child process terminated, stopped, or continued.<br>Action: Ignored.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.cont&quot; name=&quot;signal.cont&quot;&gt;&lt;/a&gt; <code>cont</code><br>Continue executing, if stopped.<br>Action: Continues executing, if stopped.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.stop&quot; name=&quot;signal.stop&quot;&gt;&lt;/a&gt; <code>stop</code><br>Stop executing.<br>Action: Stops executing.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.tstp&quot; name=&quot;signal.tstp&quot;&gt;&lt;/a&gt; <code>tstp</code><br>Terminal stop signal.<br>Action: Stops executing.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.ttin&quot; name=&quot;signal.ttin&quot;&gt;&lt;/a&gt; <code>ttin</code><br>Background process attempting read.<br>Action: Stops executing.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.ttou&quot; name=&quot;signal.ttou&quot;&gt;&lt;/a&gt; <code>ttou</code><br>Background process attempting write.<br>Action: Stops executing.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.urg&quot; name=&quot;signal.urg&quot;&gt;&lt;/a&gt; <code>urg</code><br>High bandwidth data is available at a socket.<br>Action: Ignored.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.xcpu&quot; name=&quot;signal.xcpu&quot;&gt;&lt;/a&gt; <code>xcpu</code><br>CPU time limit exceeded.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.xfsz&quot; name=&quot;signal.xfsz&quot;&gt;&lt;/a&gt; <code>xfsz</code><br>File size limit exceeded.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.vtalrm&quot; name=&quot;signal.vtalrm&quot;&gt;&lt;/a&gt; <code>vtalrm</code><br>Virtual timer expired.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.prof&quot; name=&quot;signal.prof&quot;&gt;&lt;/a&gt; <code>prof</code><br>Profiling timer expired.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.winch&quot; name=&quot;signal.winch&quot;&gt;&lt;/a&gt; <code>winch</code><br>Window changed.<br>Action: Ignored.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.poll&quot; name=&quot;signal.poll&quot;&gt;&lt;/a&gt; <code>poll</code><br>I/O possible.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.pwr&quot; name=&quot;signal.pwr&quot;&gt;&lt;/a&gt; <code>pwr</code><br>Power failure.<br>Action: Terminates the process.</p>
+</li>
+<li><p>&lt;a href=&quot;#signal.sys&quot; name=&quot;signal.sys&quot;&gt;&lt;/a&gt; <code>sys</code><br>Bad system call.<br>Action: Terminates the process.</p>
+</li>
+</ul>
+<h2 id="a-href-riflags-name-riflags-a-riflags-flags-u16-">&lt;a href=&quot;#riflags&quot; name=&quot;riflags&quot;&gt;&lt;/a&gt; <code>riflags</code>: Flags(<code>u16</code>)</h2>
+<p>Flags provided to <a href="#sock_recv"><code>sock_recv</code></a>.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li><p>&lt;a href=&quot;#riflags.recv_peek&quot; name=&quot;riflags.recv_peek&quot;&gt;&lt;/a&gt; <code>recv_peek</code><br>Returns the message without removing it from the socket&#39;s receive queue.</p>
+</li>
+<li><p>&lt;a href=&quot;#riflags.recv_waitall&quot; name=&quot;riflags.recv_waitall&quot;&gt;&lt;/a&gt; <code>recv_waitall</code><br>On byte-stream sockets, block until the full amount of data can be returned.</p>
+</li>
+</ul>
+<h2 id="a-href-roflags-name-roflags-a-roflags-flags-u16-">&lt;a href=&quot;#roflags&quot; name=&quot;roflags&quot;&gt;&lt;/a&gt; <code>roflags</code>: Flags(<code>u16</code>)</h2>
+<p>Flags returned by <a href="#sock_recv"><code>sock_recv</code></a>.<br>Size: 2<br> Alignment: 2</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li>&lt;a href=&quot;#roflags.recv_data_truncated&quot; name=&quot;roflags.recv_data_truncated&quot;&gt;&lt;/a&gt; <code>recv_data_truncated</code><br>Returned by <a href="#sock_recv"><code>sock_recv</code></a>: Message data has been truncated.</li>
+</ul>
+<h2 id="a-href-siflags-name-siflags-a-siflags-u16">&lt;a href=&quot;#siflags&quot; name=&quot;siflags&quot;&gt;&lt;/a&gt; <code>siflags</code>: <code>u16</code></h2>
+<p>Flags provided to <a href="#sock_send"><code>sock_send</code></a>. As there are currently no flags<br>defined, it must be set to zero.<br>Size: 2<br> Alignment: 2</p>
+<h2 id="a-href-sdflags-name-sdflags-a-sdflags-flags-u8-">&lt;a href=&quot;#sdflags&quot; name=&quot;sdflags&quot;&gt;&lt;/a&gt; <code>sdflags</code>: Flags(<code>u8</code>)</h2>
+<p>Which channels on a socket to shut down.<br>Size: 1<br> Alignment: 1</p>
+<h3 id="flags">Flags</h3>
+<ul>
+<li><p>&lt;a href=&quot;#sdflags.rd&quot; name=&quot;sdflags.rd&quot;&gt;&lt;/a&gt; <code>rd</code><br>Disables further receive operations.</p>
+</li>
+<li><p>&lt;a href=&quot;#sdflags.wr&quot; name=&quot;sdflags.wr&quot;&gt;&lt;/a&gt; <code>wr</code><br>Disables further send operations.</p>
+</li>
+</ul>
+<h2 id="a-href-preopentype-name-preopentype-a-preopentype-enum-u8-">&lt;a href=&quot;#preopentype&quot; name=&quot;preopentype&quot;&gt;&lt;/a&gt; <code>preopentype</code>: Enum(<code>u8</code>)</h2>
+<p>Identifiers for preopened capabilities.<br>Size: 1<br> Alignment: 1</p>
+<h3 id="variants">Variants</h3>
+<ul>
+<li>&lt;a href=&quot;#preopentype.dir&quot; name=&quot;preopentype.dir&quot;&gt;&lt;/a&gt; <code>dir</code><br>A pre-opened directory.</li>
+</ul>
+<h2 id="a-href-prestat_dir-name-prestat_dir-a-prestat_dir-struct">&lt;a href=&quot;#prestat_dir&quot; name=&quot;prestat_dir&quot;&gt;&lt;/a&gt; <code>prestat_dir</code>: Struct</h2>
+<p>The contents of a $prestat when type is <a href="#preopentype.dir"><code>preopentype::dir</code></a>.<br>Size: 4<br> Alignment: 4</p>
+<h3 id="struct-members">Struct members</h3>
+<ul>
+<li>&lt;a href=&quot;#prestat_dir.pr_name_len&quot; name=&quot;prestat_dir.pr_name_len&quot;&gt;&lt;/a&gt; <code>pr_name_len</code>: <a href="#size"><code>size</code></a><br>The length of the directory name for use with <a href="#fd_prestat_dir_name"><code>fd_prestat_dir_name</code></a>.<br>Offset: 0<h2 id="a-href-prestat-name-prestat-a-prestat-union">&lt;a href=&quot;#prestat&quot; name=&quot;prestat&quot;&gt;&lt;/a&gt; <code>prestat</code>: Union</h2>
+Information about a pre-opened capability.<br>Size: 8<br>Alignment: 4<h3 id="union-layout">Union Layout</h3>
+</li>
+<li>tag_size: 1</li>
+<li>tag_align: 1</li>
+<li>contents_offset: 4</li>
+<li>contents_size: 4</li>
+<li>contents_align: 4<h3 id="union-variants">Union variants</h3>
+</li>
+<li>&lt;a href=&quot;#prestat.dir&quot; name=&quot;prestat.dir&quot;&gt;&lt;/a&gt; <code>dir</code>: <a href="#prestat_dir"><code>prestat_dir</code></a></li>
+</ul>
+<h1 id="modules">Modules</h1>
+<h2 id="a-href-wasi_snapshot_preview1-name-wasi_snapshot_preview1-a-wasi_snapshot_preview1">&lt;a href=&quot;#wasi_snapshot_preview1&quot; name=&quot;wasi_snapshot_preview1&quot;&gt;&lt;/a&gt; wasi_snapshot_preview1</h2>
+<h3 id="imports">Imports</h3>
+<h4 id="memory">Memory</h4>
+<h3 id="functions">Functions</h3>
+<hr>
+<h4 id="a-href-args_get-name-args_get-a-args_get-argv-pointerpointeru8-argv_buf-pointeru8-errno">&lt;a href=&quot;#args_get&quot; name=&quot;args_get&quot;&gt;&lt;/a&gt; <code>args_get(argv: Pointer&lt;Pointer&lt;u8&gt;&gt;, argv_buf: Pointer&lt;u8&gt;) -&gt; errno</code></h4>
+<p>Read command-line argument data.<br>The size of the array should match that returned by <a href="#args_sizes_get"><code>args_sizes_get</code></a></p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#args_get.argv&quot; name=&quot;args_get.argv&quot;&gt;&lt;/a&gt; <code>argv</code>: <code>Pointer&lt;Pointer&lt;u8&gt;&gt;</code></p>
+</li>
+<li><p>&lt;a href=&quot;#args_get.argv_buf&quot; name=&quot;args_get.argv_buf&quot;&gt;&lt;/a&gt; <code>argv_buf</code>: <code>Pointer&lt;u8&gt;</code></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#args_get.error&quot; name=&quot;args_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-args_sizes_get-name-args_sizes_get-a-args_sizes_get-errno-size-size-">&lt;a href=&quot;#args_sizes_get&quot; name=&quot;args_sizes_get&quot;&gt;&lt;/a&gt; <code>args_sizes_get() -&gt; (errno, size, size)</code></h4>
+<p>Return command-line argument data sizes.</p>
+<h5 id="params">Params</h5>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#args_sizes_get.error&quot; name=&quot;args_sizes_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#args_sizes_get.argc&quot; name=&quot;args_sizes_get.argc&quot;&gt;&lt;/a&gt; <code>argc</code>: <a href="#size"><code>size</code></a><br>The number of arguments.</p>
+</li>
+<li><p>&lt;a href=&quot;#args_sizes_get.argv_buf_size&quot; name=&quot;args_sizes_get.argv_buf_size&quot;&gt;&lt;/a&gt; <code>argv_buf_size</code>: <a href="#size"><code>size</code></a><br>The size of the argument string data.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-environ_get-name-environ_get-a-environ_get-environ-pointerpointeru8-environ_buf-pointeru8-errno">&lt;a href=&quot;#environ_get&quot; name=&quot;environ_get&quot;&gt;&lt;/a&gt; <code>environ_get(environ: Pointer&lt;Pointer&lt;u8&gt;&gt;, environ_buf: Pointer&lt;u8&gt;) -&gt; errno</code></h4>
+<p>Read environment variable data.<br>The sizes of the buffers should match that returned by <a href="#environ_sizes_get"><code>environ_sizes_get</code></a>.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#environ_get.environ&quot; name=&quot;environ_get.environ&quot;&gt;&lt;/a&gt; <code>environ</code>: <code>Pointer&lt;Pointer&lt;u8&gt;&gt;</code></p>
+</li>
+<li><p>&lt;a href=&quot;#environ_get.environ_buf&quot; name=&quot;environ_get.environ_buf&quot;&gt;&lt;/a&gt; <code>environ_buf</code>: <code>Pointer&lt;u8&gt;</code></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#environ_get.error&quot; name=&quot;environ_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-environ_sizes_get-name-environ_sizes_get-a-environ_sizes_get-errno-size-size-">&lt;a href=&quot;#environ_sizes_get&quot; name=&quot;environ_sizes_get&quot;&gt;&lt;/a&gt; <code>environ_sizes_get() -&gt; (errno, size, size)</code></h4>
+<p>Return environment variable data sizes.</p>
+<h5 id="params">Params</h5>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#environ_sizes_get.error&quot; name=&quot;environ_sizes_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#environ_sizes_get.environc&quot; name=&quot;environ_sizes_get.environc&quot;&gt;&lt;/a&gt; <code>environc</code>: <a href="#size"><code>size</code></a><br>The number of environment variable arguments.</p>
+</li>
+<li><p>&lt;a href=&quot;#environ_sizes_get.environ_buf_size&quot; name=&quot;environ_sizes_get.environ_buf_size&quot;&gt;&lt;/a&gt; <code>environ_buf_size</code>: <a href="#size"><code>size</code></a><br>The size of the environment variable data.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-clock_res_get-name-clock_res_get-a-clock_res_get-id-clockid-errno-timestamp-">&lt;a href=&quot;#clock_res_get&quot; name=&quot;clock_res_get&quot;&gt;&lt;/a&gt; <code>clock_res_get(id: clockid) -&gt; (errno, timestamp)</code></h4>
+<p>Return the resolution of a clock.<br>Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,<br>return <a href="#errno.inval"><code>errno::inval</code></a>.<br>Note: This is similar to <code>clock_getres</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#clock_res_get.id&quot; name=&quot;clock_res_get.id&quot;&gt;&lt;/a&gt; <code>id</code>: <a href="#clockid"><code>clockid</code></a><br>The clock for which to return the resolution.</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#clock_res_get.error&quot; name=&quot;clock_res_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#clock_res_get.resolution&quot; name=&quot;clock_res_get.resolution&quot;&gt;&lt;/a&gt; <code>resolution</code>: <a href="#timestamp"><code>timestamp</code></a><br>The resolution of the clock.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-clock_time_get-name-clock_time_get-a-clock_time_get-id-clockid-precision-timestamp-errno-timestamp-">&lt;a href=&quot;#clock_time_get&quot; name=&quot;clock_time_get&quot;&gt;&lt;/a&gt; <code>clock_time_get(id: clockid, precision: timestamp) -&gt; (errno, timestamp)</code></h4>
+<p>Return the time value of a clock.<br>Note: This is similar to <code>clock_gettime</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#clock_time_get.id&quot; name=&quot;clock_time_get.id&quot;&gt;&lt;/a&gt; <code>id</code>: <a href="#clockid"><code>clockid</code></a><br>The clock for which to return the time.</p>
+</li>
+<li><p>&lt;a href=&quot;#clock_time_get.precision&quot; name=&quot;clock_time_get.precision&quot;&gt;&lt;/a&gt; <code>precision</code>: <a href="#timestamp"><code>timestamp</code></a><br>The maximum lag (exclusive) that the returned time value may have, compared to its actual value.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#clock_time_get.error&quot; name=&quot;clock_time_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#clock_time_get.time&quot; name=&quot;clock_time_get.time&quot;&gt;&lt;/a&gt; <code>time</code>: <a href="#timestamp"><code>timestamp</code></a><br>The time value of the clock.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_advise-name-fd_advise-a-fd_advise-fd-fd-offset-filesize-len-filesize-advice-advice-errno">&lt;a href=&quot;#fd_advise&quot; name=&quot;fd_advise&quot;&gt;&lt;/a&gt; <code>fd_advise(fd: fd, offset: filesize, len: filesize, advice: advice) -&gt; errno</code></h4>
+<p>Provide file advisory information on a file descriptor.<br>Note: This is similar to <code>posix_fadvise</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_advise.fd&quot; name=&quot;fd_advise.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_advise.offset&quot; name=&quot;fd_advise.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filesize"><code>filesize</code></a><br>The offset within the file to which the advisory applies.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_advise.len&quot; name=&quot;fd_advise.len&quot;&gt;&lt;/a&gt; <code>len</code>: <a href="#filesize"><code>filesize</code></a><br>The length of the region to which the advisory applies.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_advise.advice&quot; name=&quot;fd_advise.advice&quot;&gt;&lt;/a&gt; <code>advice</code>: <a href="#advice"><code>advice</code></a><br>The advice.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_advise.error&quot; name=&quot;fd_advise.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_allocate-name-fd_allocate-a-fd_allocate-fd-fd-offset-filesize-len-filesize-errno">&lt;a href=&quot;#fd_allocate&quot; name=&quot;fd_allocate&quot;&gt;&lt;/a&gt; <code>fd_allocate(fd: fd, offset: filesize, len: filesize) -&gt; errno</code></h4>
+<p>Force the allocation of space in a file.<br>Note: This is similar to <code>posix_fallocate</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_allocate.fd&quot; name=&quot;fd_allocate.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_allocate.offset&quot; name=&quot;fd_allocate.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filesize"><code>filesize</code></a><br>The offset at which to start the allocation.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_allocate.len&quot; name=&quot;fd_allocate.len&quot;&gt;&lt;/a&gt; <code>len</code>: <a href="#filesize"><code>filesize</code></a><br>The length of the area that is allocated.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_allocate.error&quot; name=&quot;fd_allocate.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_close-name-fd_close-a-fd_close-fd-fd-errno">&lt;a href=&quot;#fd_close&quot; name=&quot;fd_close&quot;&gt;&lt;/a&gt; <code>fd_close(fd: fd) -&gt; errno</code></h4>
+<p>Close a file descriptor.<br>Note: This is similar to <code>close</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_close.fd&quot; name=&quot;fd_close.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_close.error&quot; name=&quot;fd_close.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_datasync-name-fd_datasync-a-fd_datasync-fd-fd-errno">&lt;a href=&quot;#fd_datasync&quot; name=&quot;fd_datasync&quot;&gt;&lt;/a&gt; <code>fd_datasync(fd: fd) -&gt; errno</code></h4>
+<p>Synchronize the data of a file to disk.<br>Note: This is similar to <code>fdatasync</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_datasync.fd&quot; name=&quot;fd_datasync.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_datasync.error&quot; name=&quot;fd_datasync.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_fdstat_get-name-fd_fdstat_get-a-fd_fdstat_get-fd-fd-errno-fdstat-">&lt;a href=&quot;#fd_fdstat_get&quot; name=&quot;fd_fdstat_get&quot;&gt;&lt;/a&gt; <code>fd_fdstat_get(fd: fd) -&gt; (errno, fdstat)</code></h4>
+<p>Get the attributes of a file descriptor.<br>Note: This returns similar flags to <code>fsync(fd, F_GETFL)</code> in POSIX, as well as additional fields.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_fdstat_get.fd&quot; name=&quot;fd_fdstat_get.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_fdstat_get.error&quot; name=&quot;fd_fdstat_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_fdstat_get.stat&quot; name=&quot;fd_fdstat_get.stat&quot;&gt;&lt;/a&gt; <code>stat</code>: <a href="#fdstat"><code>fdstat</code></a><br>The buffer where the file descriptor&#39;s attributes are stored.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_fdstat_set_flags-name-fd_fdstat_set_flags-a-fd_fdstat_set_flags-fd-fd-flags-fdflags-errno">&lt;a href=&quot;#fd_fdstat_set_flags&quot; name=&quot;fd_fdstat_set_flags&quot;&gt;&lt;/a&gt; <code>fd_fdstat_set_flags(fd: fd, flags: fdflags) -&gt; errno</code></h4>
+<p>Adjust the flags associated with a file descriptor.<br>Note: This is similar to <code>fcntl(fd, F_SETFL, flags)</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_fdstat_set_flags.fd&quot; name=&quot;fd_fdstat_set_flags.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_fdstat_set_flags.flags&quot; name=&quot;fd_fdstat_set_flags.flags&quot;&gt;&lt;/a&gt; <code>flags</code>: <a href="#fdflags"><code>fdflags</code></a><br>The desired values of the file descriptor flags.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_fdstat_set_flags.error&quot; name=&quot;fd_fdstat_set_flags.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_fdstat_set_rights-name-fd_fdstat_set_rights-a-fd_fdstat_set_rights-fd-fd-fs_rights_base-rights-fs_rights_inheriting-rights-errno">&lt;a href=&quot;#fd_fdstat_set_rights&quot; name=&quot;fd_fdstat_set_rights&quot;&gt;&lt;/a&gt; <code>fd_fdstat_set_rights(fd: fd, fs_rights_base: rights, fs_rights_inheriting: rights) -&gt; errno</code></h4>
+<p>Adjust the rights associated with a file descriptor.<br>This can only be used to remove rights, and returns <a href="#errno.notcapable"><code>errno::notcapable</code></a> if called in a way that would attempt to add rights</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_fdstat_set_rights.fd&quot; name=&quot;fd_fdstat_set_rights.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_fdstat_set_rights.fs_rights_base&quot; name=&quot;fd_fdstat_set_rights.fs_rights_base&quot;&gt;&lt;/a&gt; <code>fs_rights_base</code>: <a href="#rights"><code>rights</code></a><br>The desired rights of the file descriptor.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_fdstat_set_rights.fs_rights_inheriting&quot; name=&quot;fd_fdstat_set_rights.fs_rights_inheriting&quot;&gt;&lt;/a&gt; <code>fs_rights_inheriting</code>: <a href="#rights"><code>rights</code></a></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_fdstat_set_rights.error&quot; name=&quot;fd_fdstat_set_rights.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_filestat_get-name-fd_filestat_get-a-fd_filestat_get-fd-fd-errno-filestat-">&lt;a href=&quot;#fd_filestat_get&quot; name=&quot;fd_filestat_get&quot;&gt;&lt;/a&gt; <code>fd_filestat_get(fd: fd) -&gt; (errno, filestat)</code></h4>
+<p>Return the attributes of an open file.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_filestat_get.fd&quot; name=&quot;fd_filestat_get.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_filestat_get.error&quot; name=&quot;fd_filestat_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_filestat_get.buf&quot; name=&quot;fd_filestat_get.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <a href="#filestat"><code>filestat</code></a><br>The buffer where the file&#39;s attributes are stored.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_filestat_set_size-name-fd_filestat_set_size-a-fd_filestat_set_size-fd-fd-size-filesize-errno">&lt;a href=&quot;#fd_filestat_set_size&quot; name=&quot;fd_filestat_set_size&quot;&gt;&lt;/a&gt; <code>fd_filestat_set_size(fd: fd, size: filesize) -&gt; errno</code></h4>
+<p>Adjust the size of an open file. If this increases the file&#39;s size, the extra bytes are filled with zeros.<br>Note: This is similar to <code>ftruncate</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_filestat_set_size.fd&quot; name=&quot;fd_filestat_set_size.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_filestat_set_size.size&quot; name=&quot;fd_filestat_set_size.size&quot;&gt;&lt;/a&gt; <code>size</code>: <a href="#filesize"><code>filesize</code></a><br>The desired file size.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_filestat_set_size.error&quot; name=&quot;fd_filestat_set_size.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_filestat_set_times-name-fd_filestat_set_times-a-fd_filestat_set_times-fd-fd-atim-timestamp-mtim-timestamp-fst_flags-fstflags-errno">&lt;a href=&quot;#fd_filestat_set_times&quot; name=&quot;fd_filestat_set_times&quot;&gt;&lt;/a&gt; <code>fd_filestat_set_times(fd: fd, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -&gt; errno</code></h4>
+<p>Adjust the timestamps of an open file or directory.<br>Note: This is similar to <code>futimens</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_filestat_set_times.fd&quot; name=&quot;fd_filestat_set_times.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_filestat_set_times.atim&quot; name=&quot;fd_filestat_set_times.atim&quot;&gt;&lt;/a&gt; <code>atim</code>: <a href="#timestamp"><code>timestamp</code></a><br>The desired values of the data access timestamp.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_filestat_set_times.mtim&quot; name=&quot;fd_filestat_set_times.mtim&quot;&gt;&lt;/a&gt; <code>mtim</code>: <a href="#timestamp"><code>timestamp</code></a><br>The desired values of the data modification timestamp.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_filestat_set_times.fst_flags&quot; name=&quot;fd_filestat_set_times.fst_flags&quot;&gt;&lt;/a&gt; <code>fst_flags</code>: <a href="#fstflags"><code>fstflags</code></a><br>A bitmask indicating which timestamps to adjust.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_filestat_set_times.error&quot; name=&quot;fd_filestat_set_times.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_pread-name-fd_pread-a-fd_pread-fd-fd-iovs-iovec_array-offset-filesize-errno-size-">&lt;a href=&quot;#fd_pread&quot; name=&quot;fd_pread&quot;&gt;&lt;/a&gt; <code>fd_pread(fd: fd, iovs: iovec_array, offset: filesize) -&gt; (errno, size)</code></h4>
+<p>Read from a file descriptor, without using and updating the file descriptor&#39;s offset.<br>Note: This is similar to <code>preadv</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_pread.fd&quot; name=&quot;fd_pread.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pread.iovs&quot; name=&quot;fd_pread.iovs&quot;&gt;&lt;/a&gt; <code>iovs</code>: <a href="#iovec_array"><code>iovec_array</code></a><br>List of scatter/gather vectors in which to store data.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pread.offset&quot; name=&quot;fd_pread.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filesize"><code>filesize</code></a><br>The offset within the file at which to read.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_pread.error&quot; name=&quot;fd_pread.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pread.nread&quot; name=&quot;fd_pread.nread&quot;&gt;&lt;/a&gt; <code>nread</code>: <a href="#size"><code>size</code></a><br>The number of bytes read.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_prestat_get-name-fd_prestat_get-a-fd_prestat_get-fd-fd-errno-prestat-">&lt;a href=&quot;#fd_prestat_get&quot; name=&quot;fd_prestat_get&quot;&gt;&lt;/a&gt; <code>fd_prestat_get(fd: fd) -&gt; (errno, prestat)</code></h4>
+<p>Return a description of the given preopened file descriptor.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_prestat_get.fd&quot; name=&quot;fd_prestat_get.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_prestat_get.error&quot; name=&quot;fd_prestat_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_prestat_get.buf&quot; name=&quot;fd_prestat_get.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <a href="#prestat"><code>prestat</code></a><br>The buffer where the description is stored.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_prestat_dir_name-name-fd_prestat_dir_name-a-fd_prestat_dir_name-fd-fd-path-pointeru8-path_len-size-errno">&lt;a href=&quot;#fd_prestat_dir_name&quot; name=&quot;fd_prestat_dir_name&quot;&gt;&lt;/a&gt; <code>fd_prestat_dir_name(fd: fd, path: Pointer&lt;u8&gt;, path_len: size) -&gt; errno</code></h4>
+<p>Return a description of the given preopened file descriptor.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_prestat_dir_name.fd&quot; name=&quot;fd_prestat_dir_name.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_prestat_dir_name.path&quot; name=&quot;fd_prestat_dir_name.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>Pointer&lt;u8&gt;</code><br>A buffer into which to write the preopened directory name.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_prestat_dir_name.path_len&quot; name=&quot;fd_prestat_dir_name.path_len&quot;&gt;&lt;/a&gt; <code>path_len</code>: <a href="#size"><code>size</code></a></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_prestat_dir_name.error&quot; name=&quot;fd_prestat_dir_name.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_pwrite-name-fd_pwrite-a-fd_pwrite-fd-fd-iovs-ciovec_array-offset-filesize-errno-size-">&lt;a href=&quot;#fd_pwrite&quot; name=&quot;fd_pwrite&quot;&gt;&lt;/a&gt; <code>fd_pwrite(fd: fd, iovs: ciovec_array, offset: filesize) -&gt; (errno, size)</code></h4>
+<p>Write to a file descriptor, without using and updating the file descriptor&#39;s offset.<br>Note: This is similar to <code>pwritev</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_pwrite.fd&quot; name=&quot;fd_pwrite.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pwrite.iovs&quot; name=&quot;fd_pwrite.iovs&quot;&gt;&lt;/a&gt; <code>iovs</code>: <a href="#ciovec_array"><code>ciovec_array</code></a><br>List of scatter/gather vectors from which to retrieve data.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pwrite.offset&quot; name=&quot;fd_pwrite.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filesize"><code>filesize</code></a><br>The offset within the file at which to write.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_pwrite.error&quot; name=&quot;fd_pwrite.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_pwrite.nwritten&quot; name=&quot;fd_pwrite.nwritten&quot;&gt;&lt;/a&gt; <code>nwritten</code>: <a href="#size"><code>size</code></a><br>The number of bytes written.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_read-name-fd_read-a-fd_read-fd-fd-iovs-iovec_array-errno-size-">&lt;a href=&quot;#fd_read&quot; name=&quot;fd_read&quot;&gt;&lt;/a&gt; <code>fd_read(fd: fd, iovs: iovec_array) -&gt; (errno, size)</code></h4>
+<p>Read from a file descriptor.<br>Note: This is similar to <code>readv</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_read.fd&quot; name=&quot;fd_read.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_read.iovs&quot; name=&quot;fd_read.iovs&quot;&gt;&lt;/a&gt; <code>iovs</code>: <a href="#iovec_array"><code>iovec_array</code></a><br>List of scatter/gather vectors to which to store data.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_read.error&quot; name=&quot;fd_read.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_read.nread&quot; name=&quot;fd_read.nread&quot;&gt;&lt;/a&gt; <code>nread</code>: <a href="#size"><code>size</code></a><br>The number of bytes read.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_readdir-name-fd_readdir-a-fd_readdir-fd-fd-buf-pointeru8-buf_len-size-cookie-dircookie-errno-size-">&lt;a href=&quot;#fd_readdir&quot; name=&quot;fd_readdir&quot;&gt;&lt;/a&gt; <code>fd_readdir(fd: fd, buf: Pointer&lt;u8&gt;, buf_len: size, cookie: dircookie) -&gt; (errno, size)</code></h4>
+<p>Read directory entries from a directory.<br>When successful, the contents of the output buffer consist of a sequence of<br>directory entries. Each directory entry consists of a dirent_t object,<br>followed by dirent_t::d_namlen bytes holding the name of the directory<br>entry.<br>This function fills the output buffer as much as possible, potentially<br>truncating the last directory entry. This allows the caller to grow its<br>read buffer size in case it&#39;s too small to fit a single large directory<br>entry, or skip the oversized directory entry.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_readdir.fd&quot; name=&quot;fd_readdir.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_readdir.buf&quot; name=&quot;fd_readdir.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <code>Pointer&lt;u8&gt;</code><br>The buffer where directory entries are stored</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_readdir.buf_len&quot; name=&quot;fd_readdir.buf_len&quot;&gt;&lt;/a&gt; <code>buf_len</code>: <a href="#size"><code>size</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_readdir.cookie&quot; name=&quot;fd_readdir.cookie&quot;&gt;&lt;/a&gt; <code>cookie</code>: <a href="#dircookie"><code>dircookie</code></a><br>The location within the directory to start reading</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_readdir.error&quot; name=&quot;fd_readdir.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_readdir.bufused&quot; name=&quot;fd_readdir.bufused&quot;&gt;&lt;/a&gt; <code>bufused</code>: <a href="#size"><code>size</code></a><br>The number of bytes stored in the read buffer. If less than the size of the read buffer, the end of the directory has been reached.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_renumber-name-fd_renumber-a-fd_renumber-fd-fd-to-fd-errno">&lt;a href=&quot;#fd_renumber&quot; name=&quot;fd_renumber&quot;&gt;&lt;/a&gt; <code>fd_renumber(fd: fd, to: fd) -&gt; errno</code></h4>
+<p>Atomically replace a file descriptor by renumbering another file descriptor.<br>Due to the strong focus on thread safety, this environment does not provide<br>a mechanism to duplicate or renumber a file descriptor to an arbitrary<br>number, like <code>dup2()</code>. This would be prone to race conditions, as an actual<br>file descriptor with the same number could be allocated by a different<br>thread at the same time.<br>This function provides a way to atomically renumber file descriptors, which<br>would disappear if <code>dup2()</code> were to be removed entirely.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_renumber.fd&quot; name=&quot;fd_renumber.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_renumber.to&quot; name=&quot;fd_renumber.to&quot;&gt;&lt;/a&gt; <code>to</code>: <a href="#fd"><code>fd</code></a><br>The file descriptor to overwrite.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_renumber.error&quot; name=&quot;fd_renumber.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_seek-name-fd_seek-a-fd_seek-fd-fd-offset-filedelta-whence-whence-errno-filesize-">&lt;a href=&quot;#fd_seek&quot; name=&quot;fd_seek&quot;&gt;&lt;/a&gt; <code>fd_seek(fd: fd, offset: filedelta, whence: whence) -&gt; (errno, filesize)</code></h4>
+<p>Move the offset of a file descriptor.<br>Note: This is similar to <code>lseek</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_seek.fd&quot; name=&quot;fd_seek.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_seek.offset&quot; name=&quot;fd_seek.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filedelta"><code>filedelta</code></a><br>The number of bytes to move.</p>
+</li>
+<li><p>&lt;a href=&quot;#fd_seek.whence&quot; name=&quot;fd_seek.whence&quot;&gt;&lt;/a&gt; <code>whence</code>: <a href="#whence"><code>whence</code></a><br>The base from which the offset is relative.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_seek.error&quot; name=&quot;fd_seek.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_seek.newoffset&quot; name=&quot;fd_seek.newoffset&quot;&gt;&lt;/a&gt; <code>newoffset</code>: <a href="#filesize"><code>filesize</code></a><br>The new offset of the file descriptor, relative to the start of the file.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_sync-name-fd_sync-a-fd_sync-fd-fd-errno">&lt;a href=&quot;#fd_sync&quot; name=&quot;fd_sync&quot;&gt;&lt;/a&gt; <code>fd_sync(fd: fd) -&gt; errno</code></h4>
+<p>Synchronize the data and metadata of a file to disk.<br>Note: This is similar to <code>fsync</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_sync.fd&quot; name=&quot;fd_sync.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_sync.error&quot; name=&quot;fd_sync.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-fd_tell-name-fd_tell-a-fd_tell-fd-fd-errno-filesize-">&lt;a href=&quot;#fd_tell&quot; name=&quot;fd_tell&quot;&gt;&lt;/a&gt; <code>fd_tell(fd: fd) -&gt; (errno, filesize)</code></h4>
+<p>Return the current offset of a file descriptor.<br>Note: This is similar to <code>lseek(fd, 0, SEEK_CUR)</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#fd_tell.fd&quot; name=&quot;fd_tell.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_tell.error&quot; name=&quot;fd_tell.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_tell.offset&quot; name=&quot;fd_tell.offset&quot;&gt;&lt;/a&gt; <code>offset</code>: <a href="#filesize"><code>filesize</code></a><br>The current offset of the file descriptor, relative to the start of the file.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-fd_write-name-fd_write-a-fd_write-fd-fd-iovs-ciovec_array-errno-size-">&lt;a href=&quot;#fd_write&quot; name=&quot;fd_write&quot;&gt;&lt;/a&gt; <code>fd_write(fd: fd, iovs: ciovec_array) -&gt; (errno, size)</code></h4>
+<p>Write to a file descriptor.<br>Note: This is similar to <code>writev</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_write.fd&quot; name=&quot;fd_write.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_write.iovs&quot; name=&quot;fd_write.iovs&quot;&gt;&lt;/a&gt; <code>iovs</code>: <a href="#ciovec_array"><code>ciovec_array</code></a><br>List of scatter/gather vectors from which to retrieve data.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#fd_write.error&quot; name=&quot;fd_write.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#fd_write.nwritten&quot; name=&quot;fd_write.nwritten&quot;&gt;&lt;/a&gt; <code>nwritten</code>: <a href="#size"><code>size</code></a><br>The number of bytes written.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-path_create_directory-name-path_create_directory-a-path_create_directory-fd-fd-path-string-errno">&lt;a href=&quot;#path_create_directory&quot; name=&quot;path_create_directory&quot;&gt;&lt;/a&gt; <code>path_create_directory(fd: fd, path: string) -&gt; errno</code></h4>
+<p>Create a directory.<br>Note: This is similar to <code>mkdirat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_create_directory.fd&quot; name=&quot;path_create_directory.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_create_directory.path&quot; name=&quot;path_create_directory.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path at which to create the directory.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_create_directory.error&quot; name=&quot;path_create_directory.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_filestat_get-name-path_filestat_get-a-path_filestat_get-fd-fd-flags-lookupflags-path-string-errno-filestat-">&lt;a href=&quot;#path_filestat_get&quot; name=&quot;path_filestat_get&quot;&gt;&lt;/a&gt; <code>path_filestat_get(fd: fd, flags: lookupflags, path: string) -&gt; (errno, filestat)</code></h4>
+<p>Return the attributes of a file or directory.<br>Note: This is similar to <code>stat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_filestat_get.fd&quot; name=&quot;path_filestat_get.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_get.flags&quot; name=&quot;path_filestat_get.flags&quot;&gt;&lt;/a&gt; <code>flags</code>: <a href="#lookupflags"><code>lookupflags</code></a><br>Flags determining the method of how the path is resolved.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_get.path&quot; name=&quot;path_filestat_get.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path of the file or directory to inspect.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_filestat_get.error&quot; name=&quot;path_filestat_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_get.buf&quot; name=&quot;path_filestat_get.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <a href="#filestat"><code>filestat</code></a><br>The buffer where the file&#39;s attributes are stored.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-path_filestat_set_times-name-path_filestat_set_times-a-path_filestat_set_times-fd-fd-flags-lookupflags-path-string-atim-timestamp-mtim-timestamp-fst_flags-fstflags-errno">&lt;a href=&quot;#path_filestat_set_times&quot; name=&quot;path_filestat_set_times&quot;&gt;&lt;/a&gt; <code>path_filestat_set_times(fd: fd, flags: lookupflags, path: string, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -&gt; errno</code></h4>
+<p>Adjust the timestamps of a file or directory.<br>Note: This is similar to <code>utimensat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.fd&quot; name=&quot;path_filestat_set_times.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.flags&quot; name=&quot;path_filestat_set_times.flags&quot;&gt;&lt;/a&gt; <code>flags</code>: <a href="#lookupflags"><code>lookupflags</code></a><br>Flags determining the method of how the path is resolved.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.path&quot; name=&quot;path_filestat_set_times.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path of the file or directory to operate on.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.atim&quot; name=&quot;path_filestat_set_times.atim&quot;&gt;&lt;/a&gt; <code>atim</code>: <a href="#timestamp"><code>timestamp</code></a><br>The desired values of the data access timestamp.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.mtim&quot; name=&quot;path_filestat_set_times.mtim&quot;&gt;&lt;/a&gt; <code>mtim</code>: <a href="#timestamp"><code>timestamp</code></a><br>The desired values of the data modification timestamp.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_filestat_set_times.fst_flags&quot; name=&quot;path_filestat_set_times.fst_flags&quot;&gt;&lt;/a&gt; <code>fst_flags</code>: <a href="#fstflags"><code>fstflags</code></a><br>A bitmask indicating which timestamps to adjust.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_filestat_set_times.error&quot; name=&quot;path_filestat_set_times.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_link-name-path_link-a-path_link-old_fd-fd-old_flags-lookupflags-old_path-string-new_fd-fd-new_path-string-errno">&lt;a href=&quot;#path_link&quot; name=&quot;path_link&quot;&gt;&lt;/a&gt; <code>path_link(old_fd: fd, old_flags: lookupflags, old_path: string, new_fd: fd, new_path: string) -&gt; errno</code></h4>
+<p>Create a hard link.<br>Note: This is similar to <code>linkat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_link.old_fd&quot; name=&quot;path_link.old_fd&quot;&gt;&lt;/a&gt; <code>old_fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_link.old_flags&quot; name=&quot;path_link.old_flags&quot;&gt;&lt;/a&gt; <code>old_flags</code>: <a href="#lookupflags"><code>lookupflags</code></a><br>Flags determining the method of how the path is resolved.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_link.old_path&quot; name=&quot;path_link.old_path&quot;&gt;&lt;/a&gt; <code>old_path</code>: <code>string</code><br>The source path from which to link.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_link.new_fd&quot; name=&quot;path_link.new_fd&quot;&gt;&lt;/a&gt; <code>new_fd</code>: <a href="#fd"><code>fd</code></a><br>The working directory at which the resolution of the new path starts.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_link.new_path&quot; name=&quot;path_link.new_path&quot;&gt;&lt;/a&gt; <code>new_path</code>: <code>string</code><br>The destination path at which to create the hard link.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_link.error&quot; name=&quot;path_link.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_open-name-path_open-a-path_open-fd-fd-dirflags-lookupflags-path-string-oflags-oflags-fs_rights_base-rights-fs_rights_inherting-rights-fdflags-fdflags-errno-fd-">&lt;a href=&quot;#path_open&quot; name=&quot;path_open&quot;&gt;&lt;/a&gt; <code>path_open(fd: fd, dirflags: lookupflags, path: string, oflags: oflags, fs_rights_base: rights, fs_rights_inherting: rights, fdflags: fdflags) -&gt; (errno, fd)</code></h4>
+<p>Open a file or directory.<br>The returned file descriptor is not guaranteed to be the lowest-numbered<br>file descriptor not currently open; it is randomized to prevent<br>applications from depending on making assumptions about indexes, since this<br>is error-prone in multi-threaded contexts. The returned file descriptor is<br>guaranteed to be less than 2**31.<br>Note: This is similar to <code>openat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_open.fd&quot; name=&quot;path_open.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.dirflags&quot; name=&quot;path_open.dirflags&quot;&gt;&lt;/a&gt; <code>dirflags</code>: <a href="#lookupflags"><code>lookupflags</code></a><br>Flags determining the method of how the path is resolved.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.path&quot; name=&quot;path_open.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The relative path of the file or directory to open, relative to the<br><a href="#path_open.fd"><code>path_open::fd</code></a> directory.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.oflags&quot; name=&quot;path_open.oflags&quot;&gt;&lt;/a&gt; <code>oflags</code>: <a href="#oflags"><code>oflags</code></a><br>The method by which to open the file.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.fs_rights_base&quot; name=&quot;path_open.fs_rights_base&quot;&gt;&lt;/a&gt; <code>fs_rights_base</code>: <a href="#rights"><code>rights</code></a><br>The initial rights of the newly created file descriptor. The<br>implementation is allowed to return a file descriptor with fewer rights<br>than specified, if and only if those rights do not apply to the type of<br>file being opened.<br>The <em>base</em> rights are rights that will apply to operations using the file<br>descriptor itself, while the <em>inheriting</em> rights are rights that apply to<br>file descriptors derived from it.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.fs_rights_inherting&quot; name=&quot;path_open.fs_rights_inherting&quot;&gt;&lt;/a&gt; <code>fs_rights_inherting</code>: <a href="#rights"><code>rights</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.fdflags&quot; name=&quot;path_open.fdflags&quot;&gt;&lt;/a&gt; <code>fdflags</code>: <a href="#fdflags"><code>fdflags</code></a></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_open.error&quot; name=&quot;path_open.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_open.opened_fd&quot; name=&quot;path_open.opened_fd&quot;&gt;&lt;/a&gt; <code>opened_fd</code>: <a href="#fd"><code>fd</code></a><br>The file descriptor of the file that has been opened.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-path_readlink-name-path_readlink-a-path_readlink-fd-fd-path-string-buf-pointeru8-buf_len-size-errno-size-">&lt;a href=&quot;#path_readlink&quot; name=&quot;path_readlink&quot;&gt;&lt;/a&gt; <code>path_readlink(fd: fd, path: string, buf: Pointer&lt;u8&gt;, buf_len: size) -&gt; (errno, size)</code></h4>
+<p>Read the contents of a symbolic link.<br>Note: This is similar to <code>readlinkat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_readlink.fd&quot; name=&quot;path_readlink.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_readlink.path&quot; name=&quot;path_readlink.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path of the symbolic link from which to read.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_readlink.buf&quot; name=&quot;path_readlink.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <code>Pointer&lt;u8&gt;</code><br>The buffer to which to write the contents of the symbolic link.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_readlink.buf_len&quot; name=&quot;path_readlink.buf_len&quot;&gt;&lt;/a&gt; <code>buf_len</code>: <a href="#size"><code>size</code></a></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_readlink.error&quot; name=&quot;path_readlink.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_readlink.bufused&quot; name=&quot;path_readlink.bufused&quot;&gt;&lt;/a&gt; <code>bufused</code>: <a href="#size"><code>size</code></a><br>The number of bytes placed in the buffer.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-path_remove_directory-name-path_remove_directory-a-path_remove_directory-fd-fd-path-string-errno">&lt;a href=&quot;#path_remove_directory&quot; name=&quot;path_remove_directory&quot;&gt;&lt;/a&gt; <code>path_remove_directory(fd: fd, path: string) -&gt; errno</code></h4>
+<p>Remove a directory.<br>Return <a href="#errno.notempty"><code>errno::notempty</code></a> if the directory is not empty.<br>Note: This is similar to <code>unlinkat(fd, path, AT_REMOVEDIR)</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_remove_directory.fd&quot; name=&quot;path_remove_directory.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_remove_directory.path&quot; name=&quot;path_remove_directory.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path to a directory to remove.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_remove_directory.error&quot; name=&quot;path_remove_directory.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_rename-name-path_rename-a-path_rename-fd-fd-old_path-string-new_fd-fd-new_path-string-errno">&lt;a href=&quot;#path_rename&quot; name=&quot;path_rename&quot;&gt;&lt;/a&gt; <code>path_rename(fd: fd, old_path: string, new_fd: fd, new_path: string) -&gt; errno</code></h4>
+<p>Rename a file or directory.<br>Note: This is similar to <code>renameat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_rename.fd&quot; name=&quot;path_rename.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_rename.old_path&quot; name=&quot;path_rename.old_path&quot;&gt;&lt;/a&gt; <code>old_path</code>: <code>string</code><br>The source path of the file or directory to rename.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_rename.new_fd&quot; name=&quot;path_rename.new_fd&quot;&gt;&lt;/a&gt; <code>new_fd</code>: <a href="#fd"><code>fd</code></a><br>The working directory at which the resolution of the new path starts.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_rename.new_path&quot; name=&quot;path_rename.new_path&quot;&gt;&lt;/a&gt; <code>new_path</code>: <code>string</code><br>The destination path to which to rename the file or directory.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_rename.error&quot; name=&quot;path_rename.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_symlink-name-path_symlink-a-path_symlink-old_path-string-fd-fd-new_path-string-errno">&lt;a href=&quot;#path_symlink&quot; name=&quot;path_symlink&quot;&gt;&lt;/a&gt; <code>path_symlink(old_path: string, fd: fd, new_path: string) -&gt; errno</code></h4>
+<p>Create a symbolic link.<br>Note: This is similar to <code>symlinkat</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_symlink.old_path&quot; name=&quot;path_symlink.old_path&quot;&gt;&lt;/a&gt; <code>old_path</code>: <code>string</code><br>The contents of the symbolic link.</p>
+</li>
+<li><p>&lt;a href=&quot;#path_symlink.fd&quot; name=&quot;path_symlink.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_symlink.new_path&quot; name=&quot;path_symlink.new_path&quot;&gt;&lt;/a&gt; <code>new_path</code>: <code>string</code><br>The destination path at which to create the symbolic link.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_symlink.error&quot; name=&quot;path_symlink.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-path_unlink_file-name-path_unlink_file-a-path_unlink_file-fd-fd-path-string-errno">&lt;a href=&quot;#path_unlink_file&quot; name=&quot;path_unlink_file&quot;&gt;&lt;/a&gt; <code>path_unlink_file(fd: fd, path: string) -&gt; errno</code></h4>
+<p>Unlink a file.<br>Return <a href="#errno.isdir"><code>errno::isdir</code></a> if the path refers to a directory.<br>Note: This is similar to <code>unlinkat(fd, path, 0)</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#path_unlink_file.fd&quot; name=&quot;path_unlink_file.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#path_unlink_file.path&quot; name=&quot;path_unlink_file.path&quot;&gt;&lt;/a&gt; <code>path</code>: <code>string</code><br>The path to a file to unlink.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#path_unlink_file.error&quot; name=&quot;path_unlink_file.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-poll_oneoff-name-poll_oneoff-a-poll_oneoff-in-constpointersubscription-out-pointerevent-nsubscriptions-size-errno-size-">&lt;a href=&quot;#poll_oneoff&quot; name=&quot;poll_oneoff&quot;&gt;&lt;/a&gt; <code>poll_oneoff(in: ConstPointer&lt;subscription&gt;, out: Pointer&lt;event&gt;, nsubscriptions: size) -&gt; (errno, size)</code></h4>
+<p>Concurrently poll for the occurrence of a set of events.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#poll_oneoff.in&quot; name=&quot;poll_oneoff.in&quot;&gt;&lt;/a&gt; <code>in</code>: <code>ConstPointer&lt;subscription&gt;</code><br>The events to which to subscribe.</p>
+</li>
+<li><p>&lt;a href=&quot;#poll_oneoff.out&quot; name=&quot;poll_oneoff.out&quot;&gt;&lt;/a&gt; <code>out</code>: <code>Pointer&lt;event&gt;</code><br>The events that have occurred.</p>
+</li>
+<li><p>&lt;a href=&quot;#poll_oneoff.nsubscriptions&quot; name=&quot;poll_oneoff.nsubscriptions&quot;&gt;&lt;/a&gt; <code>nsubscriptions</code>: <a href="#size"><code>size</code></a><br>Both the number of subscriptions and events.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#poll_oneoff.error&quot; name=&quot;poll_oneoff.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#poll_oneoff.nevents&quot; name=&quot;poll_oneoff.nevents&quot;&gt;&lt;/a&gt; <code>nevents</code>: <a href="#size"><code>size</code></a><br>The number of events stored.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-proc_exit-name-proc_exit-a-proc_exit-rval-exitcode-">&lt;a href=&quot;#proc_exit&quot; name=&quot;proc_exit&quot;&gt;&lt;/a&gt; <code>proc_exit(rval: exitcode)</code></h4>
+<p>Terminate the process normally. An exit code of 0 indicates successful<br>termination of the program. The meanings of other values is dependent on<br>the environment.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#proc_exit.rval&quot; name=&quot;proc_exit.rval&quot;&gt;&lt;/a&gt; <code>rval</code>: <a href="#exitcode"><code>exitcode</code></a><br>The exit code returned by the process.</li>
+</ul>
+<h5 id="results">Results</h5>
+<hr>
+<h4 id="a-href-proc_raise-name-proc_raise-a-proc_raise-sig-signal-errno">&lt;a href=&quot;#proc_raise&quot; name=&quot;proc_raise&quot;&gt;&lt;/a&gt; <code>proc_raise(sig: signal) -&gt; errno</code></h4>
+<p>Send a signal to the process of the calling thread.<br>Note: This is similar to <code>raise</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li>&lt;a href=&quot;#proc_raise.sig&quot; name=&quot;proc_raise.sig&quot;&gt;&lt;/a&gt; <code>sig</code>: <a href="#signal"><code>signal</code></a><br>The signal condition to trigger.</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#proc_raise.error&quot; name=&quot;proc_raise.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-sched_yield-name-sched_yield-a-sched_yield-errno">&lt;a href=&quot;#sched_yield&quot; name=&quot;sched_yield&quot;&gt;&lt;/a&gt; <code>sched_yield() -&gt; errno</code></h4>
+<p>Temporarily yield execution of the calling thread.<br>Note: This is similar to <a href="#sched_yield"><code>sched_yield</code></a> in POSIX.</p>
+<h5 id="params">Params</h5>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#sched_yield.error&quot; name=&quot;sched_yield.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-random_get-name-random_get-a-random_get-buf-pointeru8-buf_len-size-errno">&lt;a href=&quot;#random_get&quot; name=&quot;random_get&quot;&gt;&lt;/a&gt; <code>random_get(buf: Pointer&lt;u8&gt;, buf_len: size) -&gt; errno</code></h4>
+<p>Write high-quality random data into a buffer.<br>This function blocks when the implementation is unable to immediately<br>provide sufficient high-quality random data.<br>This function may execute slowly, so when large mounts of random data are<br>required, it&#39;s advisable to use this function to seed a pseudo-random<br>number generator, rather than to provide the random data directly.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#random_get.buf&quot; name=&quot;random_get.buf&quot;&gt;&lt;/a&gt; <code>buf</code>: <code>Pointer&lt;u8&gt;</code><br>The buffer to fill with random data.</p>
+</li>
+<li><p>&lt;a href=&quot;#random_get.buf_len&quot; name=&quot;random_get.buf_len&quot;&gt;&lt;/a&gt; <code>buf_len</code>: <a href="#size"><code>size</code></a></p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#random_get.error&quot; name=&quot;random_get.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
+<hr>
+<h4 id="a-href-sock_recv-name-sock_recv-a-sock_recv-fd-fd-ri_data-iovec_array-ri_flags-riflags-errno-size-roflags-">&lt;a href=&quot;#sock_recv&quot; name=&quot;sock_recv&quot;&gt;&lt;/a&gt; <code>sock_recv(fd: fd, ri_data: iovec_array, ri_flags: riflags) -&gt; (errno, size, roflags)</code></h4>
+<p>Receive a message from a socket.<br>Note: This is similar to <code>recv</code> in POSIX, though it also supports reading<br>the data into multiple buffers in the manner of <code>readv</code>.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#sock_recv.fd&quot; name=&quot;sock_recv.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#sock_recv.ri_data&quot; name=&quot;sock_recv.ri_data&quot;&gt;&lt;/a&gt; <code>ri_data</code>: <a href="#iovec_array"><code>iovec_array</code></a><br>List of scatter/gather vectors to which to store data.</p>
+</li>
+<li><p>&lt;a href=&quot;#sock_recv.ri_flags&quot; name=&quot;sock_recv.ri_flags&quot;&gt;&lt;/a&gt; <code>ri_flags</code>: <a href="#riflags"><code>riflags</code></a><br>Message flags.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#sock_recv.error&quot; name=&quot;sock_recv.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#sock_recv.ro_datalen&quot; name=&quot;sock_recv.ro_datalen&quot;&gt;&lt;/a&gt; <code>ro_datalen</code>: <a href="#size"><code>size</code></a><br>Number of bytes stored in ri_data.</p>
+</li>
+<li><p>&lt;a href=&quot;#sock_recv.ro_flags&quot; name=&quot;sock_recv.ro_flags&quot;&gt;&lt;/a&gt; <code>ro_flags</code>: <a href="#roflags"><code>roflags</code></a><br>Message flags.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-sock_send-name-sock_send-a-sock_send-fd-fd-si_data-ciovec_array-si_flags-siflags-errno-size-">&lt;a href=&quot;#sock_send&quot; name=&quot;sock_send&quot;&gt;&lt;/a&gt; <code>sock_send(fd: fd, si_data: ciovec_array, si_flags: siflags) -&gt; (errno, size)</code></h4>
+<p>Send a message on a socket.<br>Note: This is similar to <code>send</code> in POSIX, though it also supports writing<br>the data from multiple buffers in the manner of <code>writev</code>.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#sock_send.fd&quot; name=&quot;sock_send.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#sock_send.si_data&quot; name=&quot;sock_send.si_data&quot;&gt;&lt;/a&gt; <code>si_data</code>: <a href="#ciovec_array"><code>ciovec_array</code></a><br>List of scatter/gather vectors to which to retrieve data</p>
+</li>
+<li><p>&lt;a href=&quot;#sock_send.si_flags&quot; name=&quot;sock_send.si_flags&quot;&gt;&lt;/a&gt; <code>si_flags</code>: <a href="#siflags"><code>siflags</code></a><br>Message flags.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li><p>&lt;a href=&quot;#sock_send.error&quot; name=&quot;sock_send.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#sock_send.so_datalen&quot; name=&quot;sock_send.so_datalen&quot;&gt;&lt;/a&gt; <code>so_datalen</code>: <a href="#size"><code>size</code></a><br>Number of bytes transmitted.</p>
+</li>
+</ul>
+<hr>
+<h4 id="a-href-sock_shutdown-name-sock_shutdown-a-sock_shutdown-fd-fd-how-sdflags-errno">&lt;a href=&quot;#sock_shutdown&quot; name=&quot;sock_shutdown&quot;&gt;&lt;/a&gt; <code>sock_shutdown(fd: fd, how: sdflags) -&gt; errno</code></h4>
+<p>Shut down socket send and receive channels.<br>Note: This is similar to <code>shutdown</code> in POSIX.</p>
+<h5 id="params">Params</h5>
+<ul>
+<li><p>&lt;a href=&quot;#sock_shutdown.fd&quot; name=&quot;sock_shutdown.fd&quot;&gt;&lt;/a&gt; <code>fd</code>: <a href="#fd"><code>fd</code></a></p>
+</li>
+<li><p>&lt;a href=&quot;#sock_shutdown.how&quot; name=&quot;sock_shutdown.how&quot;&gt;&lt;/a&gt; <code>how</code>: <a href="#sdflags"><code>sdflags</code></a><br>Which channels on the socket to shut down.</p>
+</li>
+</ul>
+<h5 id="results">Results</h5>
+<ul>
+<li>&lt;a href=&quot;#sock_shutdown.error&quot; name=&quot;sock_shutdown.error&quot;&gt;&lt;/a&gt; <code>error</code>: <a href="#errno"><code>errno</code></a></li>
+</ul>
