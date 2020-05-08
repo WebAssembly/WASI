@@ -1466,10 +1466,9 @@ A buffer into which to write the preopened directory name.
 Write to a file descriptor, without using and updating the file descriptor's offset.
 Note: This is similar to `pwritev` in Linux (and other Unix-es).
 
-Like Linux (and other Unix-es), [`pwrite`](#pwrite) should write all data in the `$fd` is
-for a regular file or a symbolic link to a regular file: Any calls of [`pwrite`](#pwrite)
-(and other functions to read or write on the file) by other threads in the WASI
-process should not be interleaved while [`pwrite`](#pwrite) is executed.
+Like Linux (and other Unix-es), Any calls of [`pwrite`](#pwrite) (and other
+functions to read or write) for a regular file by other threads in the
+WASI process should not be interleaved while [`pwrite`](#pwrite) is executed.
 
 ##### Params
 - <a href="#pwrite.fd" name="pwrite.fd"></a> `fd`: [`fd`](#fd)
@@ -1616,10 +1615,9 @@ The current offset of the file descriptor, relative to the start of the file.
 Write to a file descriptor.
 Note: This is similar to `writev` in POSIX.
 
-Like POSIX, [`write`](#write) should write all data in `$iovs` atomically if the `$fd` is
-for a regular file or a symbolic link to a regular file: Any calls of [`write`](#write)
-(and other functions to read or write on the file) by other threads in the WASI
-process should not be interleaved while [`write`](#write) is executed.
+Like POSIX, Any calls of [`write`](#write) (and other functions to read or write)
+for a regular file by other threads in the WASI process should not be
+interleaved while [`write`](#write) is executed.
 
 ##### Params
 - <a href="#write.fd" name="write.fd"></a> `fd`: [`fd`](#fd)
