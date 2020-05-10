@@ -219,8 +219,8 @@
 
   ;;; Read directory entries from a directory.
   ;;; When successful, the contents of the output buffer consist of a sequence of
-  ;;; directory entries. Each directory entry consists of a dirent_t object,
-  ;;; followed by dirent_t::d_namlen bytes holding the name of the directory
+  ;;; directory entries. Each directory entry consists of a `dirent` object,
+  ;;; followed by `dirent::d_namlen` bytes holding the name of the directory
   ;;; entry.
   ;;
   ;;; This function fills the output buffer as much as possible, potentially
