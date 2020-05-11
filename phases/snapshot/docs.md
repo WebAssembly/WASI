@@ -482,7 +482,7 @@ Size: 8
 Alignment: 8
 
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
-The type for the $d_namlen field of $dirent.
+The type for the [`dirent::d_namlen`](#dirent.d_namlen) field of [`dirent`](#dirent) struct.
 
 Size: 4
 
@@ -1538,8 +1538,8 @@ The number of bytes read.
 #### <a href="#fd_readdir" name="fd_readdir"></a> `fd_readdir(fd: fd, buf: Pointer<u8>, buf_len: size, cookie: dircookie) -> (errno, size)`
 Read directory entries from a directory.
 When successful, the contents of the output buffer consist of a sequence of
-directory entries. Each directory entry consists of a dirent_t object,
-followed by dirent_t::d_namlen bytes holding the name of the directory
+directory entries. Each directory entry consists of a [`dirent`](#dirent) object,
+followed by [`dirent::d_namlen`](#dirent.d_namlen) bytes holding the name of the directory
 entry.
 This function fills the output buffer as much as possible, potentially
 truncating the last directory entry. This allows the caller to grow its
