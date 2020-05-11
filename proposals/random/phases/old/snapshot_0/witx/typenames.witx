@@ -317,7 +317,7 @@
 ;;; A reference to the offset of a directory entry.
 (typename $dircookie u64)
 
-;;; The type for the $d_namlen field of $dirent.
+;;; The type for the `dirent::d_namlen` field of `dirent` struct.
 (typename $dirnamlen u32)
 
 ;;; File serial number that is unique within its file system.
