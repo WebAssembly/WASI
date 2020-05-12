@@ -1466,7 +1466,7 @@ A buffer into which to write the preopened directory name.
 Write to a file descriptor, without using and updating the file descriptor's offset.
 Note: This is similar to `pwritev` in Linux (and other Unix-es).
 
-Like Linux (and other Unix-es), Any calls of [`pwrite`](#pwrite) (and other
+Like Linux (and other Unix-es), any calls of [`pwrite`](#pwrite) (and other
 functions to read or write) for a regular file by other threads in the
 WASI process should not be interleaved while [`pwrite`](#pwrite) is executed.
 
@@ -1615,7 +1615,7 @@ The current offset of the file descriptor, relative to the start of the file.
 Write to a file descriptor.
 Note: This is similar to `writev` in POSIX.
 
-Like POSIX, Any calls of [`write`](#write) (and other functions to read or write)
+Like POSIX, any calls of [`write`](#write) (and other functions to read or write)
 for a regular file by other threads in the WASI process should not be
 interleaved while [`write`](#write) is executed.
 
