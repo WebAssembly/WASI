@@ -505,7 +505,7 @@
   )
 )
 
-;;; The contents of an $event when type is `eventtype::fd_read` or
+;;; The contents of an `event` when type is `eventtype::fd_read` or
 ;;; `eventtype::fd_write`.
 (typename $event_fd_readwrite
   (struct
