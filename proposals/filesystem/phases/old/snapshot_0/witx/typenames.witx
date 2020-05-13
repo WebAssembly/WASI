@@ -503,7 +503,7 @@
   )
 )
 
-;;; The contents of an $event for the `eventtype::fd_read` and
+;;; The contents of an `event` for the `eventtype::fd_read` and
 ;;; `eventtype::fd_write` variants
 (typename $event_fd_readwrite
   (struct
