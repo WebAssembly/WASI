@@ -358,8 +358,13 @@ The right to invoke `path_rename` with the file descriptor as the target directo
 The right to invoke `path_filestat_get`.
 
 - <a href="#rights.path_filestat_set_size" name="rights.path_filestat_set_size"></a> `path_filestat_set_size`
-The right to change a file's size (there is no `path_filestat_set_size`).
+The right to change a file's size.
 If `path_open` is set, includes the right to invoke `path_open` with [`oflags::trunc`](#oflags.trunc).
+Note: there is no function named `path_filestat_set_size`. This follows POSIX design,
+which only has `ftruncate` and does not provide `ftruncateat`.
+While such function would be desirable from the API design perspective, there are virtually
+no use cases for it since no code written for POSIX systems would use it.
+Moreover, implementing it would require multiple syscalls, leading to inferior performance.
 
 - <a href="#rights.path_filestat_set_times" name="rights.path_filestat_set_times"></a> `path_filestat_set_times`
 The right to invoke `path_filestat_set_times`.
