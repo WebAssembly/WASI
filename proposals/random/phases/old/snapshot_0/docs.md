@@ -788,7 +788,7 @@ Alignment: 2
 The peer of this socket has closed or disconnected.
 
 ## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Struct
-The contents of an $event for the [`eventtype::fd_read`](#eventtype.fd_read) and
+The contents of an [`event`](#event) for the [`eventtype::fd_read`](#eventtype.fd_read) and
 [`eventtype::fd_write`](#eventtype.fd_write) variants
 
 Size: 16
