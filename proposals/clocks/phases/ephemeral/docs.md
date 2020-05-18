@@ -558,13 +558,13 @@ The serial number of the file referred to by this directory entry.
 
 Offset: 8
 
-- <a href="#dirent.d_namlen" name="dirent.d_namlen"></a> `d_namlen`: [`dirnamlen`](#dirnamlen)
-The length of the name of the directory entry.
+- <a href="#dirent.d_type" name="dirent.d_type"></a> `d_type`: [`filetype`](#filetype)
+The type of the file referred to by this directory entry.
 
 Offset: 16
 
-- <a href="#dirent.d_type" name="dirent.d_type"></a> `d_type`: [`filetype`](#filetype)
-The type of the file referred to by this directory entry.
+- <a href="#dirent.d_namlen" name="dirent.d_namlen"></a> `d_namlen`: [`dirnamlen`](#dirnamlen)
+The length of the name of the directory entry.
 
 Offset: 20
 
