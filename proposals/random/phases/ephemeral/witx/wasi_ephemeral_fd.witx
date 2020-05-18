@@ -127,7 +127,7 @@
   )
 
   ;;; Read from a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `preadv` in POSIX.
+  ;;; Note: This is similar to `preadv` in Linux (and other Unix-es).
   (@interface func (export "pread")
     (param $fd $fd)
     ;;; List of scatter/gather vectors in which to store data.
@@ -157,7 +157,11 @@
   )
 
   ;;; Write to a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `pwritev` in POSIX.
+  ;;; Note: This is similar to `pwritev` in Linux (and other Unix-es).
+  ;;;
+  ;;; Like Linux (and other Unix-es), any calls of `pwrite` (and other
+  ;;; functions to read or write) for a regular file by other threads in the
+  ;;; WASI process should not be interleaved while `pwrite` is executed.
   (@interface func (export "pwrite")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
@@ -250,6 +254,10 @@
 
   ;;; Write to a file descriptor.
   ;;; Note: This is similar to `writev` in POSIX.
+  ;;;
+  ;;; Like POSIX, any calls of `write` (and other functions to read or write)
+  ;;; for a regular file by other threads in the WASI process should not be
+  ;;; interleaved while `write` is executed.
   (@interface func (export "write")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
