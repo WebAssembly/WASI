@@ -243,8 +243,8 @@ transparently. This can be used to adapt or attenuate the functionality
 of a WASI API without changing the code using it.
 
 In WASI, we envision interposition will primarily be configured
-through the mechanisms in the interface types' [linking
-proposal](https://github.com/WebAssembly/interface-types/blob/linking/proposals/interface-types/linking/Explainer.md).
+through the mechanisms in the module types' [link-time virtualization
+](https://github.com/WebAssembly/module-types/blob/module-imports/proposals/module-types/Explainer.md#link-time-virtualization).
 Imports are resolved when a module is instantiated, which may happen
 during the runtime of a larger logical application, so we can support
 interposition of WASI APIs without defining them in terms of explicit
