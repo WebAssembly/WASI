@@ -15,10 +15,17 @@ Current Unstable ABI
 There are two kinds of modules:
 
  - A *command* exports a function named `_start`, with no arguments and no return
-   values. Environments shall call this function once, after instantiating the
-   module and all of its dependencies. After this function exits, the instance
-   is considered terminated and no further use of any of its exports should be
-   permitted.
+   values.
+
+   `_start` is the default export which is called when the user doesn't select a
+   specific function to call. Commands may also export additional functions,
+   (similar to "multi-call" executables), which may be explicitly selected by the
+   user to run instead.
+
+   Functions exported from a command are available to be called without a
+   pre-existing instance. When they are called, the module is instantiated and used
+   by the call, and when the call returns, the instance is considered terminated
+   and may not be accessed.
 
  - A *reactor* exports a function named `_initialize`, with no arguments and no
    return values. Environments shall call this function once, after instantiating
