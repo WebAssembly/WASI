@@ -36,12 +36,22 @@ These kinds are mutually exclusive; implementations should report an error if
 asked to instantiate a module containing exports which declare it to be of
 multiple kinds.
 
-Regardless of the kind, all programs accessing WASI APIs also export a linear
-memory with the name `memory`. Pointers in WASI API calls are relative to this
-memory's index space.
+Regardless of the kind, all modules accessing WASI APIs also export a linear
+memory with the name `memory`. Data pointers in WASI API calls are relative to
+this memory's index space.
+
+Regardless of the kind, all modules accessing WASI APIs also export a table
+with the name `__indirect_function_table`. Function pointers in WASI API calls
+are relative to this table's index space.
+
+For compatibility with existing toolchains, modules may also export globals
+named `__heap_base` and `__data_end`. Environments shall not access them.
+This provision is deprecated and toolchains are encouraged to avoid providing
+these exports.
 
 In the future, as the underlying WebAssembly platform offers more features, we
-we hope to eliminate the requirement to export all of linear memory.
+we hope to eliminate the requirement to export all of linear memory or all of
+the indirection function table.
 
 Planned Stable ABI
 ------------------
