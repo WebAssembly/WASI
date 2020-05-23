@@ -29,10 +29,11 @@ There are two kinds of modules:
    at most once; after the call returns, command instances may assume that none
    of their exports are accessed thereafter.
 
- - A *reactor* exports a function named `_initialize`, with no arguments and no
-   return values. Environments shall call this function once, after instantiating
-   the module and all of its dependencies. After this function exits, the instance
-   remains live, and its exports may be accessed.
+ - All other modules are *reactors*. A reactor may export a function named
+   `_initialize`, with no arguments and no return values. Environments shall call
+   this function once, after instantiating the module and all of its dependencies.
+   After this function exits, the instance remains live, and its exports may be
+   accessed.
 
 These kinds are mutually exclusive; implementations should report an error if
 asked to instantiate a module containing exports which declare it to be of
