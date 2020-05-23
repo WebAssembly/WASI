@@ -25,10 +25,9 @@ There are two kinds of modules:
    Except as noted below, commands shall not export any globals, tables, or
    linear memories.
 
-   Functions exported from a command are available to be called without a
-   pre-existing instance. When they are called, the module is instantiated and used
-   by the call, and when the call returns, the instance is considered terminated
-   and shall not be accessed.
+   Command instances may assume that they will be called from the environment
+   at most once; after the call returns, command instances may assume that none
+   of their exports are accessed thereafter.
 
  - A *reactor* exports a function named `_initialize`, with no arguments and no
    return values. Environments shall call this function once, after instantiating
