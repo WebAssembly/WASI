@@ -58,7 +58,7 @@ these exports.
 
 In the future, as the underlying WebAssembly platform offers more features, we
 we hope to eliminate the requirement to export all of linear memory or all of
-the indirection function table.
+the indirect function table.
 
 Planned Stable ABI
 ------------------
