@@ -32,9 +32,9 @@ There are two kinds of modules:
  - All other modules are *reactors*. A reactor may export a function named
    `_initialize`, with no arguments and no return values.
 
-   Reactor instances may assume that the `_initialize` export, if present will
-   be called by the environment at most once. Reactor instances may assume that
-   none of their exports are accessed before that call.
+   If an `_initialize` export is present, reactor instances may assume that it
+   will be called by the environment at most once, and that none of their
+   other exports are accessed before that call.
 
    After being instantiated, and after any `_initialize` function is called,
    a reactor instance remains live, and its exports may be accessed.
