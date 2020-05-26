@@ -26,8 +26,8 @@ There are two kinds of modules:
    linear memories.
 
    Command instances may assume that they will be called from the environment
-   at most once; after the call returns, command instances may assume that none
-   of their exports are accessed thereafter.
+   at most once. Command instances may assume that none of their exports are
+   accessed outside the duraction of that call.
 
  - All other modules are *reactors*. A reactor may export a function named
    `_initialize`, with no arguments and no return values. Environments shall call
