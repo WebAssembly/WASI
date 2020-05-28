@@ -43,10 +43,8 @@ Regardless of the kind, all modules accessing WASI APIs also export a table
 with the name `__indirect_function_table`. Function pointers in WASI API calls
 are relative to this table's index space.
 
-For compatibility with existing toolchains, modules may also export globals
-named `__heap_base` and `__data_end`. Environments shall not access them.
-This provision is deprecated and toolchains are encouraged to avoid providing
-these exports.
+Environments shall not access exports named `__heap_base` or `__data_end`.
+Toolchains are encouraged to avoid providing these exports.
 
 In the future, as the underlying WebAssembly platform offers more features, we
 we hope to eliminate the requirement to export all of linear memory or all of
