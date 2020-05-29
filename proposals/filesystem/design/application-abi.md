@@ -15,26 +15,40 @@ Current Unstable ABI
 There are two kinds of modules:
 
  - A *command* exports a function named `_start`, with no arguments and no return
-   values. Environments shall call this function once, after instantiating the
-   module and all of its dependencies. After this function exits, the instance
-   is considered terminated and no further use of any of its exports should be
-   permitted.
+   values.
 
- - A *reactor* exports a function named `_initialize`, with no arguments and no
-   return values. Environments shall call this function once, after instantiating
-   the module and all of its dependencies. After this function exits, the instance
-   remains live, and its exports may be accessed.
+   Command instances may assume that they will be called from the environment
+   at most once. Command instances may assume that none of their exports are
+   accessed outside the duraction of that call.
+
+ - All other modules are *reactors*. A reactor may export a function named
+   `_initialize`, with no arguments and no return values.
+
+   If an `_initialize` export is present, reactor instances may assume that it
+   will be called by the environment at most once, and that none of their
+   other exports are accessed before that call.
+
+   After being instantiated, and after any `_initialize` function is called,
+   a reactor instance remains live, and its exports may be accessed.
 
 These kinds are mutually exclusive; implementations should report an error if
 asked to instantiate a module containing exports which declare it to be of
 multiple kinds.
 
-Regardless of the kind, all programs accessing WASI APIs also export a linear
-memory with the name `memory`. Pointers in WASI API calls are relative to this
-memory's index space.
+Regardless of the kind, all modules accessing WASI APIs also export a linear
+memory with the name `memory`. Data pointers in WASI API calls are relative to
+this memory's index space.
+
+Regardless of the kind, all modules accessing WASI APIs also export a table
+with the name `__indirect_function_table`. Function pointers in WASI API calls
+are relative to this table's index space.
+
+Environments shall not access exports named `__heap_base` or `__data_end`.
+Toolchains are encouraged to avoid providing these exports.
 
 In the future, as the underlying WebAssembly platform offers more features, we
-we hope to eliminate the requirement to export all of linear memory.
+we hope to eliminate the requirement to export all of linear memory or all of
+the indirect function table.
 
 Planned Stable ABI
 ------------------
