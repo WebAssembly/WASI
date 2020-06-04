@@ -276,8 +276,26 @@
     ;;; If `rights::fd_read` is set, includes the right to invoke `poll_oneoff` to subscribe to `eventtype::fd_read`.
     ;;; If `rights::fd_write` is set, includes the right to invoke `poll_oneoff` to subscribe to `eventtype::fd_write`.
     $poll_fd_readwrite
-    ;;; The right to invoke `sock_shutdown`.
-    $sock_shutdown
+    ;;; Connect to an address
+    $sock_connect
+    ;;; Listen for incoming connection on an address
+    $sock_listen
+    ;;; Bind an address to a socket
+    $sock_bind
+    ;;; Accept incoming connection
+    $sock_accept
+    ;;; Receive data on a socket
+    $sock_recv
+    ;;; Send data on a socket
+    $sock_send
+    ;;; Retrieve locally bound address on a socket
+    $sock_addr_local
+    ;;; Retrieve remote address on a socket
+    $sock_addr_remote
+    ;;; Receive datagram on a socket
+    $sock_recv_from
+    ;;; Send datagram on a socket
+    $sock_send_to
   )
 )
 
@@ -357,6 +375,8 @@
     $symbolic_link
     ;;; The file descriptor or file refers to a FIFO.
     $fifo
+    ;;; Address pool
+    $address_pool
   )
 )
 
@@ -658,6 +678,80 @@
   (flags u16
     ;;; Returned by `sock_recv`: Message data has been truncated.
     $recv_data_truncated
+  )
+)
+
+
+
+;;; Socket type
+(typename $sock_type
+  (enum u8
+    ;;; The file descriptor or file refers to a datagram socket.
+    $socket_dgram
+    ;;; The file descriptor or file refers to a byte-stream socket.
+    $socket_stream
+  )
+)
+
+;;; IP port number
+(typename $ip_port u16)
+
+;;; Address type
+(typename $addr_type
+  (enum u8
+    ;;; IPv4 address
+    $ip4
+    ;;; IPv6 address
+    $ip6
+  )
+)
+
+;;; An IPv4 address is a 32-bit number that uniquely identifies a network interface on a machine.
+(typename $addr_ip4
+  (struct
+    (field $n0 u8)
+    (field $n1 u8)
+    (field $h0 u8)
+    (field $h1 u8)
+  )
+)
+
+;;; An IPv4 address with a port number
+(typename $addr_ip4_port
+  (struct
+    (field $addr $addr_ip4)
+    (field $port $ip_port)
+  )
+)
+
+;;; An IPv6 address is a 128-bit number that uniquely identifies a network interface on a machine.
+(typename $addr_ip6
+  (struct
+    (field $n0 u16)
+    (field $n1 u16)
+    (field $n2 u16)
+    (field $n3 u16)
+    (field $h0 u16)
+    (field $h1 u16)
+    (field $h2 u16)
+    (field $h3 u16)
+  )
+)
+
+;;; An IPv6 address with a port number
+(typename $addr_ip6_port
+  (struct
+    (field $addr $addr_ip6)
+    (field $port $ip_port)
+  )
+)
+
+
+;;; Union of all possible addresses type
+(typename $addr
+  (union $addr_type
+    (field $ip4 $addr_ip4_port)
+    (field $ip6 $addr_ip6_port)
   )
 )
 
