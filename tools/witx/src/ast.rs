@@ -20,6 +20,24 @@ impl AsRef<str> for Id {
     }
 }
 
+impl PartialEq<&str> for Id {
+    fn eq(&self, rhs: &&str) -> bool {
+        PartialEq::eq(self.as_ref(), *rhs)
+    }
+}
+
+impl PartialEq<Id> for &str {
+    fn eq(&self, rhs: &Id) -> bool {
+        PartialEq::eq(*self, rhs.as_ref())
+    }
+}
+
+impl From<&str> for Id {
+    fn from(s: &str) -> Self {
+        Self::new(s)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Document {
     definitions: Vec<Definition>,
