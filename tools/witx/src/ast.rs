@@ -14,6 +14,12 @@ impl Id {
     }
 }
 
+impl AsRef<str> for Id {
+    fn as_ref(&self) -> &str {
+        self.0.as_ref()
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Document {
     definitions: Vec<Definition>,
