@@ -9,7 +9,7 @@ for a balance between the need for stability to allow people to build
 compatible implementations, libraries, and tools and gain implementation
 experience, and the need for proposals to evolve.
 
-[phases process]: https://github.com/WebAssembly/WASI/blob/master/phases/README.md
+[process]: https://github.com/WebAssembly/WASI/blob/master/docs/Process.md
 
 ## The ephemeral/snapshot/old Phases
 
