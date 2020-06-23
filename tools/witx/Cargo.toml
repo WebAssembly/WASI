@@ -1,6 +1,6 @@
 [package]
 name = "witx"
-version = "0.8.5"
+version = "0.8.6"
 description = "Parse and validate witx file format"
 homepage = "https://github.com/WebAssembly/WASI"
 repository = "https://github.com/WebAssembly/WASI"
@@ -17,7 +17,7 @@ crate-type=["rlib"]
 anyhow = "1"
 log = "0.4"
 thiserror = "1.0"
-wast = { version = "11.0.0", default-features = false }
+wast = { version = "20.0.0", default-features = false }
 
 [dev-dependencies]
 diff = "0.1.11"
