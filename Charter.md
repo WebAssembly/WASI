@@ -11,7 +11,7 @@ the sections of the [CG charter](https://webassembly.github.io/cg-charter/) rela
 
 ## Goals
 
-The mission of this sugbroup is to provide a forum for pre-standardization
+The mission of this subgroup is to provide a forum for pre-standardization
 collaboration on a system interface API for WebAssembly programs.
 
 ## Scope
@@ -21,7 +21,7 @@ The Subgroup will consider topics related to system interface APIs, including:
 - APIs for host filesystems, network stacks, and other resources.
 - APIs for graphics, audio, input devices
 - APIs for encryption, format conversion, and other transformations
-  (particularly where hardware accelleration may be available on some platforms)
+  (particularly where hardware acceleration may be available on some platforms)
 
 
 ## Deliverables
