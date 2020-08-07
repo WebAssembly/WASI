@@ -63,7 +63,7 @@ fn render_roundtrip() {
             }
         }
     }
-    // This should be equivelant to the above, but just in case some code changes where it isnt:
+    // This should be equivalent to the above, but just in case some code changes where it isnt:
     assert_eq!(doc, doc2);
 }
 
