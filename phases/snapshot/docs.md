@@ -389,9 +389,6 @@ The right to invoke [`path_unlink_file`](#path_unlink_file).
 If [`rights::fd_read`](#rights.fd_read) is set, includes the right to invoke [`poll_oneoff`](#poll_oneoff) to subscribe to [`eventtype::fd_read`](#eventtype.fd_read).
 If [`rights::fd_write`](#rights.fd_write) is set, includes the right to invoke [`poll_oneoff`](#poll_oneoff) to subscribe to [`eventtype::fd_write`](#eventtype.fd_write).
 
-- <a href="#rights.sock_shutdown" name="rights.sock_shutdown"></a> `sock_shutdown`
-The right to invoke [`sock_shutdown`](#sock_shutdown).
-
 ## <a href="#fd" name="fd"></a> `fd`
 A file descriptor handle.
 

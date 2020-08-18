@@ -681,8 +681,6 @@
   )
 )
 
-
-
 ;;; Socket type
 (typename $sock_type
   (enum u8
@@ -746,12 +744,21 @@
   )
 )
 
-
 ;;; Union of all possible addresses type
 (typename $addr
   (union $addr_type
     (field $ip4 $addr_ip4_port)
     (field $ip6 $addr_ip6_port)
+  )
+)
+
+;;; Address family
+(typename $address_family
+  (enum u8
+    ;;; IP v4
+    $inet4
+    ;;; IP v6
+    $inet6
   )
 )
 
