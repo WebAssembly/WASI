@@ -296,7 +296,7 @@ If `path_open` is set, includes the right to invoke
 `path_open` with [`fdflags::dsync`](#fdflags.dsync).
 
 - <a href="#rights.fd_read" name="rights.fd_read"></a> `fd_read`
-The right to invoke `fd_read` and [`sock_recv`](#sock_recv).
+The right to invoke `fd_read` and `sock_recv`.
 If [`rights::fd_seek`](#rights.fd_seek) is set, includes the right to invoke `fd_pread`.
 
 - <a href="#rights.fd_seek" name="rights.fd_seek"></a> `fd_seek`
@@ -316,7 +316,7 @@ remains unaltered (i.e., [`whence::cur`](#whence.cur) with offset zero), or to
 invoke `fd_tell`.
 
 - <a href="#rights.fd_write" name="rights.fd_write"></a> `fd_write`
-The right to invoke `fd_write` and [`sock_send`](#sock_send).
+The right to invoke `fd_write` and `sock_send`.
 If [`rights::fd_seek`](#rights.fd_seek) is set, includes the right to invoke `fd_pwrite`.
 
 - <a href="#rights.fd_advise" name="rights.fd_advise"></a> `fd_advise`
@@ -1039,7 +1039,7 @@ Size: 4
 Alignment: 4
 
 ## <a href="#riflags" name="riflags"></a> `riflags`: Flags(`u16`)
-Flags provided to [`sock_recv`](#sock_recv).
+Flags provided to `sock_recv`.
 
 Size: 2
 
@@ -1053,7 +1053,7 @@ Returns the message without removing it from the socket's receive queue.
 On byte-stream sockets, block until the full amount of data can be returned.
 
 ## <a href="#roflags" name="roflags"></a> `roflags`: Flags(`u16`)
-Flags returned by [`sock_recv`](#sock_recv).
+Flags returned by `sock_recv`.
 
 Size: 2
 
@@ -1061,7 +1061,7 @@ Alignment: 2
 
 ### Flags
 - <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`
-Returned by [`sock_recv`](#sock_recv): Message data has been truncated.
+Returned by `sock_recv`: Message data has been truncated.
 
 ## <a href="#sock_type" name="sock_type"></a> `sock_type`: Enum(`u8`)
 Socket type
@@ -1227,7 +1227,7 @@ IP v4
 IP v6
 
 ## <a href="#siflags" name="siflags"></a> `siflags`: `u16`
-Flags provided to [`sock_send`](#sock_send). As there are currently no flags
+Flags provided to `sock_send`. As there are currently no flags
 defined, it must be set to zero.
 
 Size: 2
@@ -2191,43 +2191,7 @@ Note: This is similar to [`yield`](#yield) in POSIX.
 
 ---
 
-#### <a href="#addr_resolve" name="addr_resolve"></a> `addr_resolve(pool: fd, host: string, port: ip_port, buf: Pointer<u8>, buf_len: size) -> (errno, size)`
-Resolves a hostname and a port to one or more IP addresses. Port is optional
-and you can pass 0 (zero) in most cases, it is used a hint for protocol.
-
-Note: This is similar to `getaddrinfo` in POSIX
-
-When successful, the contents of the output buffer consist of a sequence of
-IPv4 and/or IPv6 addresses. Each address entry consists of a addr_t object.
-This function fills the output buffer as much as possible, potentially
-truncating the last address entry. It is advisable that the buffer is
-
-##### Params
-- <a href="#addr_resolve.pool" name="addr_resolve.pool"></a> `pool`: [`fd`](#fd)
-Address pool file descriptor
-
-- <a href="#addr_resolve.host" name="addr_resolve.host"></a> `host`: `string`
-Host to resolve
-
-- <a href="#addr_resolve.port" name="addr_resolve.port"></a> `port`: [`ip_port`](#ip_port)
-Port number
-
-- <a href="#addr_resolve.buf" name="addr_resolve.buf"></a> `buf`: `Pointer<u8>`
-The buffer where IP addresses will be stored
-
-- <a href="#addr_resolve.buf_len" name="addr_resolve.buf_len"></a> `buf_len`: [`size`](#size)
-
-##### Results
-- <a href="#addr_resolve.error" name="addr_resolve.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#addr_resolve.bufused" name="addr_resolve.bufused"></a> `bufused`: [`size`](#size)
-The number of bytes stored in the buffer. If less than the size of the buffer, no
-more IP addresses are available.
-
-
----
-
-#### <a href="#sock_addr_local" name="sock_addr_local"></a> `sock_addr_local(fd: fd, buf: Pointer<u8>, buf_len: size) -> errno`
+#### <a href="#addr_local" name="addr_local"></a> `addr_local(fd: fd, buf: Pointer<u8>, buf_len: size) -> errno`
 Returns the local address to which the socket is bound.
 
 Note: This is similar to `getsockname` in POSIX
@@ -2236,21 +2200,21 @@ When successful, the contents of the output buffer consist of an IP address,
 either IP4 or IP6.
 
 ##### Params
-- <a href="#sock_addr_local.fd" name="sock_addr_local.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#addr_local.fd" name="addr_local.fd"></a> `fd`: [`fd`](#fd)
 Host to resolve
 
-- <a href="#sock_addr_local.buf" name="sock_addr_local.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#addr_local.buf" name="addr_local.buf"></a> `buf`: `Pointer<u8>`
 The buffer where IP addresses will be stored
 
-- <a href="#sock_addr_local.buf_len" name="sock_addr_local.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#addr_local.buf_len" name="addr_local.buf_len"></a> `buf_len`: [`size`](#size)
 
 ##### Results
-- <a href="#sock_addr_local.error" name="sock_addr_local.error"></a> `error`: [`errno`](#errno)
+- <a href="#addr_local.error" name="addr_local.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_addr_remote" name="sock_addr_remote"></a> `sock_addr_remote(fd: fd, buf: Pointer<u8>, buf_len: size) -> errno`
+#### <a href="#addr_remote" name="addr_remote"></a> `addr_remote(fd: fd, buf: Pointer<u8>, buf_len: size) -> errno`
 Returns the remote address to which the socket is connected to.
 
 Note: This is similar to `getpeername` in POSIX
@@ -2259,21 +2223,21 @@ When successful, the contents of the output buffer consist of an IP address,
 either IP4 or IP6.
 
 ##### Params
-- <a href="#sock_addr_remote.fd" name="sock_addr_remote.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#addr_remote.fd" name="addr_remote.fd"></a> `fd`: [`fd`](#fd)
 Host to resolve
 
-- <a href="#sock_addr_remote.buf" name="sock_addr_remote.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#addr_remote.buf" name="addr_remote.buf"></a> `buf`: `Pointer<u8>`
 The buffer where IP addresses will be stored
 
-- <a href="#sock_addr_remote.buf_len" name="sock_addr_remote.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#addr_remote.buf_len" name="addr_remote.buf_len"></a> `buf_len`: [`size`](#size)
 
 ##### Results
-- <a href="#sock_addr_remote.error" name="sock_addr_remote.error"></a> `error`: [`errno`](#errno)
+- <a href="#addr_remote.error" name="addr_remote.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_open" name="sock_open"></a> `sock_open(pool: fd, af: address_family, socktype: sock_type) -> (errno, fd)`
+#### <a href="#open" name="open"></a> `open(pool: fd, af: address_family, socktype: sock_type) -> (errno, fd)`
 Open a socket
 
 The first argument to this function is a handle to an
@@ -2286,261 +2250,261 @@ the socket and open a new one to use a different address pool.
 Note: This is similar to `socket` in POSIX using PF_INET
 
 ##### Params
-- <a href="#sock_open.pool" name="sock_open.pool"></a> `pool`: [`fd`](#fd)
+- <a href="#open.pool" name="open.pool"></a> `pool`: [`fd`](#fd)
 Address pool file descriptor
 
-- <a href="#sock_open.af" name="sock_open.af"></a> `af`: [`address_family`](#address_family)
+- <a href="#open.af" name="open.af"></a> `af`: [`address_family`](#address_family)
 Address family
 
-- <a href="#sock_open.socktype" name="sock_open.socktype"></a> `socktype`: [`sock_type`](#sock_type)
+- <a href="#open.socktype" name="open.socktype"></a> `socktype`: [`sock_type`](#sock_type)
 Socket type, either datagram or stream
 
 ##### Results
-- <a href="#sock_open.error" name="sock_open.error"></a> `error`: [`errno`](#errno)
+- <a href="#open.error" name="open.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_open.fd" name="sock_open.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#open.fd" name="open.fd"></a> `fd`: [`fd`](#fd)
 The opened socket
 
 
 ---
 
-#### <a href="#sock_close" name="sock_close"></a> `sock_close(fd: fd) -> errno`
+#### <a href="#close" name="close"></a> `close(fd: fd) -> errno`
 Close a socket (this is an alias for `fd_close`)
 Note: This is similar to [`close`](#close) in POSIX.
 
 ##### Params
-- <a href="#sock_close.fd" name="sock_close.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#close.fd" name="close.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
 ##### Results
-- <a href="#sock_close.error" name="sock_close.error"></a> `error`: [`errno`](#errno)
+- <a href="#close.error" name="close.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_set_reuse_addr" name="sock_set_reuse_addr"></a> `sock_set_reuse_addr(fd: fd, reuse: u8) -> errno`
+#### <a href="#set_reuse_addr" name="set_reuse_addr"></a> `set_reuse_addr(fd: fd, reuse: u8) -> errno`
 Enable/disable address reuse on a socket
 Note: This is similar to `setsockopt` in POSIX for SO_REUSEADDR
 
 ##### Params
-- <a href="#sock_set_reuse_addr.fd" name="sock_set_reuse_addr.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#set_reuse_addr.fd" name="set_reuse_addr.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
-- <a href="#sock_set_reuse_addr.reuse" name="sock_set_reuse_addr.reuse"></a> `reuse`: `u8`
+- <a href="#set_reuse_addr.reuse" name="set_reuse_addr.reuse"></a> `reuse`: `u8`
 1 to enable, 0 to disable
 
 ##### Results
-- <a href="#sock_set_reuse_addr.error" name="sock_set_reuse_addr.error"></a> `error`: [`errno`](#errno)
+- <a href="#set_reuse_addr.error" name="set_reuse_addr.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_get_reuse_addr" name="sock_get_reuse_addr"></a> `sock_get_reuse_addr(fd: fd) -> (errno, u8)`
+#### <a href="#get_reuse_addr" name="get_reuse_addr"></a> `get_reuse_addr(fd: fd) -> (errno, u8)`
 Retrieve status of address reuse on a socket
 Note: This is similar to `getsockopt` in POSIX for SO_REUSEADDR
 
 ##### Params
-- <a href="#sock_get_reuse_addr.fd" name="sock_get_reuse_addr.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#get_reuse_addr.fd" name="get_reuse_addr.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
 ##### Results
-- <a href="#sock_get_reuse_addr.error" name="sock_get_reuse_addr.error"></a> `error`: [`errno`](#errno)
+- <a href="#get_reuse_addr.error" name="get_reuse_addr.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_get_reuse_addr.reuse" name="sock_get_reuse_addr.reuse"></a> `reuse`: `u8`
+- <a href="#get_reuse_addr.reuse" name="get_reuse_addr.reuse"></a> `reuse`: `u8`
 
 
 ---
 
-#### <a href="#sock_set_reuse_port" name="sock_set_reuse_port"></a> `sock_set_reuse_port(fd: fd, reuse: u8) -> errno`
+#### <a href="#set_reuse_port" name="set_reuse_port"></a> `set_reuse_port(fd: fd, reuse: u8) -> errno`
 Enable port reuse on a socket
 Note: This is similar to `setsockopt` in POSIX for SO_REUSEPORT
 
 ##### Params
-- <a href="#sock_set_reuse_port.fd" name="sock_set_reuse_port.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#set_reuse_port.fd" name="set_reuse_port.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
-- <a href="#sock_set_reuse_port.reuse" name="sock_set_reuse_port.reuse"></a> `reuse`: `u8`
+- <a href="#set_reuse_port.reuse" name="set_reuse_port.reuse"></a> `reuse`: `u8`
 1 to enable, 0 to disable
 
 ##### Results
-- <a href="#sock_set_reuse_port.error" name="sock_set_reuse_port.error"></a> `error`: [`errno`](#errno)
+- <a href="#set_reuse_port.error" name="set_reuse_port.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_get_reuse_port" name="sock_get_reuse_port"></a> `sock_get_reuse_port(fd: fd) -> (errno, u8)`
+#### <a href="#get_reuse_port" name="get_reuse_port"></a> `get_reuse_port(fd: fd) -> (errno, u8)`
 Retrieve status of port reuse on a socket
 Note: This is similar to `getsockopt` in POSIX for SO_REUSEPORT
 
 ##### Params
-- <a href="#sock_get_reuse_port.fd" name="sock_get_reuse_port.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#get_reuse_port.fd" name="get_reuse_port.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
 ##### Results
-- <a href="#sock_get_reuse_port.error" name="sock_get_reuse_port.error"></a> `error`: [`errno`](#errno)
+- <a href="#get_reuse_port.error" name="get_reuse_port.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_get_reuse_port.reuse" name="sock_get_reuse_port.reuse"></a> `reuse`: `u8`
+- <a href="#get_reuse_port.reuse" name="get_reuse_port.reuse"></a> `reuse`: `u8`
 
 
 ---
 
-#### <a href="#sock_set_recv_buf_size" name="sock_set_recv_buf_size"></a> `sock_set_recv_buf_size(fd: fd, size: size) -> errno`
+#### <a href="#set_recv_buf_size" name="set_recv_buf_size"></a> `set_recv_buf_size(fd: fd, size: size) -> errno`
 Set size of receive buffer
 Note: This is similar to `setsockopt` in POSIX for SO_RCVBUF
 
 ##### Params
-- <a href="#sock_set_recv_buf_size.fd" name="sock_set_recv_buf_size.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#set_recv_buf_size.fd" name="set_recv_buf_size.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
-- <a href="#sock_set_recv_buf_size.size" name="sock_set_recv_buf_size.size"></a> `size`: [`size`](#size)
+- <a href="#set_recv_buf_size.size" name="set_recv_buf_size.size"></a> `size`: [`size`](#size)
 Buffer size
 
 ##### Results
-- <a href="#sock_set_recv_buf_size.error" name="sock_set_recv_buf_size.error"></a> `error`: [`errno`](#errno)
+- <a href="#set_recv_buf_size.error" name="set_recv_buf_size.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_get_recv_buf_size" name="sock_get_recv_buf_size"></a> `sock_get_recv_buf_size(fd: fd) -> (errno, size)`
+#### <a href="#get_recv_buf_size" name="get_recv_buf_size"></a> `get_recv_buf_size(fd: fd) -> (errno, size)`
 Retrieve the size of the receive buffer
 Note: This is similar to `getsockopt` in POSIX for SO_RCVBUF
 
 ##### Params
-- <a href="#sock_get_recv_buf_size.fd" name="sock_get_recv_buf_size.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#get_recv_buf_size.fd" name="get_recv_buf_size.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
 ##### Results
-- <a href="#sock_get_recv_buf_size.error" name="sock_get_recv_buf_size.error"></a> `error`: [`errno`](#errno)
+- <a href="#get_recv_buf_size.error" name="get_recv_buf_size.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_get_recv_buf_size.size" name="sock_get_recv_buf_size.size"></a> `size`: [`size`](#size)
+- <a href="#get_recv_buf_size.size" name="get_recv_buf_size.size"></a> `size`: [`size`](#size)
 
 
 ---
 
-#### <a href="#sock_set_send_buf_size" name="sock_set_send_buf_size"></a> `sock_set_send_buf_size(fd: fd, size: size) -> errno`
+#### <a href="#set_send_buf_size" name="set_send_buf_size"></a> `set_send_buf_size(fd: fd, size: size) -> errno`
 Set size of send buffer
 Note: This is similar to `setsockopt` in POSIX for SO_SNDBUF
 
 ##### Params
-- <a href="#sock_set_send_buf_size.fd" name="sock_set_send_buf_size.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#set_send_buf_size.fd" name="set_send_buf_size.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
-- <a href="#sock_set_send_buf_size.size" name="sock_set_send_buf_size.size"></a> `size`: [`size`](#size)
+- <a href="#set_send_buf_size.size" name="set_send_buf_size.size"></a> `size`: [`size`](#size)
 Buffer size
 
 ##### Results
-- <a href="#sock_set_send_buf_size.error" name="sock_set_send_buf_size.error"></a> `error`: [`errno`](#errno)
+- <a href="#set_send_buf_size.error" name="set_send_buf_size.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_get_send_buf_size" name="sock_get_send_buf_size"></a> `sock_get_send_buf_size(fd: fd) -> (errno, size)`
+#### <a href="#get_send_buf_size" name="get_send_buf_size"></a> `get_send_buf_size(fd: fd) -> (errno, size)`
 Retrieve the size of the send buffer
 Note: This is similar to `getsockopt` in POSIX for SO_SNDBUF
 
 ##### Params
-- <a href="#sock_get_send_buf_size.fd" name="sock_get_send_buf_size.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#get_send_buf_size.fd" name="get_send_buf_size.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
 ##### Results
-- <a href="#sock_get_send_buf_size.error" name="sock_get_send_buf_size.error"></a> `error`: [`errno`](#errno)
+- <a href="#get_send_buf_size.error" name="get_send_buf_size.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_get_send_buf_size.size" name="sock_get_send_buf_size.size"></a> `size`: [`size`](#size)
+- <a href="#get_send_buf_size.size" name="get_send_buf_size.size"></a> `size`: [`size`](#size)
 
 
 ---
 
-#### <a href="#sock_bind" name="sock_bind"></a> `sock_bind(fd: fd, addr: Pointer<addr>) -> errno`
+#### <a href="#bind" name="bind"></a> `bind(fd: fd, addr: Pointer<addr>) -> errno`
 Bind a socket
-Note: This is similar to `bind` in POSIX using PF_INET
+Note: This is similar to [`bind`](#bind) in POSIX using PF_INET
 
 ##### Params
-- <a href="#sock_bind.fd" name="sock_bind.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#bind.fd" name="bind.fd"></a> `fd`: [`fd`](#fd)
 File descriptor of the socket to be bind
 
-- <a href="#sock_bind.addr" name="sock_bind.addr"></a> `addr`: `Pointer<addr>`
+- <a href="#bind.addr" name="bind.addr"></a> `addr`: `Pointer<addr>`
 Address to bind the socket to
 
 ##### Results
-- <a href="#sock_bind.error" name="sock_bind.error"></a> `error`: [`errno`](#errno)
+- <a href="#bind.error" name="bind.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_listen" name="sock_listen"></a> `sock_listen(fd: fd, backlog: size) -> errno`
+#### <a href="#listen" name="listen"></a> `listen(fd: fd, backlog: size) -> errno`
 Listen for connections on a socket
-Note: This is similar to `listen`
+Note: This is similar to [`listen`](#listen)
 
 ##### Params
-- <a href="#sock_listen.fd" name="sock_listen.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#listen.fd" name="listen.fd"></a> `fd`: [`fd`](#fd)
 File descriptor of the socket to be bind
 
-- <a href="#sock_listen.backlog" name="sock_listen.backlog"></a> `backlog`: [`size`](#size)
+- <a href="#listen.backlog" name="listen.backlog"></a> `backlog`: [`size`](#size)
 Maximum size of the queue for pending connections
 
 ##### Results
-- <a href="#sock_listen.error" name="sock_listen.error"></a> `error`: [`errno`](#errno)
+- <a href="#listen.error" name="listen.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_accept" name="sock_accept"></a> `sock_accept(fd: fd) -> (errno, fd)`
+#### <a href="#accept" name="accept"></a> `accept(fd: fd) -> (errno, fd)`
 Accept a connection on a socket
-Note: This is similar to `accept`
+Note: This is similar to [`accept`](#accept)
 
 ##### Params
-- <a href="#sock_accept.fd" name="sock_accept.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#accept.fd" name="accept.fd"></a> `fd`: [`fd`](#fd)
 File descriptor of the socket to be bind
 
 ##### Results
-- <a href="#sock_accept.error" name="sock_accept.error"></a> `error`: [`errno`](#errno)
+- <a href="#accept.error" name="accept.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_accept.childfd" name="sock_accept.childfd"></a> `childfd`: [`fd`](#fd)
+- <a href="#accept.childfd" name="accept.childfd"></a> `childfd`: [`fd`](#fd)
 
 
 ---
 
-#### <a href="#sock_connect" name="sock_connect"></a> `sock_connect(fd: fd, addr: Pointer<addr>) -> errno`
+#### <a href="#connect" name="connect"></a> `connect(fd: fd, addr: Pointer<addr>) -> errno`
 Initiate a connection on a socket to the specified address
-Note: This is similar to `connect` in POSIX
+Note: This is similar to [`connect`](#connect) in POSIX
 
 ##### Params
-- <a href="#sock_connect.fd" name="sock_connect.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#connect.fd" name="connect.fd"></a> `fd`: [`fd`](#fd)
 Socket descriptor
 
-- <a href="#sock_connect.addr" name="sock_connect.addr"></a> `addr`: `Pointer<addr>`
+- <a href="#connect.addr" name="connect.addr"></a> `addr`: `Pointer<addr>`
 Address of the socket to connect to
 
 ##### Results
-- <a href="#sock_connect.error" name="sock_connect.error"></a> `error`: [`errno`](#errno)
+- <a href="#connect.error" name="connect.error"></a> `error`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_recv" name="sock_recv"></a> `sock_recv(fd: fd, buf: Pointer<u8>, buf_len: size, flags: riflags) -> (errno, size)`
+#### <a href="#recv" name="recv"></a> `recv(fd: fd, buf: Pointer<u8>, buf_len: size, flags: riflags) -> (errno, size)`
 Receive a message from a socket.
-Note: This is similar to `recv` in POSIX.
+Note: This is similar to [`recv`](#recv) in POSIX.
 
 ##### Params
-- <a href="#sock_recv.fd" name="sock_recv.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#recv.fd" name="recv.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#sock_recv.buf" name="sock_recv.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#recv.buf" name="recv.buf"></a> `buf`: `Pointer<u8>`
 The buffer where data will be stored
 
-- <a href="#sock_recv.buf_len" name="sock_recv.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#recv.buf_len" name="recv.buf_len"></a> `buf_len`: [`size`](#size)
 
-- <a href="#sock_recv.flags" name="sock_recv.flags"></a> `flags`: [`riflags`](#riflags)
+- <a href="#recv.flags" name="recv.flags"></a> `flags`: [`riflags`](#riflags)
 Message flags.
 
 ##### Results
-- <a href="#sock_recv.error" name="sock_recv.error"></a> `error`: [`errno`](#errno)
+- <a href="#recv.error" name="recv.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_recv.bufused" name="sock_recv.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#recv.bufused" name="recv.bufused"></a> `bufused`: [`size`](#size)
 
 
 ---
 
-#### <a href="#sock_recv_from" name="sock_recv_from"></a> `sock_recv_from(fd: fd, buf: Pointer<u8>, buf_len: size, addr_buf: Pointer<u8>, addr_buf_len: size, flags: riflags) -> (errno, size)`
+#### <a href="#recv_from" name="recv_from"></a> `recv_from(fd: fd, buf: Pointer<u8>, buf_len: size, addr_buf: Pointer<u8>, addr_buf_len: size, flags: riflags) -> (errno, size)`
 Receive a message from a socket.
 
 The address buffer must be at least the size of addr_t.
@@ -2548,90 +2512,90 @@ The address buffer must be at least the size of addr_t.
 Note: This is similar to `recvfrom` in POSIX.
 
 ##### Params
-- <a href="#sock_recv_from.fd" name="sock_recv_from.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#recv_from.fd" name="recv_from.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#sock_recv_from.buf" name="sock_recv_from.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#recv_from.buf" name="recv_from.buf"></a> `buf`: `Pointer<u8>`
 The buffer where data will be stored
 
-- <a href="#sock_recv_from.buf_len" name="sock_recv_from.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#recv_from.buf_len" name="recv_from.buf_len"></a> `buf_len`: [`size`](#size)
 
-- <a href="#sock_recv_from.addr_buf" name="sock_recv_from.addr_buf"></a> `addr_buf`: `Pointer<u8>`
+- <a href="#recv_from.addr_buf" name="recv_from.addr_buf"></a> `addr_buf`: `Pointer<u8>`
 The address of origin for the message
 
-- <a href="#sock_recv_from.addr_buf_len" name="sock_recv_from.addr_buf_len"></a> `addr_buf_len`: [`size`](#size)
+- <a href="#recv_from.addr_buf_len" name="recv_from.addr_buf_len"></a> `addr_buf_len`: [`size`](#size)
 
-- <a href="#sock_recv_from.flags" name="sock_recv_from.flags"></a> `flags`: [`riflags`](#riflags)
+- <a href="#recv_from.flags" name="recv_from.flags"></a> `flags`: [`riflags`](#riflags)
 Message flags.
 
 ##### Results
-- <a href="#sock_recv_from.error" name="sock_recv_from.error"></a> `error`: [`errno`](#errno)
+- <a href="#recv_from.error" name="recv_from.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_recv_from.bufused" name="sock_recv_from.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#recv_from.bufused" name="recv_from.bufused"></a> `bufused`: [`size`](#size)
 
 
 ---
 
-#### <a href="#sock_send" name="sock_send"></a> `sock_send(fd: fd, buf: Pointer<u8>, buf_len: size, flags: siflags) -> (errno, size)`
+#### <a href="#send" name="send"></a> `send(fd: fd, buf: Pointer<u8>, buf_len: size, flags: siflags) -> (errno, size)`
 Send a message on a socket.
-Note: This is similar to `send` in POSIX.
+Note: This is similar to [`send`](#send) in POSIX.
 
 ##### Params
-- <a href="#sock_send.fd" name="sock_send.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#send.fd" name="send.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#sock_send.buf" name="sock_send.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#send.buf" name="send.buf"></a> `buf`: `Pointer<u8>`
 The buffer where data will be stored
 
-- <a href="#sock_send.buf_len" name="sock_send.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#send.buf_len" name="send.buf_len"></a> `buf_len`: [`size`](#size)
 
-- <a href="#sock_send.flags" name="sock_send.flags"></a> `flags`: [`siflags`](#siflags)
+- <a href="#send.flags" name="send.flags"></a> `flags`: [`siflags`](#siflags)
 Message flags.
 
 ##### Results
-- <a href="#sock_send.error" name="sock_send.error"></a> `error`: [`errno`](#errno)
+- <a href="#send.error" name="send.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_send.bufused" name="sock_send.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#send.bufused" name="send.bufused"></a> `bufused`: [`size`](#size)
 Number of bytes transmitted.
 
 
 ---
 
-#### <a href="#sock_send_to" name="sock_send_to"></a> `sock_send_to(fd: fd, buf: Pointer<u8>, buf_len: size, addr: Pointer<addr>, flags: siflags) -> (errno, size)`
+#### <a href="#send_to" name="send_to"></a> `send_to(fd: fd, buf: Pointer<u8>, buf_len: size, addr: Pointer<addr>, flags: siflags) -> (errno, size)`
 Send a message on a socket.
 Note: This is similar to `sendto` in POSIX.
 
 ##### Params
-- <a href="#sock_send_to.fd" name="sock_send_to.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#send_to.fd" name="send_to.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#sock_send_to.buf" name="sock_send_to.buf"></a> `buf`: `Pointer<u8>`
+- <a href="#send_to.buf" name="send_to.buf"></a> `buf`: `Pointer<u8>`
 The buffer where data will be stored
 
-- <a href="#sock_send_to.buf_len" name="sock_send_to.buf_len"></a> `buf_len`: [`size`](#size)
+- <a href="#send_to.buf_len" name="send_to.buf_len"></a> `buf_len`: [`size`](#size)
 
-- <a href="#sock_send_to.addr" name="sock_send_to.addr"></a> `addr`: `Pointer<addr>`
+- <a href="#send_to.addr" name="send_to.addr"></a> `addr`: `Pointer<addr>`
 Address of the socket to send message to
 
-- <a href="#sock_send_to.flags" name="sock_send_to.flags"></a> `flags`: [`siflags`](#siflags)
+- <a href="#send_to.flags" name="send_to.flags"></a> `flags`: [`siflags`](#siflags)
 Message flags.
 
 ##### Results
-- <a href="#sock_send_to.error" name="sock_send_to.error"></a> `error`: [`errno`](#errno)
+- <a href="#send_to.error" name="send_to.error"></a> `error`: [`errno`](#errno)
 
-- <a href="#sock_send_to.bufused" name="sock_send_to.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#send_to.bufused" name="send_to.bufused"></a> `bufused`: [`size`](#size)
 Number of bytes transmitted.
 
 
 ---
 
-#### <a href="#sock_shutdown" name="sock_shutdown"></a> `sock_shutdown(fd: fd, how: sdflags) -> errno`
+#### <a href="#shutdown" name="shutdown"></a> `shutdown(fd: fd, how: sdflags) -> errno`
 Shut down socket send and receive channels.
-Note: This is similar to `shutdown` in POSIX.
+Note: This is similar to [`shutdown`](#shutdown) in POSIX.
 
 ##### Params
-- <a href="#sock_shutdown.fd" name="sock_shutdown.fd"></a> `fd`: [`fd`](#fd)
+- <a href="#shutdown.fd" name="shutdown.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#sock_shutdown.how" name="sock_shutdown.how"></a> `how`: [`sdflags`](#sdflags)
+- <a href="#shutdown.how" name="shutdown.how"></a> `how`: [`sdflags`](#sdflags)
 Which channels on the socket to shut down.
 
 ##### Results
-- <a href="#sock_shutdown.error" name="sock_shutdown.error"></a> `error`: [`errno`](#errno)
+- <a href="#shutdown.error" name="shutdown.error"></a> `error`: [`errno`](#errno)
 

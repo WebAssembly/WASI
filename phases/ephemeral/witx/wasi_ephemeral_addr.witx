@@ -1,0 +1,39 @@
+;; WASI Socket Addresses.
+;;
+;; Some content here is derived from [CloudABI](https://github.com/NuxiNL/cloudabi).
+;;
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; for an explanation of what that means.
+
+(use "typenames.witx")
+
+(module $wasi_ephemeral_addr
+  ;;; Linear memory to be accessed by WASI functions that need it.
+  (import "memory" (memory))
+
+  ;;; Resolves a hostname and a port to one or more IP addresses. Port is optional
+  ;;; and you can pass 0 (zero) in most cases, it is used a hint for protocol.
+  ;;;
+  ;;; Note: This is similar to `getaddrinfo` in POSIX
+  ;;;
+  ;;; When successful, the contents of the output buffer consist of a sequence of
+  ;;; IPv4 and/or IPv6 addresses. Each address entry consists of a addr_t object.
+  ;;
+  ;;; This function fills the output buffer as much as possible, potentially
+  ;;; truncating the last address entry. It is advisable that the buffer is
+  (@interface func (export "resolve")
+    ;;; Address pool file descriptor
+    (param $pool $fd)
+    ;;; Host to resolve
+    (param $host string)
+    ;;; Port number
+    (param $port $ip_port)
+    ;;; The buffer where IP addresses will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
+    (result $error $errno)
+    ;;; The number of bytes stored in the buffer. If less than the size of the buffer, no
+    ;;; more IP addresses are available.
+    (result $bufused $size)
+  )
+)
