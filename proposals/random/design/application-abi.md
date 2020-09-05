@@ -1,7 +1,7 @@
 WASI Application ABI
 ====================
 
-In addition to the APIs defined by the various WASI [modules](modules.md) there
+In addition to the APIs defined by the various WASI modules there
 are also certain expectations that the WASI runtime places on an application
 that wishes to be portable across WASI implementations.
 
