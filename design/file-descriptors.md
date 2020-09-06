@@ -11,4 +11,4 @@ When a program is initiated, `stdout`, `stdin`, and `stderr` (respectively `fd` 
 ```
 
 # Files
-Files can be opened and closed with the method [`path_open`](https://github.com/WebAssembly/WASI/blob/master/phases/snapshot/docs.md#-path_openfd-fd-dirflags-lookupflags-path-string-oflags-oflags-fs_rights_base-rights-fs_rights_inherting-rights-fdflags-fdflags---errno-fd), and simply drop the returned `fd` to close it. These commands will fail if the WASM environment did not give the program permission to execute these.
+Files can be opened and closed with the method [`path_open`](https://github.com/WebAssembly/WASI/blob/master/phases/snapshot/docs.md#path_open), and simply drop the returned `fd` to close it. These commands will fail if the WASM environment did not give the program permission to execute these.
