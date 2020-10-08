@@ -38,6 +38,7 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |
+| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -55,5 +56,6 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
+[wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
