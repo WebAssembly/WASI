@@ -1749,7 +1749,7 @@ The destination path at which to create the hard link.
 
 ---
 
-#### <a href="#path_open" name="path_open"></a> `path_open(fd: fd, dirflags: lookupflags, path: string, oflags: oflags, fs_rights_base: rights, fs_rights_inherting: rights, fdflags: fdflags) -> (errno, fd)`
+#### <a href="#path_open" name="path_open"></a> `path_open(fd: fd, dirflags: lookupflags, path: string, oflags: oflags, fs_rights_base: rights, fs_rights_inheriting: rights, fdflags: fdflags) -> (errno, fd)`
 Open a file or directory.
 The returned file descriptor is not guaranteed to be the lowest-numbered
 file descriptor not currently open; it is randomized to prevent
@@ -1780,7 +1780,7 @@ The *base* rights are rights that will apply to operations using the file
 descriptor itself, while the *inheriting* rights are rights that apply to
 file descriptors derived from it.
 
-- <a href="#path_open.fs_rights_inherting" name="path_open.fs_rights_inherting"></a> `fs_rights_inherting`: [`rights`](#rights)
+- <a href="#path_open.fs_rights_inheriting" name="path_open.fs_rights_inheriting"></a> `fs_rights_inheriting`: [`rights`](#rights)
 
 - <a href="#path_open.fdflags" name="path_open.fdflags"></a> `fdflags`: [`fdflags`](#fdflags)
 

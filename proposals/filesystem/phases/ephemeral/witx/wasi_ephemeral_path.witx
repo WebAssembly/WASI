@@ -115,7 +115,7 @@
     ;;; descriptor itself, while the *inheriting* rights are rights that apply to
     ;;; file descriptors derived from it.
     (param $fs_rights_base $rights)
-    (param $fs_rights_inherting $rights)
+    (param $fs_rights_inheriting $rights)
     (param $fdflags $fdflags)
     ;;; If a file is created, the filesystem permissions to associate with it.
     (param $permissions $permissions)
