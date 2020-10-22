@@ -32,13 +32,13 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |
 | [Random][wasi-random]                                                          | Dan Gohman                             |
 | [Misc][wasi-misc]                                                              | Dan Gohman                             |
+| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 1 - Feature Proposal (CG)
 
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |
-| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 0 - Pre-Proposal (CG)
 
