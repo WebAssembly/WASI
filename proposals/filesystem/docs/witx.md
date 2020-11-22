@@ -1,7 +1,7 @@
 # Know your `witx`
 
 The `witx` file format is an experimental format which is based on the
-[module types] text format (`wit`), (which is in turn based on the
+[module linking] text format (`wit`), (which is in turn based on the
 [wat format], which is based on [S-expressions]). It adds some features
 using the same syntax as [interface types], some features with syntax
 similar to [gc types], as well as a few special features of its own.
@@ -22,7 +22,7 @@ the goals here are to remain aligned with interface types and other relevant
 WebAssembly standards and proposals wherever practical, and to be an input 
 into the design process of interface types.
 
-[module types]: https://github.com/WebAssembly/module-types/blob/master/proposals/module-types/Overview.md
+[module linking]: https://github.com/WebAssembly/module-linking/blob/master/proposals/module-linking/Explainer.md
 [interface types]: https://github.com/WebAssembly/interface-types/blob/master/proposals/interface-types/Explainer.md
 [gc types]: https://github.com/WebAssembly/gc
 [wat format]: https://webassembly.github.io/spec/core/bikeshed/index.html#text-format%E2%91%A0
