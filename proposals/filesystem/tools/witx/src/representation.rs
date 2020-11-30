@@ -1,6 +1,6 @@
 use crate::{
-    BuiltinType, EnumDatatype, FlagsDatatype, HandleDatatype, IntRepr, NamedType, StructDatatype,
-    Type, TypeRef, UnionDatatype,
+    BuiltinType, EnumDatatype, FlagsDatatype, IntRepr, NamedType, StructDatatype, Type, TypeRef,
+    UnionDatatype,
 };
 
 // A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
@@ -117,34 +117,6 @@ impl Representable for FlagsDatatype {
     }
 }
 
-impl Representable for HandleDatatype {
-    fn representable(&self, by: &Self) -> RepEquality {
-        // Handles must have the same set of named supertypes. Anonymous supertypes are never
-        // equal, and the validator should probably make sure these are not allowed, because
-        // what would that even mean??
-        for supertype_ref in self.supertypes.iter() {
-            match supertype_ref {
-                TypeRef::Name(nt) => {
-                    if let Some(by_nt) = by.supertypes.iter().find_map(|tref| match tref {
-                        TypeRef::Name(by_nt) if by_nt.name == nt.name => Some(by_nt),
-                        _ => None,
-                    }) {
-                        if nt.tref.representable(&by_nt.tref) == RepEquality::NotEq {
-                            return RepEquality::NotEq;
-                        }
-                    } else {
-                        return RepEquality::NotEq;
-                    }
-                }
-                TypeRef::Value(_) => {
-                    return RepEquality::NotEq;
-                }
-            }
-        }
-        RepEquality::Eq
-    }
-}
-
 impl Representable for StructDatatype {
     fn representable(&self, by: &Self) -> RepEquality {
         // Structs must have exact structural equality - same members, must
@@ -235,7 +207,7 @@ impl Representable for Type {
             (Type::Flags(s), Type::Flags(b)) => s.representable(b),
             (Type::Struct(s), Type::Struct(b)) => s.representable(b),
             (Type::Union(s), Type::Union(b)) => s.representable(b),
-            (Type::Handle(s), Type::Handle(b)) => s.representable(b),
+            (Type::Handle(_), Type::Handle(_)) => RepEquality::Eq, // Handles are nominal, not structural
             (Type::Array(s), Type::Array(b)) => s.representable(b),
             (Type::Pointer(s), Type::Pointer(b)) => s.representable(b),
             (Type::ConstPointer(s), Type::ConstPointer(b)) => s.representable(b),
