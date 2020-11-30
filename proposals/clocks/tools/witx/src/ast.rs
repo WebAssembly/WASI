@@ -295,9 +295,7 @@ pub struct UnionVariant {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct HandleDatatype {
-    pub supertypes: Vec<TypeRef>,
-}
+pub struct HandleDatatype {}
 
 #[derive(Debug, Clone)]
 pub struct Module {
