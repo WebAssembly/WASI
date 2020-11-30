@@ -274,7 +274,7 @@ pub enum TypedefSyntax<'a> {
     Flags(FlagsSyntax<'a>),
     Struct(StructSyntax<'a>),
     Union(UnionSyntax<'a>),
-    Handle(HandleSyntax<'a>),
+    Handle(HandleSyntax),
     Array(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
@@ -485,18 +485,12 @@ impl<'a> Parse<'a> for UnionSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HandleSyntax<'a> {
-    pub supertypes: Vec<wast::Id<'a>>,
-}
+pub struct HandleSyntax {}
 
-impl<'a> Parse<'a> for HandleSyntax<'a> {
+impl<'a> Parse<'a> for HandleSyntax {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::handle>()?;
-        let mut supertypes = Vec::new();
-        while !parser.is_empty() {
-            supertypes.push(parser.parse()?);
-        }
-        Ok(HandleSyntax { supertypes })
+        Ok(HandleSyntax {})
     }
 }
 

@@ -454,42 +454,10 @@ impl DocValidationScope<'_> {
 
     fn validate_handle(
         &self,
-        syntax: &HandleSyntax,
+        _syntax: &HandleSyntax,
         _span: wast::Span,
     ) -> Result<HandleDatatype, ValidationError> {
-        let supertypes = syntax
-            .supertypes
-            .iter()
-            .map(|id_syntax| {
-                let id = self.get(&id_syntax)?;
-                match self.doc.entries.get(&id) {
-                    Some(Entry::Typename(weak_ref)) => {
-                        let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
-                        match &*named_dt.type_() {
-                            Type::Handle { .. } => Ok(TypeRef::Name(named_dt)),
-                            other => Err(ValidationError::WrongKindName {
-                                name: id_syntax.name().to_string(),
-                                location: self.location(id_syntax.span()),
-                                expected: "handle",
-                                got: other.kind(),
-                            }),
-                        }
-                    }
-                    Some(entry) => Err(ValidationError::WrongKindName {
-                        name: id_syntax.name().to_string(),
-                        location: self.location(id_syntax.span()),
-                        expected: "handle",
-                        got: entry.kind(),
-                    }),
-                    None => Err(ValidationError::Recursive {
-                        name: id_syntax.name().to_string(),
-                        location: self.location(id_syntax.span()),
-                    }),
-                }
-            })
-            .collect::<Result<Vec<TypeRef>, _>>()?;
-
-        Ok(HandleDatatype { supertypes })
+        Ok(HandleDatatype {})
     }
 
     fn validate_int_repr(
