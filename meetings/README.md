@@ -44,3 +44,4 @@ Meetings of the WASI Subgroup of the W3C WebAssembly Community Group (CG) follow
  * [WASI October 22nd video call](2020/WASI-10-22.md)
  * [WASI November 19th video call](2020/WASI-11-19.md)
  * [WASI December 3rd video call](2020/WASI-12-03.md)
+ * [WASI December 17th video call](2020/WASI-12-17.md)
