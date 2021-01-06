@@ -465,6 +465,7 @@
   (@interface func (export "proc_exit")
     ;;; The exit code returned by the process.
     (param $rval $exitcode)
+    (@witx noreturn)
   )
 
   ;;; Send a signal to the process of the calling thread.
