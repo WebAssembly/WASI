@@ -315,7 +315,10 @@ impl InterfaceFunc {
             })
             .collect();
         let attrs = if self.noreturn {
-            vec![SExpr::annot("witx"), SExpr::word("noreturn")]
+            vec![SExpr::Vec(vec![
+                SExpr::annot("witx"),
+                SExpr::word("noreturn"),
+            ])]
         } else {
             vec![]
         };
