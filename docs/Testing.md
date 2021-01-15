@@ -103,8 +103,8 @@ fi
 
 ## Writing tests
 
-Any source language may be used to write tests as long as the compiler is
-well-known and freely available.
+Any source language may be used to write tests as long as the compiler supports
+the wasm32-unknown-unknown target and is well-known and freely available.
 
 Each source file must be accompanied by a pre-compiled binary version of said
 source file.
