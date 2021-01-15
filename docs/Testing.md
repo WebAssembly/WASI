@@ -7,31 +7,31 @@ of an error.
 
 Additionally, any of the following optional auxilary files and directories may
 be present:
-- \<basename\>.arg
-- \<basename\>.env
-- \<basename\>.dir
-- \<basename\>.stdin
-- \<basename\>.stdout
-- \<basename\>.stderr
-- \<basename\>.status
+- `<basename>.arg`
+- `<basename>.env`
+- `<basename>.dir`
+- `<basename>.stdin`
+- `<basename>.stdout`
+- `<basename>.stderr`
+- `<basename>.status`
 
 ## Running tests
 
 To run a test do the following steps to prepare for execution:
 
 - Prepare inputs
-  - Given an \<input\> module; take the \<basename\> of said module.
-  - If \<basename\>.\<arg\> exists; take the program arguments from said file.
-  - If \<basename\>.\<env\> exists; take the program environment from said file.
-  - If \<basename\>.\<dir\> exists; preopen the directory from said file.
-  - If \<basename\>.\<stdin\> exists; pipe said file into the program as stdin.
+  - Given an `<input>` module; take the <basename> of said module.
+  - If `<basename>.<arg>` exists; take the program arguments from said file.
+  - If `<basename>.<env>` exists; take the program environment from said file.
+  - If `<basename>.<dir>` exists; preopen the directory from said file.
+  - If `<basename>.<stdin>` exists; pipe said file into the program as stdin.
 - Run program
 - Collect results
-  - If \<basename\>.\<stdout\> exists; assert that the programs stdout matches
+  - If `<basename>.<stdout>` exists; assert that the programs stdout matches
     said file.
-  - If \<basename\>.\<stderr\> exists; assert that the programs stdout matches
+  - If `<basename>.<stderr>` exists; assert that the programs stdout matches
     said file.
-  - If \<basename\>.\<status\> exists; assert that the programs stdout matches
+  - If `<basename>.<status>` exists; assert that the programs stdout matches
     said file; otherwise assert that the program exited with status 0.
 - Pass
 
@@ -122,10 +122,11 @@ Tests should be scoped to the smallest unit possible.
 
 In addition to the source and binary files, a test can have any of the following
 auxilary files and directories:
-- \<basename\>.arg
-- \<basename\>.env
-- \<basename\>.dir
-- \<basename\>.stdin
-- \<basename\>.stdout
-- \<basename\>.stderr
-- \<basename\>.status
+
+- `<basename>.arg`
+- `<basename>.env`
+- `<basename>.dir`
+- `<basename>.stdin`
+- `<basename>.stdout`
+- `<basename>.stderr`
+- `<basename>.status`
