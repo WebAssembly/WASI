@@ -1,8 +1,12 @@
 # Testing
 
-A test case takes the form of a binary \<basename\>.wasm file, next to that that there will always be a \<basename\>.\<ext\> source file from which the test was originally compiled from which can be used as a reference in the event of an error.
+A test case takes the form of a binary \<basename\>.wasm file, next to that
+that there will always be a \<basename\>.\<ext\> source file from which the
+test was originally compiled from which can be used as a reference in the event
+of an error.
 
-Additionally, any of the following optional auxilary files and directories may be present:
+Additionally, any of the following optional auxilary files and directories may
+be present:
 - \<basename\>.arg
 - \<basename\>.env
 - \<basename\>.dir
