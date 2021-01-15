@@ -20,7 +20,7 @@ be present:
 To run a test do the following steps to prepare for execution:
 
 - Prepare inputs
-  - Given an `<input>.wasm` file; take the `<basename>` of said module.
+  - Given an `<input>.wasm` file; take the `<basename>` of said file.
   - If `<basename>.<arg>` exists; take the program arguments from said file.
   - If `<basename>.<env>` exists; take the program environment from said file.
   - If `<basename>.<dir>` exists; preopen the directory from said file.
