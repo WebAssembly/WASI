@@ -78,7 +78,7 @@ fi
 
 status=0
 
-"$runtime" $dir $input -- $arg \
+"$runtime" $dir $env $input -- $arg \
   < "$stdin" \
   > "$stdout_actual" \
   2> "$stderr_actual" \
