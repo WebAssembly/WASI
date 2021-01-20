@@ -41,7 +41,7 @@ update_repo() {
     pushdir repos
         if [ -d ${repo} ]; then
             log_and_run git -C ${repo} fetch origin
-            log_and_run git -C ${repo} reset origin/master --hard
+            log_and_run git -C ${repo} reset origin/main --hard
         else
             log_and_run git clone https://github.com/WebAssembly/${repo}
         fi
@@ -67,13 +67,13 @@ merge_with_WASI() {
     pushdir repos/${repo}
         # Create and checkout "try-merge" branch.
         if ! git branch | grep try-merge >/dev/null; then
-            log_and_run git branch try-merge origin/master
+            log_and_run git branch try-merge origin/main
         fi
         log_and_run git checkout try-merge
 
-        # Attempt to merge with WASI/master.
-        log_and_run git reset origin/master --hard
-        try_log_and_run git merge -q WASI/master -m "merged"
+        # Attempt to merge with WASI/main.
+        log_and_run git reset origin/main --hard
+        try_log_and_run git merge -q WASI/main -m "merged"
         if [ $? -ne 0 ]; then
             # Ignore merge conflicts in non-test directories.
             # We don't care about those changes.
@@ -139,7 +139,7 @@ for repo in ${repos}; do
     if [ $(git status -s ${dest_dir} | wc -l) -ne 0 ]; then
         log_and_run git add ${dest_dir}/*
 
-        repo_sha=$(git -C repos/${repo} log --max-count=1 --oneline origin/master| sed -e 's/ .*//')
+        repo_sha=$(git -C repos/${repo} log --max-count=1 --oneline origin/main| sed -e 's/ .*//')
         echo "  ${repo}:" >> $commit_message_file
         echo "    https://github.com/WebAssembly/${repo}/commit/${repo_sha}" >> $commit_message_file
     fi
