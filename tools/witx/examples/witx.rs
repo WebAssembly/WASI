@@ -42,6 +42,12 @@ enum Command {
     },
     /// Update documentation in WASI repository to reflect witx specs
     RepoDocs,
+    /// Output the expected WAT signature of a witx module
+    WatSignature {
+        /// Path to root of witx document
+        #[structopt(number_of_values = 1, value_name = "INPUT", parse(from_os_str))]
+        input: Vec<PathBuf>,
+    },
     /// Examine differences between interfaces
     Polyfill {
         /// Path to root of witx document
@@ -96,6 +102,35 @@ pub fn main() {
             ] {
                 let doc = load(&phase).expect("parse phase");
                 write_docs(&doc, phases::docs_path(&phase));
+            }
+        }
+        Command::WatSignature { input } => {
+            let doc = load_witx(&input, "input", verbose);
+            for module in doc.modules() {
+                println!("(module");
+                // For each function in the module, print something like:
+                //  (import "wasi" "load" (func (param i32 i32 i32) (result i32)))
+                for func in module.funcs() {
+                    print!(
+                        " (import \"{}\" \"{}\" (func ",
+                        module.name.as_str(),
+                        func.name.as_str()
+                    );
+                    let signature = func.core_type();
+                    if !signature.args.is_empty() {
+                        let args: Vec<String> = signature
+                            .args
+                            .iter()
+                            .map(|arg| format!("{:?}", arg.repr()))
+                            .collect();
+                        print!("(param {})", args.join(" "));
+                    }
+                    if let Some(ret) = signature.ret {
+                        print!(" (result {:?})", ret.repr())
+                    }
+                    println!("))");
+                }
+                println!(")");
             }
         }
         Command::Polyfill {
