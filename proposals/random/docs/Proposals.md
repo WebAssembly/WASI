@@ -6,11 +6,11 @@ adoption of this process and so don't fit exactly into the defined phases,
 however our intention is to align them going forward.
 
 [WASI]: https://github.com/WebAssembly/WASI
-[proposals page]: https://github.com/WebAssembly/proposals/blob/master/README.md
+[proposals page]: https://github.com/WebAssembly/proposals/blob/main/README.md
 
 ## Active proposals
 
-Proposals follow [this process document](https://github.com/WebAssembly/WASI/blob/master/docs/Process.md).
+Proposals follow [this process document](https://github.com/WebAssembly/WASI/blob/main/docs/Process.md).
 
 ### Phase 4 - Standardize the Feature (WG)
 
