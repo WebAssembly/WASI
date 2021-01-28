@@ -20,27 +20,25 @@ be present:
 To run a test do the following steps to prepare for execution:
 
 - Prepare inputs
-  - Given an `<input>.wasm` file; take the `<basename>` of said file.
-  - If `<basename>.<arg>` exists; take the program arguments from said file.
-  - If `<basename>.<env>` exists; take the program environment from said file.
-  - If `<basename>.<dir>` exists; preopen the directory from said file.
-  - If `<basename>.<stdin>` exists; pipe said file into the program as stdin.
+  - Given an `<input>` file; take the `<basename>` of said file.
+  - If `<basename>.arg` exists; take the program arguments from said file.
+  - If `<basename>.env` exists; take the program environment from said file.
+  - If `<basename>.dir` exists; preopen the directory from said file.
+  - If `<basename>.stdin` exists; pipe said file into the program as stdin.
 - Run program
 - Collect results
-  - If `<basename>.<stdout>` exists; assert that the programs stdout matches
+  - If `<basename>.stdout` exists; assert that the programs stdout matches
     said file.
-  - If `<basename>.<stderr>` exists; assert that the programs stdout matches
+  - If `<basename>.stderr` exists; assert that the programs stdout matches
     said file.
-  - If `<basename>.<status>` exists; assert that the programs stdout matches
+  - If `<basename>.status` exists; assert that the programs stdout matches
     said file; otherwise assert that the program exited with status 0.
 - Pass
 
 For example:
 
 ```bash
-# Usage: $1 <runtime> <path_to_binary.wasm>
-# $1 wasmtime proc_exit-success.wasm
-# $1 wasmer proc_exit-failure.wasm
+# Usage: $0 <runtime> <path_to_binary.wasm>
 #!/usr/bin/env bash
 
 runtime=$1
