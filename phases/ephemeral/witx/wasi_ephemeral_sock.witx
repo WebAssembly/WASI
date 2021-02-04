@@ -11,34 +11,241 @@
   ;;; Linear memory to be accessed by WASI functions that need it.
   (import "memory" (memory))
 
+  ;;; Returns the local address to which the socket is bound.
+  ;;;
+  ;;; Note: This is similar to `getsockname` in POSIX
+  ;;;
+  ;;; When successful, the contents of the output buffer consist of an IP address,
+  ;;; either IP4 or IP6.
+  (@interface func (export "addr_local")
+    ;;; Host to resolve
+    (param $fd $fd)
+    ;;; The buffer where IP addresses will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
+    (result $error $errno)
+  )
+
+  ;;; Returns the remote address to which the socket is connected to.
+  ;;;
+  ;;; Note: This is similar to `getpeername` in POSIX
+  ;;;
+  ;;; When successful, the contents of the output buffer consist of an IP address,
+  ;;; either IP4 or IP6.
+  (@interface func (export "addr_remote")
+    ;;; Host to resolve
+    (param $fd $fd)
+    ;;; The buffer where IP addresses will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
+    (result $error $errno)
+  )
+
+  ;;; Open a socket
+  ;;;
+  ;;; The first argument to this function is a handle to an
+  ;;; address pool. The address pool determines what actions can
+  ;;; be performed and at which addresses they can be performed to.
+  ;;;
+  ;;; The address pool cannot be re-assigned. You will need to close
+  ;;; the socket and open a new one to use a different address pool.
+  ;;;
+  ;;; Note: This is similar to `socket` in POSIX using PF_INET
+  (@interface func (export "open")
+    ;;; Address pool file descriptor
+    (param $pool $fd)
+    ;;; Address family
+    (param $af $address_family)
+    ;;; Socket type, either datagram or stream
+    (param $socktype $sock_type)
+    (result $error $errno)
+    ;;; The opened socket
+    (result $fd $fd)
+  )
+
+  ;;; Close a socket (this is an alias for `fd_close`)
+  ;;; Note: This is similar to `close` in POSIX.
+  (@interface func (export "close")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    (result $error $errno)
+  )
+
+  ;;; Enable/disable address reuse on a socket
+  ;;; Note: This is similar to `setsockopt` in POSIX for SO_REUSEADDR
+  (@interface func (export "set_reuse_addr")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    ;;; 1 to enable, 0 to disable
+    (param $reuse u8)
+    (result $error $errno)
+  )
+
+  ;;; Retrieve status of address reuse on a socket
+  ;;; Note: This is similar to `getsockopt` in POSIX for SO_REUSEADDR
+  (@interface func (export "get_reuse_addr")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    (result $error $errno)
+    (result $reuse u8)
+  )
+
+  ;;; Enable port reuse on a socket
+  ;;; Note: This is similar to `setsockopt` in POSIX for SO_REUSEPORT
+  (@interface func (export "set_reuse_port")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    ;;; 1 to enable, 0 to disable
+    (param $reuse u8)
+    (result $error $errno)
+  )
+
+  ;;; Retrieve status of port reuse on a socket
+  ;;; Note: This is similar to `getsockopt` in POSIX for SO_REUSEPORT
+  (@interface func (export "get_reuse_port")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    (result $error $errno)
+    (result $reuse u8)
+  )
+
+  ;;; Set size of receive buffer
+  ;;; Note: This is similar to `setsockopt` in POSIX for SO_RCVBUF
+  (@interface func (export "set_recv_buf_size")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    ;;; Buffer size
+    (param $size $size)
+    (result $error $errno)
+  )
+
+  ;;; Retrieve the size of the receive buffer
+  ;;; Note: This is similar to `getsockopt` in POSIX for SO_RCVBUF
+  (@interface func (export "get_recv_buf_size")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    (result $error $errno)
+    (result $size $size)
+  )
+
+  ;;; Set size of send buffer
+  ;;; Note: This is similar to `setsockopt` in POSIX for SO_SNDBUF
+  (@interface func (export "set_send_buf_size")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    ;;; Buffer size
+    (param $size $size)
+    (result $error $errno)
+  )
+
+  ;;; Retrieve the size of the send buffer
+  ;;; Note: This is similar to `getsockopt` in POSIX for SO_SNDBUF
+  (@interface func (export "get_send_buf_size")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    (result $error $errno)
+    (result $size $size)
+  )
+
+  ;;; Bind a socket
+  ;;; Note: This is similar to `bind` in POSIX using PF_INET
+  (@interface func (export "bind")
+    ;;; File descriptor of the socket to be bind
+    (param $fd $fd)
+    ;;; Address to bind the socket to
+    (param $addr (@witx pointer $addr))
+    (result $error $errno)
+  )
+
+  ;;; Listen for connections on a socket
+  ;;; Note: This is similar to `listen`
+  (@interface func (export "listen")
+    ;;; File descriptor of the socket to be bind
+    (param $fd $fd)
+    ;;; Maximum size of the queue for pending connections
+    (param $backlog $size)
+    (result $error $errno)
+  )
+
+  ;;; Accept a connection on a socket
+  ;;; Note: This is similar to `accept`
+  (@interface func (export "accept")
+    ;;; File descriptor of the socket to be bind
+    (param $fd $fd)
+    (result $error $errno)
+    (result $childfd $fd)
+  )
+
+  ;;; Initiate a connection on a socket to the specified address
+  ;;; Note: This is similar to `connect` in POSIX
+  (@interface func (export "connect")
+    ;;; Socket descriptor
+    (param $fd $fd)
+    ;;; Address of the socket to connect to
+    (param $addr (@witx pointer $addr))
+    (result $error $errno)
+  )
+
   ;;; Receive a message from a socket.
-  ;;; Note: This is similar to `recv` in POSIX, though it also supports reading
-  ;;; the data into multiple buffers in the manner of `readv`.
+  ;;; Note: This is similar to `recv` in POSIX.
   (@interface func (export "recv")
     (param $fd $fd)
-    ;;; List of scatter/gather vectors to which to store data.
-    (param $ri_data $iovec_array)
+    ;;; The buffer where data will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
     ;;; Message flags.
-    (param $ri_flags $riflags)
+    (param $flags $riflags)
     (result $error $errno)
-    ;;; Number of bytes stored in ri_data.
-    (result $ro_datalen $size)
+    (result $bufused $size)
+  )
+
+  ;;; Receive a message from a socket.
+  ;;;
+  ;;; The address buffer must be at least the size of addr_t.
+  ;;;
+  ;;; Note: This is similar to `recvfrom` in POSIX.
+  (@interface func (export "recv_from")
+    (param $fd $fd)
+    ;;; The buffer where data will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
+    ;;; The address of origin for the message
+    (param $addr_buf (@witx pointer u8))
+    (param $addr_buf_len $size)
     ;;; Message flags.
-    (result $ro_flags $roflags)
+    (param $flags $riflags)
+    (result $error $errno)
+    (result $bufused $size)
   )
 
   ;;; Send a message on a socket.
-  ;;; Note: This is similar to `send` in POSIX, though it also supports writing
-  ;;; the data from multiple buffers in the manner of `writev`.
+  ;;; Note: This is similar to `send` in POSIX.
   (@interface func (export "send")
     (param $fd $fd)
-    ;;; List of scatter/gather vectors to which to retrieve data
-    (param $si_data $ciovec_array)
+    ;;; The buffer where data will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
     ;;; Message flags.
-    (param $si_flags $siflags)
+    (param $flags $siflags)
     (result $error $errno)
     ;;; Number of bytes transmitted.
-    (result $so_datalen $size)
+    (result $bufused $size)
+  )
+
+  ;;; Send a message on a socket.
+  ;;; Note: This is similar to `sendto` in POSIX.
+  (@interface func (export "send_to")
+    (param $fd $fd)
+    ;;; The buffer where data will be stored
+    (param $buf (@witx pointer u8))
+    (param $buf_len $size)
+    ;;; Address of the socket to send message to
+    (param $addr (@witx pointer $addr))
+    ;;; Message flags.
+    (param $flags $siflags)
+    (result $error $errno)
+    ;;; Number of bytes transmitted.
+    (result $bufused $size)
   )
 
   ;;; Shut down socket send and receive channels.
