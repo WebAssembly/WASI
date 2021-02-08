@@ -8,9 +8,9 @@ use crate::{
     BuiltinType, Case, Constant, Definition, Entry, HandleDatatype, Id, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
     ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type,
-    TypePassedBy, TypeRef, UnionDatatype, UnionVariant, Variant,
+    TypePassedBy, TypeRef, Variant,
 };
-use std::collections::{hash_map, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::rc::Rc;
 use thiserror::Error;
@@ -43,14 +43,16 @@ pub enum ValidationError {
     InvalidFirstResultType { location: Location },
     #[error("Anonymous structured types (struct, union, enum, flags, handle) are not permitted")]
     AnonymousRecord { location: Location },
-    #[error("Invalid union field `{name}`: {reason}")]
-    InvalidUnionField {
-        name: String,
-        reason: String,
+    #[error("Union expected {expected} variants, found {found}")]
+    UnionSizeMismatch {
+        expected: usize,
+        found: usize,
         location: Location,
     },
-    #[error("Invalid union tag `{name}`: {reason}")]
-    InvalidUnionTag {
+    #[error("Invalid union tag: {reason}")]
+    InvalidUnionTag { reason: String, location: Location },
+    #[error("Invalid union field `{name}`: {reason}")]
+    InvalidUnionField {
         name: String,
         reason: String,
         location: Location,
@@ -67,6 +69,7 @@ impl ValidationError {
             | InvalidRepr { location, .. }
             | InvalidFirstResultType { location, .. }
             | AnonymousRecord { location, .. }
+            | UnionSizeMismatch { location, .. }
             | InvalidUnionField { location, .. }
             | InvalidUnionTag { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
@@ -299,7 +302,10 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::Enum(syntax) => Type::Variant(self.validate_enum(&syntax, span)?),
                 TypedefSyntax::Flags(syntax) => self.validate_flags(&syntax, span)?,
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
-                TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
+                TypedefSyntax::Union(syntax) => Type::Variant(self.validate_union(&syntax, span)?),
+                TypedefSyntax::Variant(syntax) => {
+                    Type::Variant(self.validate_variant(&syntax, span)?)
+                }
                 TypedefSyntax::Handle(syntax) => Type::Handle(self.validate_handle(syntax, span)?),
                 TypedefSyntax::List(syntax) => {
                     Type::List(self.validate_datatype(syntax, false, span)?)
@@ -385,105 +391,121 @@ impl DocValidationScope<'_> {
         &self,
         syntax: &UnionSyntax,
         span: wast::Span,
-    ) -> Result<UnionDatatype, ValidationError> {
-        let mut variant_scope = IdentValidation::new();
-        let tag_id = self.get(&syntax.tag)?;
-        let (tag, mut variant_name_uses) = match self.doc.entries.get(&tag_id) {
-            Some(Entry::Typename(weak_ref)) => {
-                let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
-                match &*named_dt.type_() {
-                    Type::Variant(e) => {
-                        let mut uses = HashMap::new();
-                        for c in e.cases.iter() {
-                            if c.tref.is_some() {
-                                return Err(ValidationError::InvalidUnionTag {
-                                    name: syntax.tag.name().to_string(),
-                                    location: self.location(syntax.tag.span()),
-                                    reason: format!("all variant cases should have empty payloads"),
-                                });
-                            }
-                            uses.insert(c.name.clone(), false);
-                        }
-                        Ok((named_dt, uses))
-                    }
-                    other => Err(ValidationError::WrongKindName {
-                        name: syntax.tag.name().to_string(),
-                        location: self.location(syntax.tag.span()),
-                        expected: "enum",
-                        got: other.kind(),
-                    }),
-                }
-            }
-            other => Err(ValidationError::WrongKindName {
-                name: syntax.tag.name().to_string(),
-                location: self.location(syntax.tag.span()),
-                expected: "enum",
-                got: match other {
-                    Some(e) => e.kind(),
-                    None => "unknown",
-                },
-            }),
-        }?;
+    ) -> Result<Variant, ValidationError> {
+        let (tag_repr, names) = self.union_tag_repr(&syntax.tag, span)?;
 
-        let variants = syntax
+        if let Some(names) = &names {
+            if names.len() != syntax.fields.len() {
+                return Err(ValidationError::UnionSizeMismatch {
+                    expected: names.len(),
+                    found: syntax.fields.len(),
+                    location: self.location(span),
+                });
+            }
+        }
+
+        let cases = syntax
             .fields
             .iter()
-            .map(|v| {
-                let variant_name = match v.item {
-                    VariantSyntax::Field(ref f) => &f.name,
-                    VariantSyntax::Empty(ref name) => name,
-                };
-                let name = variant_scope
-                    .introduce(variant_name.name(), self.location(variant_name.span()))?;
-                let tref = match &v.item {
-                    VariantSyntax::Field(f) => {
-                        Some(self.validate_datatype(&f.type_, false, variant_name.span())?)
-                    }
-                    VariantSyntax::Empty { .. } => None,
-                };
-                let docs = v.comments.docs();
-                match variant_name_uses.entry(name.clone()) {
-                    hash_map::Entry::Occupied(mut e) => {
-                        if *e.get() {
-                            Err(ValidationError::InvalidUnionField {
-                                name: variant_name.name().to_string(),
-                                reason: "variant already defined".to_owned(),
-                                location: self.location(variant_name.span()),
-                            })?;
-                        } else {
-                            e.insert(true);
-                        }
-                    }
-                    hash_map::Entry::Vacant { .. } => Err(ValidationError::InvalidUnionField {
-                        name: variant_name.name().to_string(),
-                        reason: format!(
-                            "does not correspond to variant in tag `{}`",
-                            tag.name.as_str()
-                        ),
-                        location: self.location(variant_name.span()),
-                    })?,
-                }
-                Ok(UnionVariant { name, tref, docs })
+            .enumerate()
+            .map(|(i, case)| {
+                Ok(Case {
+                    name: match &names {
+                        Some(names) => names[i].clone(),
+                        None => Id::new(i.to_string()),
+                    },
+                    tref: Some(self.validate_datatype(&case.item, false, span)?),
+                    docs: case.comments.docs(),
+                })
             })
-            .collect::<Result<Vec<UnionVariant>, _>>()?;
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Variant { tag_repr, cases })
+    }
 
-        let unused_variants = variant_name_uses
-            .iter()
-            .filter(|(_k, used)| **used == false)
-            .map(|(k, _)| k.clone())
-            .collect::<Vec<Id>>();
-        if !unused_variants.is_empty() {
-            Err(ValidationError::InvalidUnionField {
-                name: unused_variants
-                    .iter()
-                    .map(|i| i.as_str())
-                    .collect::<Vec<_>>()
-                    .join(", "),
-                reason: format!("missing variants from tag `{}`", tag.name.as_str()),
-                location: self.location(span),
-            })?;
+    fn validate_variant(
+        &self,
+        syntax: &VariantSyntax,
+        span: wast::Span,
+    ) -> Result<Variant, ValidationError> {
+        let (tag_repr, names) = self.union_tag_repr(&syntax.tag, span)?;
+
+        if let Some(names) = &names {
+            if names.len() != syntax.cases.len() {
+                return Err(ValidationError::UnionSizeMismatch {
+                    expected: names.len(),
+                    found: syntax.cases.len(),
+                    location: self.location(span),
+                });
+            }
         }
-        Ok(UnionDatatype { tag, variants })
+
+        let mut names = names.map(|names| names.into_iter().collect::<HashSet<_>>());
+
+        let cases = syntax
+            .cases
+            .iter()
+            .map(|case| {
+                let name = Id::new(case.item.name.name());
+                if let Some(names) = &mut names {
+                    if !names.remove(&name) {
+                        return Err(ValidationError::InvalidUnionField {
+                            name: name.as_str().to_string(),
+                            location: self.location(case.item.name.span()),
+                            reason: format!("does not correspond to variant in tag `tag`"),
+                        });
+                    }
+                }
+                Ok(Case {
+                    name: Id::new(case.item.name.name()),
+                    tref: match &case.item.ty {
+                        Some(ty) => {
+                            Some(self.validate_datatype(ty, false, case.item.name.span())?)
+                        }
+                        None => None,
+                    },
+                    docs: case.comments.docs(),
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        Ok(Variant { tag_repr, cases })
+    }
+
+    fn union_tag_repr(
+        &self,
+        tag: &Option<Box<TypedefSyntax<'_>>>,
+        span: wast::Span,
+    ) -> Result<(IntRepr, Option<Vec<Id>>), ValidationError> {
+        let ty = match tag {
+            Some(tag) => self.validate_datatype(tag, false, span)?,
+            None => return Ok((IntRepr::U32, None)),
+        };
+        match &*ty.type_() {
+            Type::Variant(e) => {
+                let mut names = Vec::new();
+                for c in e.cases.iter() {
+                    if c.tref.is_some() {
+                        return Err(ValidationError::InvalidUnionTag {
+                            location: self.location(span),
+                            reason: format!("all variant cases should have empty payloads"),
+                        });
+                    }
+                    names.push(c.name.clone());
+                }
+                return Ok((e.tag_repr, Some(names)));
+            }
+            Type::Builtin(BuiltinType::U8) => return Ok((IntRepr::U8, None)),
+            Type::Builtin(BuiltinType::U16) => return Ok((IntRepr::U16, None)),
+            Type::Builtin(BuiltinType::U32) => return Ok((IntRepr::U32, None)),
+            Type::Builtin(BuiltinType::U64) => return Ok((IntRepr::U64, None)),
+            _ => {}
+        }
+
+        Err(ValidationError::WrongKindName {
+            name: "tag".to_string(),
+            location: self.location(span),
+            expected: "enum or builtin",
+            got: ty.type_().kind(),
+        })
     }
 
     fn validate_handle(
