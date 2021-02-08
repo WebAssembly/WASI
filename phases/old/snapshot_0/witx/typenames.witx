@@ -278,7 +278,7 @@
 
 ;;; A region of memory for scatter/gather reads.
 (typename $iovec
-  (struct
+  (record
     ;;; The address of the buffer to be filled.
     (field $buf (@witx pointer u8))
     ;;; The length of the buffer to be filled.
@@ -288,7 +288,7 @@
 
 ;;; A region of memory for scatter/gather writes.
 (typename $ciovec
-  (struct
+  (record
     ;;; The address of the buffer to be written.
     (field $buf (@witx const_pointer u8))
     ;;; The length of the buffer to be written.
@@ -347,7 +347,7 @@
 
 ;;; A directory entry.
 (typename $dirent
-  (struct
+  (record
     ;;; The offset of the next directory entry stored in this directory.
     (field $d_next $dircookie)
     ;;; The serial number of the file referred to by this directory entry.
@@ -397,7 +397,7 @@
 
 ;;; File descriptor attributes.
 (typename $fdstat
-  (struct
+  (record
     ;;; File type.
     (field $fs_filetype $filetype)
     ;;; File descriptor flags.
@@ -455,7 +455,7 @@
 
 ;;; File attributes.
 (typename $filestat
-  (struct
+  (record
     ;;; Device ID of device containing the file.
     (field $dev $device)
     ;;; File serial number.
@@ -506,7 +506,7 @@
 ;;; The contents of an `event` for the `eventtype::fd_read` and
 ;;; `eventtype::fd_write` variants
 (typename $event_fd_readwrite
-  (struct
+  (record
     ;;; The number of bytes available for reading or writing.
     (field $nbytes $filesize)
     ;;; The state of the file descriptor.
@@ -516,7 +516,7 @@
 
 ;;; An event that occurred.
 (typename $event
-  (struct
+  (record
     ;;; User-provided value that got attached to `subscription::userdata`.
     (field $userdata $userdata)
     ;;; If non-zero, an error that occurred while processing the subscription request.
@@ -544,7 +544,7 @@
 
 ;;; The contents of a `subscription` when type is `eventtype::clock`.
 (typename $subscription_clock
-  (struct
+  (record
     ;;; The user-defined unique identifier of the clock.
     (field $identifier $userdata)
     ;;; The clock against which to compare the timestamp.
@@ -562,7 +562,7 @@
 ;;; The contents of a `subscription` when the variant is
 ;;; `eventtype::fd_read` or `eventtype::fd_write`.
 (typename $subscription_fd_readwrite
-  (struct
+  (record
     ;;; The file descriptor on which to wait for it to become ready for reading or writing.
     (field $file_descriptor $fd)
   )
@@ -579,7 +579,7 @@
 
 ;;; Subscription to an event.
 (typename $subscription
-  (struct
+  (record
     ;;; User-provided value that is attached to the subscription in the
     ;;; implementation and returned through `event::userdata`.
     (field $userdata $userdata)
@@ -732,7 +732,7 @@
 
 ;;; The contents of a $prestat when type is `preopentype::dir`.
 (typename $prestat_dir
-  (struct
+  (record
     ;;; The length of the directory name for use with `fd_prestat_dir_name`.
     (field $pr_name_len $size)
   )

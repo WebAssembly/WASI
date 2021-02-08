@@ -1,2 +1,2 @@
 (use "type_a.witx")
-(typename $c (struct (field $first_a $a) (field $second_a $a)))
+(typename $c (record (field $first_a $a) (field $second_a $a)))

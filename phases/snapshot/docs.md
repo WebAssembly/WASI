@@ -400,14 +400,14 @@ Size: 4
 Alignment: 4
 
 ### Supertypes
-## <a href="#iovec" name="iovec"></a> `iovec`: Struct
+## <a href="#iovec" name="iovec"></a> `iovec`: Record
 A region of memory for scatter/gather reads.
 
 Size: 8
 
 Alignment: 4
 
-### Struct members
+### Record members
 - <a href="#iovec.buf" name="iovec.buf"></a> `buf`: `Pointer<u8>`
 The address of the buffer to be filled.
 
@@ -418,14 +418,14 @@ The length of the buffer to be filled.
 
 Offset: 4
 
-## <a href="#ciovec" name="ciovec"></a> `ciovec`: Struct
+## <a href="#ciovec" name="ciovec"></a> `ciovec`: Record
 A region of memory for scatter/gather writes.
 
 Size: 8
 
 Alignment: 4
 
-### Struct members
+### Record members
 - <a href="#ciovec.buf" name="ciovec.buf"></a> `buf`: `ConstPointer<u8>`
 The address of the buffer to be written.
 
@@ -527,14 +527,14 @@ The file descriptor or file refers to a byte-stream socket.
 - <a href="#filetype.symbolic_link" name="filetype.symbolic_link"></a> `symbolic_link`
 The file refers to a symbolic link inode.
 
-## <a href="#dirent" name="dirent"></a> `dirent`: Struct
+## <a href="#dirent" name="dirent"></a> `dirent`: Record
 A directory entry.
 
 Size: 24
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#dirent.d_next" name="dirent.d_next"></a> `d_next`: [`dircookie`](#dircookie)
 The offset of the next directory entry stored in this directory.
 
@@ -606,14 +606,14 @@ Write according to synchronized I/O file integrity completion. In
 addition to synchronizing the data stored in the file, the implementation
 may also synchronously update the file's metadata.
 
-## <a href="#fdstat" name="fdstat"></a> `fdstat`: Struct
+## <a href="#fdstat" name="fdstat"></a> `fdstat`: Record
 File descriptor attributes.
 
 Size: 24
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#fdstat.fs_filetype" name="fdstat.fs_filetype"></a> `fs_filetype`: [`filetype`](#filetype)
 File type.
 
@@ -701,14 +701,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#filestat" name="filestat"></a> `filestat`: Struct
+## <a href="#filestat" name="filestat"></a> `filestat`: Record
 File attributes.
 
 Size: 64
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#filestat.dev" name="filestat.dev"></a> `dev`: [`device`](#device)
 Device ID of device containing the file.
 
@@ -789,7 +789,7 @@ Alignment: 2
 - <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`
 The peer of this socket has closed or disconnected.
 
-## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Struct
+## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Record
 The contents of an [`event`](#event) when type is [`eventtype::fd_read`](#eventtype.fd_read) or
 [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -797,7 +797,7 @@ Size: 16
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#event_fd_readwrite.nbytes" name="event_fd_readwrite.nbytes"></a> `nbytes`: [`filesize`](#filesize)
 The number of bytes available for reading or writing.
 
@@ -808,14 +808,14 @@ The state of the file descriptor.
 
 Offset: 8
 
-## <a href="#event" name="event"></a> `event`: Struct
+## <a href="#event" name="event"></a> `event`: Record
 An event that occurred.
 
 Size: 32
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#event.userdata" name="event.userdata"></a> `userdata`: [`userdata`](#userdata)
 User-provided value that got attached to [`subscription::userdata`](#subscription.userdata).
 
@@ -853,14 +853,14 @@ If set, treat the timestamp provided in
 provided in [`subscription_clock::timeout`](#subscription_clock.timeout) relative to the
 current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
-## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Struct
+## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Record
 The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
 
 Size: 32
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#subscription_clock.id" name="subscription_clock.id"></a> `id`: [`clockid`](#clockid)
 The clock against which to compare the timestamp.
 
@@ -882,7 +882,7 @@ Flags specifying whether the timeout is absolute or relative
 
 Offset: 24
 
-## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Struct
+## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Record
 The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -890,7 +890,7 @@ Size: 4
 
 Alignment: 4
 
-### Struct members
+### Record members
 - <a href="#subscription_fd_readwrite.file_descriptor" name="subscription_fd_readwrite.file_descriptor"></a> `file_descriptor`: [`fd`](#fd)
 The file descriptor on which to wait for it to become ready for reading or writing.
 
@@ -916,14 +916,14 @@ Alignment: 8
 
 - <a href="#subscription_u.fd_write" name="subscription_u.fd_write"></a> `fd_write`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
 
-## <a href="#subscription" name="subscription"></a> `subscription`: Struct
+## <a href="#subscription" name="subscription"></a> `subscription`: Record
 Subscription to an event.
 
 Size: 48
 
 Alignment: 8
 
-### Struct members
+### Record members
 - <a href="#subscription.userdata" name="subscription.userdata"></a> `userdata`: [`userdata`](#userdata)
 User-provided value that is attached to the subscription in the
 implementation and returned through [`event::userdata`](#event.userdata).
@@ -1132,14 +1132,14 @@ Alignment: 1
 - <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
 A pre-opened directory.
 
-## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Struct
+## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Record
 The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
 
 Size: 4
 
 Alignment: 4
 
-### Struct members
+### Record members
 - <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
 The length of the directory name for use with [`fd_prestat_dir_name`](#fd_prestat_dir_name).
 
