@@ -35,7 +35,6 @@ impl Type {
     pub fn passed_by(&self) -> TypePassedBy {
         match self {
             Type::Builtin(b) => match b {
-                BuiltinType::String => TypePassedBy::PointerLengthPair,
                 BuiltinType::U8
                 | BuiltinType::U16
                 | BuiltinType::U32
@@ -43,6 +42,7 @@ impl Type {
                 | BuiltinType::S16
                 | BuiltinType::S32
                 | BuiltinType::Char8
+                | BuiltinType::Char
                 | BuiltinType::USize => TypePassedBy::Value(AtomType::I32),
                 BuiltinType::U64 | BuiltinType::S64 => TypePassedBy::Value(AtomType::I64),
                 BuiltinType::F32 => TypePassedBy::Value(AtomType::F32),

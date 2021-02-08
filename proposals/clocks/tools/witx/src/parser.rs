@@ -20,6 +20,7 @@ mod kw {
 
     wast::custom_keyword!(bitflags);
     wast::custom_keyword!(char8);
+    wast::custom_keyword!(char);
     wast::custom_keyword!(const_pointer);
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
@@ -57,12 +58,12 @@ mod annotation {
 impl Parse<'_> for BuiltinType {
     fn parse(parser: Parser<'_>) -> Result<Self> {
         let mut l = parser.lookahead1();
-        if l.peek::<kw::string>() {
-            parser.parse::<kw::string>()?;
-            Ok(BuiltinType::String)
-        } else if l.peek::<kw::char8>() {
+        if l.peek::<kw::char8>() {
             parser.parse::<kw::char8>()?;
             Ok(BuiltinType::Char8)
+        } else if l.peek::<kw::char>() {
+            parser.parse::<kw::char>()?;
+            Ok(BuiltinType::Char)
         } else if l.peek::<kw::u8>() {
             parser.parse::<kw::u8>()?;
             Ok(BuiltinType::U8)
@@ -101,8 +102,8 @@ impl Parse<'_> for BuiltinType {
 
 impl wast::parser::Peek for BuiltinType {
     fn peek(cursor: wast::parser::Cursor<'_>) -> bool {
-        <kw::string as Peek>::peek(cursor)
-            || <kw::char8 as Peek>::peek(cursor)
+        <kw::char8 as Peek>::peek(cursor)
+            || <kw::char as Peek>::peek(cursor)
             || <kw::u8 as Peek>::peek(cursor)
             || <kw::u16 as Peek>::peek(cursor)
             || <kw::u32 as Peek>::peek(cursor)
@@ -114,10 +115,12 @@ impl wast::parser::Peek for BuiltinType {
             || <kw::f32 as Peek>::peek(cursor)
             || <kw::f64 as Peek>::peek(cursor)
     }
+
     fn display() -> &'static str {
         "builtin type"
     }
 }
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CommentSyntax<'a> {
     pub comments: Vec<&'a str>,
@@ -283,6 +286,7 @@ pub enum TypedefSyntax<'a> {
     ConstPointer(Box<TypedefSyntax<'a>>),
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
+    String,
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
@@ -292,6 +296,9 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
             Ok(TypedefSyntax::Ident(parser.parse()?))
         } else if l.peek::<BuiltinType>() {
             Ok(TypedefSyntax::Builtin(parser.parse()?))
+        } else if l.peek::<kw::string>() {
+            parser.parse::<kw::string>()?;
+            Ok(TypedefSyntax::String)
         } else if l.peek::<wast::LParen>() {
             parser.parens(|parser| {
                 let mut l = parser.lookahead1();

@@ -360,7 +360,13 @@ impl fmt::Display for MdType {
             Self::Record => f.write_fmt(format_args!(": Record"))?,
             Self::Variant => f.write_fmt(format_args!(": Variant"))?,
             Self::Union => f.write_fmt(format_args!(": Union"))?,
-            Self::List { r#type } => f.write_fmt(format_args!(": `List<{}>`", r#type))?,
+            Self::List { r#type } => {
+                if r#type == "char" {
+                    f.write_str(": `string`")?
+                } else {
+                    f.write_fmt(format_args!(": `List<{}>`", r#type))?
+                }
+            }
             Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
             Self::ConstPointer { r#type } => {
                 f.write_fmt(format_args!(": `ConstPointer<{}>`", r#type))?

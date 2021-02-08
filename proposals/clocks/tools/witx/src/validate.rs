@@ -311,6 +311,9 @@ impl DocValidationScope<'_> {
                     Type::ConstPointer(self.validate_datatype(syntax, false, span)?)
                 }
                 TypedefSyntax::Builtin(builtin) => Type::Builtin(*builtin),
+                TypedefSyntax::String => {
+                    Type::List(TypeRef::Value(Rc::new(Type::Builtin(BuiltinType::Char))))
+                }
                 TypedefSyntax::Ident { .. } => unreachable!(),
             }))),
         }
