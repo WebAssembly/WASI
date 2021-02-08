@@ -185,7 +185,6 @@ impl NamedType {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
-    Enum(EnumDatatype),
     Flags(FlagsDatatype),
     Record(RecordDatatype),
     Variant(Variant),
@@ -201,7 +200,6 @@ impl Type {
     pub fn kind(&self) -> &'static str {
         use Type::*;
         match self {
-            Enum(_) => "enum",
             Flags(_) => "flags",
             Record(_) => "record",
             Variant(_) => "variant",
@@ -241,18 +239,6 @@ pub enum IntRepr {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct EnumDatatype {
-    pub repr: IntRepr,
-    pub variants: Vec<EnumVariant>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct EnumVariant {
-    pub name: Id,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FlagsDatatype {
     pub repr: IntRepr,
     pub flags: Vec<FlagsMember>,
@@ -278,6 +264,7 @@ pub struct RecordMember {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Variant {
+    pub tag_repr: IntRepr,
     pub cases: Vec<Case>,
 }
 

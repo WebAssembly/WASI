@@ -4,7 +4,7 @@ use witx::{Id, Representable};
 #[test]
 fn one_variant_union() {
     let d = witx::parse(
-        "(typename $tag (enum u8 $c))
+        "(typename $tag (enum $c))
          (typename $u (union $tag (field $c u8)))",
     );
     assert!(d.is_ok());
@@ -13,14 +13,14 @@ fn one_variant_union() {
 #[test]
 fn two_variant_union() {
     let d1 = witx::parse(
-        "(typename $tag (enum u8 $a $b))
+        "(typename $tag (enum $a $b))
          (typename $u (union $tag (field $a u8) (field $b u16)))",
     );
     assert!(d1.is_ok(), "d1 is ok");
 
     // Fields can come in whatever order:
     let d2 = witx::parse(
-        "(typename $tag (enum u8 $a $b))
+        "(typename $tag (enum $a $b))
          (typename $u (union $tag (field $b u16) (field $a u8)))",
     );
     assert!(d2.is_ok(), "d2 is ok");
@@ -42,7 +42,7 @@ fn two_variant_union() {
 
     // Tag order doesnt matter for validation, but does for rep equality
     let d3 = witx::parse(
-        "(typename $tag (enum u8 $b $a))
+        "(typename $tag (enum $b $a))
          (typename $u (union $tag (field $b u16) (field $a u8)))",
     );
     assert!(d3.is_ok(), "d2 is ok");
@@ -57,13 +57,13 @@ fn two_variant_union() {
 #[test]
 fn empty_variant_unions() {
     let d1 = witx::parse(
-        "(typename $tag (enum u8 $a $b))
+        "(typename $tag (enum $a $b))
          (typename $u (union $tag (empty $a) (field $b u16)))",
     );
     assert!(d1.is_ok(), "d1 is ok");
 
     let d2 = witx::parse(
-        "(typename $tag (enum u8 $a $b))
+        "(typename $tag (enum $a $b))
          (typename $u (union $tag (empty $a) (empty $b)))",
     );
     assert!(d2.is_ok(), "d2 is ok");
@@ -72,7 +72,7 @@ fn empty_variant_unions() {
 #[test]
 fn many_variant_unions() {
     let d1 = witx::parse(
-        "(typename $tag (enum u32 $a $b $c $d $e $f $g $h $i $j $k $l $m))
+        "(typename $tag (enum $a $b $c $d $e $f $g $h $i $j $k $l $m))
          (typename $u
            (union $tag
             (field $a u8)
@@ -114,7 +114,7 @@ fn wrong_kind_tag_union() {
 #[test]
 fn bad_field_unions() {
     let d = witx::parse(
-        "(typename $tag (enum u8 $c))
+        "(typename $tag (enum $c))
          (typename $u (union $tag (field $b u8)))",
     );
     let (name, reason) = union_field_err(d).expect("bad field union 1");
@@ -125,7 +125,7 @@ fn bad_field_unions() {
     );
 
     let d = witx::parse(
-        "(typename $tag (enum u8 $c))
+        "(typename $tag (enum $c))
          (typename $u (union $tag (field $c f32) (field $b u8)))",
     );
     let (name, reason) = union_field_err(d).expect("bad field union 2");
@@ -136,7 +136,7 @@ fn bad_field_unions() {
     );
 
     let d = witx::parse(
-        "(typename $tag (enum u8 $c $d))
+        "(typename $tag (enum $c $d))
          (typename $u (union $tag (field $c f32)))",
     );
     let (name, reason) = union_field_err(d).expect("bad field union 3");

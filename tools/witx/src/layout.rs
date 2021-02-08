@@ -64,7 +64,6 @@ impl Layout for NamedType {
 impl Type {
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
-            Type::Enum(e) => e.repr.mem_size_align(),
             Type::Flags(f) => f.repr.mem_size_align(),
             Type::Record(s) => s.layout(cache),
             Type::Variant(s) => s.mem_size_align(),
@@ -139,10 +138,11 @@ impl Layout for Variant {
     fn mem_size_align(&self) -> SizeAlign {
         let mut max = SizeAlign { size: 0, align: 0 };
         for case in self.cases.iter() {
-            let mut size = BuiltinType::S32.mem_size_align();
+            let mut size = self.tag_repr.mem_size_align();
             if let Some(payload) = &case.tref {
                 size.append_field(&payload.mem_size_align());
             }
+            size.size = align_to(size.size, size.align);
             max.size = max.size.max(size.size);
             max.align = max.align.max(size.align);
         }
