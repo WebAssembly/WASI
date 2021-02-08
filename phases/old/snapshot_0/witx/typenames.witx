@@ -296,8 +296,8 @@
   )
 )
 
-(typename $iovec_array (array $iovec))
-(typename $ciovec_array (array $ciovec))
+(typename $iovec_array (list $iovec))
+(typename $ciovec_array (list $ciovec))
 
 ;;; Relative offset within a file.
 (typename $filedelta s64)

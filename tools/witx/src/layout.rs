@@ -59,7 +59,7 @@ impl Type {
             Type::Struct(s) => s.layout(cache),
             Type::Union(u) => u.layout(cache),
             Type::Handle(h) => h.mem_size_align(),
-            Type::Array { .. } => BuiltinType::String.mem_size_align(),
+            Type::List { .. } => BuiltinType::String.mem_size_align(),
             Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
             Type::Builtin(b) => b.mem_size_align(),
         }
