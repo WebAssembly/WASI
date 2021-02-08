@@ -28,10 +28,11 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [I/O][wasi-io]                                                                 | Dan Gohman                             |
 | [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |
-| [Command-Line][wasi-command-line]                                              | Dan Gohman                             |
+| ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |
 | [Random][wasi-random]                                                          | Dan Gohman                             |
-| [Misc][wasi-misc]                                                              | Dan Gohman                             |
+| [Handle Index][handle-index]                                                   | Dan Gohman                             |
+| [Poll][poll]                                                                   | Dan Gohman                             |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 1 - Feature Proposal (CG)
@@ -51,7 +52,7 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blob/master/Contributing.md) for the most up-to-date information on contributing proposals to standard.
 
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
-[wasi-command-line]: https://github.com/WebAssembly/wasi-classic-command
+[wasi-classic-command]: https://github.com/WebAssembly/wasi-classic-command
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-io]: https://github.com/WebAssembly/wasi-io
@@ -59,3 +60,5 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
+[wasi-handle-index]: https://github.com/WebAssembly/wasi-handle-index
+[wasi-poll]: https://github.com/WebAssembly/wasi-poll
