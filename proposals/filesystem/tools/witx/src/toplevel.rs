@@ -110,7 +110,12 @@ mod test {
         assert_eq!(*b_float.type_(), Type::Builtin(BuiltinType::F64));
 
         let c_int = doc.typename(&Id::new("c_int")).unwrap();
-        assert_eq!(*c_int.type_(), Type::Builtin(BuiltinType::U32));
+        assert_eq!(
+            *c_int.type_(),
+            Type::Builtin(BuiltinType::U32 {
+                lang_ptr_size: false
+            })
+        );
     }
 
     #[test]
@@ -127,7 +132,10 @@ mod test {
         .expect("parse");
 
         let d_char = doc.typename(&Id::new("d_char")).unwrap();
-        assert_eq!(*d_char.type_(), Type::Builtin(BuiltinType::U8));
+        assert_eq!(
+            *d_char.type_(),
+            Type::Builtin(BuiltinType::U8 { lang_c_char: false })
+        );
     }
 
     #[test]

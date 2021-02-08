@@ -13,7 +13,12 @@ fn validate_multimodule() {
 
     // Check that the `a` both modules use is what we expect:
     let type_a = doc.typename(&Id::new("a")).expect("type a exists");
-    assert_eq!(*type_a.type_(), Type::Builtin(BuiltinType::U32));
+    assert_eq!(
+        *type_a.type_(),
+        Type::Builtin(BuiltinType::U32 {
+            lang_ptr_size: false
+        })
+    );
 
     // `b` is a struct with a single member of type `a`
     let type_b = doc.typename(&Id::new("b")).expect("type b exists");
