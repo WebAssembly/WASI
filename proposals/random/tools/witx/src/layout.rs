@@ -68,7 +68,7 @@ impl Type {
             Type::Variant(s) => s.mem_size_align(),
             Type::Union(u) => u.layout(cache),
             Type::Handle(h) => h.mem_size_align(),
-            Type::List { .. } => BuiltinType::String.mem_size_align(),
+            Type::List { .. } => SizeAlign { size: 8, align: 4 }, // Pointer and Length
             Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
             Type::Builtin(b) => b.mem_size_align(),
         }
@@ -242,14 +242,15 @@ impl Layout for HandleDatatype {
 impl Layout for BuiltinType {
     fn mem_size_align(&self) -> SizeAlign {
         match self {
-            BuiltinType::String => SizeAlign { size: 8, align: 4 }, // Pointer and Length
             BuiltinType::U8 | BuiltinType::S8 | BuiltinType::Char8 => {
                 SizeAlign { size: 1, align: 1 }
             }
             BuiltinType::U16 | BuiltinType::S16 => SizeAlign { size: 2, align: 2 },
-            BuiltinType::USize | BuiltinType::U32 | BuiltinType::S32 | BuiltinType::F32 => {
-                SizeAlign { size: 4, align: 4 }
-            }
+            BuiltinType::Char
+            | BuiltinType::USize
+            | BuiltinType::U32
+            | BuiltinType::S32
+            | BuiltinType::F32 => SizeAlign { size: 4, align: 4 },
             BuiltinType::U64 | BuiltinType::S64 | BuiltinType::F64 => {
                 SizeAlign { size: 8, align: 8 }
             }
