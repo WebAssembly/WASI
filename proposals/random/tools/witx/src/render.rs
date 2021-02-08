@@ -120,6 +120,7 @@ impl Type {
             Type::Int(a) => a.to_sexpr(),
             Type::Flags(a) => a.to_sexpr(),
             Type::Record(a) => a.to_sexpr(),
+            Type::Variant(a) => a.to_sexpr(),
             Type::Union(a) => a.to_sexpr(),
             Type::Handle(a) => a.to_sexpr(),
             Type::List(a) => SExpr::Vec(vec![SExpr::word("list"), a.to_sexpr()]),
@@ -201,6 +202,24 @@ impl RecordDatatype {
             })
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, members].concat())
+    }
+}
+
+impl Variant {
+    pub fn to_sexpr(&self) -> SExpr {
+        let header = vec![SExpr::word("variant")];
+        let cases = self
+            .cases
+            .iter()
+            .map(|m| {
+                let mut list = vec![SExpr::word("case"), m.name.to_sexpr()];
+                if let Some(ty) = &m.tref {
+                    list.push(ty.to_sexpr());
+                }
+                SExpr::docs(&m.docs, SExpr::Vec(list))
+            })
+            .collect::<Vec<SExpr>>();
+        SExpr::Vec([header, cases].concat())
     }
 }
 
