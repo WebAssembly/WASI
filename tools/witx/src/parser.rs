@@ -60,21 +60,20 @@ mod annotation {
 impl Parse<'_> for BuiltinType {
     fn parse(parser: Parser<'_>) -> Result<Self> {
         let mut l = parser.lookahead1();
-        if l.peek::<kw::char8>() {
-            parser.parse::<kw::char8>()?;
-            Ok(BuiltinType::Char8)
-        } else if l.peek::<kw::char>() {
+        if l.peek::<kw::char>() {
             parser.parse::<kw::char>()?;
             Ok(BuiltinType::Char)
         } else if l.peek::<kw::u8>() {
             parser.parse::<kw::u8>()?;
-            Ok(BuiltinType::U8)
+            Ok(BuiltinType::U8 { lang_c_char: false })
         } else if l.peek::<kw::u16>() {
             parser.parse::<kw::u16>()?;
             Ok(BuiltinType::U16)
         } else if l.peek::<kw::u32>() {
             parser.parse::<kw::u32>()?;
-            Ok(BuiltinType::U32)
+            Ok(BuiltinType::U32 {
+                lang_ptr_size: false,
+            })
         } else if l.peek::<kw::u64>() {
             parser.parse::<kw::u64>()?;
             Ok(BuiltinType::U64)
@@ -104,8 +103,7 @@ impl Parse<'_> for BuiltinType {
 
 impl wast::parser::Peek for BuiltinType {
     fn peek(cursor: wast::parser::Cursor<'_>) -> bool {
-        <kw::char8 as Peek>::peek(cursor)
-            || <kw::char as Peek>::peek(cursor)
+        <kw::char as Peek>::peek(cursor)
             || <kw::u8 as Peek>::peek(cursor)
             || <kw::u16 as Peek>::peek(cursor)
             || <kw::u32 as Peek>::peek(cursor)
@@ -331,7 +329,14 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                         Ok(TypedefSyntax::Pointer(Box::new(parser.parse()?)))
                     } else if l.peek::<kw::usize>() {
                         parser.parse::<kw::usize>()?;
-                        Ok(TypedefSyntax::Builtin(BuiltinType::USize))
+                        Ok(TypedefSyntax::Builtin(BuiltinType::U32 {
+                            lang_ptr_size: true,
+                        }))
+                    } else if l.peek::<kw::char8>() {
+                        parser.parse::<kw::char8>()?;
+                        Ok(TypedefSyntax::Builtin(BuiltinType::U8 {
+                            lang_c_char: true,
+                        }))
                     } else {
                         Err(l.error())
                     }

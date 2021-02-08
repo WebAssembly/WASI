@@ -211,12 +211,27 @@ impl Type {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BuiltinType {
-    Char8,
     Char,
-    USize,
-    U8,
+    U8 {
+        /// Indicates whether this type is intended to represent the `char`
+        /// type in the C language. The C `char` type is often unsigned, but
+        /// it's language-specific. At an interface-types level this is an
+        /// unsigned byte but binding generators may wish to bind this as the
+        /// language-specific representation for a C character instead.
+        lang_c_char: bool,
+    },
     U16,
-    U32,
+    U32 {
+        /// Indicates that this 32-bit value should actually be considered a
+        /// pointer-like value in language bindings. At the interface types
+        /// layer this is always a 32-bit unsigned value, but binding
+        /// generators may wish to instead bind this as the equivalent of C's
+        /// `size_t` for convenience with other APIs.
+        ///
+        /// This allows witx authors to communicate the intent that the
+        /// argument or return-value is pointer-like.
+        lang_ptr_size: bool,
+    },
     U64,
     S8,
     S16,
@@ -237,9 +252,11 @@ pub enum IntRepr {
 impl IntRepr {
     pub fn to_builtin(&self) -> BuiltinType {
         match self {
-            IntRepr::U8 => BuiltinType::U8,
+            IntRepr::U8 => BuiltinType::U8 { lang_c_char: false },
             IntRepr::U16 => BuiltinType::U16,
-            IntRepr::U32 => BuiltinType::U32,
+            IntRepr::U32 => BuiltinType::U32 {
+                lang_ptr_size: false,
+            },
             IntRepr::U64 => BuiltinType::U64,
         }
     }
