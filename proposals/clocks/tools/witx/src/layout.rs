@@ -56,7 +56,7 @@ impl Type {
             Type::Enum(e) => e.repr.mem_size_align(),
             Type::Int(i) => i.repr.mem_size_align(),
             Type::Flags(f) => f.repr.mem_size_align(),
-            Type::Struct(s) => s.layout(cache),
+            Type::Record(s) => s.layout(cache),
             Type::Union(u) => u.layout(cache),
             Type::Handle(h) => h.mem_size_align(),
             Type::List { .. } => BuiltinType::String.mem_size_align(),
@@ -84,23 +84,23 @@ impl Layout for IntRepr {
     }
 }
 
-pub struct StructMemberLayout<'a> {
-    pub member: &'a StructMember,
+pub struct RecordMemberLayout<'a> {
+    pub member: &'a RecordMember,
     pub offset: usize,
 }
 
-impl StructDatatype {
-    pub fn member_layout(&self) -> Vec<StructMemberLayout> {
+impl RecordDatatype {
+    pub fn member_layout(&self) -> Vec<RecordMemberLayout> {
         self.member_layout_(&mut HashMap::new())
     }
 
-    fn member_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> Vec<StructMemberLayout> {
+    fn member_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> Vec<RecordMemberLayout> {
         let mut members = Vec::new();
         let mut offset = 0;
         for m in self.members.iter() {
             let sa = m.tref.layout(cache);
             offset = align_to(offset, sa.align);
-            members.push(StructMemberLayout { member: m, offset });
+            members.push(RecordMemberLayout { member: m, offset });
             offset += sa.size;
         }
         members
@@ -120,7 +120,7 @@ impl StructDatatype {
     }
 }
 
-impl Layout for StructDatatype {
+impl Layout for RecordDatatype {
     fn mem_size_align(&self) -> SizeAlign {
         let mut cache = HashMap::new();
         self.layout(&mut cache)

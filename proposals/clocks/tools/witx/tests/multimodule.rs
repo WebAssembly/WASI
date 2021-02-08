@@ -18,10 +18,10 @@ fn validate_multimodule() {
     // `b` is a struct with a single member of type `a`
     let type_b = doc.typename(&Id::new("b")).expect("type b exists");
     match &*type_b.type_() {
-        Type::Struct(struct_) => {
-            assert_eq!(struct_.members.len(), 1);
+        Type::Record(record) => {
+            assert_eq!(record.members.len(), 1);
             assert_eq!(
-                struct_.members.get(0).unwrap().tref,
+                record.members.get(0).unwrap().tref,
                 TypeRef::Name(type_a.clone())
             );
         }
@@ -31,13 +31,13 @@ fn validate_multimodule() {
     // `c` is a struct with a two members of type `a`
     let type_c = doc.typename(&Id::new("c")).expect("type c exists");
     match &*type_c.type_() {
-        Type::Struct(struct_) => {
-            assert_eq!(struct_.members.len(), 2);
+        Type::Record(record) => {
+            assert_eq!(record.members.len(), 2);
             assert_eq!(
-                struct_.members.get(0).unwrap().tref,
+                record.members.get(0).unwrap().tref,
                 TypeRef::Name(type_a.clone())
             );
-            assert_eq!(struct_.members.get(1).unwrap().tref, TypeRef::Name(type_a));
+            assert_eq!(record.members.get(1).unwrap().tref, TypeRef::Name(type_a));
         }
         _ => panic!("c is a struct"),
     }
