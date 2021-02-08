@@ -444,13 +444,13 @@ The length of the buffer to be written.
 
 Offset: 4
 
-## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `Array<iovec>`
+## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `List<iovec>`
 
 Size: 8
 
 Alignment: 4
 
-## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `Array<ciovec>`
+## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `List<ciovec>`
 
 Size: 8
 
