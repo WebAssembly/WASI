@@ -187,7 +187,6 @@ impl NamedType {
 pub enum Type {
     Record(RecordDatatype),
     Variant(Variant),
-    Union(UnionDatatype),
     Handle(HandleDatatype),
     List(TypeRef),
     Pointer(TypeRef),
@@ -201,7 +200,6 @@ impl Type {
         match self {
             Record(_) => "record",
             Variant(_) => "variant",
-            Union(_) => "union",
             Handle(_) => "handle",
             List(_) => "list",
             Pointer(_) => "pointer",
@@ -267,19 +265,6 @@ pub struct Variant {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Case {
-    pub name: Id,
-    pub tref: Option<TypeRef>,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UnionDatatype {
-    pub tag: Rc<NamedType>,
-    pub variants: Vec<UnionVariant>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UnionVariant {
     pub name: Id,
     pub tref: Option<TypeRef>,
     pub docs: String,
