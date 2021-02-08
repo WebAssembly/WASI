@@ -116,7 +116,6 @@ impl TypeRef {
 impl Type {
     pub fn to_sexpr(&self) -> SExpr {
         match self {
-            Type::Flags(a) => a.to_sexpr(),
             Type::Record(a) => a.to_sexpr(),
             Type::Variant(a) => a.to_sexpr(),
             Type::Union(a) => a.to_sexpr(),
@@ -134,18 +133,6 @@ impl Type {
             ]),
             Type::Builtin(b) => b.to_sexpr(),
         }
-    }
-}
-
-impl FlagsDatatype {
-    pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("flags"), self.repr.to_sexpr()];
-        let flags = self
-            .flags
-            .iter()
-            .map(|f| SExpr::docs(&f.docs, f.name.to_sexpr()))
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, flags].concat())
     }
 }
 

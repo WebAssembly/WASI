@@ -20,7 +20,7 @@ fn anonymous_types() {
     let pointer_to_enum = witx::parse("(typename $a (@witx pointer (enum $b)))");
     assert!(is_anonymous_record_err(pointer_to_enum));
 
-    let pointer_to_flags = witx::parse("(typename $a (@witx pointer (flags u32 $b)))");
+    let pointer_to_flags = witx::parse("(typename $a (@witx pointer (flags $b)))");
     assert!(is_anonymous_record_err(pointer_to_flags));
 
     let pointer_to_handle = witx::parse("(typename $a (@witx pointer (handle)))");

@@ -185,7 +185,6 @@ impl NamedType {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
-    Flags(FlagsDatatype),
     Record(RecordDatatype),
     Variant(Variant),
     Union(UnionDatatype),
@@ -200,7 +199,6 @@ impl Type {
     pub fn kind(&self) -> &'static str {
         use Type::*;
         match self {
-            Flags(_) => "flags",
             Record(_) => "record",
             Variant(_) => "variant",
             Union(_) => "union",
@@ -238,16 +236,15 @@ pub enum IntRepr {
     U64,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FlagsDatatype {
-    pub repr: IntRepr,
-    pub flags: Vec<FlagsMember>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FlagsMember {
-    pub name: Id,
-    pub docs: String,
+impl IntRepr {
+    pub fn to_builtin(&self) -> BuiltinType {
+        match self {
+            IntRepr::U8 => BuiltinType::U8,
+            IntRepr::U16 => BuiltinType::U16,
+            IntRepr::U32 => BuiltinType::U32,
+            IntRepr::U64 => BuiltinType::U64,
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

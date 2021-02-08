@@ -60,11 +60,10 @@ fn parse_file(
     for t in doc.items {
         match t.item {
             TopLevelSyntax::Decl(d) => {
-                let def = validator
+                validator
                     .scope(&input, &path)
-                    .validate_decl(&d, &t.comments)
+                    .validate_decl(&d, &t.comments, definitions)
                     .map_err(WitxError::Validation)?;
-                definitions.push(def);
             }
             TopLevelSyntax::Use(u) => {
                 parse_file(u.as_ref(), io, root, validator, definitions, parsed)?;

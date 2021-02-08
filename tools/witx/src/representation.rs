@@ -1,6 +1,5 @@
 use crate::{
-    BuiltinType, FlagsDatatype, IntRepr, NamedType, RecordDatatype, Type, TypeRef, UnionDatatype,
-    Variant,
+    BuiltinType, IntRepr, NamedType, RecordDatatype, Type, TypeRef, UnionDatatype, Variant,
 };
 
 // A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
@@ -93,30 +92,6 @@ impl Representable for Variant {
     }
 }
 
-impl Representable for FlagsDatatype {
-    fn representable(&self, by: &Self) -> RepEquality {
-        // Integer representation must be compatible
-        if self.repr.representable(&by.repr) == RepEquality::NotEq {
-            return RepEquality::NotEq;
-        }
-        // For each flag in self, must have flag of same name and position in by:
-        for (ix, f) in self.flags.iter().enumerate() {
-            if let Some(by_f) = by.flags.get(ix) {
-                if by_f.name != f.name {
-                    return RepEquality::NotEq;
-                }
-            } else {
-                return RepEquality::NotEq;
-            }
-        }
-        if by.flags.len() > self.flags.len() {
-            RepEquality::Superset
-        } else {
-            self.repr.representable(&by.repr)
-        }
-    }
-}
-
 impl Representable for RecordDatatype {
     fn representable(&self, by: &Self) -> RepEquality {
         // Records must have exact structural equality - same members, must
@@ -204,7 +179,6 @@ impl Representable for Type {
     fn representable(&self, by: &Self) -> RepEquality {
         match (&self, &by) {
             (Type::Variant(s), Type::Variant(b)) => s.representable(b),
-            (Type::Flags(s), Type::Flags(b)) => s.representable(b),
             (Type::Record(s), Type::Record(b)) => s.representable(b),
             (Type::Union(s), Type::Union(b)) => s.representable(b),
             (Type::Handle(_), Type::Handle(_)) => RepEquality::Eq, // Handles are nominal, not structural
@@ -237,32 +211,11 @@ mod test {
 
     #[test]
     fn different_typenames() {
-        let a = def_type("a", "(typename $a (flags u32 $b $c))");
-        let d = def_type("d", "(typename $d (flags u32 $b $c))");
+        let a = def_type("a", "(typename $a (flags (@witx bitflags u32) $b $c))");
+        let d = def_type("d", "(typename $d (flags (@witx bitflags u32) $b $c))");
 
         assert_eq!(a.representable(&d), RepEquality::Eq);
         assert_eq!(d.representable(&a), RepEquality::Eq);
-    }
-
-    #[test]
-    fn flags() {
-        let base = def_type("a", "(typename $a (flags u32 $b $c))");
-        let extra_flag = def_type("a", "(typename $a (flags u32 $b $c $d))");
-
-        assert_eq!(base.representable(&extra_flag), RepEquality::Superset);
-        assert_eq!(extra_flag.representable(&base), RepEquality::NotEq);
-
-        let different_flagnames = def_type("d", "(typename $d (flags u32 $b $e))");
-        assert_eq!(base.representable(&different_flagnames), RepEquality::NotEq);
-        assert_eq!(different_flagnames.representable(&base), RepEquality::NotEq);
-
-        let smaller_size = def_type("a", "(typename $a (flags u16 $b $c))");
-        assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
-        assert_eq!(
-            smaller_size.representable(&extra_flag),
-            RepEquality::Superset
-        );
-        assert_eq!(base.representable(&smaller_size), RepEquality::NotEq);
     }
 
     #[test]

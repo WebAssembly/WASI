@@ -8,6 +8,7 @@ use crate::{
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
     RepEquality,
 };
+use std::collections::HashMap;
 
 fn heading_from_node(node: &MdNodeRef, levels_down: usize) -> MdHeading {
     MdHeading::new_header(node.borrow().ancestors().len() + levels_down)
@@ -17,6 +18,12 @@ impl ToMarkdown for Document {
     fn generate(&self, node: MdNodeRef) {
         let heading = heading_from_node(&node, 1);
         let types = node.new_child(MdSection::new(heading, "Types"));
+
+        let mut constants_by_name = HashMap::new();
+        for c in self.constants() {
+            constants_by_name.entry(&c.ty).or_insert(Vec::new()).push(c);
+        }
+
         for d in self.typenames() {
             let name = d.name.as_str();
             let child = types.new_child(MdNamedType::new(
@@ -31,6 +38,18 @@ impl ToMarkdown for Document {
                 )
                 .as_str(),
             ));
+            if let Some(constants) = constants_by_name.remove(&d.name) {
+                let heading = heading_from_node(&child, 1);
+                child.new_child(MdSection::new(heading, "Constants"));
+                for constant in constants {
+                    child.new_child(MdNamedType::new(
+                        MdHeading::new_bullet(),
+                        format!("{}.{}", name, constant.name.as_str()).as_str(),
+                        constant.name.as_str(),
+                        &constant.docs,
+                    ));
+                }
+            }
             d.generate(child.clone());
         }
 
@@ -42,7 +61,7 @@ impl ToMarkdown for Document {
             d.generate(child.clone());
         }
 
-        // TODO: document constants
+        assert!(constants_by_name.is_empty());
     }
 }
 
@@ -68,7 +87,6 @@ impl ToMarkdown for NamedType {
 impl ToMarkdown for Type {
     fn generate(&self, node: MdNodeRef) {
         match self {
-            Self::Flags(a) => a.generate(node.clone()),
             Self::Record(a) => a.generate(node.clone()),
             Self::Variant(a) => a.generate(node.clone()),
             Self::Union(a) => a.generate(node.clone()),
@@ -94,32 +112,6 @@ impl ToMarkdown for Type {
                 })
             }
         }
-    }
-}
-
-impl ToMarkdown for FlagsDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Flags"));
-
-        for flag in &self.flags {
-            let name = flag.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                id.as_str(),
-                name,
-                &flag.docs,
-            ));
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Flags {
-            repr: self.repr.type_name().to_owned(),
-        });
     }
 }
 
@@ -357,25 +349,13 @@ impl TypeRef {
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
-                Type::Flags { .. }
-                | Type::Record { .. }
+                Type::Record { .. }
                 | Type::Variant { .. }
                 | Type::Union { .. }
                 | Type::Handle { .. } => {
                     unimplemented!("type_name of anonymous compound datatypes")
                 }
             },
-        }
-    }
-}
-
-impl IntRepr {
-    fn type_name(&self) -> &'static str {
-        match self {
-            IntRepr::U8 => "u8",
-            IntRepr::U16 => "u16",
-            IntRepr::U32 => "u32",
-            IntRepr::U64 => "u64",
         }
     }
 }
