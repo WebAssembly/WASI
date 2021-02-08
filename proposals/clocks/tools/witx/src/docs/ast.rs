@@ -3,11 +3,7 @@ use super::{
     Documentation,
 };
 use crate::{
-    ast::{
-        BuiltinType, Document, EnumDatatype, FlagsDatatype, HandleDatatype, IntDatatype, IntRepr,
-        InterfaceFunc, InterfaceFuncParam, Module, ModuleImport, ModuleImportVariant, NamedType,
-        RecordDatatype, Type, TypeRef, UnionDatatype,
-    },
+    ast::*,
     layout::Layout,
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
     RepEquality,
@@ -74,6 +70,7 @@ impl ToMarkdown for Type {
             Self::Int(a) => a.generate(node.clone()),
             Self::Flags(a) => a.generate(node.clone()),
             Self::Record(a) => a.generate(node.clone()),
+            Self::Variant(a) => a.generate(node.clone()),
             Self::Union(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
             Self::List(a) => {
@@ -199,6 +196,33 @@ impl ToMarkdown for RecordDatatype {
         }
 
         node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Record);
+    }
+}
+
+impl ToMarkdown for Variant {
+    fn generate(&self, node: MdNodeRef) {
+        let heading = heading_from_node(&node, 1);
+        node.new_child(MdSection::new(heading, "Variant cases"));
+
+        for case in self.cases.iter() {
+            let name = case.name.as_str();
+            let id = if let Some(id) = node.any_ref().id() {
+                format!("{}.{}", id, name)
+            } else {
+                name.to_owned()
+            };
+            let n = node.new_child(MdNamedType::new(
+                MdHeading::new_bullet(),
+                id.as_str(),
+                name,
+                format!("{}\n", &case.docs).as_str(),
+            ));
+            if let Some(ty) = &case.tref {
+                ty.generate(n.clone());
+            }
+        }
+
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Variant);
     }
 }
 
@@ -386,6 +410,7 @@ impl TypeRef {
                 | Type::Int { .. }
                 | Type::Flags { .. }
                 | Type::Record { .. }
+                | Type::Variant { .. }
                 | Type::Union { .. }
                 | Type::Handle { .. } => {
                     unimplemented!("type_name of anonymous compound datatypes")

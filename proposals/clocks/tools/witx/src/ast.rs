@@ -181,6 +181,7 @@ pub enum Type {
     Int(IntDatatype),
     Flags(FlagsDatatype),
     Record(RecordDatatype),
+    Variant(Variant),
     Union(UnionDatatype),
     Handle(HandleDatatype),
     List(TypeRef),
@@ -197,6 +198,7 @@ impl Type {
             Int(_) => "int",
             Flags(_) => "flags",
             Record(_) => "record",
+            Variant(_) => "variant",
             Union(_) => "union",
             Handle(_) => "handle",
             List(_) => "list",
@@ -278,6 +280,18 @@ pub struct RecordDatatype {
 pub struct RecordMember {
     pub name: Id,
     pub tref: TypeRef,
+    pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Variant {
+    pub cases: Vec<Case>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Case {
+    pub name: Id,
+    pub tref: Option<TypeRef>,
     pub docs: String,
 }
 
