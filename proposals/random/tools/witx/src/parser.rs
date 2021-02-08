@@ -18,6 +18,7 @@ use wast::parser::{Parse, Parser, Peek, Result};
 mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
+    wast::custom_keyword!(bitflags);
     wast::custom_keyword!(char8);
     wast::custom_keyword!(const_pointer);
     wast::custom_keyword!(f32);
@@ -379,19 +380,30 @@ impl<'a> Parse<'a> for ConstSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
-    pub repr: BuiltinType,
+    pub bitflags_repr: Option<BuiltinType>,
     pub flags: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for FlagsSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::flags>()?;
-        let repr = parser.parse()?;
+        let bitflags_repr = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::bitflags>()?;
+                p.parse()
+            })?)
+        } else {
+            None
+        };
         let mut flags = Vec::new();
         while !parser.is_empty() {
             flags.push(parser.parse()?);
         }
-        Ok(FlagsSyntax { repr, flags })
+        Ok(FlagsSyntax {
+            bitflags_repr,
+            flags,
+        })
     }
 }
 

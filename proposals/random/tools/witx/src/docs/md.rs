@@ -343,7 +343,6 @@ impl MdNamedType {
 // being outright flattened.
 #[derive(Debug)]
 pub(super) enum MdType {
-    Flags { repr: String },
     Record,
     Variant,
     Union,
@@ -358,7 +357,6 @@ pub(super) enum MdType {
 impl fmt::Display for MdType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
             Self::Record => f.write_fmt(format_args!(": Record"))?,
             Self::Variant => f.write_fmt(format_args!(": Variant"))?,
             Self::Union => f.write_fmt(format_args!(": Union"))?,

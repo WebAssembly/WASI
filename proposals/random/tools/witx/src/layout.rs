@@ -64,7 +64,6 @@ impl Layout for NamedType {
 impl Type {
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
-            Type::Flags(f) => f.repr.mem_size_align(),
             Type::Record(s) => s.layout(cache),
             Type::Variant(s) => s.mem_size_align(),
             Type::Union(u) => u.layout(cache),
@@ -85,12 +84,7 @@ impl Layout for Type {
 
 impl Layout for IntRepr {
     fn mem_size_align(&self) -> SizeAlign {
-        match self {
-            IntRepr::U8 => BuiltinType::U8.mem_size_align(),
-            IntRepr::U16 => BuiltinType::U16.mem_size_align(),
-            IntRepr::U32 => BuiltinType::U32.mem_size_align(),
-            IntRepr::U64 => BuiltinType::U64.mem_size_align(),
-        }
+        self.to_builtin().mem_size_align()
     }
 }
 
