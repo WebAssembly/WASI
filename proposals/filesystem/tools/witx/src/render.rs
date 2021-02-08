@@ -77,8 +77,8 @@ impl Id {
 impl BuiltinType {
     pub fn to_sexpr(&self) -> SExpr {
         match self {
-            BuiltinType::String => SExpr::word("string"),
             BuiltinType::Char8 => SExpr::word("char8"),
+            BuiltinType::Char => SExpr::word("char"),
             BuiltinType::USize => SExpr::Vec(vec![SExpr::annot("witx"), SExpr::word("usize")]),
             BuiltinType::U8 => SExpr::word("u8"),
             BuiltinType::U16 => SExpr::word("u16"),

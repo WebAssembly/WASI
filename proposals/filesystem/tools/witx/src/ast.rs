@@ -213,8 +213,8 @@ impl Type {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BuiltinType {
-    String,
     Char8,
+    Char,
     USize,
     U8,
     U16,
