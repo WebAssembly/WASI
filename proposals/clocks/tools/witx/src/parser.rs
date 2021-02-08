@@ -39,6 +39,7 @@ mod kw {
     wast::custom_keyword!(s64);
     wast::custom_keyword!(s8);
     wast::custom_keyword!(string);
+    wast::custom_keyword!(tag);
     wast::custom_keyword!(typename);
     wast::custom_keyword!(u16);
     wast::custom_keyword!(u32);
@@ -333,14 +334,22 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumSyntax<'a> {
-    pub repr: BuiltinType,
+    pub repr: Option<BuiltinType>,
     pub members: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for EnumSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#enum>()?;
-        let repr = parser.parse()?;
+        let repr = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse()
+            })?)
+        } else {
+            None
+        };
         let mut members = Vec::new();
         members.push(parser.parse()?);
         while !parser.is_empty() {

@@ -50,10 +50,14 @@ impl Type {
             },
             Type::List { .. } => TypePassedBy::PointerLengthPair,
             Type::Pointer { .. } | Type::ConstPointer { .. } => TypePassedBy::Value(AtomType::I32),
-            Type::Enum(e) => TypePassedBy::Value(e.repr.into()),
             Type::Flags(f) => TypePassedBy::Value(f.repr.into()),
-            Type::Record { .. } | Type::Variant { .. } | Type::Union { .. } => {
-                TypePassedBy::Pointer
+            Type::Record { .. } | Type::Union { .. } => TypePassedBy::Pointer,
+            Type::Variant(v) => {
+                if v.cases.iter().all(|c| c.tref.is_none()) {
+                    TypePassedBy::Value(v.tag_repr.into())
+                } else {
+                    TypePassedBy::Pointer
+                }
             }
             Type::Handle { .. } => TypePassedBy::Value(AtomType::I32),
         }
