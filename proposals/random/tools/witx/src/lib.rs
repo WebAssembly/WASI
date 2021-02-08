@@ -27,13 +27,13 @@ pub use ast::{
     BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
     FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
     InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
-    ModuleImport, ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef,
+    ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type, TypeRef,
     UnionDatatype, UnionVariant,
 };
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
-pub use layout::{Layout, SizeAlign, StructMemberLayout, UnionLayout};
+pub use layout::{Layout, RecordMemberLayout, SizeAlign, UnionLayout};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use representation::{RepEquality, Representable};

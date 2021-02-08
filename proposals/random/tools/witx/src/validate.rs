@@ -2,13 +2,13 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, StructSyntax, TypedefSyntax, UnionSyntax,
+        ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
         VariantSyntax,
     },
     BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
     HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
     InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypePassedBy, TypeRef,
+    ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type, TypePassedBy, TypeRef,
     UnionDatatype, UnionVariant,
 };
 use std::collections::{hash_map, HashMap};
@@ -43,7 +43,7 @@ pub enum ValidationError {
     #[error("First result type must be pass-by-value")]
     InvalidFirstResultType { location: Location },
     #[error("Anonymous structured types (struct, union, enum, flags, handle) are not permitted")]
-    AnonymousStructure { location: Location },
+    AnonymousRecord { location: Location },
     #[error("Invalid union field `{name}`: {reason}")]
     InvalidUnionField {
         name: String,
@@ -61,7 +61,7 @@ impl ValidationError {
             | Recursive { location, .. }
             | InvalidRepr { location, .. }
             | InvalidFirstResultType { location, .. }
-            | AnonymousStructure { location, .. }
+            | AnonymousRecord { location, .. }
             | InvalidUnionField { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
@@ -239,12 +239,12 @@ impl DocValidationScope<'_> {
             TypedefSyntax::Enum { .. }
             | TypedefSyntax::Int { .. }
             | TypedefSyntax::Flags { .. }
-            | TypedefSyntax::Struct { .. }
+            | TypedefSyntax::Record { .. }
             | TypedefSyntax::Union { .. }
             | TypedefSyntax::Handle { .. }
                 if !named =>
             {
-                Err(ValidationError::AnonymousStructure {
+                Err(ValidationError::AnonymousRecord {
                     location: self.location(span),
                 })
             }
@@ -252,7 +252,7 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::Enum(syntax) => Type::Enum(self.validate_enum(&syntax, span)?),
                 TypedefSyntax::Int(syntax) => Type::Int(self.validate_int(&syntax, span)?),
                 TypedefSyntax::Flags(syntax) => Type::Flags(self.validate_flags(&syntax, span)?),
-                TypedefSyntax::Struct(syntax) => Type::Struct(self.validate_struct(&syntax, span)?),
+                TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
                 TypedefSyntax::Handle(syntax) => Type::Handle(self.validate_handle(syntax, span)?),
                 TypedefSyntax::List(syntax) => {
@@ -332,11 +332,11 @@ impl DocValidationScope<'_> {
         Ok(FlagsDatatype { repr, flags })
     }
 
-    fn validate_struct(
+    fn validate_record(
         &self,
-        syntax: &StructSyntax,
+        syntax: &RecordSyntax,
         _span: wast::Span,
-    ) -> Result<StructDatatype, ValidationError> {
+    ) -> Result<RecordDatatype, ValidationError> {
         let mut member_scope = IdentValidation::new();
         let members = syntax
             .fields
@@ -346,11 +346,11 @@ impl DocValidationScope<'_> {
                     .introduce(f.item.name.name(), self.location(f.item.name.span()))?;
                 let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
                 let docs = f.comments.docs();
-                Ok(StructMember { name, tref, docs })
+                Ok(RecordMember { name, tref, docs })
             })
-            .collect::<Result<Vec<StructMember>, _>>()?;
+            .collect::<Result<Vec<RecordMember>, _>>()?;
 
-        Ok(StructDatatype { members })
+        Ok(RecordDatatype { members })
     }
 
     fn validate_union(

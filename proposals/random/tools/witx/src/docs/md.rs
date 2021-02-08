@@ -163,7 +163,7 @@ impl fmt::Display for MdNodeRef {
     }
 }
 
-/// Struct representing the Markdown tree's root.
+/// Record representing the Markdown tree's root.
 ///
 /// Doesn't render to anything.
 #[derive(Debug, Default)]
@@ -237,7 +237,7 @@ impl fmt::Display for MdHeading {
     }
 }
 
-/// Struct representing a Markdown section without any `docs`, consisting
+/// Record representing a Markdown section without any `docs`, consisting
 /// of only a `header` (e.g., "###"), maybe some referencable `id` (i.e.,
 /// a Markdown link), and some `title`.
 ///
@@ -298,7 +298,7 @@ impl fmt::Display for MdSection {
     }
 }
 
-/// Struct representing a Markdown section representing any `NamedType` element
+/// Record representing a Markdown section representing any `NamedType` element
 /// of the AST.
 /// Consists of:
 /// * `header`, e.g., "###", or "-" for Enum variants, etc.,
@@ -346,7 +346,7 @@ pub(super) enum MdType {
     Enum { repr: String },
     Int { repr: String },
     Flags { repr: String },
-    Struct,
+    Record,
     Union,
     List { r#type: String },
     Pointer { r#type: String },
@@ -362,7 +362,7 @@ impl fmt::Display for MdType {
             Self::Enum { repr } => f.write_fmt(format_args!(": Enum(`{}`)", repr))?,
             Self::Int { repr } => f.write_fmt(format_args!(": Int(`{}`)", repr))?,
             Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
-            Self::Struct => f.write_fmt(format_args!(": Struct"))?,
+            Self::Record => f.write_fmt(format_args!(": Record"))?,
             Self::Union => f.write_fmt(format_args!(": Union"))?,
             Self::List { r#type } => f.write_fmt(format_args!(": `List<{}>`", r#type))?,
             Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
@@ -419,7 +419,7 @@ impl fmt::Display for MdNamedType {
     }
 }
 
-/// Struct representing a Markdown section representing any `InterfaceFunc` element
+/// Record representing a Markdown section representing any `InterfaceFunc` element
 /// of the AST.
 /// Consists of:
 /// * `header`, e.g., "###",

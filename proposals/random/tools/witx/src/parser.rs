@@ -30,9 +30,9 @@ mod kw {
     wast::custom_keyword!(list);
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
+    wast::custom_keyword!(record);
     wast::custom_keyword!(r#const = "const");
     wast::custom_keyword!(r#enum = "enum");
-    wast::custom_keyword!(r#struct = "struct");
     wast::custom_keyword!(r#union = "union");
     wast::custom_keyword!(r#use = "use");
     wast::custom_keyword!(s16);
@@ -272,7 +272,7 @@ pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
     Int(IntSyntax<'a>),
     Flags(FlagsSyntax<'a>),
-    Struct(StructSyntax<'a>),
+    Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
     Handle(HandleSyntax),
     List(Box<TypedefSyntax<'a>>),
@@ -298,8 +298,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Int(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
-                } else if l.peek::<kw::r#struct>() {
-                    Ok(TypedefSyntax::Struct(parser.parse()?))
+                } else if l.peek::<kw::record>() {
+                    Ok(TypedefSyntax::Record(parser.parse()?))
                 } else if l.peek::<kw::r#union>() {
                     Ok(TypedefSyntax::Union(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
@@ -406,19 +406,19 @@ impl<'a> Parse<'a> for FlagsSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct StructSyntax<'a> {
+pub struct RecordSyntax<'a> {
     pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
-impl<'a> Parse<'a> for StructSyntax<'a> {
+impl<'a> Parse<'a> for RecordSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::r#struct>()?;
+        parser.parse::<kw::record>()?;
         let mut fields = Vec::new();
         fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
-        Ok(StructSyntax { fields })
+        Ok(RecordSyntax { fields })
     }
 }
 
