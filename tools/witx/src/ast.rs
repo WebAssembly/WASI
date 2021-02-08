@@ -87,6 +87,13 @@ impl Document {
             _ => None,
         })
     }
+
+    pub fn constants<'a>(&'a self) -> impl Iterator<Item = &'a Constant> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            Definition::Constant(c) => Some(c),
+            _ => None,
+        })
+    }
 }
 
 impl PartialEq for Document {
@@ -108,6 +115,7 @@ impl std::hash::Hash for Document {
 pub enum Definition {
     Typename(Rc<NamedType>),
     Module(Rc<Module>),
+    Constant(Constant),
 }
 
 #[derive(Debug, Clone)]
@@ -178,7 +186,6 @@ impl NamedType {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
     Enum(EnumDatatype),
-    Int(IntDatatype),
     Flags(FlagsDatatype),
     Record(RecordDatatype),
     Variant(Variant),
@@ -195,7 +202,6 @@ impl Type {
         use Type::*;
         match self {
             Enum(_) => "enum",
-            Int(_) => "int",
             Flags(_) => "flags",
             Record(_) => "record",
             Variant(_) => "variant",
@@ -243,19 +249,6 @@ pub struct EnumDatatype {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumVariant {
     pub name: Id,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct IntDatatype {
-    pub repr: IntRepr,
-    pub consts: Vec<IntConst>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct IntConst {
-    pub name: Id,
-    pub value: u64,
     pub docs: String,
 }
 
@@ -443,4 +436,12 @@ pub struct InterfaceFuncParam {
 pub enum InterfaceFuncParamPosition {
     Param(usize),
     Result(usize),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Constant {
+    pub ty: Id,
+    pub name: Id,
+    pub value: u64,
+    pub docs: String,
 }

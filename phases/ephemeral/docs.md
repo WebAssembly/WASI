@@ -480,16 +480,12 @@ Seek relative to current position.
 - <a href="#whence.end" name="whence.end"></a> `end`
 Seek relative to end-of-file.
 
-## <a href="#dircookie" name="dircookie"></a> `dircookie`: Int(`u64`)
+## <a href="#dircookie" name="dircookie"></a> `dircookie`: `u64`
 A reference to the offset of a directory entry.
 
 Size: 8
 
 Alignment: 8
-
-### Consts
-- <a href="#dircookie.start" name="dircookie.start"></a> `start`
-In an `fd_readdir` call, this value signifies the start of the directory.
 
 ## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
 The type for the [`dirent::d_namlen`](#dirent.d_namlen) field of [`dirent`](#dirent).

@@ -323,12 +323,10 @@
 )
 
 ;;; A reference to the offset of a directory entry.
-(typename $dircookie
-  (int u64
-    ;;; In an `fd_readdir` call, this value signifies the start of the directory.
-    (const $start 0)
-  )
-)
+(typename $dircookie u64)
+
+;;; In an `fd_readdir` call, this value signifies the start of the directory.
+(@witx const $dircookie $start 0)
 
 ;;; The type for the `dirent::d_namlen` field of `dirent`.
 (typename $dirnamlen u32)

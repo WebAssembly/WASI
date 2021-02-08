@@ -344,7 +344,6 @@ impl MdNamedType {
 #[derive(Debug)]
 pub(super) enum MdType {
     Enum { repr: String },
-    Int { repr: String },
     Flags { repr: String },
     Record,
     Variant,
@@ -361,7 +360,6 @@ impl fmt::Display for MdType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::Enum { repr } => f.write_fmt(format_args!(": Enum(`{}`)", repr))?,
-            Self::Int { repr } => f.write_fmt(format_args!(": Int(`{}`)", repr))?,
             Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
             Self::Record => f.write_fmt(format_args!(": Record"))?,
             Self::Variant => f.write_fmt(format_args!(": Variant"))?,
