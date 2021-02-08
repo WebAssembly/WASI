@@ -53,7 +53,9 @@ impl Type {
             Type::Enum(e) => TypePassedBy::Value(e.repr.into()),
             Type::Int(i) => TypePassedBy::Value(i.repr.into()),
             Type::Flags(f) => TypePassedBy::Value(f.repr.into()),
-            Type::Record { .. } | Type::Union { .. } => TypePassedBy::Pointer,
+            Type::Record { .. } | Type::Variant { .. } | Type::Union { .. } => {
+                TypePassedBy::Pointer
+            }
             Type::Handle { .. } => TypePassedBy::Value(AtomType::I32),
         }
     }
