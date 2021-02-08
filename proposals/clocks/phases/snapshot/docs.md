@@ -285,14 +285,14 @@ Cross-device link.
 - <a href="#errno.notcapable" name="errno.notcapable"></a> `notcapable`
 Extension: Capabilities insufficient.
 
-## <a href="#rights" name="rights"></a> `rights`: Flags(`u64`)
+## <a href="#rights" name="rights"></a> `rights`: `u64`
 File descriptor rights, determining which actions may be performed.
 
 Size: 8
 
 Alignment: 8
 
-### Flags
+### Constants
 - <a href="#rights.fd_datasync" name="rights.fd_datasync"></a> `fd_datasync`
 The right to invoke [`fd_datasync`](#fd_datasync).
 If [`path_open`](#path_open) is set, includes the right to invoke
@@ -581,14 +581,14 @@ The application expects that it will not access the specified data in the near f
 - <a href="#advice.noreuse" name="advice.noreuse"></a> `noreuse`
 The application expects to access the specified data once and then not reuse it thereafter.
 
-## <a href="#fdflags" name="fdflags"></a> `fdflags`: Flags(`u16`)
+## <a href="#fdflags" name="fdflags"></a> `fdflags`: `u16`
 File descriptor flags.
 
 Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#fdflags.append" name="fdflags.append"></a> `append`
 Append mode: Data written to the file is always appended to the file's end.
 
@@ -643,14 +643,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#fstflags" name="fstflags"></a> `fstflags`: Flags(`u16`)
+## <a href="#fstflags" name="fstflags"></a> `fstflags`: `u16`
 Which file time attributes to adjust.
 
 Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`
 Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
 
@@ -663,25 +663,25 @@ Adjust the last data modification timestamp to the value stored in [`filestat::m
 - <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`
 Adjust the last data modification timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
 
-## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: Flags(`u32`)
+## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: `u32`
 Flags determining the method of how paths are resolved.
 
 Size: 4
 
 Alignment: 4
 
-### Flags
+### Constants
 - <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`
 As long as the resolved path corresponds to a symbolic link, it is expanded.
 
-## <a href="#oflags" name="oflags"></a> `oflags`: Flags(`u16`)
+## <a href="#oflags" name="oflags"></a> `oflags`: `u16`
 Open flags used by [`path_open`](#path_open).
 
 Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#oflags.creat" name="oflags.creat"></a> `creat`
 Create file if it does not exist.
 
@@ -777,7 +777,7 @@ available for reading. This event always triggers for regular files.
 File descriptor [`subscription_fd_readwrite::file_descriptor`](#subscription_fd_readwrite.file_descriptor) has capacity
 available for writing. This event always triggers for regular files.
 
-## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: Flags(`u16`)
+## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: `u16`
 The state of the file descriptor subscribed to with
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -785,7 +785,7 @@ Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`
 The peer of this socket has closed or disconnected.
 
@@ -837,7 +837,7 @@ The contents of the event, if it is an [`eventtype::fd_read`](#eventtype.fd_read
 
 Offset: 16
 
-## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: Flags(`u16`)
+## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: `u16`
 Flags determining how to interpret the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout).
 
@@ -845,7 +845,7 @@ Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#subclockflags.subscription_clock_abstime" name="subclockflags.subscription_clock_abstime"></a> `subscription_clock_abstime`
 If set, treat the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout) as an absolute timestamp of clock
@@ -1074,28 +1074,28 @@ Action: Terminates the process.
 Bad system call.
 Action: Terminates the process.
 
-## <a href="#riflags" name="riflags"></a> `riflags`: Flags(`u16`)
+## <a href="#riflags" name="riflags"></a> `riflags`: `u16`
 Flags provided to [`sock_recv`](#sock_recv).
 
 Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`
 Returns the message without removing it from the socket's receive queue.
 
 - <a href="#riflags.recv_waitall" name="riflags.recv_waitall"></a> `recv_waitall`
 On byte-stream sockets, block until the full amount of data can be returned.
 
-## <a href="#roflags" name="roflags"></a> `roflags`: Flags(`u16`)
+## <a href="#roflags" name="roflags"></a> `roflags`: `u16`
 Flags returned by [`sock_recv`](#sock_recv).
 
 Size: 2
 
 Alignment: 2
 
-### Flags
+### Constants
 - <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`
 Returned by [`sock_recv`](#sock_recv): Message data has been truncated.
 
@@ -1107,14 +1107,14 @@ Size: 2
 
 Alignment: 2
 
-## <a href="#sdflags" name="sdflags"></a> `sdflags`: Flags(`u8`)
+## <a href="#sdflags" name="sdflags"></a> `sdflags`: `u8`
 Which channels on a socket to shut down.
 
 Size: 1
 
 Alignment: 1
 
-### Flags
+### Constants
 - <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`
 Disables further receive operations.
 
