@@ -19,6 +19,7 @@ mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
     wast::custom_keyword!(bitflags);
+    wast::custom_keyword!(case);
     wast::custom_keyword!(char8);
     wast::custom_keyword!(char);
     wast::custom_keyword!(const_pointer);
@@ -48,6 +49,7 @@ mod kw {
     wast::custom_keyword!(u64);
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
+    wast::custom_keyword!(variant);
 }
 
 mod annotation {
@@ -280,6 +282,7 @@ pub enum TypedefSyntax<'a> {
     Flags(FlagsSyntax<'a>),
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
+    Variant(VariantSyntax<'a>),
     Handle(HandleSyntax),
     List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
@@ -310,6 +313,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Record(parser.parse()?))
                 } else if l.peek::<kw::r#union>() {
                     Ok(TypedefSyntax::Union(parser.parse()?))
+                } else if l.peek::<kw::variant>() {
+                    Ok(TypedefSyntax::Variant(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
                 } else if l.peek::<kw::list>() {
@@ -449,47 +454,75 @@ impl<'a> Parse<'a> for FieldSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum VariantSyntax<'a> {
-    Field(FieldSyntax<'a>),
-    Empty(wast::Id<'a>),
-}
-
-impl<'a> Parse<'a> for VariantSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parens(|p| {
-            let mut l = p.lookahead1();
-            if l.peek::<kw::field>() {
-                parser.parse::<kw::field>()?;
-                let name = p.parse()?;
-                let type_ = p.parse()?;
-                Ok(VariantSyntax::Field(FieldSyntax { name, type_ }))
-            } else if l.peek::<kw::empty>() {
-                parser.parse::<kw::empty>()?;
-                let name = p.parse()?;
-                Ok(VariantSyntax::Empty(name))
-            } else {
-                Err(l.error())
-            }
-        })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionSyntax<'a> {
-    pub tag: wast::Id<'a>,
-    pub fields: Vec<Documented<'a, VariantSyntax<'a>>>,
+    pub tag: Option<Box<TypedefSyntax<'a>>>,
+    pub fields: Vec<Documented<'a, TypedefSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for UnionSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#union>()?;
-        let tag = parser.parse()?;
+        let tag = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse().map(Box::new)
+            })?)
+        } else {
+            None
+        };
         let mut fields = Vec::new();
         fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
         Ok(UnionSyntax { tag, fields })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct VariantSyntax<'a> {
+    pub tag: Option<Box<TypedefSyntax<'a>>>,
+    pub cases: Vec<Documented<'a, CaseSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for VariantSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::variant>()?;
+        let tag = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse().map(Box::new)
+            })?)
+        } else {
+            None
+        };
+        let mut cases = Vec::new();
+        while !parser.is_empty() {
+            cases.push(parser.parens(|p| p.parse())?);
+        }
+        Ok(VariantSyntax { tag, cases })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CaseSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub ty: Option<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for CaseSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::case>()?;
+        Ok(CaseSyntax {
+            name: parser.parse()?,
+            ty: if parser.is_empty() {
+                None
+            } else {
+                Some(parser.parse()?)
+            },
+        })
     }
 }
 

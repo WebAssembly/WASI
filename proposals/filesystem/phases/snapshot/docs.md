@@ -896,20 +896,18 @@ The file descriptor on which to wait for it to become ready for reading or writi
 
 Offset: 0
 
-## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Union
+## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Variant
 The contents of a [`subscription`](#subscription).
 
 Size: 40
 
 Alignment: 8
 
-### Union Layout
+### Variant Layout
+- size: 40
+- align: 8
 - tag_size: 1
-- tag_align: 1
-- contents_offset: 8
-- contents_size: 32
-- contents_align: 8
-### Union variants
+### Variant cases
 - <a href="#subscription_u.clock" name="subscription_u.clock"></a> `clock`: [`subscription_clock`](#subscription_clock)
 
 - <a href="#subscription_u.fd_read" name="subscription_u.fd_read"></a> `fd_read`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
@@ -1145,20 +1143,18 @@ The length of the directory name for use with [`fd_prestat_dir_name`](#fd_presta
 
 Offset: 0
 
-## <a href="#prestat" name="prestat"></a> `prestat`: Union
+## <a href="#prestat" name="prestat"></a> `prestat`: Variant
 Information about a pre-opened capability.
 
 Size: 8
 
 Alignment: 4
 
-### Union Layout
+### Variant Layout
+- size: 8
+- align: 4
 - tag_size: 1
-- tag_align: 1
-- contents_offset: 4
-- contents_size: 4
-- contents_align: 4
-### Union variants
+### Variant cases
 - <a href="#prestat.dir" name="prestat.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
 
 # Modules

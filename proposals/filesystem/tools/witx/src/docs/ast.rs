@@ -89,7 +89,6 @@ impl ToMarkdown for Type {
         match self {
             Self::Record(a) => a.generate(node.clone()),
             Self::Variant(a) => a.generate(node.clone()),
-            Self::Union(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
             Self::List(a) => {
                 node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::List {
@@ -144,6 +143,27 @@ impl ToMarkdown for RecordDatatype {
 
 impl ToMarkdown for Variant {
     fn generate(&self, node: MdNodeRef) {
+        if self.cases.iter().any(|c| c.tref.is_some()) {
+            let heading = heading_from_node(&node, 1);
+            node.new_child(MdSection::new(heading, "Variant Layout"));
+
+            let whole = self.mem_size_align();
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("size: {}", whole.size),
+            ));
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("align: {}", whole.align),
+            ));
+
+            let tag = self.tag_repr.mem_size_align();
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("tag_size: {}", tag.size),
+            ));
+        }
+
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Variant cases"));
 
@@ -166,61 +186,6 @@ impl ToMarkdown for Variant {
         }
 
         node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Variant);
-    }
-}
-
-impl ToMarkdown for UnionDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        // Sizes & Alignments
-        let sizes_heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(sizes_heading, "Union Layout"));
-        let union_layout = &self.union_layout();
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("tag_size: {}", union_layout.tag_size).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("tag_align: {}", union_layout.tag_align).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_offset: {}", union_layout.contents_offset).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_size: {}", union_layout.contents_size).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_align: {}", union_layout.contents_align).as_str(),
-        ));
-
-        // Variants
-        let variants_heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(variants_heading, "Union variants"));
-
-        for variant in &self.variants {
-            let name = variant.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            let n = node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                id.as_str(),
-                name,
-                &variant.docs,
-            ));
-            if let Some(ref tref) = variant.tref {
-                tref.generate(n.clone());
-            } else {
-                n.content_ref_mut::<MdNamedType>().r#type = None;
-            }
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Union);
     }
 }
 
@@ -352,10 +317,7 @@ impl TypeRef {
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
-                Type::Record { .. }
-                | Type::Variant { .. }
-                | Type::Union { .. }
-                | Type::Handle { .. } => {
+                Type::Record { .. } | Type::Variant { .. } | Type::Handle { .. } => {
                     unimplemented!("type_name of anonymous compound datatypes")
                 }
             },

@@ -345,7 +345,6 @@ impl MdNamedType {
 pub(super) enum MdType {
     Record,
     Variant,
-    Union,
     List { r#type: String },
     Pointer { r#type: String },
     ConstPointer { r#type: String },
@@ -359,7 +358,6 @@ impl fmt::Display for MdType {
         match self {
             Self::Record => f.write_fmt(format_args!(": Record"))?,
             Self::Variant => f.write_fmt(format_args!(": Variant"))?,
-            Self::Union => f.write_fmt(format_args!(": Union"))?,
             Self::List { r#type } => {
                 if r#type == "char" {
                     f.write_str(": `string`")?
