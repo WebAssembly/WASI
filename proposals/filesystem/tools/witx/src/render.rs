@@ -119,7 +119,7 @@ impl Type {
             Type::Enum(a) => a.to_sexpr(),
             Type::Int(a) => a.to_sexpr(),
             Type::Flags(a) => a.to_sexpr(),
-            Type::Struct(a) => a.to_sexpr(),
+            Type::Record(a) => a.to_sexpr(),
             Type::Union(a) => a.to_sexpr(),
             Type::Handle(a) => a.to_sexpr(),
             Type::List(a) => SExpr::Vec(vec![SExpr::word("list"), a.to_sexpr()]),
@@ -183,9 +183,9 @@ impl FlagsDatatype {
     }
 }
 
-impl StructDatatype {
+impl RecordDatatype {
     pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("struct")];
+        let header = vec![SExpr::word("record")];
         let members = self
             .members
             .iter()

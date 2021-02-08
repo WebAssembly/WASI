@@ -1,5 +1,5 @@
 use crate::{
-    BuiltinType, EnumDatatype, FlagsDatatype, IntRepr, NamedType, StructDatatype, Type, TypeRef,
+    BuiltinType, EnumDatatype, FlagsDatatype, IntRepr, NamedType, RecordDatatype, Type, TypeRef,
     UnionDatatype,
 };
 
@@ -117,9 +117,9 @@ impl Representable for FlagsDatatype {
     }
 }
 
-impl Representable for StructDatatype {
+impl Representable for RecordDatatype {
     fn representable(&self, by: &Self) -> RepEquality {
-        // Structs must have exact structural equality - same members, must
+        // Records must have exact structural equality - same members, must
         // be Eq, in the same order.
         // We would require require a more expressive RepEquality enum to describe which members
         // might be supersets.
@@ -205,7 +205,7 @@ impl Representable for Type {
         match (&self, &by) {
             (Type::Enum(s), Type::Enum(b)) => s.representable(b),
             (Type::Flags(s), Type::Flags(b)) => s.representable(b),
-            (Type::Struct(s), Type::Struct(b)) => s.representable(b),
+            (Type::Record(s), Type::Record(b)) => s.representable(b),
             (Type::Union(s), Type::Union(b)) => s.representable(b),
             (Type::Handle(_), Type::Handle(_)) => RepEquality::Eq, // Handles are nominal, not structural
             (Type::List(s), Type::List(b)) => s.representable(b),
