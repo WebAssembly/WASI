@@ -5,10 +5,10 @@ use crate::{
         ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
         VariantSyntax,
     },
-    BuiltinType, Case, Constant, Definition, Entry, FlagsDatatype, FlagsMember, HandleDatatype, Id,
-    IntRepr, InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
-    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype,
-    RecordMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant, Variant,
+    BuiltinType, Case, Constant, Definition, Entry, HandleDatatype, Id, IntRepr, InterfaceFunc,
+    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
+    ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type,
+    TypePassedBy, TypeRef, UnionDatatype, UnionVariant, Variant,
 };
 use std::collections::{hash_map, HashMap};
 use std::path::Path;
@@ -179,7 +179,8 @@ impl DocValidationScope<'_> {
         &mut self,
         decl: &DeclSyntax,
         comments: &CommentSyntax,
-    ) -> Result<Definition, ValidationError> {
+        definitions: &mut Vec<Definition>,
+    ) -> Result<(), ValidationError> {
         match decl {
             DeclSyntax::Typename(decl) => {
                 let name = self.introduce(&decl.ident)?;
@@ -193,13 +194,32 @@ impl DocValidationScope<'_> {
                 });
                 self.doc
                     .entries
-                    .insert(name, Entry::Typename(Rc::downgrade(&rc_datatype)));
-                Ok(Definition::Typename(rc_datatype))
+                    .insert(name.clone(), Entry::Typename(Rc::downgrade(&rc_datatype)));
+                definitions.push(Definition::Typename(rc_datatype));
+
+                if let TypedefSyntax::Flags(syntax) = &decl.def {
+                    if syntax.bitflags_repr.is_some() {
+                        let mut flags_scope = IdentValidation::new();
+                        let ty = name;
+                        for (i, flag) in syntax.flags.iter().enumerate() {
+                            let name = flags_scope
+                                .introduce(flag.item.name(), self.location(flag.item.span()))?;
+                            let docs = flag.comments.docs();
+                            definitions.push(Definition::Constant(Constant {
+                                ty: ty.clone(),
+                                name,
+                                value: 1 << i,
+                                docs,
+                            }));
+                        }
+                    }
+                }
             }
+
             DeclSyntax::Module(syntax) => {
                 let name = self.introduce(&syntax.name)?;
                 let mut module_validator = ModuleValidation::new(self);
-                let definitions = syntax
+                let decls = syntax
                     .decls
                     .iter()
                     .map(|d| module_validator.validate_decl(&d))
@@ -207,14 +227,14 @@ impl DocValidationScope<'_> {
 
                 let rc_module = Rc::new(Module::new(
                     name.clone(),
-                    definitions,
+                    decls,
                     module_validator.entries,
                     comments.docs(),
                 ));
                 self.doc
                     .entries
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
-                Ok(Definition::Module(rc_module))
+                definitions.push(Definition::Module(rc_module));
             }
 
             DeclSyntax::Const(syntax) => {
@@ -228,14 +248,15 @@ impl DocValidationScope<'_> {
                 let name = scope.introduce(syntax.item.name.name(), loc)?;
                 // TODO: validate `ty` is a integer datatype that `syntax.value`
                 // fits within.
-                Ok(Definition::Constant(Constant {
+                definitions.push(Definition::Constant(Constant {
                     ty,
                     name,
                     value: syntax.item.value,
                     docs: syntax.comments.docs(),
-                }))
+                }));
             }
         }
+        Ok(())
     }
 
     fn validate_datatype(
@@ -276,7 +297,7 @@ impl DocValidationScope<'_> {
             }
             other => Ok(TypeRef::Value(Rc::new(match other {
                 TypedefSyntax::Enum(syntax) => Type::Variant(self.validate_enum(&syntax, span)?),
-                TypedefSyntax::Flags(syntax) => Type::Flags(self.validate_flags(&syntax, span)?),
+                TypedefSyntax::Flags(syntax) => self.validate_flags(&syntax, span)?,
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
                 TypedefSyntax::Handle(syntax) => Type::Handle(self.validate_handle(syntax, span)?),
@@ -326,20 +347,14 @@ impl DocValidationScope<'_> {
         &self,
         syntax: &FlagsSyntax,
         span: wast::Span,
-    ) -> Result<FlagsDatatype, ValidationError> {
-        let mut flags_scope = IdentValidation::new();
-        let repr = self.validate_int_repr(&syntax.repr, span)?;
-        let flags = syntax
-            .flags
-            .iter()
-            .map(|i| {
-                let name = flags_scope.introduce(i.item.name(), self.location(i.item.span()))?;
-                let docs = i.comments.docs();
-                Ok(FlagsMember { name, docs })
-            })
-            .collect::<Result<Vec<FlagsMember>, _>>()?;
-
-        Ok(FlagsDatatype { repr, flags })
+    ) -> Result<Type, ValidationError> {
+        Ok(match &syntax.bitflags_repr {
+            Some(repr) => Type::Builtin(self.validate_int_repr(repr, span)?.to_builtin()),
+            None => {
+                // TODO: auto-translate to a struct-of-bool-fields
+                unimplemented!();
+            }
+        })
     }
 
     fn validate_record(
