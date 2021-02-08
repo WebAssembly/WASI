@@ -570,10 +570,10 @@
 
 ;;; The contents of a `subscription`.
 (typename $subscription_u
-  (union $eventtype
-    (field $clock $subscription_clock)
-    (field $fd_read $subscription_fd_readwrite)
-    (field $fd_write $subscription_fd_readwrite)
+  (union (@witx tag $eventtype)
+    $subscription_clock
+    $subscription_fd_readwrite
+    $subscription_fd_readwrite
   )
 )
 
@@ -740,7 +740,7 @@
 
 ;;; Information about a pre-opened capability.
 (typename $prestat
-  (union $preopentype
-    (field $dir $prestat_dir)
+  (union (@witx tag $preopentype)
+    $prestat_dir
   )
 )
