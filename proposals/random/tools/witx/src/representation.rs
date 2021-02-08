@@ -1,6 +1,5 @@
-use crate::{
-    BuiltinType, IntRepr, NamedType, RecordDatatype, Type, TypeRef, UnionDatatype, Variant,
-};
+use crate::{BuiltinType, IntRepr, NamedType, RecordDatatype, Type, TypeRef, Variant};
+use std::collections::HashMap;
 
 // A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -70,24 +69,41 @@ impl Representable for IntRepr {
 
 impl Representable for Variant {
     fn representable(&self, by: &Self) -> RepEquality {
+        let mut superset = false;
         // Integer representation must be compatible
-        if self.tag_repr.representable(&by.tag_repr) == RepEquality::NotEq {
-            return RepEquality::NotEq;
+        match self.tag_repr.representable(&by.tag_repr) {
+            RepEquality::NotEq => return RepEquality::NotEq,
+            RepEquality::Eq => {}
+            RepEquality::Superset => superset = true,
         }
-        // For each variant in self, must have variant of same name and position in by:
-        for (ix, v) in self.cases.iter().enumerate() {
-            if let Some(by_v) = by.cases.get(ix) {
-                if by_v.name != v.name {
-                    return RepEquality::NotEq;
-                }
-            } else {
-                return RepEquality::NotEq;
+        let other_by_name = by
+            .cases
+            .iter()
+            .map(|c| (&c.name, c))
+            .collect::<HashMap<_, _>>();
+        // For each variant in self, must have variant of same name in by:
+        for v in self.cases.iter() {
+            let other_ty = match other_by_name.get(&v.name) {
+                Some(other) => &other.tref,
+                None => return RepEquality::NotEq,
+            };
+            match (&v.tref, other_ty) {
+                (Some(me), Some(other)) => match me.representable(other) {
+                    RepEquality::NotEq => return RepEquality::NotEq,
+                    RepEquality::Eq => {}
+                    RepEquality::Superset => superset = true,
+                },
+                // We added fields, that's not ok
+                (Some(_), None) => return RepEquality::NotEq,
+                // Fields were deleted, that's ok
+                (None, Some(_)) => superset = true,
+                (None, None) => {}
             }
         }
-        if by.cases.len() > self.cases.len() {
+        if superset || self.cases.len() < by.cases.len() {
             RepEquality::Superset
         } else {
-            self.tag_repr.representable(&by.tag_repr)
+            RepEquality::Eq
         }
     }
 }
@@ -113,56 +129,6 @@ impl Representable for RecordDatatype {
     }
 }
 
-impl Representable for UnionDatatype {
-    fn representable(&self, by: &Self) -> RepEquality {
-        // Unions must have equal variants, by name (independent of order). If `by` has extra
-        // variants, its a superset.
-        // We would require require a more expressive RepEquality enum to describe which variants
-        // might be supersets.
-        if self.variants.len() > by.variants.len() {
-            return RepEquality::NotEq;
-        }
-        for v in self.variants.iter() {
-            if let Some(byv) = by.variants.iter().find(|byv| byv.name == v.name) {
-                if v.tref.is_none() && byv.tref.is_none() {
-                    // Both empty is OK
-                } else if v.tref.is_some() && byv.tref.is_some() {
-                    if v.tref
-                        .as_ref()
-                        .unwrap()
-                        .type_()
-                        .representable(&*byv.tref.as_ref().unwrap().type_())
-                        != RepEquality::Eq
-                    {
-                        // Fields must be Eq
-                        return RepEquality::NotEq;
-                    }
-                } else {
-                    // Either one empty means not representable
-                    return RepEquality::NotEq;
-                }
-            } else {
-                return RepEquality::NotEq;
-            }
-        }
-        if by.variants.len() > self.variants.len() {
-            // By is a superset of self only if the tags are as well:
-            if self.tag.type_().representable(&*by.tag.type_()) == RepEquality::Superset {
-                RepEquality::Superset
-            } else {
-                RepEquality::NotEq
-            }
-        } else {
-            // By and self have matching variants, so they are equal if tags are:
-            if self.tag.type_().representable(&*by.tag.type_()) == RepEquality::Eq {
-                RepEquality::Eq
-            } else {
-                RepEquality::NotEq
-            }
-        }
-    }
-}
-
 impl Representable for TypeRef {
     fn representable(&self, by: &Self) -> RepEquality {
         self.type_().representable(&*by.type_())
@@ -180,7 +146,6 @@ impl Representable for Type {
         match (&self, &by) {
             (Type::Variant(s), Type::Variant(b)) => s.representable(b),
             (Type::Record(s), Type::Record(b)) => s.representable(b),
-            (Type::Union(s), Type::Union(b)) => s.representable(b),
             (Type::Handle(_), Type::Handle(_)) => RepEquality::Eq, // Handles are nominal, not structural
             (Type::List(s), Type::List(b)) => s.representable(b),
             (Type::Pointer(s), Type::Pointer(b)) => s.representable(b),
@@ -239,12 +204,12 @@ mod test {
         let base = def_type(
             "a",
             "(typename $tag (enum (@witx tag u8) $b $c))
-            (typename $a (union $tag (field $b u32) (field $c f32)))",
+            (typename $a (union (@witx tag $tag) u32 f32))",
         );
         let extra_variant = def_type(
             "a",
             "(typename $tag (enum (@witx tag u8) $b $c $d))
-            (typename $a (union $tag (field $b u32) (field $c f32) (field $d f64)))",
+            (typename $a (union (@witx tag $tag) u32 f32 f64))",
         );
 
         assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
@@ -253,7 +218,7 @@ mod test {
         let other_ordering = def_type(
             "a",
             "(typename $tag (enum (@witx tag u8) $b $c))
-            (typename $a (union $tag (field $c f32) (field $b u32)))",
+            (typename $a (variant (@witx tag $tag) (case $c f32) (case $b u32)))",
         );
         assert_eq!(base.representable(&other_ordering), RepEquality::Eq);
         assert_eq!(other_ordering.representable(&base), RepEquality::Eq);

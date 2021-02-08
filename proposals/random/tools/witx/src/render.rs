@@ -118,7 +118,6 @@ impl Type {
         match self {
             Type::Record(a) => a.to_sexpr(),
             Type::Variant(a) => a.to_sexpr(),
-            Type::Union(a) => a.to_sexpr(),
             Type::Handle(a) => a.to_sexpr(),
             Type::List(a) => SExpr::Vec(vec![SExpr::word("list"), a.to_sexpr()]),
             Type::Pointer(p) => SExpr::Vec(vec![
@@ -172,6 +171,11 @@ impl Variant {
             }
         } else {
             list.push(SExpr::word("variant"));
+            list.push(SExpr::Vec(vec![
+                SExpr::word("@witx"),
+                SExpr::word("tag"),
+                self.tag_repr.to_sexpr(),
+            ]));
             for case in self.cases.iter() {
                 let mut case_expr = vec![SExpr::word("case"), case.name.to_sexpr()];
                 if let Some(ty) = &case.tref {
@@ -184,39 +188,12 @@ impl Variant {
     }
 }
 
-impl UnionDatatype {
-    pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("union"), self.tag.name.to_sexpr()];
-        let variants = self
-            .variants
-            .iter()
-            .map(|v| {
-                if let Some(ref tref) = v.tref {
-                    SExpr::docs(
-                        &v.docs,
-                        SExpr::Vec(vec![
-                            SExpr::word("field"),
-                            v.name.to_sexpr(),
-                            tref.to_sexpr(),
-                        ]),
-                    )
-                } else {
-                    SExpr::docs(
-                        &v.docs,
-                        SExpr::Vec(vec![SExpr::word("empty"), v.name.to_sexpr()]),
-                    )
-                }
-            })
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, variants].concat())
-    }
-}
-
 impl HandleDatatype {
     pub fn to_sexpr(&self) -> SExpr {
         SExpr::Vec(vec![SExpr::word("handle")])
     }
 }
+
 impl IntRepr {
     pub fn to_sexpr(&self) -> SExpr {
         match self {

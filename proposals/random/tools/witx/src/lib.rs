@@ -27,7 +27,7 @@ pub use ast::*;
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
-pub use layout::{Layout, RecordMemberLayout, SizeAlign, UnionLayout};
+pub use layout::{Layout, RecordMemberLayout, SizeAlign};
 pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use representation::{RepEquality, Representable};
