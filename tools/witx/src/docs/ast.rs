@@ -6,7 +6,7 @@ use crate::{
     ast::{
         BuiltinType, Document, EnumDatatype, FlagsDatatype, HandleDatatype, IntDatatype, IntRepr,
         InterfaceFunc, InterfaceFuncParam, Module, ModuleImport, ModuleImportVariant, NamedType,
-        StructDatatype, Type, TypeRef, UnionDatatype,
+        RecordDatatype, Type, TypeRef, UnionDatatype,
     },
     layout::Layout,
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
@@ -73,7 +73,7 @@ impl ToMarkdown for Type {
             Self::Enum(a) => a.generate(node.clone()),
             Self::Int(a) => a.generate(node.clone()),
             Self::Flags(a) => a.generate(node.clone()),
-            Self::Struct(a) => a.generate(node.clone()),
+            Self::Record(a) => a.generate(node.clone()),
             Self::Union(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
             Self::List(a) => {
@@ -175,10 +175,10 @@ impl ToMarkdown for FlagsDatatype {
     }
 }
 
-impl ToMarkdown for StructDatatype {
+impl ToMarkdown for RecordDatatype {
     fn generate(&self, node: MdNodeRef) {
         let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Struct members"));
+        node.new_child(MdSection::new(heading, "Record members"));
 
         for member_layout in &self.member_layout() {
             let member = member_layout.member;
@@ -198,7 +198,7 @@ impl ToMarkdown for StructDatatype {
             member.tref.generate(n.clone());
         }
 
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Struct);
+        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Record);
     }
 }
 
@@ -385,7 +385,7 @@ impl TypeRef {
                 Type::Enum { .. }
                 | Type::Int { .. }
                 | Type::Flags { .. }
-                | Type::Struct { .. }
+                | Type::Record { .. }
                 | Type::Union { .. }
                 | Type::Handle { .. } => {
                     unimplemented!("type_name of anonymous compound datatypes")
