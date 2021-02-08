@@ -323,8 +323,8 @@ impl ToMarkdown for InterfaceFuncParam {
 impl BuiltinType {
     pub fn type_name(&self) -> &'static str {
         match self {
-            BuiltinType::String => "string",
             BuiltinType::Char8 => "char8",
+            BuiltinType::Char => "char",
             BuiltinType::USize => "usize",
             BuiltinType::U8 => "u8",
             BuiltinType::U16 => "u16",
@@ -345,7 +345,10 @@ impl TypeRef {
         match self {
             TypeRef::Name(n) => n.name.as_str().to_string(),
             TypeRef::Value(ref v) => match &**v {
-                Type::List(a) => format!("List<{}>", a.type_name()),
+                Type::List(a) => match &*a.type_() {
+                    Type::Builtin(BuiltinType::Char) => "string".to_string(),
+                    _ => format!("List<{}>", a.type_name()),
+                },
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
