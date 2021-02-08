@@ -116,7 +116,6 @@ impl TypeRef {
 impl Type {
     pub fn to_sexpr(&self) -> SExpr {
         match self {
-            Type::Enum(a) => a.to_sexpr(),
             Type::Flags(a) => a.to_sexpr(),
             Type::Record(a) => a.to_sexpr(),
             Type::Variant(a) => a.to_sexpr(),
@@ -135,18 +134,6 @@ impl Type {
             ]),
             Type::Builtin(b) => b.to_sexpr(),
         }
-    }
-}
-
-impl EnumDatatype {
-    pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("enum"), self.repr.to_sexpr()];
-        let variants = self
-            .variants
-            .iter()
-            .map(|v| SExpr::docs(&v.docs, v.name.to_sexpr()))
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, variants].concat())
     }
 }
 
@@ -185,19 +172,28 @@ impl RecordDatatype {
 
 impl Variant {
     pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("variant")];
-        let cases = self
-            .cases
-            .iter()
-            .map(|m| {
-                let mut list = vec![SExpr::word("case"), m.name.to_sexpr()];
-                if let Some(ty) = &m.tref {
-                    list.push(ty.to_sexpr());
+        let mut list = Vec::new();
+        if self.cases.iter().all(|c| c.tref.is_none()) {
+            list.push(SExpr::word("enum"));
+            list.push(SExpr::Vec(vec![
+                SExpr::word("@witx"),
+                SExpr::word("tag"),
+                self.tag_repr.to_sexpr(),
+            ]));
+            for case in self.cases.iter() {
+                list.push(SExpr::docs(&case.docs, case.name.to_sexpr()));
+            }
+        } else {
+            list.push(SExpr::word("variant"));
+            for case in self.cases.iter() {
+                let mut case_expr = vec![SExpr::word("case"), case.name.to_sexpr()];
+                if let Some(ty) = &case.tref {
+                    case_expr.push(ty.to_sexpr());
                 }
-                SExpr::docs(&m.docs, SExpr::Vec(list))
-            })
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, cases].concat())
+                list.push(SExpr::docs(&case.docs, SExpr::Vec(case_expr)));
+            }
+        }
+        SExpr::Vec(list)
     }
 }
 
