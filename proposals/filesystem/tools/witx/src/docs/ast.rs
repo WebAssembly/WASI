@@ -41,6 +41,8 @@ impl ToMarkdown for Document {
             let child = modules.new_child(content);
             d.generate(child.clone());
         }
+
+        // TODO: document constants
     }
 }
 
@@ -67,7 +69,6 @@ impl ToMarkdown for Type {
     fn generate(&self, node: MdNodeRef) {
         match self {
             Self::Enum(a) => a.generate(node.clone()),
-            Self::Int(a) => a.generate(node.clone()),
             Self::Flags(a) => a.generate(node.clone()),
             Self::Record(a) => a.generate(node.clone()),
             Self::Variant(a) => a.generate(node.clone()),
@@ -118,29 +119,6 @@ impl ToMarkdown for EnumDatatype {
         }
 
         node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Enum {
-            repr: self.repr.type_name().to_owned(),
-        });
-    }
-}
-
-impl ToMarkdown for IntDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Consts"));
-
-        for r#const in &self.consts {
-            let name = r#const.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            let tt = MdNamedType::new(MdHeading::new_bullet(), id.as_str(), name, &r#const.docs);
-            // TODO handle r#const.value
-            node.new_child(tt);
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Int {
             repr: self.repr.type_name().to_owned(),
         });
     }
@@ -407,7 +385,6 @@ impl TypeRef {
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
                 Type::Enum { .. }
-                | Type::Int { .. }
                 | Type::Flags { .. }
                 | Type::Record { .. }
                 | Type::Variant { .. }
