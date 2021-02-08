@@ -65,7 +65,6 @@ impl Type {
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
             Type::Enum(e) => e.repr.mem_size_align(),
-            Type::Int(i) => i.repr.mem_size_align(),
             Type::Flags(f) => f.repr.mem_size_align(),
             Type::Record(s) => s.layout(cache),
             Type::Variant(s) => s.mem_size_align(),

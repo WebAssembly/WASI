@@ -117,7 +117,6 @@ impl Type {
     pub fn to_sexpr(&self) -> SExpr {
         match self {
             Type::Enum(a) => a.to_sexpr(),
-            Type::Int(a) => a.to_sexpr(),
             Type::Flags(a) => a.to_sexpr(),
             Type::Record(a) => a.to_sexpr(),
             Type::Variant(a) => a.to_sexpr(),
@@ -148,27 +147,6 @@ impl EnumDatatype {
             .map(|v| SExpr::docs(&v.docs, v.name.to_sexpr()))
             .collect::<Vec<SExpr>>();
         SExpr::Vec([header, variants].concat())
-    }
-}
-
-impl IntDatatype {
-    fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("int"), self.repr.to_sexpr()];
-        let consts = self
-            .consts
-            .iter()
-            .map(|v| {
-                SExpr::docs(
-                    &v.docs,
-                    SExpr::Vec(vec![
-                        SExpr::word("const"),
-                        v.name.to_sexpr(),
-                        SExpr::word(&format!("{}", v.value)),
-                    ]),
-                )
-            })
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, consts].concat())
     }
 }
 

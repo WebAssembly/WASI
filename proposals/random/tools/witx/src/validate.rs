@@ -2,11 +2,11 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, IntSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
+        ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
         VariantSyntax,
     },
-    BuiltinType, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype, FlagsMember,
-    HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc, InterfaceFuncParam,
+    BuiltinType, Constant, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
+    FlagsMember, HandleDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
     InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
     ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type, TypePassedBy, TypeRef,
     UnionDatatype, UnionVariant,
@@ -121,6 +121,7 @@ impl IdentValidation {
 pub struct DocValidation {
     scope: IdentValidation,
     pub entries: HashMap<Id, Entry>,
+    constant_scopes: HashMap<Id, IdentValidation>,
 }
 
 pub struct DocValidationScope<'a> {
@@ -134,6 +135,7 @@ impl DocValidation {
         Self {
             scope: IdentValidation::new(),
             entries: HashMap::new(),
+            constant_scopes: HashMap::new(),
         }
     }
 
@@ -208,6 +210,25 @@ impl DocValidationScope<'_> {
                     .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
                 Ok(Definition::Module(rc_module))
             }
+
+            DeclSyntax::Const(syntax) => {
+                let ty = Id::new(syntax.item.ty.name());
+                let loc = self.location(syntax.item.name.span());
+                let scope = self
+                    .doc
+                    .constant_scopes
+                    .entry(ty.clone())
+                    .or_insert_with(IdentValidation::new);
+                let name = scope.introduce(syntax.item.name.name(), loc)?;
+                // TODO: validate `ty` is a integer datatype that `syntax.value`
+                // fits within.
+                Ok(Definition::Constant(Constant {
+                    ty,
+                    name,
+                    value: syntax.item.value,
+                    docs: syntax.comments.docs(),
+                }))
+            }
         }
     }
 
@@ -237,7 +258,6 @@ impl DocValidationScope<'_> {
                 }
             }
             TypedefSyntax::Enum { .. }
-            | TypedefSyntax::Int { .. }
             | TypedefSyntax::Flags { .. }
             | TypedefSyntax::Record { .. }
             | TypedefSyntax::Union { .. }
@@ -250,7 +270,6 @@ impl DocValidationScope<'_> {
             }
             other => Ok(TypeRef::Value(Rc::new(match other {
                 TypedefSyntax::Enum(syntax) => Type::Enum(self.validate_enum(&syntax, span)?),
-                TypedefSyntax::Int(syntax) => Type::Int(self.validate_int(&syntax, span)?),
                 TypedefSyntax::Flags(syntax) => Type::Flags(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
@@ -288,28 +307,6 @@ impl DocValidationScope<'_> {
             .collect::<Result<Vec<EnumVariant>, _>>()?;
 
         Ok(EnumDatatype { repr, variants })
-    }
-
-    fn validate_int(
-        &self,
-        syntax: &IntSyntax,
-        span: wast::Span,
-    ) -> Result<IntDatatype, ValidationError> {
-        let mut int_scope = IdentValidation::new();
-        let repr = self.validate_int_repr(&syntax.repr, span)?;
-        let consts = syntax
-            .consts
-            .iter()
-            .map(|i| {
-                let name =
-                    int_scope.introduce(i.item.name.name(), self.location(i.item.name.span()))?;
-                let value = i.item.value;
-                let docs = i.comments.docs();
-                Ok(IntConst { name, value, docs })
-            })
-            .collect::<Result<Vec<IntConst>, _>>()?;
-
-        Ok(IntDatatype { repr, consts })
     }
 
     fn validate_flags(
