@@ -23,13 +23,7 @@ mod toplevel;
 /// Validate declarations into ast
 mod validate;
 
-pub use ast::{
-    BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
-    FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
-    InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
-    ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type, TypeRef,
-    UnionDatatype, UnionVariant,
-};
+pub use ast::*;
 pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
