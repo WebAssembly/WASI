@@ -151,7 +151,7 @@
   (@interface func (export "prestat_dir_name")
     (param $fd $fd)
     ;;; A buffer into which to write the preopened directory name.
-    (param $path (@witx pointer char8))
+    (param $path (@witx pointer (@witx char8)))
     (param $path_len $size)
     (result $error $errno)
   )

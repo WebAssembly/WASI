@@ -1,5 +1,5 @@
 # Types
-## <a href="#size" name="size"></a> `size`: `usize`
+## <a href="#size" name="size"></a> `size`: `u32`
 An array size.
 
 Note: This is similar to `size_t` in POSIX.
@@ -1097,14 +1097,14 @@ When type is [`preopentype::dir`](#preopentype.dir):
 
 ---
 
-#### <a href="#get" name="get"></a> `get(argv: Pointer<Pointer<char8>>, argv_buf: Pointer<char8>) -> errno`
+#### <a href="#get" name="get"></a> `get(argv: Pointer<Pointer<u8>>, argv_buf: Pointer<u8>) -> errno`
 Read command-line argument data.
 The size of the array should match that returned by [`sizes_get`](#sizes_get)
 
 ##### Params
-- <a href="#get.argv" name="get.argv"></a> `argv`: `Pointer<Pointer<char8>>`
+- <a href="#get.argv" name="get.argv"></a> `argv`: `Pointer<Pointer<u8>>`
 
-- <a href="#get.argv_buf" name="get.argv_buf"></a> `argv_buf`: `Pointer<char8>`
+- <a href="#get.argv_buf" name="get.argv_buf"></a> `argv_buf`: `Pointer<u8>`
 
 ##### Results
 - <a href="#get.error" name="get.error"></a> `error`: [`errno`](#errno)
@@ -1175,14 +1175,14 @@ The time value of the clock.
 
 ---
 
-#### <a href="#get" name="get"></a> `get(environ: Pointer<Pointer<char8>>, environ_buf: Pointer<char8>) -> errno`
+#### <a href="#get" name="get"></a> `get(environ: Pointer<Pointer<u8>>, environ_buf: Pointer<u8>) -> errno`
 Read environment variable data.
 The sizes of the buffers should match that returned by [`sizes_get`](#sizes_get).
 
 ##### Params
-- <a href="#get.environ" name="get.environ"></a> `environ`: `Pointer<Pointer<char8>>`
+- <a href="#get.environ" name="get.environ"></a> `environ`: `Pointer<Pointer<u8>>`
 
-- <a href="#get.environ_buf" name="get.environ_buf"></a> `environ_buf`: `Pointer<char8>`
+- <a href="#get.environ_buf" name="get.environ_buf"></a> `environ_buf`: `Pointer<u8>`
 
 ##### Results
 - <a href="#get.error" name="get.error"></a> `error`: [`errno`](#errno)
@@ -1443,13 +1443,13 @@ The buffer where the description is stored.
 
 ---
 
-#### <a href="#prestat_dir_name" name="prestat_dir_name"></a> `prestat_dir_name(fd: fd, path: Pointer<char8>, path_len: size) -> errno`
+#### <a href="#prestat_dir_name" name="prestat_dir_name"></a> `prestat_dir_name(fd: fd, path: Pointer<u8>, path_len: size) -> errno`
 Return a description of the given preopened file descriptor.
 
 ##### Params
 - <a href="#prestat_dir_name.fd" name="prestat_dir_name.fd"></a> `fd`: [`fd`](#fd)
 
-- <a href="#prestat_dir_name.path" name="prestat_dir_name.path"></a> `path`: `Pointer<char8>`
+- <a href="#prestat_dir_name.path" name="prestat_dir_name.path"></a> `path`: `Pointer<u8>`
 A buffer into which to write the preopened directory name.
 
 - <a href="#prestat_dir_name.path_len" name="prestat_dir_name.path_len"></a> `path_len`: [`size`](#size)
@@ -1806,7 +1806,7 @@ The file descriptor of the file that has been opened.
 
 ---
 
-#### <a href="#readlink" name="readlink"></a> `readlink(fd: fd, path: string, buf: Pointer<char8>, buf_len: size) -> (errno, size)`
+#### <a href="#readlink" name="readlink"></a> `readlink(fd: fd, path: string, buf: Pointer<u8>, buf_len: size) -> (errno, size)`
 Read the contents of a symbolic link.
 Note: This is similar to `readlinkat` in POSIX.
 
@@ -1816,7 +1816,7 @@ Note: This is similar to `readlinkat` in POSIX.
 - <a href="#readlink.path" name="readlink.path"></a> `path`: `string`
 The path of the symbolic link from which to read.
 
-- <a href="#readlink.buf" name="readlink.buf"></a> `buf`: `Pointer<char8>`
+- <a href="#readlink.buf" name="readlink.buf"></a> `buf`: `Pointer<u8>`
 The buffer to which to write the contents of the symbolic link.
 
 - <a href="#readlink.buf_len" name="readlink.buf_len"></a> `buf_len`: [`size`](#size)

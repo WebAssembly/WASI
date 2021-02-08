@@ -493,9 +493,9 @@ impl DocValidationScope<'_> {
                 }
                 return Ok((e.tag_repr, Some(names)));
             }
-            Type::Builtin(BuiltinType::U8) => return Ok((IntRepr::U8, None)),
+            Type::Builtin(BuiltinType::U8 { .. }) => return Ok((IntRepr::U8, None)),
             Type::Builtin(BuiltinType::U16) => return Ok((IntRepr::U16, None)),
-            Type::Builtin(BuiltinType::U32) => return Ok((IntRepr::U32, None)),
+            Type::Builtin(BuiltinType::U32 { .. }) => return Ok((IntRepr::U32, None)),
             Type::Builtin(BuiltinType::U64) => return Ok((IntRepr::U64, None)),
             _ => {}
         }
@@ -522,9 +522,9 @@ impl DocValidationScope<'_> {
         span: wast::Span,
     ) -> Result<IntRepr, ValidationError> {
         match type_ {
-            BuiltinType::U8 => Ok(IntRepr::U8),
+            BuiltinType::U8 { .. } => Ok(IntRepr::U8),
             BuiltinType::U16 => Ok(IntRepr::U16),
-            BuiltinType::U32 => Ok(IntRepr::U32),
+            BuiltinType::U32 { .. } => Ok(IntRepr::U32),
             BuiltinType::U64 => Ok(IntRepr::U64),
             _ => Err(ValidationError::InvalidRepr {
                 repr: type_.clone(),

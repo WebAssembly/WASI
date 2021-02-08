@@ -131,7 +131,7 @@
     ;;; The path of the symbolic link from which to read.
     (param $path string)
     ;;; The buffer to which to write the contents of the symbolic link.
-    (param $buf (@witx pointer char8))
+    (param $buf (@witx pointer (@witx char8)))
     (param $buf_len $size)
     (result $error $errno)
     ;;; The number of bytes placed in the buffer.

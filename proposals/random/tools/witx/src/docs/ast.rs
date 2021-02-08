@@ -288,12 +288,10 @@ impl ToMarkdown for InterfaceFuncParam {
 impl BuiltinType {
     pub fn type_name(&self) -> &'static str {
         match self {
-            BuiltinType::Char8 => "char8",
             BuiltinType::Char => "char",
-            BuiltinType::USize => "usize",
-            BuiltinType::U8 => "u8",
+            BuiltinType::U8 { .. } => "u8",
             BuiltinType::U16 => "u16",
-            BuiltinType::U32 => "u32",
+            BuiltinType::U32 { .. } => "u32",
             BuiltinType::U64 => "u64",
             BuiltinType::S8 => "s8",
             BuiltinType::S16 => "s16",
