@@ -68,7 +68,6 @@ impl ToMarkdown for NamedType {
 impl ToMarkdown for Type {
     fn generate(&self, node: MdNodeRef) {
         match self {
-            Self::Enum(a) => a.generate(node.clone()),
             Self::Flags(a) => a.generate(node.clone()),
             Self::Record(a) => a.generate(node.clone()),
             Self::Variant(a) => a.generate(node.clone()),
@@ -95,32 +94,6 @@ impl ToMarkdown for Type {
                 })
             }
         }
-    }
-}
-
-impl ToMarkdown for EnumDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Variants"));
-
-        for variant in &self.variants {
-            let name = variant.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                id.as_str(),
-                name,
-                &variant.docs,
-            ));
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Enum {
-            repr: self.repr.type_name().to_owned(),
-        });
     }
 }
 
@@ -193,7 +166,7 @@ impl ToMarkdown for Variant {
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}\n", &case.docs).as_str(),
+                &case.docs,
             ));
             if let Some(ty) = &case.tref {
                 ty.generate(n.clone());
@@ -384,8 +357,7 @@ impl TypeRef {
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
-                Type::Enum { .. }
-                | Type::Flags { .. }
+                Type::Flags { .. }
                 | Type::Record { .. }
                 | Type::Variant { .. }
                 | Type::Union { .. }

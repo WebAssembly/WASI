@@ -15,7 +15,7 @@
 
 ;;; Identifiers for clocks.
 (typename $clockid
-  (enum u32
+  (enum (@witx tag u32)
     ;;; The clock measuring real time. Time value zero corresponds with
     ;;; 1970-01-01T00:00:00Z.
     $realtime
@@ -36,7 +36,7 @@
 ;;; API; some are used in higher-level library layers, and others are provided
 ;;; merely for alignment with POSIX.
 (typename $errno
-  (enum u16
+  (enum (@witx tag u16)
     ;;; No error occurred. System call completed successfully.
     $success
     ;;; Argument list too long.
@@ -304,7 +304,7 @@
 
 ;;; The position relative to which to set the offset of the file descriptor.
 (typename $whence
-  (enum u8
+  (enum (@witx tag u8)
     ;;; Seek relative to current position.
     $cur
     ;;; Seek relative to end-of-file.
@@ -325,7 +325,7 @@
 
 ;;; The type of a file descriptor or file.
 (typename $filetype
-  (enum u8
+  (enum (@witx tag u8)
     ;;; The type of the file descriptor or file is unknown or is different from any of the other types specified.
     $unknown
     ;;; The file descriptor or file refers to a block device inode.
@@ -361,7 +361,7 @@
 
 ;;; File or memory access pattern advisory information.
 (typename $advice
-  (enum u8
+  (enum (@witx tag u8)
     ;;; The application has no advice to give on its behavior with respect to the specified data.
     $normal
     ;;; The application expects to access the specified data sequentially from lower offsets to higher offsets.
@@ -481,7 +481,7 @@
 
 ;;; Type of a subscription to an event or its occurrence.
 (typename $eventtype
-  (enum u8
+  (enum (@witx tag u8)
     ;;; The time value of clock `subscription_clock::id` has
     ;;; reached timestamp `subscription_clock::timeout`.
     $clock
@@ -593,7 +593,7 @@
 
 ;;; Signal condition.
 (typename $signal
-  (enum u8
+  (enum (@witx tag u8)
     ;;; No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
     ;;; so this value is reserved.
     $none
@@ -724,7 +724,7 @@
 
 ;;; Identifiers for preopened capabilities.
 (typename $preopentype
-  (enum u8
+  (enum (@witx tag u8)
     ;;; A pre-opened directory.
     $dir
   )
