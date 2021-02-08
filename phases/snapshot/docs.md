@@ -19,14 +19,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#clockid" name="clockid"></a> `clockid`: Enum(`u32`)
+## <a href="#clockid" name="clockid"></a> `clockid`: Variant
 Identifiers for clocks.
 
 Size: 4
 
 Alignment: 4
 
-### Variants
+### Variant cases
 - <a href="#clockid.realtime" name="clockid.realtime"></a> `realtime`
 The clock measuring real time. Time value zero corresponds with
 1970-01-01T00:00:00Z.
@@ -43,7 +43,7 @@ The CPU-time clock associated with the current process.
 - <a href="#clockid.thread_cputime_id" name="clockid.thread_cputime_id"></a> `thread_cputime_id`
 The CPU-time clock associated with the current thread.
 
-## <a href="#errno" name="errno"></a> `errno`: Enum(`u16`)
+## <a href="#errno" name="errno"></a> `errno`: Variant
 Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
 API; some are used in higher-level library layers, and others are provided
@@ -53,7 +53,7 @@ Size: 2
 
 Alignment: 2
 
-### Variants
+### Variant cases
 - <a href="#errno.success" name="errno.success"></a> `success`
 No error occurred. System call completed successfully.
 
@@ -455,14 +455,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#whence" name="whence"></a> `whence`: Enum(`u8`)
+## <a href="#whence" name="whence"></a> `whence`: Variant
 The position relative to which to set the offset of the file descriptor.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#whence.set" name="whence.set"></a> `set`
 Seek relative to start-of-file.
 
@@ -495,14 +495,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#filetype" name="filetype"></a> `filetype`: Enum(`u8`)
+## <a href="#filetype" name="filetype"></a> `filetype`: Variant
 The type of a file descriptor or file.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#filetype.unknown" name="filetype.unknown"></a> `unknown`
 The type of the file descriptor or file is unknown or is different from any of the other types specified.
 
@@ -555,14 +555,14 @@ The type of the file referred to by this directory entry.
 
 Offset: 20
 
-## <a href="#advice" name="advice"></a> `advice`: Enum(`u8`)
+## <a href="#advice" name="advice"></a> `advice`: Variant
 File or memory access pattern advisory information.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#advice.normal" name="advice.normal"></a> `normal`
 The application has no advice to give on its behavior with respect to the specified data.
 
@@ -757,14 +757,14 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#eventtype" name="eventtype"></a> `eventtype`: Enum(`u8`)
+## <a href="#eventtype" name="eventtype"></a> `eventtype`: Variant
 Type of a subscription to an event or its occurrence.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#eventtype.clock" name="eventtype.clock"></a> `clock`
 The time value of clock [`subscription_clock::id`](#subscription_clock.id) has
 reached timestamp [`subscription_clock::timeout`](#subscription_clock.timeout).
@@ -942,14 +942,14 @@ Size: 4
 
 Alignment: 4
 
-## <a href="#signal" name="signal"></a> `signal`: Enum(`u8`)
+## <a href="#signal" name="signal"></a> `signal`: Variant
 Signal condition.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#signal.none" name="signal.none"></a> `none`
 No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
 so this value is reserved.
@@ -1121,14 +1121,14 @@ Disables further receive operations.
 - <a href="#sdflags.wr" name="sdflags.wr"></a> `wr`
 Disables further send operations.
 
-## <a href="#preopentype" name="preopentype"></a> `preopentype`: Enum(`u8`)
+## <a href="#preopentype" name="preopentype"></a> `preopentype`: Variant
 Identifiers for preopened capabilities.
 
 Size: 1
 
 Alignment: 1
 
-### Variants
+### Variant cases
 - <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
 A pre-opened directory.
 

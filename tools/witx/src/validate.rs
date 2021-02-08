@@ -5,11 +5,10 @@ use crate::{
         ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
         VariantSyntax,
     },
-    BuiltinType, Constant, Definition, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
-    FlagsMember, HandleDatatype, Id, IntRepr, InterfaceFunc, InterfaceFuncParam,
-    InterfaceFuncParamPosition, Location, Module, ModuleDefinition, ModuleEntry, ModuleImport,
-    ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type, TypePassedBy, TypeRef,
-    UnionDatatype, UnionVariant,
+    BuiltinType, Case, Constant, Definition, Entry, FlagsDatatype, FlagsMember, HandleDatatype, Id,
+    IntRepr, InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
+    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype,
+    RecordMember, Type, TypePassedBy, TypeRef, UnionDatatype, UnionVariant, Variant,
 };
 use std::collections::{hash_map, HashMap};
 use std::path::Path;
@@ -50,6 +49,12 @@ pub enum ValidationError {
         reason: String,
         location: Location,
     },
+    #[error("Invalid union tag `{name}`: {reason}")]
+    InvalidUnionTag {
+        name: String,
+        reason: String,
+        location: Location,
+    },
 }
 
 impl ValidationError {
@@ -62,7 +67,8 @@ impl ValidationError {
             | InvalidRepr { location, .. }
             | InvalidFirstResultType { location, .. }
             | AnonymousRecord { location, .. }
-            | InvalidUnionField { location, .. } => {
+            | InvalidUnionField { location, .. }
+            | InvalidUnionTag { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -269,7 +275,7 @@ impl DocValidationScope<'_> {
                 })
             }
             other => Ok(TypeRef::Value(Rc::new(match other {
-                TypedefSyntax::Enum(syntax) => Type::Enum(self.validate_enum(&syntax, span)?),
+                TypedefSyntax::Enum(syntax) => Type::Variant(self.validate_enum(&syntax, span)?),
                 TypedefSyntax::Flags(syntax) => Type::Flags(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
@@ -293,20 +299,27 @@ impl DocValidationScope<'_> {
         &self,
         syntax: &EnumSyntax,
         span: wast::Span,
-    ) -> Result<EnumDatatype, ValidationError> {
+    ) -> Result<Variant, ValidationError> {
         let mut enum_scope = IdentValidation::new();
-        let repr = self.validate_int_repr(&syntax.repr, span)?;
-        let variants = syntax
+        let tag_repr = match &syntax.repr {
+            Some(repr) => self.validate_int_repr(repr, span)?,
+            None => IntRepr::U32,
+        };
+        let cases = syntax
             .members
             .iter()
             .map(|i| {
                 let name = enum_scope.introduce(i.item.name(), self.location(i.item.span()))?;
                 let docs = i.comments.docs();
-                Ok(EnumVariant { name, docs })
+                Ok(Case {
+                    name,
+                    tref: None,
+                    docs,
+                })
             })
-            .collect::<Result<Vec<EnumVariant>, _>>()?;
+            .collect::<Result<Vec<_>, _>>()?;
 
-        Ok(EnumDatatype { repr, variants })
+        Ok(Variant { tag_repr, cases })
     }
 
     fn validate_flags(
@@ -361,12 +374,18 @@ impl DocValidationScope<'_> {
             Some(Entry::Typename(weak_ref)) => {
                 let named_dt = weak_ref.upgrade().expect("weak backref to defined type");
                 match &*named_dt.type_() {
-                    Type::Enum(e) => {
-                        let uses = e
-                            .variants
-                            .iter()
-                            .map(|v| (v.name.clone(), false))
-                            .collect::<HashMap<Id, bool>>();
+                    Type::Variant(e) => {
+                        let mut uses = HashMap::new();
+                        for c in e.cases.iter() {
+                            if c.tref.is_some() {
+                                return Err(ValidationError::InvalidUnionTag {
+                                    name: syntax.tag.name().to_string(),
+                                    location: self.location(syntax.tag.span()),
+                                    reason: format!("all variant cases should have empty payloads"),
+                                });
+                            }
+                            uses.insert(c.name.clone(), false);
+                        }
                         Ok((named_dt, uses))
                     }
                     other => Err(ValidationError::WrongKindName {

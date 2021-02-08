@@ -13,11 +13,11 @@ fn anonymous_types() {
     assert!(is_anonymous_record_err(pointer_to_record));
 
     let pointer_to_union = witx::parse(
-        "(typename $tag (enum u8 $b)) (typename $a (@witx pointer (union $tag (field $b u8))))",
+        "(typename $tag (enum $b)) (typename $a (@witx pointer (union $tag (field $b u8))))",
     );
     assert!(is_anonymous_record_err(pointer_to_union));
 
-    let pointer_to_enum = witx::parse("(typename $a (@witx pointer (enum u32 $b)))");
+    let pointer_to_enum = witx::parse("(typename $a (@witx pointer (enum $b)))");
     assert!(is_anonymous_record_err(pointer_to_enum));
 
     let pointer_to_flags = witx::parse("(typename $a (@witx pointer (flags u32 $b)))");
@@ -36,7 +36,7 @@ fn anonymous_types() {
     assert!(is_anonymous_record_err(record_in_record));
 
     let union_in_record = witx::parse(
-        "(typename $tag (enum u8 $c)) (typename $a (record (field $b (union $tag (field $c u8)))))",
+        "(typename $tag (enum $c)) (typename $a (record (field $b (union $tag (field $c u8)))))",
     );
     assert!(is_anonymous_record_err(union_in_record));
 

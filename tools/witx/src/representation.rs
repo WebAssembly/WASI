@@ -1,6 +1,6 @@
 use crate::{
-    BuiltinType, EnumDatatype, FlagsDatatype, IntRepr, NamedType, RecordDatatype, Type, TypeRef,
-    UnionDatatype,
+    BuiltinType, FlagsDatatype, IntRepr, NamedType, RecordDatatype, Type, TypeRef, UnionDatatype,
+    Variant,
 };
 
 // A lattice. Eq + Eq = Eq, SuperSet + any = NotEq, NotEq + any = NotEq.
@@ -69,15 +69,15 @@ impl Representable for IntRepr {
     }
 }
 
-impl Representable for EnumDatatype {
+impl Representable for Variant {
     fn representable(&self, by: &Self) -> RepEquality {
         // Integer representation must be compatible
-        if self.repr.representable(&by.repr) == RepEquality::NotEq {
+        if self.tag_repr.representable(&by.tag_repr) == RepEquality::NotEq {
             return RepEquality::NotEq;
         }
         // For each variant in self, must have variant of same name and position in by:
-        for (ix, v) in self.variants.iter().enumerate() {
-            if let Some(by_v) = by.variants.get(ix) {
+        for (ix, v) in self.cases.iter().enumerate() {
+            if let Some(by_v) = by.cases.get(ix) {
                 if by_v.name != v.name {
                     return RepEquality::NotEq;
                 }
@@ -85,10 +85,10 @@ impl Representable for EnumDatatype {
                 return RepEquality::NotEq;
             }
         }
-        if by.variants.len() > self.variants.len() {
+        if by.cases.len() > self.cases.len() {
             RepEquality::Superset
         } else {
-            self.repr.representable(&by.repr)
+            self.tag_repr.representable(&by.tag_repr)
         }
     }
 }
@@ -203,7 +203,7 @@ impl Representable for NamedType {
 impl Representable for Type {
     fn representable(&self, by: &Self) -> RepEquality {
         match (&self, &by) {
-            (Type::Enum(s), Type::Enum(b)) => s.representable(b),
+            (Type::Variant(s), Type::Variant(b)) => s.representable(b),
             (Type::Flags(s), Type::Flags(b)) => s.representable(b),
             (Type::Record(s), Type::Record(b)) => s.representable(b),
             (Type::Union(s), Type::Union(b)) => s.representable(b),
@@ -267,13 +267,13 @@ mod test {
 
     #[test]
     fn enum_() {
-        let base = def_type("a", "(typename $a (enum u32 $b $c))");
-        let extra_variant = def_type("a", "(typename $a (enum u32 $b $c $d))");
+        let base = def_type("a", "(typename $a (enum $b $c))");
+        let extra_variant = def_type("a", "(typename $a (enum $b $c $d))");
 
         assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
         assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
 
-        let smaller_size = def_type("a", "(typename $a (enum u16 $b $c))");
+        let smaller_size = def_type("a", "(typename $a (enum (@witx tag u16) $b $c))");
         assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
         assert_eq!(
             smaller_size.representable(&extra_variant),
@@ -285,12 +285,12 @@ mod test {
     fn union() {
         let base = def_type(
             "a",
-            "(typename $tag (enum u8 $b $c))
+            "(typename $tag (enum (@witx tag u8) $b $c))
             (typename $a (union $tag (field $b u32) (field $c f32)))",
         );
         let extra_variant = def_type(
             "a",
-            "(typename $tag (enum u8 $b $c $d))
+            "(typename $tag (enum (@witx tag u8) $b $c $d))
             (typename $a (union $tag (field $b u32) (field $c f32) (field $d f64)))",
         );
 
@@ -299,7 +299,7 @@ mod test {
 
         let other_ordering = def_type(
             "a",
-            "(typename $tag (enum u8 $b $c))
+            "(typename $tag (enum (@witx tag u8) $b $c))
             (typename $a (union $tag (field $c f32) (field $b u32)))",
         );
         assert_eq!(base.representable(&other_ordering), RepEquality::Eq);
