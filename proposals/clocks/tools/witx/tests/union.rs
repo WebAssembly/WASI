@@ -80,7 +80,7 @@ fn many_variant_unions() {
             (case $i f32)
             (case $j f64)
             (case $k (@witx usize))
-            (case $l char8)
+            (case $l (@witx char8))
             (case $m)
            )
          )",

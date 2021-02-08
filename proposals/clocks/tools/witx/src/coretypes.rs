@@ -35,15 +35,13 @@ impl Type {
     pub fn passed_by(&self) -> TypePassedBy {
         match self {
             Type::Builtin(b) => match b {
-                BuiltinType::U8
+                BuiltinType::U8 { .. }
                 | BuiltinType::U16
-                | BuiltinType::U32
+                | BuiltinType::U32 { .. }
                 | BuiltinType::S8
                 | BuiltinType::S16
                 | BuiltinType::S32
-                | BuiltinType::Char8
-                | BuiltinType::Char
-                | BuiltinType::USize => TypePassedBy::Value(AtomType::I32),
+                | BuiltinType::Char => TypePassedBy::Value(AtomType::I32),
                 BuiltinType::U64 | BuiltinType::S64 => TypePassedBy::Value(AtomType::I64),
                 BuiltinType::F32 => TypePassedBy::Value(AtomType::F32),
                 BuiltinType::F64 => TypePassedBy::Value(AtomType::F64),
