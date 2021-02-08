@@ -348,7 +348,7 @@ pub(super) enum MdType {
     Flags { repr: String },
     Struct,
     Union,
-    Array { r#type: String },
+    List { r#type: String },
     Pointer { r#type: String },
     ConstPointer { r#type: String },
     Builtin { repr: String },
@@ -364,7 +364,7 @@ impl fmt::Display for MdType {
             Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
             Self::Struct => f.write_fmt(format_args!(": Struct"))?,
             Self::Union => f.write_fmt(format_args!(": Union"))?,
-            Self::Array { r#type } => f.write_fmt(format_args!(": `Array<{}>`", r#type))?,
+            Self::List { r#type } => f.write_fmt(format_args!(": `List<{}>`", r#type))?,
             Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
             Self::ConstPointer { r#type } => {
                 f.write_fmt(format_args!(": `ConstPointer<{}>`", r#type))?

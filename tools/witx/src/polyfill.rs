@@ -178,7 +178,7 @@ impl ParamPolyfill {
     fn common_denominator(a: TypeRef, b: TypeRef) -> (TypeRef, TypeRef) {
         match (&a, &b) {
             (TypeRef::Value(va), TypeRef::Value(vb)) => match (&**va, &**vb) {
-                (Type::Array(a), Type::Array(b)) => (a.clone(), b.clone()),
+                (Type::List(a), Type::List(b)) => (a.clone(), b.clone()),
                 (Type::Pointer(a), Type::Pointer(b)) => (a.clone(), b.clone()),
                 (Type::ConstPointer(a), Type::ConstPointer(b)) => (a.clone(), b.clone()),
                 _ => (a, b),
