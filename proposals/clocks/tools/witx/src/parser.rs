@@ -18,7 +18,6 @@ use wast::parser::{Parse, Parser, Peek, Result};
 mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
-    wast::custom_keyword!(array);
     wast::custom_keyword!(char8);
     wast::custom_keyword!(const_pointer);
     wast::custom_keyword!(f32);
@@ -28,6 +27,7 @@ mod kw {
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
     wast::custom_keyword!(int);
+    wast::custom_keyword!(list);
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(r#const = "const");
@@ -275,7 +275,7 @@ pub enum TypedefSyntax<'a> {
     Struct(StructSyntax<'a>),
     Union(UnionSyntax<'a>),
     Handle(HandleSyntax),
-    Array(Box<TypedefSyntax<'a>>),
+    List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
     Builtin(BuiltinType),
@@ -304,9 +304,9 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Union(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
-                } else if l.peek::<kw::array>() {
-                    parser.parse::<kw::array>()?;
-                    Ok(TypedefSyntax::Array(Box::new(parser.parse()?)))
+                } else if l.peek::<kw::list>() {
+                    parser.parse::<kw::list>()?;
+                    Ok(TypedefSyntax::List(Box::new(parser.parse()?)))
                 } else if l.peek::<annotation::witx>() {
                     parser.parse::<annotation::witx>()?;
                     let mut l = parser.lookahead1();

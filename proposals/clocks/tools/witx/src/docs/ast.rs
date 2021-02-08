@@ -76,8 +76,8 @@ impl ToMarkdown for Type {
             Self::Struct(a) => a.generate(node.clone()),
             Self::Union(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
-            Self::Array(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Array {
+            Self::List(a) => {
+                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::List {
                     r#type: a.type_name().to_owned(),
                 })
             }
@@ -378,7 +378,7 @@ impl TypeRef {
         match self {
             TypeRef::Name(n) => n.name.as_str().to_string(),
             TypeRef::Value(ref v) => match &**v {
-                Type::Array(a) => format!("Array<{}>", a.type_name()),
+                Type::List(a) => format!("List<{}>", a.type_name()),
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),

@@ -122,7 +122,7 @@ impl Type {
             Type::Struct(a) => a.to_sexpr(),
             Type::Union(a) => a.to_sexpr(),
             Type::Handle(a) => a.to_sexpr(),
-            Type::Array(a) => SExpr::Vec(vec![SExpr::word("array"), a.to_sexpr()]),
+            Type::List(a) => SExpr::Vec(vec![SExpr::word("list"), a.to_sexpr()]),
             Type::Pointer(p) => SExpr::Vec(vec![
                 SExpr::annot("witx"),
                 SExpr::word("pointer"),

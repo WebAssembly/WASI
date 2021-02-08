@@ -208,7 +208,7 @@ impl Representable for Type {
             (Type::Struct(s), Type::Struct(b)) => s.representable(b),
             (Type::Union(s), Type::Union(b)) => s.representable(b),
             (Type::Handle(_), Type::Handle(_)) => RepEquality::Eq, // Handles are nominal, not structural
-            (Type::Array(s), Type::Array(b)) => s.representable(b),
+            (Type::List(s), Type::List(b)) => s.representable(b),
             (Type::Pointer(s), Type::Pointer(b)) => s.representable(b),
             (Type::ConstPointer(s), Type::ConstPointer(b)) => s.representable(b),
             (Type::Builtin(s), Type::Builtin(b)) => s.representable(b),

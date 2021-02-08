@@ -255,8 +255,8 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::Struct(syntax) => Type::Struct(self.validate_struct(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Union(self.validate_union(&syntax, span)?),
                 TypedefSyntax::Handle(syntax) => Type::Handle(self.validate_handle(syntax, span)?),
-                TypedefSyntax::Array(syntax) => {
-                    Type::Array(self.validate_datatype(syntax, false, span)?)
+                TypedefSyntax::List(syntax) => {
+                    Type::List(self.validate_datatype(syntax, false, span)?)
                 }
                 TypedefSyntax::Pointer(syntax) => {
                     Type::Pointer(self.validate_datatype(syntax, false, span)?)
