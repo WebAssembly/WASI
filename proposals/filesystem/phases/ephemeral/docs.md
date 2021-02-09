@@ -1,5 +1,5 @@
 # Types
-## <a href="#size" name="size"></a> `size`: `u32`
+## <a href="#size" name="size"></a> `size`: `usize`
 An array size.
 
 Note: This is similar to `size_t` in POSIX.
