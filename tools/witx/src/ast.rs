@@ -211,6 +211,9 @@ impl Type {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BuiltinType {
+    /// This is a 32-bit unicode scalar value, not a code point.
+    ///
+    /// Same as the Rust language's `char` type.
     Char,
     U8 {
         /// Indicates whether this type is intended to represent the `char`
@@ -218,6 +221,9 @@ pub enum BuiltinType {
         /// it's language-specific. At an interface-types level this is an
         /// unsigned byte but binding generators may wish to bind this as the
         /// language-specific representation for a C character instead.
+        ///
+        /// This is also currently used exclusively in conjunction with `@witx
+        /// pointer` to hint that it's pointing to unicode string data as well.
         lang_c_char: bool,
     },
     U16,
