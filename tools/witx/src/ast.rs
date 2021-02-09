@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+use crate::Abi;
 use std::collections::{HashMap, HashSet};
 use std::rc::{Rc, Weak};
 
@@ -63,13 +63,27 @@ impl Document {
             _ => None,
         })
     }
-    /// All of the (unique) types used as the first result value of a function.
+    /// All of the (unique) types used as "err" variant of results returned from
+    /// functions.
     pub fn error_types<'a>(&'a self) -> impl Iterator<Item = TypeRef> + 'a {
         let errors: HashSet<TypeRef> = self
             .modules()
             .flat_map(|m| {
                 m.funcs()
-                    .filter_map(|f| f.results.get(0).as_ref().map(|r| r.tref.clone()))
+                    .filter_map(|f| {
+                        if f.results.len() == 1 {
+                            Some(f.results[0].tref.type_().clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .filter_map(|t| match &*t {
+                        Type::Variant(v) => {
+                            let (_ok, err) = v.as_expected()?;
+                            Some(err?.clone())
+                        }
+                        _ => None,
+                    })
                     .collect::<HashSet<TypeRef>>()
             })
             .collect();
@@ -162,10 +176,17 @@ pub enum TypeRef {
 }
 
 impl TypeRef {
-    pub fn type_(&self) -> Rc<Type> {
+    pub fn type_(&self) -> &Rc<Type> {
         match self {
             TypeRef::Name(named) => named.type_(),
-            TypeRef::Value(ref v) => v.clone(),
+            TypeRef::Value(v) => v,
+        }
+    }
+
+    pub fn named(&self) -> bool {
+        match self {
+            TypeRef::Name(_) => true,
+            TypeRef::Value(_) => false,
         }
     }
 }
@@ -178,7 +199,7 @@ pub struct NamedType {
 }
 
 impl NamedType {
-    pub fn type_(&self) -> Rc<Type> {
+    pub fn type_(&self) -> &Rc<Type> {
         self.tref.type_()
     }
 }
@@ -270,7 +291,15 @@ impl IntRepr {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RecordDatatype {
+    pub kind: RecordKind,
     pub members: Vec<RecordMember>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum RecordKind {
+    Tuple,
+    Bitflags(IntRepr),
+    Other,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -280,10 +309,51 @@ pub struct RecordMember {
     pub docs: String,
 }
 
+impl RecordDatatype {
+    pub fn is_tuple(&self) -> bool {
+        match self.kind {
+            RecordKind::Tuple => true,
+            _ => false,
+        }
+    }
+    pub fn bitflags_repr(&self) -> Option<IntRepr> {
+        match self.kind {
+            RecordKind::Bitflags(i) => Some(i),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Variant {
     pub tag_repr: IntRepr,
     pub cases: Vec<Case>,
+}
+
+impl Variant {
+    /// If this variant looks like an `expected` shorthand, return the ok/err
+    /// types associated with this result.
+    pub fn as_expected(&self) -> Option<(Option<&TypeRef>, Option<&TypeRef>)> {
+        if self.cases.len() != 2 {
+            return None;
+        }
+        if self.cases[0].name != "ok" {
+            return None;
+        }
+        if self.cases[1].name != "err" {
+            return None;
+        }
+        Some((self.cases[0].tref.as_ref(), self.cases[1].tref.as_ref()))
+    }
+
+    /// TODO
+    pub fn is_bool(&self) -> bool {
+        self.cases.len() == 2
+            && self.cases[0].name == "false"
+            && self.cases[1].name == "true"
+            && self.cases[0].tref.is_none()
+            && self.cases[1].tref.is_none()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -409,6 +479,7 @@ pub enum ModuleImportVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceFunc {
+    pub abi: Abi,
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
     pub results: Vec<InterfaceFuncParam>,
@@ -420,14 +491,7 @@ pub struct InterfaceFunc {
 pub struct InterfaceFuncParam {
     pub name: Id,
     pub tref: TypeRef,
-    pub position: InterfaceFuncParamPosition,
     pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum InterfaceFuncParamPosition {
-    Param(usize),
-    Result(usize),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

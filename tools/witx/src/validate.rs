@@ -1,14 +1,14 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DeclSyntax, Documented, EnumSyntax, FlagsSyntax, HandleSyntax,
-        ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
-        VariantSyntax,
+        CommentSyntax, DeclSyntax, Documented, EnumSyntax, ExpectedSyntax, FlagsSyntax,
+        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TupleSyntax, TypedefSyntax,
+        UnionSyntax, VariantSyntax,
     },
-    BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
-    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
-    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype,
-    RecordMember, Type, TypePassedBy, TypeRef, Variant,
+    Abi, BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
+    InterfaceFunc, InterfaceFuncParam, Location, Module, ModuleDefinition, ModuleEntry,
+    ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordKind, RecordMember, Type,
+    TypeRef, Variant,
 };
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -39,8 +39,8 @@ pub enum ValidationError {
         repr: BuiltinType,
         location: Location,
     },
-    #[error("First result type must be pass-by-value")]
-    InvalidFirstResultType { location: Location },
+    #[error("ABI error: {reason}")]
+    Abi { reason: String, location: Location },
     #[error("Anonymous structured types (struct, union, enum, flags, handle) are not permitted")]
     AnonymousRecord { location: Location },
     #[error("Union expected {expected} variants, found {found}")]
@@ -67,7 +67,7 @@ impl ValidationError {
             | WrongKindName { location, .. }
             | Recursive { location, .. }
             | InvalidRepr { location, .. }
-            | InvalidFirstResultType { location, .. }
+            | Abi { location, .. }
             | AnonymousRecord { location, .. }
             | UnionSizeMismatch { location, .. }
             | InvalidUnionField { location, .. }
@@ -131,6 +131,7 @@ pub struct DocValidation {
     scope: IdentValidation,
     entries: HashMap<Id, Entry>,
     constant_scopes: HashMap<Id, IdentValidation>,
+    bool_ty: TypeRef,
 }
 
 pub struct DocValidationScope<'a> {
@@ -145,6 +146,21 @@ impl DocValidation {
             scope: IdentValidation::new(),
             entries: HashMap::new(),
             constant_scopes: HashMap::new(),
+            bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
+                tag_repr: IntRepr::U8,
+                cases: vec![
+                    Case {
+                        name: Id::new("false"),
+                        tref: None,
+                        docs: String::new(),
+                    },
+                    Case {
+                        name: Id::new("true"),
+                        tref: None,
+                        docs: String::new(),
+                    },
+                ],
+            }))),
         }
     }
 
@@ -203,24 +219,6 @@ impl DocValidationScope<'_> {
                     .entries
                     .insert(name.clone(), Entry::Typename(Rc::downgrade(&rc_datatype)));
                 definitions.push(Definition::Typename(rc_datatype));
-
-                if let TypedefSyntax::Flags(syntax) = &decl.def {
-                    if syntax.bitflags_repr.is_some() {
-                        let mut flags_scope = IdentValidation::new();
-                        let ty = name;
-                        for (i, flag) in syntax.flags.iter().enumerate() {
-                            let name = flags_scope
-                                .introduce(flag.item.name(), self.location(flag.item.span()))?;
-                            let docs = flag.comments.docs();
-                            definitions.push(Definition::Constant(Constant {
-                                ty: ty.clone(),
-                                name,
-                                value: 1 << i,
-                                docs,
-                            }));
-                        }
-                    }
-                }
             }
 
             DeclSyntax::Module(syntax) => {
@@ -304,7 +302,11 @@ impl DocValidationScope<'_> {
             }
             other => Ok(TypeRef::Value(Rc::new(match other {
                 TypedefSyntax::Enum(syntax) => Type::Variant(self.validate_enum(&syntax, span)?),
-                TypedefSyntax::Flags(syntax) => self.validate_flags(&syntax, span)?,
+                TypedefSyntax::Tuple(syntax) => Type::Record(self.validate_tuple(&syntax, span)?),
+                TypedefSyntax::Expected(syntax) => {
+                    Type::Variant(self.validate_expected(&syntax, span)?)
+                }
+                TypedefSyntax::Flags(syntax) => Type::Record(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Variant(self.validate_union(&syntax, span)?),
                 TypedefSyntax::Variant(syntax) => {
@@ -356,17 +358,83 @@ impl DocValidationScope<'_> {
         Ok(Variant { tag_repr, cases })
     }
 
+    fn validate_tuple(
+        &self,
+        syntax: &TupleSyntax,
+        span: wast::Span,
+    ) -> Result<RecordDatatype, ValidationError> {
+        let members = syntax
+            .types
+            .iter()
+            .enumerate()
+            .map(|(i, ty)| {
+                Ok(RecordMember {
+                    name: Id::new(i.to_string()),
+                    tref: self.validate_datatype(ty, false, span)?,
+                    docs: String::new(),
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+
+        Ok(RecordDatatype {
+            kind: RecordKind::Tuple,
+            members,
+        })
+    }
+
+    fn validate_expected(
+        &self,
+        syntax: &ExpectedSyntax,
+        span: wast::Span,
+    ) -> Result<Variant, ValidationError> {
+        let ok_ty = match &syntax.ok {
+            Some(ok) => Some(self.validate_datatype(ok, false, span)?),
+            None => None,
+        };
+        let err_ty = match &syntax.err {
+            Some(err) => Some(self.validate_datatype(err, false, span)?),
+            None => None,
+        };
+        Ok(Variant {
+            tag_repr: IntRepr::U32,
+            cases: vec![
+                Case {
+                    name: Id::new("ok"),
+                    tref: ok_ty,
+                    docs: String::new(),
+                },
+                Case {
+                    name: Id::new("err"),
+                    tref: err_ty,
+                    docs: String::new(),
+                },
+            ],
+        })
+    }
+
     fn validate_flags(
         &self,
         syntax: &FlagsSyntax,
         span: wast::Span,
-    ) -> Result<Type, ValidationError> {
-        Ok(match &syntax.bitflags_repr {
-            Some(repr) => Type::Builtin(self.validate_int_repr(repr, span)?.to_builtin()),
-            None => {
-                // TODO: auto-translate to a struct-of-bool-fields
-                unimplemented!();
-            }
+    ) -> Result<RecordDatatype, ValidationError> {
+        let repr = match syntax.repr {
+            Some(ty) => self.validate_int_repr(&ty, span)?,
+            None => IntRepr::U32,
+        };
+        let mut flags_scope = IdentValidation::new();
+        let mut members = Vec::new();
+        for flag in syntax.flags.iter() {
+            let name = flags_scope.introduce(flag.item.name(), self.location(flag.item.span()))?;
+            let docs = flag.comments.docs();
+            members.push(RecordMember {
+                name,
+                docs,
+                tref: self.doc.bool_ty.clone(),
+            });
+        }
+        Ok(RecordDatatype {
+            kind: RecordKind::Bitflags(repr),
+            members,
         })
     }
 
@@ -388,7 +456,10 @@ impl DocValidationScope<'_> {
             })
             .collect::<Result<Vec<RecordMember>, _>>()?;
 
-        Ok(RecordDatatype { members })
+        Ok(RecordDatatype {
+            kind: RecordKind::Other,
+            members,
+        })
     }
 
     fn validate_union(
@@ -497,7 +568,7 @@ impl DocValidationScope<'_> {
             Some(tag) => self.validate_datatype(tag, false, span)?,
             None => return Ok((IntRepr::U32, None)),
         };
-        match &*ty.type_() {
+        match &**ty.type_() {
             Type::Variant(e) => {
                 let mut names = Vec::new();
                 for c in e.cases.iter() {
@@ -594,8 +665,7 @@ impl<'a> ModuleValidation<'a> {
                 let params = syntax
                     .params
                     .iter()
-                    .enumerate()
-                    .map(|(ix, f)| {
+                    .map(|f| {
                         Ok(InterfaceFuncParam {
                             name: argnames.introduce(
                                 f.item.name.name(),
@@ -606,7 +676,6 @@ impl<'a> ModuleValidation<'a> {
                                 false,
                                 f.item.name.span(),
                             )?,
-                            position: InterfaceFuncParamPosition::Param(ix),
                             docs: f.comments.docs(),
                         })
                     })
@@ -614,33 +683,29 @@ impl<'a> ModuleValidation<'a> {
                 let results = syntax
                     .results
                     .iter()
-                    .enumerate()
-                    .map(|(ix, f)| {
+                    .map(|f| {
                         let tref =
                             self.doc
                                 .validate_datatype(&f.item.type_, false, f.item.name.span())?;
-                        if ix == 0 {
-                            match tref.type_().passed_by() {
-                                TypePassedBy::Value(_) => {}
-                                _ => Err(ValidationError::InvalidFirstResultType {
-                                    location: self.doc.location(f.item.name.span()),
-                                })?,
-                            }
-                        }
                         Ok(InterfaceFuncParam {
                             name: argnames.introduce(
                                 f.item.name.name(),
                                 self.doc.location(f.item.name.span()),
                             )?,
                             tref,
-                            position: InterfaceFuncParamPosition::Result(ix),
                             docs: f.comments.docs(),
                         })
                     })
                     .collect::<Result<Vec<_>, _>>()?;
                 let noreturn = syntax.noreturn;
-
+                let abi = Abi::Preview1;
+                abi.validate(&params, &results)
+                    .map_err(|reason| ValidationError::Abi {
+                        reason,
+                        location: self.doc.location(syntax.export_loc),
+                    })?;
                 let rc_func = Rc::new(InterfaceFunc {
+                    abi,
                     name: name.clone(),
                     params,
                     results,

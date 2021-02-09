@@ -1,5 +1,5 @@
 use super::{
-    md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, MdType, ToMarkdown},
+    md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, ToMarkdown},
     Documentation,
 };
 use crate::{
@@ -68,11 +68,13 @@ impl ToMarkdown for Document {
 impl ToMarkdown for TypeRef {
     fn generate(&self, node: MdNodeRef) {
         match self {
-            TypeRef::Value(v) => v.generate(node.clone()),
+            TypeRef::Value(v) => {
+                v.generate(node.clone());
+                node.content_ref_mut::<MdNamedType>().ty = Some(format!("`{}`", self.type_name()));
+            }
             TypeRef::Name(n) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Alias {
-                    r#type: n.name.as_str().to_owned(),
-                })
+                node.content_ref_mut::<MdNamedType>().ty =
+                    Some(format!("[`{0}`](#{0})", n.name.as_str().to_owned()));
             }
         }
     }
@@ -90,26 +92,10 @@ impl ToMarkdown for Type {
             Self::Record(a) => a.generate(node.clone()),
             Self::Variant(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
-            Self::List(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::List {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::Pointer(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Pointer {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::ConstPointer(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::ConstPointer {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::Builtin(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Builtin {
-                    repr: a.type_name().to_owned(),
-                })
-            }
+            Self::List(_) => {}
+            Self::Pointer(_) => {}
+            Self::ConstPointer(_) => {}
+            Self::Builtin(_) => {}
         }
     }
 }
@@ -128,21 +114,27 @@ impl ToMarkdown for RecordDatatype {
             } else {
                 name.to_owned()
             };
+            let offset_desc = if self.bitflags_repr().is_some() {
+                "Bit"
+            } else {
+                "Offset"
+            };
             let n = node.new_child(MdNamedType::new(
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}\nOffset: {}\n", &member.docs, &offset).as_str(),
+                format!("{}\n{}: {}\n", &member.docs, offset_desc, &offset).as_str(),
             ));
             member.tref.generate(n.clone());
         }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Record);
     }
 }
 
 impl ToMarkdown for Variant {
     fn generate(&self, node: MdNodeRef) {
+        if self.is_bool() {
+            return;
+        }
         if self.cases.iter().any(|c| c.tref.is_some()) {
             let heading = heading_from_node(&node, 1);
             node.new_child(MdSection::new(heading, "Variant Layout"));
@@ -184,8 +176,6 @@ impl ToMarkdown for Variant {
                 ty.generate(n.clone());
             }
         }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Variant);
     }
 }
 
@@ -194,7 +184,6 @@ impl ToMarkdown for HandleDatatype {
         // TODO this needs more work
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Supertypes"));
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Handle);
     }
 }
 
@@ -312,16 +301,50 @@ impl TypeRef {
     pub fn type_name(&self) -> String {
         match self {
             TypeRef::Name(n) => n.name.as_str().to_string(),
-            TypeRef::Value(ref v) => match &**v {
-                Type::List(a) => match &*a.type_() {
+            TypeRef::Value(v) => match &**v {
+                Type::List(a) => match &**a.type_() {
                     Type::Builtin(BuiltinType::Char) => "string".to_string(),
                     _ => format!("List<{}>", a.type_name()),
                 },
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
-                Type::Record { .. } | Type::Variant { .. } | Type::Handle { .. } => {
-                    unimplemented!("type_name of anonymous compound datatypes")
+                Type::Record(RecordDatatype {
+                    kind: RecordKind::Tuple,
+                    members,
+                }) => {
+                    let mut ret = "(".to_string();
+                    for (i, member) in members.iter().enumerate() {
+                        if i > 0 {
+                            ret.push_str(", ");
+                        }
+                        ret.push_str(&member.tref.type_name());
+                    }
+                    ret.push_str(")");
+                    ret
+                }
+                Type::Record { .. } => {
+                    format!("Record")
+                }
+                Type::Handle { .. } => {
+                    format!("Handle")
+                }
+                Type::Variant(v) => {
+                    if let Some((ok, err)) = v.as_expected() {
+                        let ok = match ok {
+                            Some(ty) => ty.type_name(),
+                            None => "()".to_string(),
+                        };
+                        let err = match err {
+                            Some(ty) => ty.type_name(),
+                            None => "()".to_string(),
+                        };
+                        format!("Result<{}, {}>", ok, err)
+                    } else if v.is_bool() {
+                        format!("bool")
+                    } else {
+                        format!("Variant")
+                    }
                 }
             },
         }

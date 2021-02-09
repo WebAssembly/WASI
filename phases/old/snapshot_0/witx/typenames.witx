@@ -196,7 +196,7 @@
 
 ;;; File descriptor rights, determining which actions may be performed.
 (typename $rights
-  (flags (@witx bitflags u64)
+  (flags (@witx repr u64)
     ;;; The right to invoke `fd_datasync`.
     ;;
     ;;; If `rights::path_open` is set, includes the right to invoke
@@ -379,7 +379,7 @@
 
 ;;; File descriptor flags.
 (typename $fdflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; Append mode: Data written to the file is always appended to the file's end.
     $append
     ;;; Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
@@ -416,7 +416,7 @@
 
 ;;; Which file time attributes to adjust.
 (typename $fstflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; Adjust the last data access timestamp to the value stored in `filestat::atim`.
     $atim
     ;;; Adjust the last data access timestamp to the time of clock `clockid::realtime`.
@@ -430,7 +430,7 @@
 
 ;;; Flags determining the method of how paths are resolved.
 (typename $lookupflags
-  (flags (@witx bitflags u32)
+  (flags (@witx repr u32)
     ;;; As long as the resolved path corresponds to a symbolic link, it is expanded.
     $symlink_follow
   )
@@ -438,7 +438,7 @@
 
 ;;; Open flags used by `path_open`.
 (typename $oflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; Create file if it does not exist.
     $creat
     ;;; Fail if not a directory.
@@ -497,7 +497,7 @@
 ;;; The state of the file descriptor subscribed to with
 ;;; `eventtype::fd_read` or `eventtype::fd_write`.
 (typename $eventrwflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; The peer of this socket has closed or disconnected.
     $fd_readwrite_hangup
   )
@@ -532,7 +532,7 @@
 ;;; Flags determining how to interpret the timestamp provided in
 ;;; `subscription_clock::timeout`.
 (typename $subclockflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; If set, treat the timestamp provided in
     ;;; `subscription_clock::timeout` as an absolute timestamp of clock
     ;;; `subscription_clock::id`. If clear, treat the timestamp
@@ -692,7 +692,7 @@
 
 ;;; Flags provided to `sock_recv`.
 (typename $riflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; Returns the message without removing it from the socket's receive queue.
     $recv_peek
     ;;; On byte-stream sockets, block until the full amount of data can be returned.
@@ -702,7 +702,7 @@
 
 ;;; Flags returned by `sock_recv`.
 (typename $roflags
-  (flags (@witx bitflags u16)
+  (flags (@witx repr u16)
     ;;; Returned by `sock_recv`: Message data has been truncated.
     $recv_data_truncated
   )
@@ -714,7 +714,7 @@
 
 ;;; Which channels on a socket to shut down.
 (typename $sdflags
-  (flags (@witx bitflags u8)
+  (flags (@witx repr u8)
     ;;; Disables further receive operations.
     $rd
     ;;; Disables further send operations.

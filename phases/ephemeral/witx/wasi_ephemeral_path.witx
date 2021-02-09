@@ -17,7 +17,7 @@
     (param $fd $fd)
     ;;; The path at which to create the directory.
     (param $path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Return the attributes of a file or directory.
@@ -28,9 +28,8 @@
     (param $flags $lookupflags)
     ;;; The path of the file or directory to inspect.
     (param $path string)
-    (result $error $errno)
     ;;; The buffer where the file's attributes are stored.
-    (result $buf $filestat)
+    (result $error (expected $filestat (error $errno)))
   )
 
   ;;; Adjust the timestamps of a file or directory.
@@ -47,7 +46,7 @@
     (param $mtim $timestamp)
     ;;; A bitmask indicating which timestamps to adjust.
     (param $fst_flags $fstflags)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Set the permissions of a file or directory.
@@ -70,7 +69,7 @@
     (param $path string)
     ;;; The permissions to associate with the file.
     (param $permissions $permissions)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Create a hard link.
@@ -85,7 +84,7 @@
     (param $new_fd $fd)
     ;;; The destination path at which to create the hard link.
     (param $new_path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Open a file or directory.
@@ -119,9 +118,8 @@
     (param $fdflags $fdflags)
     ;;; If a file is created, the filesystem permissions to associate with it.
     (param $permissions $permissions)
-    (result $error $errno)
     ;;; The file descriptor of the file that has been opened.
-    (result $opened_fd $fd)
+    (result $error (expected $fd (error $errno)))
   )
 
   ;;; Read the contents of a symbolic link.
@@ -133,9 +131,8 @@
     ;;; The buffer to which to write the contents of the symbolic link.
     (param $buf (@witx pointer (@witx char8)))
     (param $buf_len $size)
-    (result $error $errno)
     ;;; The number of bytes placed in the buffer.
-    (result $bufused $size)
+    (result $error (expected $size (error $errno)))
   )
 
   ;;; Remove a directory.
@@ -145,7 +142,7 @@
     (param $fd $fd)
     ;;; The path to a directory to remove.
     (param $path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Rename a file or directory.
@@ -158,7 +155,7 @@
     (param $new_fd $fd)
     ;;; The destination path to which to rename the file or directory.
     (param $new_path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Create a symbolic link.
@@ -169,7 +166,7 @@
     (param $fd $fd)
     ;;; The destination path at which to create the symbolic link.
     (param $new_path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Unlink a file.
@@ -179,6 +176,6 @@
     (param $fd $fd)
     ;;; The path to a file to unlink.
     (param $path string)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 )
