@@ -165,7 +165,7 @@ impl WitxtRunner<'_> {
                     bail!("expected error {:?}\nfound error {}", message, err);
                 }
             }
-            WitxtDirective::AssertRepEquality { repr, t1, t2, .. } => {
+            WitxtDirective::AssertRepresentable { repr, t1, t2, .. } => {
                 let (t1m, t1t) = t1;
                 let (t2m, t2t) = t2;
                 let t1d = self
@@ -253,6 +253,7 @@ mod kw {
     wast::custom_keyword!(witx);
     wast::custom_keyword!(eq);
     wast::custom_keyword!(noteq);
+    wast::custom_keyword!(load);
 }
 
 struct Witxt<'a> {
@@ -276,7 +277,7 @@ enum WitxtDirective<'a> {
         witx: Witx<'a>,
         message: &'a str,
     },
-    AssertRepEquality {
+    AssertRepresentable {
         span: wast::Span,
         repr: RepEquality,
         t1: (wast::Id<'a>, &'a str),
@@ -288,8 +289,8 @@ impl WitxtDirective<'_> {
     fn span(&self) -> wast::Span {
         match self {
             WitxtDirective::Witx(w) => w.span,
-            WitxtDirective::AssertInvalid { span, .. } => *span,
-            WitxtDirective::AssertRepEquality { span, .. } => *span,
+            WitxtDirective::AssertInvalid { span, .. }
+            | WitxtDirective::AssertRepresentable { span, .. } => *span,
         }
     }
 }
@@ -308,7 +309,7 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
             })
         } else if l.peek::<kw::assert_representable>() {
             let span = parser.parse::<kw::assert_representable>()?.0;
-            Ok(WitxtDirective::AssertRepEquality {
+            Ok(WitxtDirective::AssertRepresentable {
                 span,
                 repr: parser.parse()?,
                 t1: (parser.parse()?, parser.parse()?),
@@ -323,21 +324,35 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
 struct Witx<'a> {
     span: wast::Span,
     id: Option<wast::Id<'a>>,
-    decls: Vec<witx::parser::Documented<'a, witx::parser::DeclSyntax<'a>>>,
+    def: WitxDef<'a>,
+}
+
+enum WitxDef<'a> {
+    Fs(Vec<&'a str>),
+    Inline(Vec<witx::parser::Documented<'a, witx::parser::DeclSyntax<'a>>>),
 }
 
 impl Witx<'_> {
     fn document(&self, contents: &str, file: &Path) -> Result<witx::Document> {
-        let mut validator = witx::DocValidation::new();
-        let mut definitions = Vec::new();
-        for decl in self.decls.iter() {
-            let def = validator
-                .scope(contents, file)
-                .validate_decl(&decl.item, &decl.comments)
-                .map_err(witx::WitxError::Validation)?;
-            definitions.push(def);
+        match &self.def {
+            WitxDef::Inline(decls) => {
+                let mut validator = witx::DocValidation::new();
+                let mut definitions = Vec::new();
+                for decl in decls {
+                    let def = validator
+                        .scope(contents, file)
+                        .validate_decl(&decl.item, &decl.comments)
+                        .map_err(witx::WitxError::Validation)?;
+                    definitions.push(def);
+                }
+                Ok(validator.into_document(definitions))
+            }
+            WitxDef::Fs(paths) => {
+                let parent = file.parent().unwrap();
+                let paths = paths.iter().map(|p| parent.join(p)).collect::<Vec<_>>();
+                Ok(witx::load(&paths)?)
+            }
         }
-        Ok(validator.into_document(definitions))
     }
 }
 
@@ -345,11 +360,24 @@ impl<'a> Parse<'a> for Witx<'a> {
     fn parse(parser: Parser<'a>) -> parser::Result<Self> {
         let span = parser.parse::<kw::witx>()?.0;
         let id = parser.parse()?;
-        let mut decls = Vec::new();
-        while !parser.is_empty() {
-            decls.push(parser.parens(|p| p.parse())?);
-        }
-        Ok(Witx { id, span, decls })
+
+        let def = if parser.peek2::<kw::load>() {
+            parser.parens(|p| {
+                p.parse::<kw::load>()?;
+                let mut paths = Vec::new();
+                while !p.is_empty() {
+                    paths.push(p.parse()?);
+                }
+                Ok(WitxDef::Fs(paths))
+            })?
+        } else {
+            let mut decls = Vec::new();
+            while !parser.is_empty() {
+                decls.push(parser.parens(|p| p.parse())?);
+            }
+            WitxDef::Inline(decls)
+        };
+        Ok(Witx { id, span, def })
     }
 }
 
