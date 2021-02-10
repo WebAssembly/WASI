@@ -14,7 +14,7 @@ use std::path::{Path, PathBuf};
 use std::str;
 use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 use wast::parser::{self, Parse, ParseBuffer, Parser};
-use witx::Representable;
+use witx::{Documentation, Representable};
 
 fn main() {
     let tests = find_tests();
@@ -146,10 +146,12 @@ impl WitxtRunner<'_> {
         test: &Path,
         directive: WitxtDirective,
     ) -> Result<()> {
+        self.bump_ntests();
         match directive {
             WitxtDirective::Witx(witx) => {
                 let doc = witx.document(contents, test)?;
-                self.bump_ntests();
+                self.assert_roundtrip(&doc)?;
+                self.assert_md(&doc)?;
                 if let Some(name) = witx.id {
                     self.documents.insert(name.name().to_string(), doc);
                 }
@@ -162,7 +164,6 @@ impl WitxtRunner<'_> {
                 if !err.contains(message) {
                     bail!("expected error {:?}\nfound error {}", message, err);
                 }
-                self.bump_ntests();
             }
             WitxtDirective::AssertRepEquality { repr, t1, t2, .. } => {
                 let (t1m, t1t) = t1;
@@ -188,9 +189,56 @@ impl WitxtRunner<'_> {
                         bail!("expected {:?} representation, got {:?}", a, b);
                     }
                 }
-                self.bump_ntests();
             }
         }
+        Ok(())
+    }
+
+    fn assert_roundtrip(&self, doc: &witx::Document) -> Result<()> {
+        self.bump_ntests();
+        let back_to_sexprs = format!("{}", doc);
+        let doc2 = witx::parse(&back_to_sexprs)?;
+        if *doc == doc2 {
+            return Ok(());
+        }
+
+        // Try to get a more specific error message that isn't thousands of
+        // lines long of debug representations.
+        for type_ in doc.typenames() {
+            let type2 = match doc2.typename(&type_.name) {
+                Some(t) => t,
+                None => bail!("doc2 missing datatype"),
+            };
+            if type_ != type2 {
+                bail!("{:?} != {:?}", type_, type2);
+            }
+        }
+        for mod_ in doc.modules() {
+            let mod2 = match doc2.module(&mod_.name) {
+                Some(m) => m,
+                None => bail!("doc2 missing module"),
+            };
+            for import in mod_.imports() {
+                let import2 = match mod2.import(&import.name) {
+                    Some(i) => i,
+                    None => bail!("mod2 missing import"),
+                };
+                assert_eq!(import, import2);
+            }
+            for func in mod_.funcs() {
+                let func2 = match mod2.func(&func.name) {
+                    Some(f) => f,
+                    None => bail!("mod2 missing func"),
+                };
+                assert_eq!(func, func2);
+            }
+        }
+        bail!("{:?} != {:?}", doc, doc2)
+    }
+
+    fn assert_md(&self, doc: &witx::Document) -> Result<()> {
+        self.bump_ntests();
+        doc.to_md();
         Ok(())
     }
 
