@@ -1,0 +1,96 @@
+
+(witx
+  (typename $tag (enum u8 $c))
+  (typename $u (union $tag (field $c u8)))
+)
+
+(witx
+  (typename $tag (enum u8 $a $b))
+  (typename $u (union $tag (empty $a) (field $b u16)))
+)
+
+(witx
+  (typename $tag (enum u8 $a $b))
+  (typename $u (union $tag (empty $a) (empty $b)))
+)
+
+
+(witx
+ (typename $tag (enum u32 $a $b $c $d $e $f $g $h $i $j $k $l $m))
+ (typename $u
+  (union $tag
+   (field $a u8)
+   (field $b u16)
+   (field $c u32)
+   (field $d u64)
+   (field $e s8)
+   (field $f s16)
+   (field $g s32)
+   (field $h s64)
+   (field $i f32)
+   (field $j f64)
+   (field $k (@witx usize))
+   (field $l char8)
+   (empty $m)
+  )
+ )
+)
+
+(assert_invalid
+  (witx (typename $u (union $tag (field $a u8) (field $b u16))))
+  "Unknown name `tag`"
+)
+
+(assert_invalid
+  (witx
+    (typename $tag u32)
+    (typename $u (union $tag (field $a u8) (field $b u16)))
+  )
+  "Wrong kind of name `tag`: expected enum, got builtin"
+)
+
+(assert_invalid
+  (witx
+    (typename $tag (enum u8 $c))
+    (typename $u (union $tag (field $b u8)))
+  )
+  "Invalid union field `b`: does not correspond to variant in tag `tag`"
+)
+
+(assert_invalid
+  (witx
+    (typename $tag (enum u8 $c))
+    (typename $u (union $tag (field $c f32) (field $b u8)))
+  )
+  "Invalid union field `b`: does not correspond to variant in tag `tag`"
+)
+
+(assert_invalid
+  (witx
+    (typename $tag (enum u8 $c $d))
+    (typename $u (union $tag (field $c f32)))
+  )
+  "Invalid union field `d`: missing variants from tag `tag`"
+)
+
+(witx $d1
+  (typename $tag (enum u8 $a $b))
+  (typename $u (union $tag (field $a u8) (field $b u16)))
+)
+
+(witx $d2
+  (typename $tag (enum u8 $a $b))
+  (typename $u (union $tag (field $b u16) (field $a u8)))
+)
+
+;; These two unions should be represented the same:
+(assert_representable eq $d1 "u" $d2 "u")
+(assert_representable eq $d2 "u" $d1 "u")
+
+;; Tag order doesnt matter for validation, but does for rep equality
+(witx $d3
+  (typename $tag (enum u8 $b $a))
+  (typename $u (union $tag (field $b u16) (field $a u8)))
+)
+
+(assert_representable noteq $d3 "u" $d1 "u")

@@ -7,12 +7,14 @@
 //!
 //!     cargo test --test witxt foo.witxt
 
-use anyhow::{bail, Context, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use rayon::prelude::*;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::str;
 use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 use wast::parser::{self, Parse, ParseBuffer, Parser};
+use witx::Representable;
 
 fn main() {
     let tests = find_tests();
@@ -35,10 +37,17 @@ fn main() {
 
     println!("running {} test files\n", tests.len());
 
-    let state = TestState::default();
+    let ntests = AtomicUsize::new(0);
     let errors = tests
         .par_iter()
-        .filter_map(|(test, contents)| state.run_test(test, contents).err())
+        .filter_map(|(test, contents)| {
+            WitxtRunner {
+                ntests: &ntests,
+                documents: HashMap::new(),
+            }
+            .run(test, contents)
+            .err()
+        })
         .collect::<Vec<_>>();
 
     if !errors.is_empty() {
@@ -51,7 +60,7 @@ fn main() {
 
     println!(
         "test result: ok. {} directives passed\n",
-        state.ntests.load(SeqCst)
+        ntests.load(SeqCst)
     );
 }
 
@@ -80,13 +89,13 @@ fn find_tests() -> Vec<PathBuf> {
     }
 }
 
-#[derive(Default)]
-struct TestState {
-    ntests: AtomicUsize,
+struct WitxtRunner<'a> {
+    ntests: &'a AtomicUsize,
+    documents: HashMap<String, witx::Document>,
 }
 
-impl TestState {
-    fn run_test(&self, test: &Path, contents: &[u8]) -> Result<()> {
+impl WitxtRunner<'_> {
+    fn run(&mut self, test: &Path, contents: &[u8]) -> Result<()> {
         let contents = str::from_utf8(contents)?;
         macro_rules! adjust {
             ($e:expr) => {{
@@ -101,7 +110,7 @@ impl TestState {
 
         let errors = witxt
             .directives
-            .into_par_iter()
+            .into_iter()
             .filter_map(|directive| {
                 let (line, col) = directive.span().linecol_in(contents);
                 self.test_directive(contents, test, directive)
@@ -131,11 +140,19 @@ impl TestState {
         bail!("{}", s)
     }
 
-    fn test_directive(&self, contents: &str, test: &Path, directive: WitxtDirective) -> Result<()> {
+    fn test_directive(
+        &mut self,
+        contents: &str,
+        test: &Path,
+        directive: WitxtDirective,
+    ) -> Result<()> {
         match directive {
             WitxtDirective::Witx(witx) => {
-                witx.document(contents, test)?;
+                let doc = witx.document(contents, test)?;
                 self.bump_ntests();
+                if let Some(name) = witx.id {
+                    self.documents.insert(name.name().to_string(), doc);
+                }
             }
             WitxtDirective::AssertInvalid { witx, message, .. } => {
                 let err = match witx.document(contents, test) {
@@ -144,6 +161,32 @@ impl TestState {
                 };
                 if !err.contains(message) {
                     bail!("expected error {:?}\nfound error {}", message, err);
+                }
+                self.bump_ntests();
+            }
+            WitxtDirective::AssertRepEquality { repr, t1, t2, .. } => {
+                let (t1m, t1t) = t1;
+                let (t2m, t2t) = t2;
+                let t1d = self
+                    .documents
+                    .get(t1m.name())
+                    .ok_or_else(|| anyhow!("no document named {:?}", t1m.name()))?;
+                let t2d = self
+                    .documents
+                    .get(t2m.name())
+                    .ok_or_else(|| anyhow!("no document named {:?}", t2m.name()))?;
+                let t1 = t1d
+                    .typename(&witx::Id::new(t1t))
+                    .ok_or_else(|| anyhow!("no document named {:?}", t1t))?;
+                let t2 = t2d
+                    .typename(&witx::Id::new(t2t))
+                    .ok_or_else(|| anyhow!("no document named {:?}", t2t))?;
+                match (repr, t1.type_().representable(&t2.type_())) {
+                    (RepEquality::Eq, witx::RepEquality::Eq)
+                    | (RepEquality::NotEq, witx::RepEquality::NotEq) => {}
+                    (a, b) => {
+                        bail!("expected {:?} representation, got {:?}", a, b);
+                    }
                 }
                 self.bump_ntests();
             }
@@ -158,7 +201,10 @@ impl TestState {
 
 mod kw {
     wast::custom_keyword!(assert_invalid);
+    wast::custom_keyword!(assert_representable);
     wast::custom_keyword!(witx);
+    wast::custom_keyword!(eq);
+    wast::custom_keyword!(noteq);
 }
 
 struct Witxt<'a> {
@@ -182,6 +228,12 @@ enum WitxtDirective<'a> {
         witx: Witx<'a>,
         message: &'a str,
     },
+    AssertRepEquality {
+        span: wast::Span,
+        repr: RepEquality,
+        t1: (wast::Id<'a>, &'a str),
+        t2: (wast::Id<'a>, &'a str),
+    },
 }
 
 impl WitxtDirective<'_> {
@@ -189,6 +241,7 @@ impl WitxtDirective<'_> {
         match self {
             WitxtDirective::Witx(w) => w.span,
             WitxtDirective::AssertInvalid { span, .. } => *span,
+            WitxtDirective::AssertRepEquality { span, .. } => *span,
         }
     }
 }
@@ -205,6 +258,14 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
                 witx: parser.parens(|p| p.parse())?,
                 message: parser.parse()?,
             })
+        } else if l.peek::<kw::assert_representable>() {
+            let span = parser.parse::<kw::assert_representable>()?.0;
+            Ok(WitxtDirective::AssertRepEquality {
+                span,
+                repr: parser.parse()?,
+                t1: (parser.parse()?, parser.parse()?),
+                t2: (parser.parse()?, parser.parse()?),
+            })
         } else {
             Err(l.error())
         }
@@ -213,6 +274,7 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
 
 struct Witx<'a> {
     span: wast::Span,
+    id: Option<wast::Id<'a>>,
     decls: Vec<witx::parser::Documented<'a, witx::parser::DeclSyntax<'a>>>,
 }
 
@@ -234,10 +296,32 @@ impl Witx<'_> {
 impl<'a> Parse<'a> for Witx<'a> {
     fn parse(parser: Parser<'a>) -> parser::Result<Self> {
         let span = parser.parse::<kw::witx>()?.0;
+        let id = parser.parse()?;
         let mut decls = Vec::new();
         while !parser.is_empty() {
             decls.push(parser.parens(|p| p.parse())?);
         }
-        Ok(Witx { span, decls })
+        Ok(Witx { id, span, decls })
+    }
+}
+
+#[derive(Debug)]
+enum RepEquality {
+    Eq,
+    NotEq,
+}
+
+impl<'a> Parse<'a> for RepEquality {
+    fn parse(parser: Parser<'a>) -> parser::Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<kw::eq>() {
+            parser.parse::<kw::eq>()?;
+            Ok(RepEquality::Eq)
+        } else if l.peek::<kw::noteq>() {
+            parser.parse::<kw::noteq>()?;
+            Ok(RepEquality::NotEq)
+        } else {
+            Err(l.error())
+        }
     }
 }
