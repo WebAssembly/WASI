@@ -129,7 +129,7 @@ impl IdentValidation {
 
 pub struct DocValidation {
     scope: IdentValidation,
-    pub entries: HashMap<Id, Entry>,
+    entries: HashMap<Id, Entry>,
     constant_scopes: HashMap<Id, IdentValidation>,
 }
 
@@ -154,6 +154,10 @@ impl DocValidation {
             text,
             path,
         }
+    }
+
+    pub fn into_document(self, defs: Vec<Definition>) -> Document {
+        Document::new(defs, self.entries)
     }
 }
 

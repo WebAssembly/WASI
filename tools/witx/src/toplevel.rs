@@ -32,7 +32,7 @@ fn _parse_witx_with(paths: &[&Path], io: &dyn WitxIo) -> Result<Document, WitxEr
             &mut parsed,
         )?;
     }
-    Ok(Document::new(definitions, validator.entries))
+    Ok(validator.into_document(definitions))
 }
 
 fn parse_file(

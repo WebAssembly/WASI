@@ -23,3 +23,8 @@ wast = { version = "22.0.0", default-features = false }
 diff = "0.1.11"
 pretty_env_logger = "0.4"
 structopt = "0.3"
+rayon = "1.0"
+
+[[test]]
+name = "witxt"
+harness = false
