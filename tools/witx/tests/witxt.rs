@@ -178,12 +178,13 @@ impl WitxtRunner<'_> {
                     .ok_or_else(|| anyhow!("no document named {:?}", t2m.name()))?;
                 let t1 = t1d
                     .typename(&witx::Id::new(t1t))
-                    .ok_or_else(|| anyhow!("no document named {:?}", t1t))?;
+                    .ok_or_else(|| anyhow!("no type named {:?}", t1t))?;
                 let t2 = t2d
                     .typename(&witx::Id::new(t2t))
-                    .ok_or_else(|| anyhow!("no document named {:?}", t2t))?;
+                    .ok_or_else(|| anyhow!("no type named {:?}", t2t))?;
                 match (repr, t1.type_().representable(&t2.type_())) {
                     (RepEquality::Eq, witx::RepEquality::Eq)
+                    | (RepEquality::Superset, witx::RepEquality::Superset)
                     | (RepEquality::NotEq, witx::RepEquality::NotEq) => {}
                     (a, b) => {
                         bail!("expected {:?} representation, got {:?}", a, b);
@@ -254,6 +255,7 @@ mod kw {
     wast::custom_keyword!(eq);
     wast::custom_keyword!(noteq);
     wast::custom_keyword!(load);
+    wast::custom_keyword!(superset);
 }
 
 struct Witxt<'a> {
@@ -385,6 +387,7 @@ impl<'a> Parse<'a> for Witx<'a> {
 enum RepEquality {
     Eq,
     NotEq,
+    Superset,
 }
 
 impl<'a> Parse<'a> for RepEquality {
@@ -396,6 +399,9 @@ impl<'a> Parse<'a> for RepEquality {
         } else if l.peek::<kw::noteq>() {
             parser.parse::<kw::noteq>()?;
             Ok(RepEquality::NotEq)
+        } else if l.peek::<kw::superset>() {
+            parser.parse::<kw::superset>()?;
+            Ok(RepEquality::Superset)
         } else {
             Err(l.error())
         }
