@@ -477,7 +477,6 @@ impl<'a> Parse<'a> for UnionSyntax<'a> {
             None
         };
         let mut fields = Vec::new();
-        fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
@@ -505,7 +504,9 @@ impl<'a> Parse<'a> for VariantSyntax<'a> {
         };
         let mut cases = Vec::new();
         while !parser.is_empty() {
-            cases.push(parser.parens(|p| p.parse())?);
+            let comments = parser.parse()?;
+            let item = parser.parens(|p| p.parse())?;
+            cases.push(Documented { comments, item });
         }
         Ok(VariantSyntax { tag, cases })
     }
