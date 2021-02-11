@@ -81,12 +81,14 @@ impl Representable for Variant {
         let other_by_name = by
             .cases
             .iter()
-            .map(|c| (&c.name, c))
+            .enumerate()
+            .map(|(i, c)| (&c.name, (c, i)))
             .collect::<HashMap<_, _>>();
         // For each variant in self, must have variant of same name in by:
-        for v in self.cases.iter() {
+        for (i, v) in self.cases.iter().enumerate() {
             let other_ty = match other_by_name.get(&v.name) {
-                Some(other) => &other.tref,
+                Some((_, j)) if i != *j => return RepEquality::NotEq,
+                Some((other, _)) => &other.tref,
                 None => return RepEquality::NotEq,
             };
             match (&v.tref, other_ty) {

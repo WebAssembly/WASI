@@ -150,7 +150,8 @@ impl WitxtRunner<'_> {
         match directive {
             WitxtDirective::Witx(witx) => {
                 let doc = witx.document(contents, test)?;
-                self.assert_roundtrip(&doc)?;
+                self.assert_roundtrip(&doc)
+                    .context("failed to round-trip the document")?;
                 self.assert_md(&doc)?;
                 if let Some(name) = witx.id {
                     self.documents.insert(name.name().to_string(), doc);
@@ -211,7 +212,7 @@ impl WitxtRunner<'_> {
                 None => bail!("doc2 missing datatype"),
             };
             if type_ != type2 {
-                bail!("{:?} != {:?}", type_, type2);
+                bail!("types are not equal\n{:?}\n   !=\n{:?}", type_, type2);
             }
         }
         for mod_ in doc.modules() {
@@ -341,11 +342,10 @@ impl Witx<'_> {
                 let mut validator = witx::DocValidation::new();
                 let mut definitions = Vec::new();
                 for decl in decls {
-                    let def = validator
+                    validator
                         .scope(contents, file)
-                        .validate_decl(&decl.item, &decl.comments)
+                        .validate_decl(&decl.item, &decl.comments, &mut definitions)
                         .map_err(witx::WitxError::Validation)?;
-                    definitions.push(def);
                 }
                 Ok(validator.into_document(definitions))
             }

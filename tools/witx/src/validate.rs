@@ -5,10 +5,10 @@ use crate::{
         ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TypedefSyntax, UnionSyntax,
         VariantSyntax,
     },
-    BuiltinType, Case, Constant, Definition, Entry, HandleDatatype, Id, IntRepr, InterfaceFunc,
-    InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module, ModuleDefinition,
-    ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordMember, Type,
-    TypePassedBy, TypeRef, Variant,
+    BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
+    InterfaceFunc, InterfaceFuncParam, InterfaceFuncParamPosition, Location, Module,
+    ModuleDefinition, ModuleEntry, ModuleImport, ModuleImportVariant, NamedType, RecordDatatype,
+    RecordMember, Type, TypePassedBy, TypeRef, Variant,
 };
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -443,14 +443,16 @@ impl DocValidationScope<'_> {
             }
         }
 
-        let mut names = names.map(|names| names.into_iter().collect::<HashSet<_>>());
+        let mut name_set = names
+            .as_ref()
+            .map(|names| names.iter().collect::<HashSet<_>>());
 
-        let cases = syntax
+        let mut cases = syntax
             .cases
             .iter()
             .map(|case| {
                 let name = Id::new(case.item.name.name());
-                if let Some(names) = &mut names {
+                if let Some(names) = &mut name_set {
                     if !names.remove(&name) {
                         return Err(ValidationError::InvalidUnionField {
                             name: name.as_str().to_string(),
@@ -471,6 +473,18 @@ impl DocValidationScope<'_> {
                 })
             })
             .collect::<Result<Vec<_>, _>>()?;
+
+        // If we have an explicit tag with an enum then that's instructing us to
+        // reorder cases based on the order of the enum itself, so do that here.
+        if let Some(names) = names {
+            let name_pos = names
+                .iter()
+                .enumerate()
+                .map(|(i, name)| (name, i))
+                .collect::<HashMap<_, _>>();
+            cases.sort_by_key(|c| name_pos[&&c.name]);
+        }
+
         Ok(Variant { tag_repr, cases })
     }
 

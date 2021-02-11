@@ -3,26 +3,25 @@
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (struct (field $b u8))))
+    (typename $a (@witx pointer (record (field $b u8))))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $tag (enum u8 $b))
-    (typename $a (@witx pointer (union $tag (field $b u8))))
+    (typename $a (@witx pointer (union)))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (enum u32 $b)))
+    (typename $a (@witx pointer (enum $b)))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (flags u32 $b)))
+    (typename $a (@witx pointer (flags $b)))
   )
   "Anonymous structured types")
 
@@ -34,13 +33,14 @@
 
 (assert_invalid
   (witx
-    (typename $a (struct (field $b (struct (field $c u8)))))
+    (typename $a (record (field $b (record (field $c u8)))))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $tag (enum u8 $c)) (typename $a (struct (field $b (union $tag (field $c u8)))))
+    (typename $tag (enum $c))
+    (typename $a (record (field $b (union))))
   )
   "Anonymous structured types")
 
@@ -53,4 +53,4 @@
   (typename $a (@witx pointer (@witx const_pointer u8))))
 
 (witx
-  (typename $a (struct (field $b (@witx pointer u8)))))
+  (typename $a (record (field $b (@witx pointer u8)))))

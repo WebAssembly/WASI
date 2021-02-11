@@ -1,86 +1,87 @@
 
 (witx
-  (typename $tag (enum u8 $c))
-  (typename $u (union $tag (field $c u8)))
+  (typename $u (union u8))
+)
+(witx
+  (typename $tag (enum (@witx tag u8) $c))
+  (typename $u (union (@witx tag $tag) u8))
 )
 
 (witx
-  (typename $tag (enum u8 $a $b))
-  (typename $u (union $tag (empty $a) (field $b u16)))
+  (typename $tag (enum $a $b))
+  (typename $u (variant (@witx tag $tag) (case $a) (case $b u16)))
 )
 
 (witx
-  (typename $tag (enum u8 $a $b))
-  (typename $u (union $tag (empty $a) (empty $b)))
+  (typename $tag (enum $a $b))
+  (typename $u (variant (@witx tag $tag) (case $a) (case $b)))
 )
 
 
 (witx
- (typename $tag (enum u32 $a $b $c $d $e $f $g $h $i $j $k $l $m))
  (typename $u
-  (union $tag
-   (field $a u8)
-   (field $b u16)
-   (field $c u32)
-   (field $d u64)
-   (field $e s8)
-   (field $f s16)
-   (field $g s32)
-   (field $h s64)
-   (field $i f32)
-   (field $j f64)
-   (field $k (@witx usize))
-   (field $l char8)
-   (empty $m)
+  (union
+   u8
+   u16
+   u32
+   u64
+   s8
+   s16
+   s32
+   s64
+   f32
+   f64
+   (@witx usize)
+   (@witx char8)
   )
  )
 )
 
 (assert_invalid
-  (witx (typename $u (union $tag (field $a u8) (field $b u16))))
+  (witx (typename $u (union (@witx tag $tag) u8 u16)))
   "Unknown name `tag`"
 )
 
 (assert_invalid
   (witx
-    (typename $tag u32)
-    (typename $u (union $tag (field $a u8) (field $b u16)))
+    (typename $tag string)
+    (typename $u (union (@witx tag $tag) u8 u16))
   )
-  "Wrong kind of name `tag`: expected enum, got builtin"
+  "Wrong kind of name `tag`: expected enum or builtin, got list"
 )
 
 (assert_invalid
   (witx
-    (typename $tag (enum u8 $c))
-    (typename $u (union $tag (field $b u8)))
+    (typename $tag (enum $c))
+    (typename $u (variant (@witx tag $tag) (case $b u8)))
   )
   "Invalid union field `b`: does not correspond to variant in tag `tag`"
 )
 
 (assert_invalid
   (witx
-    (typename $tag (enum u8 $c))
-    (typename $u (union $tag (field $c f32) (field $b u8)))
+    (typename $tag (enum $c))
+    (typename $u (union (@witx tag $tag) f32 u8))
   )
-  "Invalid union field `b`: does not correspond to variant in tag `tag`"
+  "Union expected 1 variants, found 2"
 )
 
 (assert_invalid
   (witx
-    (typename $tag (enum u8 $c $d))
-    (typename $u (union $tag (field $c f32)))
+    (typename $tag (enum $c $d))
+    (typename $u (union (@witx tag $tag) f32))
   )
-  "Invalid union field `d`: missing variants from tag `tag`"
+  "Union expected 2 variants, found 1"
 )
 
 (witx $d1
-  (typename $tag (enum u8 $a $b))
-  (typename $u (union $tag (field $a u8) (field $b u16)))
+  (typename $tag (enum $a $b))
+  (typename $u (union (@witx tag $tag) u8 u16))
 )
 
 (witx $d2
-  (typename $tag (enum u8 $a $b))
-  (typename $u (union $tag (field $b u16) (field $a u8)))
+  (typename $tag (enum $a $b))
+  (typename $u (variant (@witx tag $tag) (case $b u16) (case $a u8)))
 )
 
 ;; These two unions should be represented the same:
@@ -89,8 +90,8 @@
 
 ;; Tag order doesnt matter for validation, but does for rep equality
 (witx $d3
-  (typename $tag (enum u8 $b $a))
-  (typename $u (union $tag (field $b u16) (field $a u8)))
+  (typename $tag (enum $b $a))
+  (typename $u (union (@witx tag $tag) u16 u8))
 )
 
 (assert_representable noteq $d3 "u" $d1 "u")

@@ -5,8 +5,8 @@
 
 (witx $reference
   (typename $a u32)
-  (typename $b (struct (field $member_a $a)))
-  (typename $c (struct (field $first_a $a) (field $second_a $a)))
+  (typename $b (record (field $member_a $a)))
+  (typename $c (record (field $first_a $a) (field $second_a $a)))
 )
 
 (assert_representable eq $reference "a" $multi "a")
