@@ -81,12 +81,14 @@ impl Representable for Variant {
         let other_by_name = by
             .cases
             .iter()
-            .map(|c| (&c.name, c))
+            .enumerate()
+            .map(|(i, c)| (&c.name, (c, i)))
             .collect::<HashMap<_, _>>();
         // For each variant in self, must have variant of same name in by:
-        for v in self.cases.iter() {
+        for (i, v) in self.cases.iter().enumerate() {
             let other_ty = match other_by_name.get(&v.name) {
-                Some(other) => &other.tref,
+                Some((_, j)) if i != *j => return RepEquality::NotEq,
+                Some((other, _)) => &other.tref,
                 None => return RepEquality::NotEq,
             };
             match (&v.tref, other_ty) {
@@ -155,78 +157,5 @@ impl Representable for Type {
             (Type::Builtin(s), Type::Builtin(b)) => s.representable(b),
             _ => RepEquality::NotEq,
         }
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::io::MockFs;
-    use crate::toplevel::parse_witx_with;
-    use crate::Id;
-    use std::rc::Rc;
-
-    fn def_type(typename: &str, syntax: &str) -> Rc<NamedType> {
-        use std::path::Path;
-        let doc = parse_witx_with(&[Path::new("-")], &MockFs::new(&[("-", syntax)]))
-            .expect("parse witx doc");
-        let t = doc.typename(&Id::new(typename)).expect("defined type");
-        // Identity should always be true:
-        assert_eq!(t.representable(&t), RepEquality::Eq, "identity");
-        t
-    }
-
-    #[test]
-    fn different_typenames() {
-        let a = def_type("a", "(typename $a (flags (@witx bitflags u32) $b $c))");
-        let d = def_type("d", "(typename $d (flags (@witx bitflags u32) $b $c))");
-
-        assert_eq!(a.representable(&d), RepEquality::Eq);
-        assert_eq!(d.representable(&a), RepEquality::Eq);
-    }
-
-    #[test]
-    fn enum_() {
-        let base = def_type("a", "(typename $a (enum $b $c))");
-        let extra_variant = def_type("a", "(typename $a (enum $b $c $d))");
-
-        assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
-        assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
-
-        let smaller_size = def_type("a", "(typename $a (enum (@witx tag u16) $b $c))");
-        assert_eq!(smaller_size.representable(&base), RepEquality::Superset);
-        assert_eq!(
-            smaller_size.representable(&extra_variant),
-            RepEquality::Superset
-        );
-    }
-
-    #[test]
-    fn union() {
-        let base = def_type(
-            "a",
-            "(typename $tag (enum (@witx tag u8) $b $c))
-            (typename $a (union (@witx tag $tag) u32 f32))",
-        );
-        let extra_variant = def_type(
-            "a",
-            "(typename $tag (enum (@witx tag u8) $b $c $d))
-            (typename $a (union (@witx tag $tag) u32 f32 f64))",
-        );
-
-        assert_eq!(base.representable(&extra_variant), RepEquality::Superset);
-        assert_eq!(extra_variant.representable(&base), RepEquality::NotEq);
-
-        let other_ordering = def_type(
-            "a",
-            "(typename $tag (enum (@witx tag u8) $b $c))
-            (typename $a (variant (@witx tag $tag) (case $c f32) (case $b u32)))",
-        );
-        assert_eq!(base.representable(&other_ordering), RepEquality::Eq);
-        assert_eq!(other_ordering.representable(&base), RepEquality::Eq);
-        assert_eq!(
-            other_ordering.representable(&extra_variant),
-            RepEquality::Superset
-        );
     }
 }

@@ -9,7 +9,7 @@ mod io;
 /// Calculate memory layout of types
 mod layout;
 /// Witx syntax parsing from SExprs
-mod parser;
+pub mod parser;
 /// Paths to witx documents for various proposal phases
 pub mod phases;
 /// Calculate required polyfill between interfaces
@@ -28,10 +28,9 @@ pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, T
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use layout::{Layout, RecordMemberLayout, SizeAlign};
-pub use parser::DeclSyntax;
 pub use render::SExpr;
 pub use representation::{RepEquality, Representable};
-pub use validate::ValidationError;
+pub use validate::{DocValidation, ValidationError};
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
