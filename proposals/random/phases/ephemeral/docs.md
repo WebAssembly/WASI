@@ -871,11 +871,11 @@ Alignment: 8
 - align: 8
 - tag_size: 1
 ### Variant cases
+- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
+
 - <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
 
 - <a href="#event_u.fd_write" name="event_u.fd_write"></a> `fd_write`: [`event_fd_readwrite`](#event_fd_readwrite)
-
-- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
 
 ## <a href="#event" name="event"></a> `event`: Record
 An event that occurred.
