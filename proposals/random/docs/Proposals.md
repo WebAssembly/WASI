@@ -31,8 +31,8 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |
 | [Random][wasi-random]                                                          | Dan Gohman                             |
-| [Handle Index][handle-index]                                                   | Dan Gohman                             |
-| [Poll][poll]                                                                   | Dan Gohman                             |
+| [Handle Index][wasi-handle-index]                                                   | Dan Gohman                             |
+| [Poll][wasi-poll]                                                                   | Dan Gohman                             |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 1 - Feature Proposal (CG)
