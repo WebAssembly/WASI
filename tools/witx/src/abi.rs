@@ -324,16 +324,10 @@ impl Abi {
     /// they're indeed representable.
     pub fn validate(
         &self,
-        params: &[InterfaceFuncParam],
+        _params: &[InterfaceFuncParam],
         results: &[InterfaceFuncParam],
     ) -> Result<(), String> {
         assert_eq!(*self, Abi::Preview1);
-        if params.iter().any(|p| match &**p.tref.type_() {
-            Type::Variant(v) => v.cases.iter().any(|t| t.tref.is_some()),
-            _ => false,
-        }) {
-            return Err("variant parameters not supported".to_string());
-        }
         match results.len() {
             0 => {}
             1 => match &**results[0].tref.type_() {
@@ -617,7 +611,7 @@ impl<B: Bindgen> Generator<'_, B> {
 
         // Lift the return value if one is present.
         if let Some(result) = func.results.get(0) {
-            self.lift(&result.tref);
+            self.lift(&result.tref, true);
         }
 
         self.emit(&Instruction::Return {
@@ -640,7 +634,7 @@ impl<B: Bindgen> Generator<'_, B> {
                 self.emit(&Instruction::GetArg { nth });
                 nth += 1;
             }
-            self.lift(&param.tref);
+            self.lift(&param.tref, false);
         }
 
         self.emit(&Instruction::CallInterface {
@@ -734,14 +728,19 @@ impl<B: Bindgen> Generator<'_, B> {
                     });
                 }
 
-                // ... otherwise this is a `Result`-like variant which must be
-                // in the return position of an interface function. We emit some
-                // blocks to lower the ok/err payloads which means that in the
-                // ok branch we're storing to out-params and in the err branch
-                // we're simply lowering the error enum.
+                // If this variant is in the return position then it's special,
+                // otherwise it's an argument and we just pass the address.
+                let retptr = match retptr {
+                    Some(ptr) => ptr,
+                    None => return self.emit(&AddrOf),
+                };
+
+                // For the return position we emit some blocks to lower the
+                // ok/err payloads which means that in the ok branch we're
+                // storing to out-params and in the err branch we're simply
+                // lowering the error enum.
                 //
                 // Note that this is all very specific to the current WASI ABI.
-                let retptr = retptr.unwrap();
                 let (ok, err) = v.as_expected().unwrap();
                 self.bindgen.push_block();
                 if let Some(ok) = ok {
@@ -823,7 +822,7 @@ impl<B: Bindgen> Generator<'_, B> {
 
     // Note that in general everything in this function is the opposite of the
     // `lower` function above. This is intentional and should be kept this way!
-    fn lift(&mut self, ty: &TypeRef) {
+    fn lift(&mut self, ty: &TypeRef, is_return: bool) {
         use Instruction::*;
         match &**ty.type_() {
             Type::Builtin(BuiltinType::S8) => self.emit(&S8FromI32),
@@ -854,6 +853,13 @@ impl<B: Bindgen> Generator<'_, B> {
             Type::Variant(v) => {
                 if v.is_enum() {
                     return self.emit(&EnumLift {
+                        ty: match ty {
+                            TypeRef::Name(n) => n,
+                            _ => unreachable!(),
+                        },
+                    });
+                } else if !is_return {
+                    return self.emit(&Load {
                         ty: match ty {
                             TypeRef::Name(n) => n,
                             _ => unreachable!(),
@@ -893,7 +899,7 @@ impl<B: Bindgen> Generator<'_, B> {
                 self.bindgen.push_block();
                 let err_expr = if let Some(ty) = err {
                     self.emit(&ReuseReturn);
-                    self.lift(ty);
+                    self.lift(ty, false);
                     Some(self.stack.pop().unwrap())
                 } else {
                     None

@@ -159,12 +159,14 @@
   (call_wasm get-arg0 enum.lower call.wasm return)
   (call_interface get-arg0 enum.lift call.interface return)
 )
-(assert_invalid
+(assert_abi
   (witx
     (typename $a (union f32))
     (module $x (@interface func (export "f") (param $p $a)))
   )
-  "ABI error: variant parameters not supported"
+  (wasm (param i32))
+  (call_wasm get-arg0 addr-of call.wasm return)
+  (call_interface get-arg0 load call.interface return)
 )
 
 ;; scalar returns
