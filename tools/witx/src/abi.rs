@@ -180,7 +180,7 @@ def_instruction! {
         F32FromIf32 : [1] => [1],
         /// Conversion an interface type `f64` value to a wasm `f64`.
         ///
-        /// This may be a noop for some implementations : [1] => [1], but it's here in case the
+        /// This may be a noop for some implementations, but it's here in case the
         /// native language representation of `f64` is different than the wasm
         /// representation of `f64`.
         F64FromIf64 : [1] => [1],
