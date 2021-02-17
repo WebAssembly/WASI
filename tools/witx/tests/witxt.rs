@@ -344,7 +344,7 @@ impl witx::Bindgen for AbiBindgen<'_> {
             I32FromChar8 => self.assert("i32.from_char8"),
             I32FromPointer => self.assert("i32.from_pointer"),
             I32FromConstPointer => self.assert("i32.from_const_pointer"),
-            I32FromHandle => self.assert("i32.from_handle"),
+            I32FromHandle { .. } => self.assert("i32.from_handle"),
             ListPointerLength => self.assert("list.pointer_length"),
             ListFromPointerLength { .. } => self.assert("list.from_pointer_length"),
             F32FromIf32 => self.assert("f32.from_if32"),

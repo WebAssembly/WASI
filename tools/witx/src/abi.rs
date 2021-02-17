@@ -1,3 +1,25 @@
+//! Definition of the ABI of witx functions
+//!
+//! This module is intended to assist with code generators which are binding or
+//! implementing APIs defined by `*.witx` files. THis module contains all
+//! details necessary to implement the actual ABI of these functions so wasm
+//! modules and hosts can communicate with one another.
+//!
+//! Each interface types function (a function defined in `*.witx`) currently has
+//! a well-known wasm signature associated with it. There's then also a standard
+//! way to convert from interface-types values (whose representation is defined
+//! per-language) into this wasm API. This module is intended to assist with
+//! this definition.
+//!
+//! Contained within are two primary functions, [`InterfaceFunc::call_wasm`] and
+//! [`InterfaceFunc::call_interface`]. These functions implement the two ways to
+//! interact with an interface types function, namely calling the raw wasm
+//! version and calling the high-level version with interface types. These two
+//! functions are fed a structure that implements [`Bindgen`]. An instance of
+//! [`Bindgen`] receives instructions which are low-level implementation details
+//! of how to convert to and from wasm types and interface types. Code
+//! generators will need to implement the various instructions to support APIs.
+
 use crate::{
     BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, Type, TypeRef,
 };
@@ -29,9 +51,16 @@ impl From<IntRepr> for WasmType {
 /// we mandate ABIs to ensure we can all talk to each other.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Abi {
+    /// Only stable ABI currently, and is the historical WASI ABI since it was
+    /// first created.
+    ///
+    /// Note that this ABI is limited notably in its return values where it can
+    /// only return 0 results or one `Result<T, enum>` lookalike.
     Preview1,
 }
 
+// Helper macro for defining instructions without having to have tons of
+// exhaustive `match` statements to update
 macro_rules! def_instruction {
     (
         $( #[$enum_attr:meta] )*
@@ -93,9 +122,9 @@ macro_rules! def_instruction {
 def_instruction! {
     #[derive(Debug)]
     pub enum Instruction<'a> {
-        /// Acquires the specified parameter and places it on the stack. Depending
-        /// on the context this may refer to wasm parameters or interface types
-        /// parameters.
+        /// Acquires the specified parameter and places it on the stack.
+        /// Depending on the context this may refer to wasm parameters or
+        /// interface types parameters.
         GetArg { nth: usize } : [0] => [1],
         /// Takes the value off the top of the stack and writes it into linear
         /// memory. Pushes the address in linear memory as an `i32`.
@@ -128,17 +157,20 @@ def_instruction! {
         /// Converts a language-specific pointer value to a wasm `i32`.
         I32FromConstPointer : [1] => [1],
         /// Converts a language-specific handle value to a wasm `i32`.
-        I32FromHandle : [1] => [1],
+        I32FromHandle { ty: &'a NamedType } : [1] => [1],
         /// Converts a language-specific record-of-bools to the packed
         /// representation as an `i32`.
         I32FromBitflags { ty: &'a NamedType } : [1] => [1],
         /// Converts a language-specific record-of-bools to the packed
         /// representation as an `i64`.
         I64FromBitflags { ty: &'a NamedType } : [1] => [1],
-        /// Converts an interface type list into its pointer/length, pushing them
-        /// both on the stack.
+        /// Converts an interface type list into its pointer/length, pushing
+        /// them both on the stack.
         ListPointerLength : [1] => [2],
-        /// TODO
+        /// Pops two `i32` values from the stack and creates a list from them of
+        /// the specified type. The first operand is the pointer in linear
+        /// memory to the start of the list and the second operand is the
+        /// length.
         ListFromPointerLength { ty: &'a TypeRef } : [2] => [1],
         /// Conversion an interface type `f32` value to a wasm `f32`.
         ///
@@ -152,11 +184,9 @@ def_instruction! {
         /// native language representation of `f64` is different than the wasm
         /// representation of `f64`.
         F64FromIf64 : [1] => [1],
-        /// Peforms a call to the function necessary in this instruction sequence.
-        ///
-        /// What function this calls depends on the context that these instructions
-        /// are being interpreted within. This will consume the entire stack and
-        /// push all of its results to the stack.
+
+        /// Represents a call to a raw WebAssembly API. The module/name are
+        /// provided inline as well as the types if necessary.
         CallWasm {
             module: &'a str,
             name: &'a str,
@@ -164,7 +194,8 @@ def_instruction! {
             results: &'a [WasmType],
         } : [params.len()] => [results.len()],
 
-        /// TODO
+        /// Same as `CallWasm`, except the dual where an interface is being
+        /// called rather than a raw wasm function.
         CallInterface {
             module: &'a str,
             func: &'a InterfaceFunc,
@@ -218,12 +249,19 @@ def_instruction! {
         BitflagsFromI32 { ty: &'a NamedType } : [1] => [1],
         /// Converts a native wasm `i64` to a language-specific record-of-bools.
         BitflagsFromI64 { ty: &'a NamedType } : [1] => [1],
-        /// TODO
+        /// Acquires the return pointer `n` and pushes an `i32` on the stack.
+        ///
+        /// Implementations of [`Bindgen`] may have [`Bindgen::allocate_space`]
+        /// called to reserve space in memory for the result of a computation to
+        /// get written. This instruction acquires a pointer to the space
+        /// reserved in `allocate_space`.
         ReturnPointerGet { n: usize } : [0] => [1],
         /// Loads the interface types value from an `i32` pointer popped from
         /// the stack.
         Load { ty: &'a NamedType } : [1] => [1],
-        /// TODO
+        /// Stores an interface types value into linear memory. The first
+        /// operand is the value to store and the second operand is the pointer
+        /// in linear memory to store it at.
         Store { ty: &'a NamedType } : [2] => [0],
         /// Pops a native wasm `i32` from the stack, as well as two blocks
         /// internally from the code generator.
@@ -236,7 +274,15 @@ def_instruction! {
         /// WASI and intentionally differs from the type-level grammar of
         /// interface types results.
         ResultLift : [1] => [1],
-        /// TODO
+        /// Pops a native interface value from the stack as well as two blocks
+        /// internally from the code generator.
+        ///
+        /// A `match` is performed on the value popped and the corresponding
+        /// block for ok/err is used depending on value. This pushes a single
+        /// `i32` onto the stack representing the error code for this result.
+        ///
+        /// Note that like `ResultLift` this is specialized to the current WASI
+        /// ABI.
         ResultLower {
             ok: Option<&'a TypeRef>,
             err: Option<&'a TypeRef>,
@@ -249,21 +295,24 @@ def_instruction! {
         /// type with them. The purpose of this instruction is to convert a
         /// native wasm integer into the enum type for the interface.
         EnumLift { ty: &'a NamedType } : [1] => [1],
-        /// TODO
+        /// Converts an interface types enum value into a wasm `i32`.
         EnumLower { ty: &'a NamedType } : [1] => [1],
         /// Creates a tuple from the top `n` elements on the stack, pushing the
         /// tuple onto the stack.
         TupleLift { amt: usize } : [*amt] => [1],
-        /// TODO
+        /// Splits a tuple at the top of the stack into its `n` components,
+        /// pushing them all onto the stack.
         TupleLower { amt: usize } : [1] => [*amt],
-        /// This is a special instruction specifically for the original ABI of WASI.
-        /// The raw return `i32` of a function is re-pushed onto the stack for
-        /// reuse.
+        /// This is a special instruction specifically for the original ABI of
+        /// WASI.  The raw return `i32` of a function is re-pushed onto the
+        /// stack for reuse.
         ReuseReturn : [0] => [1],
         /// Returns `amt` values on the stack. This is always the last
         /// instruction.
         Return { amt: usize } : [*amt] => [0],
-        /// TODO
+        /// This is a special instruction used at the entry of blocks used as
+        /// part of `ResultLower`, representing that the payload of that variant
+        /// being matched on should be pushed onto the stack.
         VariantPayload : [0] => [1],
     }
 }
@@ -290,15 +339,11 @@ impl Abi {
             1 => match &**results[0].tref.type_() {
                 Type::Handle(_) | Type::Builtin(_) | Type::ConstPointer(_) | Type::Pointer(_) => {}
                 Type::Variant(v) => {
-                    // Only allow only variants of the shape:
-                    //
-                    //  (variant
-                    //      (case "ok" ty?)
-                    //      (case "err" enum))
-                    if v.cases.len() != 2 || v.cases[0].name != "ok" || v.cases[1].name != "err" {
-                        return Err("invalid return type".to_string());
-                    }
-                    if let Some(ty) = &v.cases[0].tref {
+                    let (ok, err) = match v.as_expected() {
+                        Some(pair) => pair,
+                        None => return Err("invalid return type".to_string()),
+                    };
+                    if let Some(ty) = ok {
                         match &**ty.type_() {
                             Type::Record(r) if r.is_tuple() => {
                                 for member in r.members.iter() {
@@ -318,12 +363,12 @@ impl Abi {
                             }
                         }
                     }
-                    if let Some(ty) = &v.cases[1].tref {
+                    if let Some(ty) = err {
                         if !ty.named() {
                             return Err("only named types are allowed in results".to_string());
                         }
                         if let Type::Variant(v) = &**ty.type_() {
-                            if v.cases.iter().all(|v| v.tref.is_none()) {
+                            if v.is_enum() {
                                 return Ok(());
                             }
                         }
@@ -350,7 +395,6 @@ impl Abi {
 /// generate code for. Instructions operate like a stack machine where each
 /// instruction has a list of inputs and a list of outputs (provided by the
 /// `emit` function).
-///
 pub trait Bindgen {
     /// The intermediate type for fragments of code for this type.
     ///
@@ -372,6 +416,11 @@ pub trait Bindgen {
         results: &mut Vec<Self::Operand>,
     );
 
+    /// Allocates temporary space in linear memory indexed by `slot` with enough
+    /// space to store `ty`.
+    ///
+    /// This is called when calling some wasm functions where a return pointer
+    /// is needed.
     fn allocate_space(&mut self, slot: usize, ty: &NamedType);
 
     /// Enters a new block of code to generate code for.
@@ -474,7 +523,7 @@ impl InterfaceFunc {
                         IntRepr::U64 => WasmType::I64,
                         IntRepr::U32 | IntRepr::U16 | IntRepr::U8 => WasmType::I32,
                     });
-                    if v.cases.iter().all(|v| v.tref.is_none()) {
+                    if v.is_enum() {
                         continue;
                     }
                     // return pointer
@@ -504,9 +553,6 @@ impl InterfaceFunc {
     /// will be a `Call` which represents calling the actual raw wasm function
     /// signature.
     ///
-    /// After executing the instructions the values left on the pseudo-stack are
-    /// the values to be returned in the interface types language.
-    ///
     /// This function is useful, for example, if you're building a language
     /// generator for WASI bindings. This will document how to translate
     /// language-specific values into the wasm types to call a WASI function,
@@ -523,6 +569,9 @@ impl InterfaceFunc {
         .call_wasm(module, self);
     }
 
+    /// This is the dual of [`InterfaceFunc::call_wasm`], except that instead of
+    /// calling a wasm signature it generates code to come from a wasm signature
+    /// and call an interface types signature.
     pub fn call_interface(&self, module: &Id, bindgen: &mut impl Bindgen) {
         assert_eq!(self.abi, Abi::Preview1);
         Generator {
@@ -566,6 +615,7 @@ impl<B: Bindgen> Generator<'_, B> {
             results: &results,
         });
 
+        // Lift the return value if one is present.
         if let Some(result) = func.results.get(0) {
             self.lift(&result.tref);
         }
@@ -576,6 +626,12 @@ impl<B: Bindgen> Generator<'_, B> {
     }
 
     fn call_interface(&mut self, module: &Id, func: &InterfaceFunc) {
+        // Lift all wasm parameters into interface types first.
+        //
+        // Note that consuming arguments is somewhat janky right now by manually
+        // giving lists a second argument for their length. In the future we'll
+        // probably want to refactor the `lift` function to internally know how
+        // to consume arguments.
         let mut nth = 0;
         for param in func.params.iter() {
             self.emit(&Instruction::GetArg { nth });
@@ -592,6 +648,8 @@ impl<B: Bindgen> Generator<'_, B> {
             func,
         });
 
+        // Like above the current ABI only has at most one result, so lower it
+        // here if necessary.
         if let Some(result) = func.results.get(0) {
             self.lower(&result.tref, Some(&mut nth));
         }
@@ -648,7 +706,12 @@ impl<B: Bindgen> Generator<'_, B> {
             Type::Builtin(BuiltinType::Char) => self.emit(&I32FromChar),
             Type::Pointer(_) => self.emit(&I32FromPointer),
             Type::ConstPointer(_) => self.emit(&I32FromConstPointer),
-            Type::Handle(_) => self.emit(&I32FromHandle),
+            Type::Handle(_) => self.emit(&I32FromHandle {
+                ty: match ty {
+                    TypeRef::Name(ty) => ty,
+                    _ => unreachable!(),
+                },
+            }),
             Type::Record(r) => {
                 let ty = match ty {
                     TypeRef::Name(ty) => ty,
@@ -661,7 +724,8 @@ impl<B: Bindgen> Generator<'_, B> {
                 }
             }
             Type::Variant(v) => {
-                if v.cases.iter().all(|v| v.tref.is_none()) {
+                // Enum-like variants are simply lowered to their discriminant.
+                if v.is_enum() {
                     return self.emit(&EnumLower {
                         ty: match ty {
                             TypeRef::Name(n) => n,
@@ -669,6 +733,14 @@ impl<B: Bindgen> Generator<'_, B> {
                         },
                     });
                 }
+
+                // ... otherwise this is a `Result`-like variant which must be
+                // in the return position of an interface function. We emit some
+                // blocks to lower the ok/err payloads which means that in the
+                // ok branch we're storing to out-params and in the err branch
+                // we're simply lowering the error enum.
+                //
+                // Note that this is all very specific to the current WASI ABI.
                 let retptr = retptr.unwrap();
                 let (ok, err) = v.as_expected().unwrap();
                 self.bindgen.push_block();
@@ -686,7 +758,9 @@ impl<B: Bindgen> Generator<'_, B> {
                             self.emit(&TupleLower {
                                 amt: r.members.len(),
                             });
-                            // TODO: rev
+                            // Note that `rev()` is used here due to the order
+                            // that tuples are pushed onto the stack and how we
+                            // consume the last item first from the stack.
                             for (i, member) in r.members.iter().enumerate().rev() {
                                 store(self, &member.tref, i);
                             }
@@ -715,14 +789,19 @@ impl<B: Bindgen> Generator<'_, B> {
     }
 
     fn prep_return_pointer(&mut self, ty: &Type) {
+        // Return pointers are only needed for `Result<T, _>`...
         let variant = match ty {
             Type::Variant(v) => v,
             _ => return,
         };
+        // ... and only if `T` is actually present in `Result<T, _>`
         let ok = match &variant.cases[0].tref {
             Some(t) => t,
             None => return,
         };
+
+        // Tuples have each individual item in a separate return pointer while
+        // all other types go through a singular return pointer.
         let mut n = 0;
         let mut prep = |ty: &TypeRef| {
             match ty {
@@ -742,6 +821,8 @@ impl<B: Bindgen> Generator<'_, B> {
         }
     }
 
+    // Note that in general everything in this function is the opposite of the
+    // `lower` function above. This is intentional and should be kept this way!
     fn lift(&mut self, ty: &TypeRef) {
         use Instruction::*;
         match &**ty.type_() {
@@ -771,7 +852,7 @@ impl<B: Bindgen> Generator<'_, B> {
                 },
             }),
             Type::Variant(v) => {
-                if v.cases.iter().all(|v| v.tref.is_none()) {
+                if v.is_enum() {
                     return self.emit(&EnumLift {
                         ty: match ty {
                             TypeRef::Name(n) => n,

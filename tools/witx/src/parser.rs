@@ -53,6 +53,7 @@ mod kw {
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
     wast::custom_keyword!(variant);
+    wast::custom_keyword!(bool_ = "bool");
 }
 
 mod annotation {
@@ -293,6 +294,7 @@ pub enum TypedefSyntax<'a> {
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
     String,
+    Bool,
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
@@ -305,6 +307,9 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
         } else if l.peek::<kw::string>() {
             parser.parse::<kw::string>()?;
             Ok(TypedefSyntax::String)
+        } else if l.peek::<kw::bool_>() {
+            parser.parse::<kw::bool_>()?;
+            Ok(TypedefSyntax::Bool)
         } else if l.peek::<wast::LParen>() {
             parser.parens(|parser| {
                 let mut l = parser.lookahead1();
@@ -416,14 +421,14 @@ impl<'a> Parse<'a> for ExpectedSyntax<'a> {
         } else {
             None
         };
-        let err = if parser.is_empty() {
-            None
-        } else {
-            Some(Box::new(parser.parens(|p| {
-                p.parse::<kw::error>()?;
-                p.parse()
-            })?))
-        };
+        let err = parser.parens(|p| {
+            p.parse::<kw::error>()?;
+            Ok(if p.is_empty() {
+                None
+            } else {
+                Some(Box::new(p.parse()?))
+            })
+        })?;
         Ok(ExpectedSyntax { ok, err })
     }
 }

@@ -190,7 +190,9 @@ impl RecordDatatype {
 impl Variant {
     pub fn to_sexpr(&self) -> SExpr {
         let mut list = Vec::new();
-        if self.cases.iter().all(|c| c.tref.is_none()) {
+        if self.is_bool() {
+            return SExpr::word("bool");
+        } else if self.is_enum() {
             list.push(SExpr::word("enum"));
             list.push(SExpr::Vec(vec![
                 SExpr::word("@witx"),

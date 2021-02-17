@@ -114,16 +114,16 @@ impl ToMarkdown for RecordDatatype {
             } else {
                 name.to_owned()
             };
-            let offset_desc = if self.bitflags_repr().is_some() {
-                "Bit"
+            let (div, offset_desc) = if self.bitflags_repr().is_some() {
+                (4, "Bit")
             } else {
-                "Offset"
+                (1, "Offset")
             };
             let n = node.new_child(MdNamedType::new(
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}\n{}: {}\n", &member.docs, offset_desc, &offset).as_str(),
+                format!("{}\n{}: {}\n", &member.docs, offset_desc, offset / div).as_str(),
             ));
             member.tref.generate(n.clone());
         }

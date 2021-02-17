@@ -204,18 +204,37 @@ impl NamedType {
     }
 }
 
+/// Structure of all possible interface types.
+///
+/// Note that this is intended to match the interface types proposal itself.
+/// Currently this is relatively close to that with just a few `*.witx`
+/// extensions for now.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
+    /// A structure with named field.
     Record(RecordDatatype),
+    /// An enumeration where a value is one of a number of variants.
     Variant(Variant),
+    /// A "handle" which is an un-forgeable reference. Today this is an `i32`
+    /// where a module can't forge and use integers it was not already given
+    /// access to.
     Handle(HandleDatatype),
+    /// A list of a type, stored in linear memory.
+    ///
+    /// Note that lists of `char` are specialized to indicate strings.
     List(TypeRef),
+    /// A `witx`-specific type representing a raw mutable pointer into linear
+    /// memory
     Pointer(TypeRef),
+    /// A `witx`-specific type representing a raw const pointer into linear
+    /// memory
     ConstPointer(TypeRef),
+    /// A builtin base-case type.
     Builtin(BuiltinType),
 }
 
 impl Type {
+    /// Returns a human-readable string to describe this type.
     pub fn kind(&self) -> &'static str {
         use Type::*;
         match self {
@@ -236,6 +255,7 @@ pub enum BuiltinType {
     ///
     /// Same as the Rust language's `char` type.
     Char,
+    /// An 8-bit unsigned integer.
     U8 {
         /// Indicates whether this type is intended to represent the `char`
         /// type in the C language. The C `char` type is often unsigned, but
@@ -247,7 +267,9 @@ pub enum BuiltinType {
         /// pointer` to hint that it's pointing to unicode string data as well.
         lang_c_char: bool,
     },
+    /// A 16-bit unsigned integer.
     U16,
+    /// A 32-bit unsigned integer.
     U32 {
         /// Indicates that this 32-bit value should actually be considered a
         /// pointer-like value in language bindings. At the interface types
@@ -259,12 +281,19 @@ pub enum BuiltinType {
         /// argument or return-value is pointer-like.
         lang_ptr_size: bool,
     },
+    /// A 64-bit unsigned integer.
     U64,
+    /// An 8-bit signed integer
     S8,
+    /// A 16-bit signed integer
     S16,
+    /// A 32-bit signed integer
     S32,
+    /// A 64-bit signed integer
     S64,
+    /// A 32-bit floating point value.
     F32,
+    /// A 64-bit floating point value.
     F64,
 }
 
@@ -289,16 +318,34 @@ impl IntRepr {
     }
 }
 
+/// A struct-like value with named fields.
+///
+/// Records map to `struct`s in most languages where this is a type with a
+/// number of named fields that all have their own particular type. Field order
+/// dictates layout in memory.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RecordDatatype {
+    /// A hint as to what this record might be.
+    ///
+    /// Note that in the future this will only be a hint, not a control of the
+    /// actual representation itself. At this time though the record layout of
+    /// bitflags is different from other types.
     pub kind: RecordKind,
+
+    /// A list of named fields for this record.
     pub members: Vec<RecordMember>,
 }
 
+/// Different kinds of records used for hinting various language-specific types.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum RecordKind {
+    /// A tuple where the name of all fields are consecutive integers starting
+    /// at "0".
     Tuple,
+    /// A record where all fields are `bool`s. Currently represented as an
+    /// integer with bits set or not set.
     Bitflags(IntRepr),
+    /// All other structures.
     Other,
 }
 
@@ -316,6 +363,7 @@ impl RecordDatatype {
             _ => false,
         }
     }
+
     pub fn bitflags_repr(&self) -> Option<IntRepr> {
         match self.kind {
             RecordKind::Bitflags(i) => Some(i),
@@ -324,15 +372,37 @@ impl RecordDatatype {
     }
 }
 
+/// A type which represents how values can be one of a set of possible cases.
+///
+/// This type maps to an `enum` in languages like Rust, but doesn't have an
+/// equivalent in languages like JS or C. The closest analog in C is a tagged
+/// union, but a `Variant` is always consistent whereas a tagged union in C
+/// could be mis-tagged or such.
+///
+/// Variants are used to represent one of a possible set of types. For example
+/// an enum-like variant, a result that is either success or failure, or even a
+/// simple `bool`. Variants are primarily used heavily with various kinds of
+/// shorthands in the `*.witx` format to represent idioms in languages.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Variant {
+    /// The bit representation of the width of this variant's tag when the
+    /// variant is stored in memory.
     pub tag_repr: IntRepr,
+    /// The possible cases that values of this variant type can take.
     pub cases: Vec<Case>,
 }
 
 impl Variant {
     /// If this variant looks like an `expected` shorthand, return the ok/err
     /// types associated with this result.
+    ///
+    /// Only matches variants fo the form:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "ok" ok?)
+    ///     (case "err" err?))
+    /// ```
     pub fn as_expected(&self) -> Option<(Option<&TypeRef>, Option<&TypeRef>)> {
         if self.cases.len() != 2 {
             return None;
@@ -346,7 +416,14 @@ impl Variant {
         Some((self.cases[0].tref.as_ref(), self.cases[1].tref.as_ref()))
     }
 
-    /// TODO
+    /// Returns whether this variant type is "bool-like" meaning that it matches
+    /// this type:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "false")
+    ///     (case "true"))
+    /// ```
     pub fn is_bool(&self) -> bool {
         self.cases.len() == 2
             && self.cases[0].name == "false"
@@ -354,12 +431,23 @@ impl Variant {
             && self.cases[0].tref.is_none()
             && self.cases[1].tref.is_none()
     }
+
+    /// Returns whether this variant type is "enum-like" meaning that all of its
+    /// cases have no payload associated with them.
+    pub fn is_enum(&self) -> bool {
+        self.cases.iter().all(|c| c.tref.is_none())
+    }
 }
 
+/// One of a number of possible types that a `Variant` can take.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Case {
+    /// The name of this case and how to identify it.
     pub name: Id,
+    /// An optional payload type for this case and data that can be associated
+    /// with it.
     pub tref: Option<TypeRef>,
+    /// Documentation for this case.
     pub docs: String,
 }
 

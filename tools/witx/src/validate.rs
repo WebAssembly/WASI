@@ -147,7 +147,7 @@ impl DocValidation {
             entries: HashMap::new(),
             constant_scopes: HashMap::new(),
             bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
-                tag_repr: IntRepr::U8,
+                tag_repr: IntRepr::U32,
                 cases: vec![
                     Case {
                         name: Id::new("false"),
@@ -326,6 +326,7 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::String => {
                     Type::List(TypeRef::Value(Rc::new(Type::Builtin(BuiltinType::Char))))
                 }
+                TypedefSyntax::Bool => return Ok(self.doc.bool_ty.clone()),
                 TypedefSyntax::Ident { .. } => unreachable!(),
             }))),
         }
