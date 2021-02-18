@@ -11,6 +11,6 @@
   ;;; Temporarily yield execution of the calling thread.
   ;;; Note: This is similar to `yield` in POSIX.
   (@interface func (export "yield")
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 )

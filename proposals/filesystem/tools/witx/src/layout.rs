@@ -64,7 +64,10 @@ impl Layout for NamedType {
 impl Type {
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
-            Type::Record(s) => s.layout(cache),
+            Type::Record(s) => match s.bitflags_repr() {
+                Some(repr) => repr.mem_size_align(),
+                None => s.layout(cache),
+            },
             Type::Variant(s) => s.mem_size_align(),
             Type::Handle(h) => h.mem_size_align(),
             Type::List { .. } => SizeAlign { size: 8, align: 4 }, // Pointer and Length
@@ -122,8 +125,13 @@ impl RecordDatatype {
 
 impl Layout for RecordDatatype {
     fn mem_size_align(&self) -> SizeAlign {
-        let mut cache = HashMap::new();
-        self.layout(&mut cache)
+        match self.bitflags_repr() {
+            Some(repr) => repr.mem_size_align(),
+            None => {
+                let mut cache = HashMap::new();
+                self.layout(&mut cache)
+            }
+        }
     }
 }
 
@@ -140,6 +148,18 @@ impl Layout for Variant {
             max.align = max.align.max(size.align);
         }
         max
+    }
+}
+
+impl Variant {
+    pub fn payload_offset(&self) -> usize {
+        let mut offset = self.tag_repr.mem_size_align().size;
+        for case in self.cases.iter() {
+            if let Some(payload) = &case.tref {
+                offset = offset.max(align_to(offset, payload.mem_size_align().align));
+            }
+        }
+        offset
     }
 }
 

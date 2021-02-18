@@ -19,7 +19,7 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#clockid" name="clockid"></a> `clockid`: Variant
+## <a href="#clockid" name="clockid"></a> `clockid`: `Variant`
 Identifiers for clocks.
 
 Size: 4
@@ -43,7 +43,7 @@ The CPU-time clock associated with the current process.
 - <a href="#clockid.thread_cputime_id" name="clockid.thread_cputime_id"></a> `thread_cputime_id`
 The CPU-time clock associated with the current thread.
 
-## <a href="#errno" name="errno"></a> `errno`: Variant
+## <a href="#errno" name="errno"></a> `errno`: `Variant`
 Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
 API; some are used in higher-level library layers, and others are provided
@@ -285,114 +285,172 @@ Cross-device link.
 - <a href="#errno.notcapable" name="errno.notcapable"></a> `notcapable`
 Extension: Capabilities insufficient.
 
-## <a href="#rights" name="rights"></a> `rights`: `u64`
+## <a href="#rights" name="rights"></a> `rights`: `Record`
 File descriptor rights, determining which actions may be performed.
 
 Size: 8
 
 Alignment: 8
 
-### Constants
-- <a href="#rights.fd_datasync" name="rights.fd_datasync"></a> `fd_datasync`
+### Record members
+- <a href="#rights.fd_datasync" name="rights.fd_datasync"></a> `fd_datasync`: `bool`
 The right to invoke [`fd_datasync`](#fd_datasync).
 If [`path_open`](#path_open) is set, includes the right to invoke
 [`path_open`](#path_open) with [`fdflags::dsync`](#fdflags.dsync).
 
-- <a href="#rights.fd_read" name="rights.fd_read"></a> `fd_read`
+Bit: 0
+
+- <a href="#rights.fd_read" name="rights.fd_read"></a> `fd_read`: `bool`
 The right to invoke [`fd_read`](#fd_read) and [`sock_recv`](#sock_recv).
 If [`rights::fd_seek`](#rights.fd_seek) is set, includes the right to invoke [`fd_pread`](#fd_pread).
 
-- <a href="#rights.fd_seek" name="rights.fd_seek"></a> `fd_seek`
+Bit: 1
+
+- <a href="#rights.fd_seek" name="rights.fd_seek"></a> `fd_seek`: `bool`
 The right to invoke [`fd_seek`](#fd_seek). This flag implies [`rights::fd_tell`](#rights.fd_tell).
 
-- <a href="#rights.fd_fdstat_set_flags" name="rights.fd_fdstat_set_flags"></a> `fd_fdstat_set_flags`
+Bit: 2
+
+- <a href="#rights.fd_fdstat_set_flags" name="rights.fd_fdstat_set_flags"></a> `fd_fdstat_set_flags`: `bool`
 The right to invoke [`fd_fdstat_set_flags`](#fd_fdstat_set_flags).
 
-- <a href="#rights.fd_sync" name="rights.fd_sync"></a> `fd_sync`
+Bit: 3
+
+- <a href="#rights.fd_sync" name="rights.fd_sync"></a> `fd_sync`: `bool`
 The right to invoke [`fd_sync`](#fd_sync).
 If [`path_open`](#path_open) is set, includes the right to invoke
 [`path_open`](#path_open) with [`fdflags::rsync`](#fdflags.rsync) and [`fdflags::dsync`](#fdflags.dsync).
 
-- <a href="#rights.fd_tell" name="rights.fd_tell"></a> `fd_tell`
+Bit: 4
+
+- <a href="#rights.fd_tell" name="rights.fd_tell"></a> `fd_tell`: `bool`
 The right to invoke [`fd_seek`](#fd_seek) in such a way that the file offset
 remains unaltered (i.e., [`whence::cur`](#whence.cur) with offset zero), or to
 invoke [`fd_tell`](#fd_tell).
 
-- <a href="#rights.fd_write" name="rights.fd_write"></a> `fd_write`
+Bit: 5
+
+- <a href="#rights.fd_write" name="rights.fd_write"></a> `fd_write`: `bool`
 The right to invoke [`fd_write`](#fd_write) and [`sock_send`](#sock_send).
 If [`rights::fd_seek`](#rights.fd_seek) is set, includes the right to invoke [`fd_pwrite`](#fd_pwrite).
 
-- <a href="#rights.fd_advise" name="rights.fd_advise"></a> `fd_advise`
+Bit: 6
+
+- <a href="#rights.fd_advise" name="rights.fd_advise"></a> `fd_advise`: `bool`
 The right to invoke [`fd_advise`](#fd_advise).
 
-- <a href="#rights.fd_allocate" name="rights.fd_allocate"></a> `fd_allocate`
+Bit: 7
+
+- <a href="#rights.fd_allocate" name="rights.fd_allocate"></a> `fd_allocate`: `bool`
 The right to invoke [`fd_allocate`](#fd_allocate).
 
-- <a href="#rights.path_create_directory" name="rights.path_create_directory"></a> `path_create_directory`
+Bit: 8
+
+- <a href="#rights.path_create_directory" name="rights.path_create_directory"></a> `path_create_directory`: `bool`
 The right to invoke [`path_create_directory`](#path_create_directory).
 
-- <a href="#rights.path_create_file" name="rights.path_create_file"></a> `path_create_file`
+Bit: 9
+
+- <a href="#rights.path_create_file" name="rights.path_create_file"></a> `path_create_file`: `bool`
 If [`path_open`](#path_open) is set, the right to invoke [`path_open`](#path_open) with [`oflags::creat`](#oflags.creat).
 
-- <a href="#rights.path_link_source" name="rights.path_link_source"></a> `path_link_source`
+Bit: 10
+
+- <a href="#rights.path_link_source" name="rights.path_link_source"></a> `path_link_source`: `bool`
 The right to invoke [`path_link`](#path_link) with the file descriptor as the
 source directory.
 
-- <a href="#rights.path_link_target" name="rights.path_link_target"></a> `path_link_target`
+Bit: 11
+
+- <a href="#rights.path_link_target" name="rights.path_link_target"></a> `path_link_target`: `bool`
 The right to invoke [`path_link`](#path_link) with the file descriptor as the
 target directory.
 
-- <a href="#rights.path_open" name="rights.path_open"></a> `path_open`
+Bit: 12
+
+- <a href="#rights.path_open" name="rights.path_open"></a> `path_open`: `bool`
 The right to invoke [`path_open`](#path_open).
 
-- <a href="#rights.fd_readdir" name="rights.fd_readdir"></a> `fd_readdir`
+Bit: 13
+
+- <a href="#rights.fd_readdir" name="rights.fd_readdir"></a> `fd_readdir`: `bool`
 The right to invoke [`fd_readdir`](#fd_readdir).
 
-- <a href="#rights.path_readlink" name="rights.path_readlink"></a> `path_readlink`
+Bit: 14
+
+- <a href="#rights.path_readlink" name="rights.path_readlink"></a> `path_readlink`: `bool`
 The right to invoke [`path_readlink`](#path_readlink).
 
-- <a href="#rights.path_rename_source" name="rights.path_rename_source"></a> `path_rename_source`
+Bit: 15
+
+- <a href="#rights.path_rename_source" name="rights.path_rename_source"></a> `path_rename_source`: `bool`
 The right to invoke [`path_rename`](#path_rename) with the file descriptor as the source directory.
 
-- <a href="#rights.path_rename_target" name="rights.path_rename_target"></a> `path_rename_target`
+Bit: 16
+
+- <a href="#rights.path_rename_target" name="rights.path_rename_target"></a> `path_rename_target`: `bool`
 The right to invoke [`path_rename`](#path_rename) with the file descriptor as the target directory.
 
-- <a href="#rights.path_filestat_get" name="rights.path_filestat_get"></a> `path_filestat_get`
+Bit: 17
+
+- <a href="#rights.path_filestat_get" name="rights.path_filestat_get"></a> `path_filestat_get`: `bool`
 The right to invoke [`path_filestat_get`](#path_filestat_get).
 
-- <a href="#rights.path_filestat_set_size" name="rights.path_filestat_set_size"></a> `path_filestat_set_size`
+Bit: 18
+
+- <a href="#rights.path_filestat_set_size" name="rights.path_filestat_set_size"></a> `path_filestat_set_size`: `bool`
 The right to change a file's size (there is no `path_filestat_set_size`).
 If [`path_open`](#path_open) is set, includes the right to invoke [`path_open`](#path_open) with [`oflags::trunc`](#oflags.trunc).
 
-- <a href="#rights.path_filestat_set_times" name="rights.path_filestat_set_times"></a> `path_filestat_set_times`
+Bit: 19
+
+- <a href="#rights.path_filestat_set_times" name="rights.path_filestat_set_times"></a> `path_filestat_set_times`: `bool`
 The right to invoke [`path_filestat_set_times`](#path_filestat_set_times).
 
-- <a href="#rights.fd_filestat_get" name="rights.fd_filestat_get"></a> `fd_filestat_get`
+Bit: 20
+
+- <a href="#rights.fd_filestat_get" name="rights.fd_filestat_get"></a> `fd_filestat_get`: `bool`
 The right to invoke [`fd_filestat_get`](#fd_filestat_get).
 
-- <a href="#rights.fd_filestat_set_size" name="rights.fd_filestat_set_size"></a> `fd_filestat_set_size`
+Bit: 21
+
+- <a href="#rights.fd_filestat_set_size" name="rights.fd_filestat_set_size"></a> `fd_filestat_set_size`: `bool`
 The right to invoke [`fd_filestat_set_size`](#fd_filestat_set_size).
 
-- <a href="#rights.fd_filestat_set_times" name="rights.fd_filestat_set_times"></a> `fd_filestat_set_times`
+Bit: 22
+
+- <a href="#rights.fd_filestat_set_times" name="rights.fd_filestat_set_times"></a> `fd_filestat_set_times`: `bool`
 The right to invoke [`fd_filestat_set_times`](#fd_filestat_set_times).
 
-- <a href="#rights.path_symlink" name="rights.path_symlink"></a> `path_symlink`
+Bit: 23
+
+- <a href="#rights.path_symlink" name="rights.path_symlink"></a> `path_symlink`: `bool`
 The right to invoke [`path_symlink`](#path_symlink).
 
-- <a href="#rights.path_remove_directory" name="rights.path_remove_directory"></a> `path_remove_directory`
+Bit: 24
+
+- <a href="#rights.path_remove_directory" name="rights.path_remove_directory"></a> `path_remove_directory`: `bool`
 The right to invoke [`path_remove_directory`](#path_remove_directory).
 
-- <a href="#rights.path_unlink_file" name="rights.path_unlink_file"></a> `path_unlink_file`
+Bit: 25
+
+- <a href="#rights.path_unlink_file" name="rights.path_unlink_file"></a> `path_unlink_file`: `bool`
 The right to invoke [`path_unlink_file`](#path_unlink_file).
 
-- <a href="#rights.poll_fd_readwrite" name="rights.poll_fd_readwrite"></a> `poll_fd_readwrite`
+Bit: 26
+
+- <a href="#rights.poll_fd_readwrite" name="rights.poll_fd_readwrite"></a> `poll_fd_readwrite`: `bool`
 If [`rights::fd_read`](#rights.fd_read) is set, includes the right to invoke [`poll_oneoff`](#poll_oneoff) to subscribe to [`eventtype::fd_read`](#eventtype.fd_read).
 If [`rights::fd_write`](#rights.fd_write) is set, includes the right to invoke [`poll_oneoff`](#poll_oneoff) to subscribe to [`eventtype::fd_write`](#eventtype.fd_write).
 
-- <a href="#rights.sock_shutdown" name="rights.sock_shutdown"></a> `sock_shutdown`
+Bit: 27
+
+- <a href="#rights.sock_shutdown" name="rights.sock_shutdown"></a> `sock_shutdown`: `bool`
 The right to invoke [`sock_shutdown`](#sock_shutdown).
 
-## <a href="#fd" name="fd"></a> `fd`
+Bit: 28
+
+## <a href="#fd" name="fd"></a> `fd`: `Handle`
 A file descriptor handle.
 
 Size: 4
@@ -400,7 +458,7 @@ Size: 4
 Alignment: 4
 
 ### Supertypes
-## <a href="#iovec" name="iovec"></a> `iovec`: Record
+## <a href="#iovec" name="iovec"></a> `iovec`: `Record`
 A region of memory for scatter/gather reads.
 
 Size: 8
@@ -418,7 +476,7 @@ The length of the buffer to be filled.
 
 Offset: 4
 
-## <a href="#ciovec" name="ciovec"></a> `ciovec`: Record
+## <a href="#ciovec" name="ciovec"></a> `ciovec`: `Record`
 A region of memory for scatter/gather writes.
 
 Size: 8
@@ -455,7 +513,7 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#whence" name="whence"></a> `whence`: Variant
+## <a href="#whence" name="whence"></a> `whence`: `Variant`
 The position relative to which to set the offset of the file descriptor.
 
 Size: 1
@@ -495,7 +553,7 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#filetype" name="filetype"></a> `filetype`: Variant
+## <a href="#filetype" name="filetype"></a> `filetype`: `Variant`
 The type of a file descriptor or file.
 
 Size: 1
@@ -527,7 +585,7 @@ The file descriptor or file refers to a byte-stream socket.
 - <a href="#filetype.symbolic_link" name="filetype.symbolic_link"></a> `symbolic_link`
 The file refers to a symbolic link inode.
 
-## <a href="#dirent" name="dirent"></a> `dirent`: Record
+## <a href="#dirent" name="dirent"></a> `dirent`: `Record`
 A directory entry.
 
 Size: 24
@@ -555,7 +613,7 @@ The type of the file referred to by this directory entry.
 
 Offset: 20
 
-## <a href="#advice" name="advice"></a> `advice`: Variant
+## <a href="#advice" name="advice"></a> `advice`: `Variant`
 File or memory access pattern advisory information.
 
 Size: 1
@@ -581,32 +639,42 @@ The application expects that it will not access the specified data in the near f
 - <a href="#advice.noreuse" name="advice.noreuse"></a> `noreuse`
 The application expects to access the specified data once and then not reuse it thereafter.
 
-## <a href="#fdflags" name="fdflags"></a> `fdflags`: `u16`
+## <a href="#fdflags" name="fdflags"></a> `fdflags`: `Record`
 File descriptor flags.
 
 Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#fdflags.append" name="fdflags.append"></a> `append`
+### Record members
+- <a href="#fdflags.append" name="fdflags.append"></a> `append`: `bool`
 Append mode: Data written to the file is always appended to the file's end.
 
-- <a href="#fdflags.dsync" name="fdflags.dsync"></a> `dsync`
+Bit: 0
+
+- <a href="#fdflags.dsync" name="fdflags.dsync"></a> `dsync`: `bool`
 Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
 
-- <a href="#fdflags.nonblock" name="fdflags.nonblock"></a> `nonblock`
+Bit: 1
+
+- <a href="#fdflags.nonblock" name="fdflags.nonblock"></a> `nonblock`: `bool`
 Non-blocking mode.
 
-- <a href="#fdflags.rsync" name="fdflags.rsync"></a> `rsync`
+Bit: 2
+
+- <a href="#fdflags.rsync" name="fdflags.rsync"></a> `rsync`: `bool`
 Synchronized read I/O operations.
 
-- <a href="#fdflags.sync" name="fdflags.sync"></a> `sync`
+Bit: 3
+
+- <a href="#fdflags.sync" name="fdflags.sync"></a> `sync`: `bool`
 Write according to synchronized I/O file integrity completion. In
 addition to synchronizing the data stored in the file, the implementation
 may also synchronously update the file's metadata.
 
-## <a href="#fdstat" name="fdstat"></a> `fdstat`: Record
+Bit: 4
+
+## <a href="#fdstat" name="fdstat"></a> `fdstat`: `Record`
 File descriptor attributes.
 
 Size: 24
@@ -643,56 +711,74 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#fstflags" name="fstflags"></a> `fstflags`: `u16`
+## <a href="#fstflags" name="fstflags"></a> `fstflags`: `Record`
 Which file time attributes to adjust.
 
 Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`
+### Record members
+- <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`: `bool`
 Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
 
-- <a href="#fstflags.atim_now" name="fstflags.atim_now"></a> `atim_now`
+Bit: 0
+
+- <a href="#fstflags.atim_now" name="fstflags.atim_now"></a> `atim_now`: `bool`
 Adjust the last data access timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
 
-- <a href="#fstflags.mtim" name="fstflags.mtim"></a> `mtim`
+Bit: 1
+
+- <a href="#fstflags.mtim" name="fstflags.mtim"></a> `mtim`: `bool`
 Adjust the last data modification timestamp to the value stored in [`filestat::mtim`](#filestat.mtim).
 
-- <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`
+Bit: 2
+
+- <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`: `bool`
 Adjust the last data modification timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
 
-## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: `u32`
+Bit: 3
+
+## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: `Record`
 Flags determining the method of how paths are resolved.
 
 Size: 4
 
 Alignment: 4
 
-### Constants
-- <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`
+### Record members
+- <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`: `bool`
 As long as the resolved path corresponds to a symbolic link, it is expanded.
 
-## <a href="#oflags" name="oflags"></a> `oflags`: `u16`
+Bit: 0
+
+## <a href="#oflags" name="oflags"></a> `oflags`: `Record`
 Open flags used by [`path_open`](#path_open).
 
 Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#oflags.creat" name="oflags.creat"></a> `creat`
+### Record members
+- <a href="#oflags.creat" name="oflags.creat"></a> `creat`: `bool`
 Create file if it does not exist.
 
-- <a href="#oflags.directory" name="oflags.directory"></a> `directory`
+Bit: 0
+
+- <a href="#oflags.directory" name="oflags.directory"></a> `directory`: `bool`
 Fail if not a directory.
 
-- <a href="#oflags.excl" name="oflags.excl"></a> `excl`
+Bit: 1
+
+- <a href="#oflags.excl" name="oflags.excl"></a> `excl`: `bool`
 Fail if file already exists.
 
-- <a href="#oflags.trunc" name="oflags.trunc"></a> `trunc`
+Bit: 2
+
+- <a href="#oflags.trunc" name="oflags.trunc"></a> `trunc`: `bool`
 Truncate file to size 0.
+
+Bit: 3
 
 ## <a href="#linkcount" name="linkcount"></a> `linkcount`: `u64`
 Number of hard links to an inode.
@@ -701,7 +787,7 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#filestat" name="filestat"></a> `filestat`: Record
+## <a href="#filestat" name="filestat"></a> `filestat`: `Record`
 File attributes.
 
 Size: 64
@@ -757,7 +843,7 @@ Size: 8
 
 Alignment: 8
 
-## <a href="#eventtype" name="eventtype"></a> `eventtype`: Variant
+## <a href="#eventtype" name="eventtype"></a> `eventtype`: `Variant`
 Type of a subscription to an event or its occurrence.
 
 Size: 1
@@ -777,7 +863,7 @@ available for reading. This event always triggers for regular files.
 File descriptor [`subscription_fd_readwrite::file_descriptor`](#subscription_fd_readwrite.file_descriptor) has capacity
 available for writing. This event always triggers for regular files.
 
-## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: `u16`
+## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: `Record`
 The state of the file descriptor subscribed to with
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -785,11 +871,13 @@ Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`
+### Record members
+- <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`: `bool`
 The peer of this socket has closed or disconnected.
 
-## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: Record
+Bit: 0
+
+## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: `Record`
 The contents of an [`event`](#event) when type is [`eventtype::fd_read`](#eventtype.fd_read) or
 [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -808,7 +896,7 @@ The state of the file descriptor.
 
 Offset: 8
 
-## <a href="#event" name="event"></a> `event`: Record
+## <a href="#event" name="event"></a> `event`: `Record`
 An event that occurred.
 
 Size: 32
@@ -837,7 +925,7 @@ The contents of the event, if it is an [`eventtype::fd_read`](#eventtype.fd_read
 
 Offset: 16
 
-## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: `u16`
+## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: `Record`
 Flags determining how to interpret the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout).
 
@@ -845,15 +933,17 @@ Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#subclockflags.subscription_clock_abstime" name="subclockflags.subscription_clock_abstime"></a> `subscription_clock_abstime`
+### Record members
+- <a href="#subclockflags.subscription_clock_abstime" name="subclockflags.subscription_clock_abstime"></a> `subscription_clock_abstime`: `bool`
 If set, treat the timestamp provided in
 [`subscription_clock::timeout`](#subscription_clock.timeout) as an absolute timestamp of clock
 [`subscription_clock::id`](#subscription_clock.id). If clear, treat the timestamp
 provided in [`subscription_clock::timeout`](#subscription_clock.timeout) relative to the
 current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
-## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: Record
+Bit: 0
+
+## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: `Record`
 The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
 
 Size: 32
@@ -882,7 +972,7 @@ Flags specifying whether the timeout is absolute or relative
 
 Offset: 24
 
-## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: Record
+## <a href="#subscription_fd_readwrite" name="subscription_fd_readwrite"></a> `subscription_fd_readwrite`: `Record`
 The contents of a [`subscription`](#subscription) when type is type is
 [`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
 
@@ -896,7 +986,7 @@ The file descriptor on which to wait for it to become ready for reading or writi
 
 Offset: 0
 
-## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: Variant
+## <a href="#subscription_u" name="subscription_u"></a> `subscription_u`: `Variant`
 The contents of a [`subscription`](#subscription).
 
 Size: 40
@@ -914,7 +1004,7 @@ Alignment: 8
 
 - <a href="#subscription_u.fd_write" name="subscription_u.fd_write"></a> `fd_write`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
 
-## <a href="#subscription" name="subscription"></a> `subscription`: Record
+## <a href="#subscription" name="subscription"></a> `subscription`: `Record`
 Subscription to an event.
 
 Size: 48
@@ -940,7 +1030,7 @@ Size: 4
 
 Alignment: 4
 
-## <a href="#signal" name="signal"></a> `signal`: Variant
+## <a href="#signal" name="signal"></a> `signal`: `Variant`
 Signal condition.
 
 Size: 1
@@ -1072,30 +1162,36 @@ Action: Terminates the process.
 Bad system call.
 Action: Terminates the process.
 
-## <a href="#riflags" name="riflags"></a> `riflags`: `u16`
+## <a href="#riflags" name="riflags"></a> `riflags`: `Record`
 Flags provided to [`sock_recv`](#sock_recv).
 
 Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`
+### Record members
+- <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`: `bool`
 Returns the message without removing it from the socket's receive queue.
 
-- <a href="#riflags.recv_waitall" name="riflags.recv_waitall"></a> `recv_waitall`
+Bit: 0
+
+- <a href="#riflags.recv_waitall" name="riflags.recv_waitall"></a> `recv_waitall`: `bool`
 On byte-stream sockets, block until the full amount of data can be returned.
 
-## <a href="#roflags" name="roflags"></a> `roflags`: `u16`
+Bit: 1
+
+## <a href="#roflags" name="roflags"></a> `roflags`: `Record`
 Flags returned by [`sock_recv`](#sock_recv).
 
 Size: 2
 
 Alignment: 2
 
-### Constants
-- <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`
+### Record members
+- <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`: `bool`
 Returned by [`sock_recv`](#sock_recv): Message data has been truncated.
+
+Bit: 0
 
 ## <a href="#siflags" name="siflags"></a> `siflags`: `u16`
 Flags provided to [`sock_send`](#sock_send). As there are currently no flags
@@ -1105,21 +1201,25 @@ Size: 2
 
 Alignment: 2
 
-## <a href="#sdflags" name="sdflags"></a> `sdflags`: `u8`
+## <a href="#sdflags" name="sdflags"></a> `sdflags`: `Record`
 Which channels on a socket to shut down.
 
 Size: 1
 
 Alignment: 1
 
-### Constants
-- <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`
+### Record members
+- <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`: `bool`
 Disables further receive operations.
 
-- <a href="#sdflags.wr" name="sdflags.wr"></a> `wr`
+Bit: 0
+
+- <a href="#sdflags.wr" name="sdflags.wr"></a> `wr`: `bool`
 Disables further send operations.
 
-## <a href="#preopentype" name="preopentype"></a> `preopentype`: Variant
+Bit: 1
+
+## <a href="#preopentype" name="preopentype"></a> `preopentype`: `Variant`
 Identifiers for preopened capabilities.
 
 Size: 1
@@ -1130,7 +1230,7 @@ Alignment: 1
 - <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
 A pre-opened directory.
 
-## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: Record
+## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: `Record`
 The contents of a $prestat when type is [`preopentype::dir`](#preopentype.dir).
 
 Size: 4
@@ -1143,7 +1243,7 @@ The length of the directory name for use with [`fd_prestat_dir_name`](#fd_presta
 
 Offset: 0
 
-## <a href="#prestat" name="prestat"></a> `prestat`: Variant
+## <a href="#prestat" name="prestat"></a> `prestat`: `Variant`
 Information about a pre-opened capability.
 
 Size: 8
@@ -1165,7 +1265,7 @@ Alignment: 4
 
 ---
 
-#### <a href="#args_get" name="args_get"></a> `args_get(argv: Pointer<Pointer<u8>>, argv_buf: Pointer<u8>) -> errno`
+#### <a href="#args_get" name="args_get"></a> `args_get(argv: Pointer<Pointer<u8>>, argv_buf: Pointer<u8>) -> Result<(), errno>`
 Read command-line argument data.
 The size of the array should match that returned by [`args_sizes_get`](#args_sizes_get)
 
@@ -1175,28 +1275,51 @@ The size of the array should match that returned by [`args_sizes_get`](#args_siz
 - <a href="#args_get.argv_buf" name="args_get.argv_buf"></a> `argv_buf`: `Pointer<u8>`
 
 ##### Results
-- <a href="#args_get.error" name="args_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#args_get.error" name="args_get.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#args_get.error.ok" name="args_get.error.ok"></a> `ok`
+
+- <a href="#args_get.error.err" name="args_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#args_sizes_get" name="args_sizes_get"></a> `args_sizes_get() -> (errno, size, size)`
+#### <a href="#args_sizes_get" name="args_sizes_get"></a> `args_sizes_get() -> Result<(size, size), errno>`
 Return command-line argument data sizes.
 
 ##### Params
 ##### Results
-- <a href="#args_sizes_get.error" name="args_sizes_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#args_sizes_get.error" name="args_sizes_get.error"></a> `error`: `Result<(size, size), errno>`
+Returns the number of arguments and the size of the argument string
+data, or an error.
 
-- <a href="#args_sizes_get.argc" name="args_sizes_get.argc"></a> `argc`: [`size`](#size)
-The number of arguments.
+###### Variant Layout
+- size: 12
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#args_sizes_get.error.ok" name="args_sizes_get.error.ok"></a> `ok`: `(size, size)`
 
-- <a href="#args_sizes_get.argv_buf_size" name="args_sizes_get.argv_buf_size"></a> `argv_buf_size`: [`size`](#size)
-The size of the argument string data.
+####### Record members
+- <a href="#args_sizes_get.error.ok.0" name="args_sizes_get.error.ok.0"></a> `0`: [`size`](#size)
+
+Offset: 0
+
+- <a href="#args_sizes_get.error.ok.1" name="args_sizes_get.error.ok.1"></a> `1`: [`size`](#size)
+
+Offset: 4
+
+- <a href="#args_sizes_get.error.err" name="args_sizes_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#environ_get" name="environ_get"></a> `environ_get(environ: Pointer<Pointer<u8>>, environ_buf: Pointer<u8>) -> errno`
+#### <a href="#environ_get" name="environ_get"></a> `environ_get(environ: Pointer<Pointer<u8>>, environ_buf: Pointer<u8>) -> Result<(), errno>`
 Read environment variable data.
 The sizes of the buffers should match that returned by [`environ_sizes_get`](#environ_sizes_get).
 
@@ -1206,28 +1329,51 @@ The sizes of the buffers should match that returned by [`environ_sizes_get`](#en
 - <a href="#environ_get.environ_buf" name="environ_get.environ_buf"></a> `environ_buf`: `Pointer<u8>`
 
 ##### Results
-- <a href="#environ_get.error" name="environ_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#environ_get.error" name="environ_get.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#environ_get.error.ok" name="environ_get.error.ok"></a> `ok`
+
+- <a href="#environ_get.error.err" name="environ_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#environ_sizes_get" name="environ_sizes_get"></a> `environ_sizes_get() -> (errno, size, size)`
+#### <a href="#environ_sizes_get" name="environ_sizes_get"></a> `environ_sizes_get() -> Result<(size, size), errno>`
 Return environment variable data sizes.
 
 ##### Params
 ##### Results
-- <a href="#environ_sizes_get.error" name="environ_sizes_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#environ_sizes_get.error" name="environ_sizes_get.error"></a> `error`: `Result<(size, size), errno>`
+Returns the number of environment variable arguments and the size of the
+environment variable data.
 
-- <a href="#environ_sizes_get.environc" name="environ_sizes_get.environc"></a> `environc`: [`size`](#size)
-The number of environment variable arguments.
+###### Variant Layout
+- size: 12
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#environ_sizes_get.error.ok" name="environ_sizes_get.error.ok"></a> `ok`: `(size, size)`
 
-- <a href="#environ_sizes_get.environ_buf_size" name="environ_sizes_get.environ_buf_size"></a> `environ_buf_size`: [`size`](#size)
-The size of the environment variable data.
+####### Record members
+- <a href="#environ_sizes_get.error.ok.0" name="environ_sizes_get.error.ok.0"></a> `0`: [`size`](#size)
+
+Offset: 0
+
+- <a href="#environ_sizes_get.error.ok.1" name="environ_sizes_get.error.ok.1"></a> `1`: [`size`](#size)
+
+Offset: 4
+
+- <a href="#environ_sizes_get.error.err" name="environ_sizes_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#clock_res_get" name="clock_res_get"></a> `clock_res_get(id: clockid) -> (errno, timestamp)`
+#### <a href="#clock_res_get" name="clock_res_get"></a> `clock_res_get(id: clockid) -> Result<timestamp, errno>`
 Return the resolution of a clock.
 Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,
 return [`errno::inval`](#errno.inval).
@@ -1238,15 +1384,22 @@ Note: This is similar to `clock_getres` in POSIX.
 The clock for which to return the resolution.
 
 ##### Results
-- <a href="#clock_res_get.error" name="clock_res_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#clock_res_get.error" name="clock_res_get.error"></a> `error`: `Result<timestamp, errno>`
+The resolution of the clock, or an error if one happened.
 
-- <a href="#clock_res_get.resolution" name="clock_res_get.resolution"></a> `resolution`: [`timestamp`](#timestamp)
-The resolution of the clock.
+###### Variant Layout
+- size: 16
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#clock_res_get.error.ok" name="clock_res_get.error.ok"></a> `ok`: [`timestamp`](#timestamp)
+
+- <a href="#clock_res_get.error.err" name="clock_res_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#clock_time_get" name="clock_time_get"></a> `clock_time_get(id: clockid, precision: timestamp) -> (errno, timestamp)`
+#### <a href="#clock_time_get" name="clock_time_get"></a> `clock_time_get(id: clockid, precision: timestamp) -> Result<timestamp, errno>`
 Return the time value of a clock.
 Note: This is similar to `clock_gettime` in POSIX.
 
@@ -1258,15 +1411,22 @@ The clock for which to return the time.
 The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
 
 ##### Results
-- <a href="#clock_time_get.error" name="clock_time_get.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#clock_time_get.time" name="clock_time_get.time"></a> `time`: [`timestamp`](#timestamp)
+- <a href="#clock_time_get.error" name="clock_time_get.error"></a> `error`: `Result<timestamp, errno>`
 The time value of the clock.
+
+###### Variant Layout
+- size: 16
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#clock_time_get.error.ok" name="clock_time_get.error.ok"></a> `ok`: [`timestamp`](#timestamp)
+
+- <a href="#clock_time_get.error.err" name="clock_time_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_advise" name="fd_advise"></a> `fd_advise(fd: fd, offset: filesize, len: filesize, advice: advice) -> errno`
+#### <a href="#fd_advise" name="fd_advise"></a> `fd_advise(fd: fd, offset: filesize, len: filesize, advice: advice) -> Result<(), errno>`
 Provide file advisory information on a file descriptor.
 Note: This is similar to `posix_fadvise` in POSIX.
 
@@ -1283,12 +1443,21 @@ The length of the region to which the advisory applies.
 The advice.
 
 ##### Results
-- <a href="#fd_advise.error" name="fd_advise.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_advise.error" name="fd_advise.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_advise.error.ok" name="fd_advise.error.ok"></a> `ok`
+
+- <a href="#fd_advise.error.err" name="fd_advise.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_allocate" name="fd_allocate"></a> `fd_allocate(fd: fd, offset: filesize, len: filesize) -> errno`
+#### <a href="#fd_allocate" name="fd_allocate"></a> `fd_allocate(fd: fd, offset: filesize, len: filesize) -> Result<(), errno>`
 Force the allocation of space in a file.
 Note: This is similar to `posix_fallocate` in POSIX.
 
@@ -1302,12 +1471,21 @@ The offset at which to start the allocation.
 The length of the area that is allocated.
 
 ##### Results
-- <a href="#fd_allocate.error" name="fd_allocate.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_allocate.error" name="fd_allocate.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_allocate.error.ok" name="fd_allocate.error.ok"></a> `ok`
+
+- <a href="#fd_allocate.error.err" name="fd_allocate.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_close" name="fd_close"></a> `fd_close(fd: fd) -> errno`
+#### <a href="#fd_close" name="fd_close"></a> `fd_close(fd: fd) -> Result<(), errno>`
 Close a file descriptor.
 Note: This is similar to `close` in POSIX.
 
@@ -1315,12 +1493,21 @@ Note: This is similar to `close` in POSIX.
 - <a href="#fd_close.fd" name="fd_close.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_close.error" name="fd_close.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_close.error" name="fd_close.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_close.error.ok" name="fd_close.error.ok"></a> `ok`
+
+- <a href="#fd_close.error.err" name="fd_close.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_datasync" name="fd_datasync"></a> `fd_datasync(fd: fd) -> errno`
+#### <a href="#fd_datasync" name="fd_datasync"></a> `fd_datasync(fd: fd) -> Result<(), errno>`
 Synchronize the data of a file to disk.
 Note: This is similar to `fdatasync` in POSIX.
 
@@ -1328,12 +1515,21 @@ Note: This is similar to `fdatasync` in POSIX.
 - <a href="#fd_datasync.fd" name="fd_datasync.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_datasync.error" name="fd_datasync.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_datasync.error" name="fd_datasync.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_datasync.error.ok" name="fd_datasync.error.ok"></a> `ok`
+
+- <a href="#fd_datasync.error.err" name="fd_datasync.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_fdstat_get" name="fd_fdstat_get"></a> `fd_fdstat_get(fd: fd) -> (errno, fdstat)`
+#### <a href="#fd_fdstat_get" name="fd_fdstat_get"></a> `fd_fdstat_get(fd: fd) -> Result<fdstat, errno>`
 Get the attributes of a file descriptor.
 Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well as additional fields.
 
@@ -1341,15 +1537,22 @@ Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well as ad
 - <a href="#fd_fdstat_get.fd" name="fd_fdstat_get.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_fdstat_get.error" name="fd_fdstat_get.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_fdstat_get.stat" name="fd_fdstat_get.stat"></a> `stat`: [`fdstat`](#fdstat)
+- <a href="#fd_fdstat_get.error" name="fd_fdstat_get.error"></a> `error`: `Result<fdstat, errno>`
 The buffer where the file descriptor's attributes are stored.
+
+###### Variant Layout
+- size: 32
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_fdstat_get.error.ok" name="fd_fdstat_get.error.ok"></a> `ok`: [`fdstat`](#fdstat)
+
+- <a href="#fd_fdstat_get.error.err" name="fd_fdstat_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_fdstat_set_flags" name="fd_fdstat_set_flags"></a> `fd_fdstat_set_flags(fd: fd, flags: fdflags) -> errno`
+#### <a href="#fd_fdstat_set_flags" name="fd_fdstat_set_flags"></a> `fd_fdstat_set_flags(fd: fd, flags: fdflags) -> Result<(), errno>`
 Adjust the flags associated with a file descriptor.
 Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
 
@@ -1360,12 +1563,21 @@ Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
 The desired values of the file descriptor flags.
 
 ##### Results
-- <a href="#fd_fdstat_set_flags.error" name="fd_fdstat_set_flags.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_fdstat_set_flags.error" name="fd_fdstat_set_flags.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_fdstat_set_flags.error.ok" name="fd_fdstat_set_flags.error.ok"></a> `ok`
+
+- <a href="#fd_fdstat_set_flags.error.err" name="fd_fdstat_set_flags.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_fdstat_set_rights" name="fd_fdstat_set_rights"></a> `fd_fdstat_set_rights(fd: fd, fs_rights_base: rights, fs_rights_inheriting: rights) -> errno`
+#### <a href="#fd_fdstat_set_rights" name="fd_fdstat_set_rights"></a> `fd_fdstat_set_rights(fd: fd, fs_rights_base: rights, fs_rights_inheriting: rights) -> Result<(), errno>`
 Adjust the rights associated with a file descriptor.
 This can only be used to remove rights, and returns [`errno::notcapable`](#errno.notcapable) if called in a way that would attempt to add rights
 
@@ -1378,27 +1590,43 @@ The desired rights of the file descriptor.
 - <a href="#fd_fdstat_set_rights.fs_rights_inheriting" name="fd_fdstat_set_rights.fs_rights_inheriting"></a> `fs_rights_inheriting`: [`rights`](#rights)
 
 ##### Results
-- <a href="#fd_fdstat_set_rights.error" name="fd_fdstat_set_rights.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_fdstat_set_rights.error" name="fd_fdstat_set_rights.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_fdstat_set_rights.error.ok" name="fd_fdstat_set_rights.error.ok"></a> `ok`
+
+- <a href="#fd_fdstat_set_rights.error.err" name="fd_fdstat_set_rights.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_filestat_get" name="fd_filestat_get"></a> `fd_filestat_get(fd: fd) -> (errno, filestat)`
+#### <a href="#fd_filestat_get" name="fd_filestat_get"></a> `fd_filestat_get(fd: fd) -> Result<filestat, errno>`
 Return the attributes of an open file.
 
 ##### Params
 - <a href="#fd_filestat_get.fd" name="fd_filestat_get.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_filestat_get.error" name="fd_filestat_get.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_filestat_get.buf" name="fd_filestat_get.buf"></a> `buf`: [`filestat`](#filestat)
+- <a href="#fd_filestat_get.error" name="fd_filestat_get.error"></a> `error`: `Result<filestat, errno>`
 The buffer where the file's attributes are stored.
+
+###### Variant Layout
+- size: 72
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_filestat_get.error.ok" name="fd_filestat_get.error.ok"></a> `ok`: [`filestat`](#filestat)
+
+- <a href="#fd_filestat_get.error.err" name="fd_filestat_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_filestat_set_size" name="fd_filestat_set_size"></a> `fd_filestat_set_size(fd: fd, size: filesize) -> errno`
+#### <a href="#fd_filestat_set_size" name="fd_filestat_set_size"></a> `fd_filestat_set_size(fd: fd, size: filesize) -> Result<(), errno>`
 Adjust the size of an open file. If this increases the file's size, the extra bytes are filled with zeros.
 Note: This is similar to `ftruncate` in POSIX.
 
@@ -1409,12 +1637,21 @@ Note: This is similar to `ftruncate` in POSIX.
 The desired file size.
 
 ##### Results
-- <a href="#fd_filestat_set_size.error" name="fd_filestat_set_size.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_filestat_set_size.error" name="fd_filestat_set_size.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_filestat_set_size.error.ok" name="fd_filestat_set_size.error.ok"></a> `ok`
+
+- <a href="#fd_filestat_set_size.error.err" name="fd_filestat_set_size.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_filestat_set_times" name="fd_filestat_set_times"></a> `fd_filestat_set_times(fd: fd, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -> errno`
+#### <a href="#fd_filestat_set_times" name="fd_filestat_set_times"></a> `fd_filestat_set_times(fd: fd, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -> Result<(), errno>`
 Adjust the timestamps of an open file or directory.
 Note: This is similar to `futimens` in POSIX.
 
@@ -1431,12 +1668,21 @@ The desired values of the data modification timestamp.
 A bitmask indicating which timestamps to adjust.
 
 ##### Results
-- <a href="#fd_filestat_set_times.error" name="fd_filestat_set_times.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_filestat_set_times.error" name="fd_filestat_set_times.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_filestat_set_times.error.ok" name="fd_filestat_set_times.error.ok"></a> `ok`
+
+- <a href="#fd_filestat_set_times.error.err" name="fd_filestat_set_times.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_pread" name="fd_pread"></a> `fd_pread(fd: fd, iovs: iovec_array, offset: filesize) -> (errno, size)`
+#### <a href="#fd_pread" name="fd_pread"></a> `fd_pread(fd: fd, iovs: iovec_array, offset: filesize) -> Result<size, errno>`
 Read from a file descriptor, without using and updating the file descriptor's offset.
 Note: This is similar to `preadv` in POSIX.
 
@@ -1450,30 +1696,44 @@ List of scatter/gather vectors in which to store data.
 The offset within the file at which to read.
 
 ##### Results
-- <a href="#fd_pread.error" name="fd_pread.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_pread.nread" name="fd_pread.nread"></a> `nread`: [`size`](#size)
+- <a href="#fd_pread.error" name="fd_pread.error"></a> `error`: `Result<size, errno>`
 The number of bytes read.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_pread.error.ok" name="fd_pread.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#fd_pread.error.err" name="fd_pread.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_prestat_get" name="fd_prestat_get"></a> `fd_prestat_get(fd: fd) -> (errno, prestat)`
+#### <a href="#fd_prestat_get" name="fd_prestat_get"></a> `fd_prestat_get(fd: fd) -> Result<prestat, errno>`
 Return a description of the given preopened file descriptor.
 
 ##### Params
 - <a href="#fd_prestat_get.fd" name="fd_prestat_get.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_prestat_get.error" name="fd_prestat_get.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_prestat_get.buf" name="fd_prestat_get.buf"></a> `buf`: [`prestat`](#prestat)
+- <a href="#fd_prestat_get.error" name="fd_prestat_get.error"></a> `error`: `Result<prestat, errno>`
 The buffer where the description is stored.
+
+###### Variant Layout
+- size: 12
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_prestat_get.error.ok" name="fd_prestat_get.error.ok"></a> `ok`: [`prestat`](#prestat)
+
+- <a href="#fd_prestat_get.error.err" name="fd_prestat_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_prestat_dir_name" name="fd_prestat_dir_name"></a> `fd_prestat_dir_name(fd: fd, path: Pointer<u8>, path_len: size) -> errno`
+#### <a href="#fd_prestat_dir_name" name="fd_prestat_dir_name"></a> `fd_prestat_dir_name(fd: fd, path: Pointer<u8>, path_len: size) -> Result<(), errno>`
 Return a description of the given preopened file descriptor.
 
 ##### Params
@@ -1485,12 +1745,21 @@ A buffer into which to write the preopened directory name.
 - <a href="#fd_prestat_dir_name.path_len" name="fd_prestat_dir_name.path_len"></a> `path_len`: [`size`](#size)
 
 ##### Results
-- <a href="#fd_prestat_dir_name.error" name="fd_prestat_dir_name.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_prestat_dir_name.error" name="fd_prestat_dir_name.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_prestat_dir_name.error.ok" name="fd_prestat_dir_name.error.ok"></a> `ok`
+
+- <a href="#fd_prestat_dir_name.error.err" name="fd_prestat_dir_name.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_pwrite" name="fd_pwrite"></a> `fd_pwrite(fd: fd, iovs: ciovec_array, offset: filesize) -> (errno, size)`
+#### <a href="#fd_pwrite" name="fd_pwrite"></a> `fd_pwrite(fd: fd, iovs: ciovec_array, offset: filesize) -> Result<size, errno>`
 Write to a file descriptor, without using and updating the file descriptor's offset.
 Note: This is similar to `pwritev` in POSIX.
 
@@ -1504,15 +1773,22 @@ List of scatter/gather vectors from which to retrieve data.
 The offset within the file at which to write.
 
 ##### Results
-- <a href="#fd_pwrite.error" name="fd_pwrite.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_pwrite.nwritten" name="fd_pwrite.nwritten"></a> `nwritten`: [`size`](#size)
+- <a href="#fd_pwrite.error" name="fd_pwrite.error"></a> `error`: `Result<size, errno>`
 The number of bytes written.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_pwrite.error.ok" name="fd_pwrite.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#fd_pwrite.error.err" name="fd_pwrite.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_read" name="fd_read"></a> `fd_read(fd: fd, iovs: iovec_array) -> (errno, size)`
+#### <a href="#fd_read" name="fd_read"></a> `fd_read(fd: fd, iovs: iovec_array) -> Result<size, errno>`
 Read from a file descriptor.
 Note: This is similar to `readv` in POSIX.
 
@@ -1523,15 +1799,22 @@ Note: This is similar to `readv` in POSIX.
 List of scatter/gather vectors to which to store data.
 
 ##### Results
-- <a href="#fd_read.error" name="fd_read.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_read.nread" name="fd_read.nread"></a> `nread`: [`size`](#size)
+- <a href="#fd_read.error" name="fd_read.error"></a> `error`: `Result<size, errno>`
 The number of bytes read.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_read.error.ok" name="fd_read.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#fd_read.error.err" name="fd_read.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_readdir" name="fd_readdir"></a> `fd_readdir(fd: fd, buf: Pointer<u8>, buf_len: size, cookie: dircookie) -> (errno, size)`
+#### <a href="#fd_readdir" name="fd_readdir"></a> `fd_readdir(fd: fd, buf: Pointer<u8>, buf_len: size, cookie: dircookie) -> Result<size, errno>`
 Read directory entries from a directory.
 When successful, the contents of the output buffer consist of a sequence of
 directory entries. Each directory entry consists of a [`dirent`](#dirent) object,
@@ -1554,15 +1837,22 @@ The buffer where directory entries are stored
 The location within the directory to start reading
 
 ##### Results
-- <a href="#fd_readdir.error" name="fd_readdir.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_readdir.bufused" name="fd_readdir.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#fd_readdir.error" name="fd_readdir.error"></a> `error`: `Result<size, errno>`
 The number of bytes stored in the read buffer. If less than the size of the read buffer, the end of the directory has been reached.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_readdir.error.ok" name="fd_readdir.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#fd_readdir.error.err" name="fd_readdir.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_renumber" name="fd_renumber"></a> `fd_renumber(fd: fd, to: fd) -> errno`
+#### <a href="#fd_renumber" name="fd_renumber"></a> `fd_renumber(fd: fd, to: fd) -> Result<(), errno>`
 Atomically replace a file descriptor by renumbering another file descriptor.
 Due to the strong focus on thread safety, this environment does not provide
 a mechanism to duplicate or renumber a file descriptor to an arbitrary
@@ -1579,12 +1869,21 @@ would disappear if `dup2()` were to be removed entirely.
 The file descriptor to overwrite.
 
 ##### Results
-- <a href="#fd_renumber.error" name="fd_renumber.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_renumber.error" name="fd_renumber.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_renumber.error.ok" name="fd_renumber.error.ok"></a> `ok`
+
+- <a href="#fd_renumber.error.err" name="fd_renumber.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_seek" name="fd_seek"></a> `fd_seek(fd: fd, offset: filedelta, whence: whence) -> (errno, filesize)`
+#### <a href="#fd_seek" name="fd_seek"></a> `fd_seek(fd: fd, offset: filedelta, whence: whence) -> Result<filesize, errno>`
 Move the offset of a file descriptor.
 Note: This is similar to `lseek` in POSIX.
 
@@ -1598,15 +1897,22 @@ The number of bytes to move.
 The base from which the offset is relative.
 
 ##### Results
-- <a href="#fd_seek.error" name="fd_seek.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_seek.newoffset" name="fd_seek.newoffset"></a> `newoffset`: [`filesize`](#filesize)
+- <a href="#fd_seek.error" name="fd_seek.error"></a> `error`: `Result<filesize, errno>`
 The new offset of the file descriptor, relative to the start of the file.
+
+###### Variant Layout
+- size: 16
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_seek.error.ok" name="fd_seek.error.ok"></a> `ok`: [`filesize`](#filesize)
+
+- <a href="#fd_seek.error.err" name="fd_seek.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_sync" name="fd_sync"></a> `fd_sync(fd: fd) -> errno`
+#### <a href="#fd_sync" name="fd_sync"></a> `fd_sync(fd: fd) -> Result<(), errno>`
 Synchronize the data and metadata of a file to disk.
 Note: This is similar to `fsync` in POSIX.
 
@@ -1614,12 +1920,21 @@ Note: This is similar to `fsync` in POSIX.
 - <a href="#fd_sync.fd" name="fd_sync.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_sync.error" name="fd_sync.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_sync.error" name="fd_sync.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_sync.error.ok" name="fd_sync.error.ok"></a> `ok`
+
+- <a href="#fd_sync.error.err" name="fd_sync.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_tell" name="fd_tell"></a> `fd_tell(fd: fd) -> (errno, filesize)`
+#### <a href="#fd_tell" name="fd_tell"></a> `fd_tell(fd: fd) -> Result<filesize, errno>`
 Return the current offset of a file descriptor.
 Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
 
@@ -1627,15 +1942,22 @@ Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
 - <a href="#fd_tell.fd" name="fd_tell.fd"></a> `fd`: [`fd`](#fd)
 
 ##### Results
-- <a href="#fd_tell.error" name="fd_tell.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#fd_tell.offset" name="fd_tell.offset"></a> `offset`: [`filesize`](#filesize)
+- <a href="#fd_tell.error" name="fd_tell.error"></a> `error`: `Result<filesize, errno>`
 The current offset of the file descriptor, relative to the start of the file.
+
+###### Variant Layout
+- size: 16
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_tell.error.ok" name="fd_tell.error.ok"></a> `ok`: [`filesize`](#filesize)
+
+- <a href="#fd_tell.error.err" name="fd_tell.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#fd_write" name="fd_write"></a> `fd_write(fd: fd, iovs: ciovec_array) -> (errno, size)`
+#### <a href="#fd_write" name="fd_write"></a> `fd_write(fd: fd, iovs: ciovec_array) -> Result<size, errno>`
 Write to a file descriptor.
 Note: This is similar to `writev` in POSIX.
 
@@ -1646,15 +1968,21 @@ Note: This is similar to `writev` in POSIX.
 List of scatter/gather vectors from which to retrieve data.
 
 ##### Results
-- <a href="#fd_write.error" name="fd_write.error"></a> `error`: [`errno`](#errno)
+- <a href="#fd_write.error" name="fd_write.error"></a> `error`: `Result<size, errno>`
 
-- <a href="#fd_write.nwritten" name="fd_write.nwritten"></a> `nwritten`: [`size`](#size)
-The number of bytes written.
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#fd_write.error.ok" name="fd_write.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#fd_write.error.err" name="fd_write.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_create_directory" name="path_create_directory"></a> `path_create_directory(fd: fd, path: string) -> errno`
+#### <a href="#path_create_directory" name="path_create_directory"></a> `path_create_directory(fd: fd, path: string) -> Result<(), errno>`
 Create a directory.
 Note: This is similar to `mkdirat` in POSIX.
 
@@ -1665,12 +1993,21 @@ Note: This is similar to `mkdirat` in POSIX.
 The path at which to create the directory.
 
 ##### Results
-- <a href="#path_create_directory.error" name="path_create_directory.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_create_directory.error" name="path_create_directory.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_create_directory.error.ok" name="path_create_directory.error.ok"></a> `ok`
+
+- <a href="#path_create_directory.error.err" name="path_create_directory.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_filestat_get" name="path_filestat_get"></a> `path_filestat_get(fd: fd, flags: lookupflags, path: string) -> (errno, filestat)`
+#### <a href="#path_filestat_get" name="path_filestat_get"></a> `path_filestat_get(fd: fd, flags: lookupflags, path: string) -> Result<filestat, errno>`
 Return the attributes of a file or directory.
 Note: This is similar to `stat` in POSIX.
 
@@ -1684,15 +2021,22 @@ Flags determining the method of how the path is resolved.
 The path of the file or directory to inspect.
 
 ##### Results
-- <a href="#path_filestat_get.error" name="path_filestat_get.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#path_filestat_get.buf" name="path_filestat_get.buf"></a> `buf`: [`filestat`](#filestat)
+- <a href="#path_filestat_get.error" name="path_filestat_get.error"></a> `error`: `Result<filestat, errno>`
 The buffer where the file's attributes are stored.
+
+###### Variant Layout
+- size: 72
+- align: 8
+- tag_size: 4
+###### Variant cases
+- <a href="#path_filestat_get.error.ok" name="path_filestat_get.error.ok"></a> `ok`: [`filestat`](#filestat)
+
+- <a href="#path_filestat_get.error.err" name="path_filestat_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_filestat_set_times" name="path_filestat_set_times"></a> `path_filestat_set_times(fd: fd, flags: lookupflags, path: string, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -> errno`
+#### <a href="#path_filestat_set_times" name="path_filestat_set_times"></a> `path_filestat_set_times(fd: fd, flags: lookupflags, path: string, atim: timestamp, mtim: timestamp, fst_flags: fstflags) -> Result<(), errno>`
 Adjust the timestamps of a file or directory.
 Note: This is similar to `utimensat` in POSIX.
 
@@ -1715,12 +2059,21 @@ The desired values of the data modification timestamp.
 A bitmask indicating which timestamps to adjust.
 
 ##### Results
-- <a href="#path_filestat_set_times.error" name="path_filestat_set_times.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_filestat_set_times.error" name="path_filestat_set_times.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_filestat_set_times.error.ok" name="path_filestat_set_times.error.ok"></a> `ok`
+
+- <a href="#path_filestat_set_times.error.err" name="path_filestat_set_times.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_link" name="path_link"></a> `path_link(old_fd: fd, old_flags: lookupflags, old_path: string, new_fd: fd, new_path: string) -> errno`
+#### <a href="#path_link" name="path_link"></a> `path_link(old_fd: fd, old_flags: lookupflags, old_path: string, new_fd: fd, new_path: string) -> Result<(), errno>`
 Create a hard link.
 Note: This is similar to `linkat` in POSIX.
 
@@ -1740,12 +2093,21 @@ The working directory at which the resolution of the new path starts.
 The destination path at which to create the hard link.
 
 ##### Results
-- <a href="#path_link.error" name="path_link.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_link.error" name="path_link.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_link.error.ok" name="path_link.error.ok"></a> `ok`
+
+- <a href="#path_link.error.err" name="path_link.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_open" name="path_open"></a> `path_open(fd: fd, dirflags: lookupflags, path: string, oflags: oflags, fs_rights_base: rights, fs_rights_inheriting: rights, fdflags: fdflags) -> (errno, fd)`
+#### <a href="#path_open" name="path_open"></a> `path_open(fd: fd, dirflags: lookupflags, path: string, oflags: oflags, fs_rights_base: rights, fs_rights_inheriting: rights, fdflags: fdflags) -> Result<fd, errno>`
 Open a file or directory.
 The returned file descriptor is not guaranteed to be the lowest-numbered
 file descriptor not currently open; it is randomized to prevent
@@ -1781,15 +2143,22 @@ file descriptors derived from it.
 - <a href="#path_open.fdflags" name="path_open.fdflags"></a> `fdflags`: [`fdflags`](#fdflags)
 
 ##### Results
-- <a href="#path_open.error" name="path_open.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#path_open.opened_fd" name="path_open.opened_fd"></a> `opened_fd`: [`fd`](#fd)
+- <a href="#path_open.error" name="path_open.error"></a> `error`: `Result<fd, errno>`
 The file descriptor of the file that has been opened.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_open.error.ok" name="path_open.error.ok"></a> `ok`: [`fd`](#fd)
+
+- <a href="#path_open.error.err" name="path_open.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_readlink" name="path_readlink"></a> `path_readlink(fd: fd, path: string, buf: Pointer<u8>, buf_len: size) -> (errno, size)`
+#### <a href="#path_readlink" name="path_readlink"></a> `path_readlink(fd: fd, path: string, buf: Pointer<u8>, buf_len: size) -> Result<size, errno>`
 Read the contents of a symbolic link.
 Note: This is similar to `readlinkat` in POSIX.
 
@@ -1805,15 +2174,22 @@ The buffer to which to write the contents of the symbolic link.
 - <a href="#path_readlink.buf_len" name="path_readlink.buf_len"></a> `buf_len`: [`size`](#size)
 
 ##### Results
-- <a href="#path_readlink.error" name="path_readlink.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#path_readlink.bufused" name="path_readlink.bufused"></a> `bufused`: [`size`](#size)
+- <a href="#path_readlink.error" name="path_readlink.error"></a> `error`: `Result<size, errno>`
 The number of bytes placed in the buffer.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_readlink.error.ok" name="path_readlink.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#path_readlink.error.err" name="path_readlink.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_remove_directory" name="path_remove_directory"></a> `path_remove_directory(fd: fd, path: string) -> errno`
+#### <a href="#path_remove_directory" name="path_remove_directory"></a> `path_remove_directory(fd: fd, path: string) -> Result<(), errno>`
 Remove a directory.
 Return [`errno::notempty`](#errno.notempty) if the directory is not empty.
 Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
@@ -1825,12 +2201,21 @@ Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 The path to a directory to remove.
 
 ##### Results
-- <a href="#path_remove_directory.error" name="path_remove_directory.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_remove_directory.error" name="path_remove_directory.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_remove_directory.error.ok" name="path_remove_directory.error.ok"></a> `ok`
+
+- <a href="#path_remove_directory.error.err" name="path_remove_directory.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_rename" name="path_rename"></a> `path_rename(fd: fd, old_path: string, new_fd: fd, new_path: string) -> errno`
+#### <a href="#path_rename" name="path_rename"></a> `path_rename(fd: fd, old_path: string, new_fd: fd, new_path: string) -> Result<(), errno>`
 Rename a file or directory.
 Note: This is similar to `renameat` in POSIX.
 
@@ -1847,12 +2232,21 @@ The working directory at which the resolution of the new path starts.
 The destination path to which to rename the file or directory.
 
 ##### Results
-- <a href="#path_rename.error" name="path_rename.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_rename.error" name="path_rename.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_rename.error.ok" name="path_rename.error.ok"></a> `ok`
+
+- <a href="#path_rename.error.err" name="path_rename.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_symlink" name="path_symlink"></a> `path_symlink(old_path: string, fd: fd, new_path: string) -> errno`
+#### <a href="#path_symlink" name="path_symlink"></a> `path_symlink(old_path: string, fd: fd, new_path: string) -> Result<(), errno>`
 Create a symbolic link.
 Note: This is similar to `symlinkat` in POSIX.
 
@@ -1866,12 +2260,21 @@ The contents of the symbolic link.
 The destination path at which to create the symbolic link.
 
 ##### Results
-- <a href="#path_symlink.error" name="path_symlink.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_symlink.error" name="path_symlink.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_symlink.error.ok" name="path_symlink.error.ok"></a> `ok`
+
+- <a href="#path_symlink.error.err" name="path_symlink.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#path_unlink_file" name="path_unlink_file"></a> `path_unlink_file(fd: fd, path: string) -> errno`
+#### <a href="#path_unlink_file" name="path_unlink_file"></a> `path_unlink_file(fd: fd, path: string) -> Result<(), errno>`
 Unlink a file.
 Return [`errno::isdir`](#errno.isdir) if the path refers to a directory.
 Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
@@ -1883,12 +2286,21 @@ Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
 The path to a file to unlink.
 
 ##### Results
-- <a href="#path_unlink_file.error" name="path_unlink_file.error"></a> `error`: [`errno`](#errno)
+- <a href="#path_unlink_file.error" name="path_unlink_file.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#path_unlink_file.error.ok" name="path_unlink_file.error.ok"></a> `ok`
+
+- <a href="#path_unlink_file.error.err" name="path_unlink_file.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll_oneoff(in: ConstPointer<subscription>, out: Pointer<event>, nsubscriptions: size) -> (errno, size)`
+#### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll_oneoff(in: ConstPointer<subscription>, out: Pointer<event>, nsubscriptions: size) -> Result<size, errno>`
 Concurrently poll for the occurrence of a set of events.
 
 ##### Params
@@ -1902,10 +2314,17 @@ The events that have occurred.
 Both the number of subscriptions and events.
 
 ##### Results
-- <a href="#poll_oneoff.error" name="poll_oneoff.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#poll_oneoff.nevents" name="poll_oneoff.nevents"></a> `nevents`: [`size`](#size)
+- <a href="#poll_oneoff.error" name="poll_oneoff.error"></a> `error`: `Result<size, errno>`
 The number of events stored.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#poll_oneoff.error.ok" name="poll_oneoff.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#poll_oneoff.error.err" name="poll_oneoff.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
@@ -1923,7 +2342,7 @@ The exit code returned by the process.
 
 ---
 
-#### <a href="#proc_raise" name="proc_raise"></a> `proc_raise(sig: signal) -> errno`
+#### <a href="#proc_raise" name="proc_raise"></a> `proc_raise(sig: signal) -> Result<(), errno>`
 Send a signal to the process of the calling thread.
 Note: This is similar to `raise` in POSIX.
 
@@ -1932,23 +2351,41 @@ Note: This is similar to `raise` in POSIX.
 The signal condition to trigger.
 
 ##### Results
-- <a href="#proc_raise.error" name="proc_raise.error"></a> `error`: [`errno`](#errno)
+- <a href="#proc_raise.error" name="proc_raise.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#proc_raise.error.ok" name="proc_raise.error.ok"></a> `ok`
+
+- <a href="#proc_raise.error.err" name="proc_raise.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sched_yield" name="sched_yield"></a> `sched_yield() -> errno`
+#### <a href="#sched_yield" name="sched_yield"></a> `sched_yield() -> Result<(), errno>`
 Temporarily yield execution of the calling thread.
 Note: This is similar to [`sched_yield`](#sched_yield) in POSIX.
 
 ##### Params
 ##### Results
-- <a href="#sched_yield.error" name="sched_yield.error"></a> `error`: [`errno`](#errno)
+- <a href="#sched_yield.error" name="sched_yield.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#sched_yield.error.ok" name="sched_yield.error.ok"></a> `ok`
+
+- <a href="#sched_yield.error.err" name="sched_yield.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#random_get" name="random_get"></a> `random_get(buf: Pointer<u8>, buf_len: size) -> errno`
+#### <a href="#random_get" name="random_get"></a> `random_get(buf: Pointer<u8>, buf_len: size) -> Result<(), errno>`
 Write high-quality random data into a buffer.
 This function blocks when the implementation is unable to immediately
 provide sufficient high-quality random data.
@@ -1963,12 +2400,21 @@ The buffer to fill with random data.
 - <a href="#random_get.buf_len" name="random_get.buf_len"></a> `buf_len`: [`size`](#size)
 
 ##### Results
-- <a href="#random_get.error" name="random_get.error"></a> `error`: [`errno`](#errno)
+- <a href="#random_get.error" name="random_get.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#random_get.error.ok" name="random_get.error.ok"></a> `ok`
+
+- <a href="#random_get.error.err" name="random_get.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_recv" name="sock_recv"></a> `sock_recv(fd: fd, ri_data: iovec_array, ri_flags: riflags) -> (errno, size, roflags)`
+#### <a href="#sock_recv" name="sock_recv"></a> `sock_recv(fd: fd, ri_data: iovec_array, ri_flags: riflags) -> Result<(size, roflags), errno>`
 Receive a message from a socket.
 Note: This is similar to `recv` in POSIX, though it also supports reading
 the data into multiple buffers in the manner of `readv`.
@@ -1983,18 +2429,31 @@ List of scatter/gather vectors to which to store data.
 Message flags.
 
 ##### Results
-- <a href="#sock_recv.error" name="sock_recv.error"></a> `error`: [`errno`](#errno)
+- <a href="#sock_recv.error" name="sock_recv.error"></a> `error`: `Result<(size, roflags), errno>`
+Number of bytes stored in ri_data and message flags.
 
-- <a href="#sock_recv.ro_datalen" name="sock_recv.ro_datalen"></a> `ro_datalen`: [`size`](#size)
-Number of bytes stored in ri_data.
+###### Variant Layout
+- size: 12
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#sock_recv.error.ok" name="sock_recv.error.ok"></a> `ok`: `(size, roflags)`
 
-- <a href="#sock_recv.ro_flags" name="sock_recv.ro_flags"></a> `ro_flags`: [`roflags`](#roflags)
-Message flags.
+####### Record members
+- <a href="#sock_recv.error.ok.0" name="sock_recv.error.ok.0"></a> `0`: [`size`](#size)
+
+Offset: 0
+
+- <a href="#sock_recv.error.ok.1" name="sock_recv.error.ok.1"></a> `1`: [`roflags`](#roflags)
+
+Offset: 4
+
+- <a href="#sock_recv.error.err" name="sock_recv.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_send" name="sock_send"></a> `sock_send(fd: fd, si_data: ciovec_array, si_flags: siflags) -> (errno, size)`
+#### <a href="#sock_send" name="sock_send"></a> `sock_send(fd: fd, si_data: ciovec_array, si_flags: siflags) -> Result<size, errno>`
 Send a message on a socket.
 Note: This is similar to `send` in POSIX, though it also supports writing
 the data from multiple buffers in the manner of `writev`.
@@ -2009,15 +2468,22 @@ List of scatter/gather vectors to which to retrieve data
 Message flags.
 
 ##### Results
-- <a href="#sock_send.error" name="sock_send.error"></a> `error`: [`errno`](#errno)
-
-- <a href="#sock_send.so_datalen" name="sock_send.so_datalen"></a> `so_datalen`: [`size`](#size)
+- <a href="#sock_send.error" name="sock_send.error"></a> `error`: `Result<size, errno>`
 Number of bytes transmitted.
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#sock_send.error.ok" name="sock_send.error.ok"></a> `ok`: [`size`](#size)
+
+- <a href="#sock_send.error.err" name="sock_send.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
 
-#### <a href="#sock_shutdown" name="sock_shutdown"></a> `sock_shutdown(fd: fd, how: sdflags) -> errno`
+#### <a href="#sock_shutdown" name="sock_shutdown"></a> `sock_shutdown(fd: fd, how: sdflags) -> Result<(), errno>`
 Shut down socket send and receive channels.
 Note: This is similar to `shutdown` in POSIX.
 
@@ -2028,5 +2494,14 @@ Note: This is similar to `shutdown` in POSIX.
 Which channels on the socket to shut down.
 
 ##### Results
-- <a href="#sock_shutdown.error" name="sock_shutdown.error"></a> `error`: [`errno`](#errno)
+- <a href="#sock_shutdown.error" name="sock_shutdown.error"></a> `error`: `Result<(), errno>`
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#sock_shutdown.error.ok" name="sock_shutdown.error.ok"></a> `ok`
+
+- <a href="#sock_shutdown.error.err" name="sock_shutdown.error.err"></a> `err`: [`errno`](#errno)
 

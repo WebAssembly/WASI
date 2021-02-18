@@ -21,6 +21,6 @@
     ;;; The buffer to fill with random data.
     (param $buf (@witx pointer u8))
     (param $buf_len $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 )
