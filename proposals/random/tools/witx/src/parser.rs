@@ -1,5 +1,4 @@
 use crate::BuiltinType;
-use wast::lexer::Comment;
 use wast::parser::{Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
@@ -18,7 +17,6 @@ use wast::parser::{Parse, Parser, Peek, Result};
 mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
-    wast::custom_keyword!(bitflags);
     wast::custom_keyword!(case);
     wast::custom_keyword!(char8);
     wast::custom_keyword!(char);
@@ -27,6 +25,8 @@ mod kw {
     wast::custom_keyword!(f64);
     wast::custom_keyword!(field);
     wast::custom_keyword!(empty);
+    wast::custom_keyword!(error);
+    wast::custom_keyword!(expected);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
     wast::custom_keyword!(list);
@@ -37,12 +37,14 @@ mod kw {
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#union = "union");
     wast::custom_keyword!(r#use = "use");
+    wast::custom_keyword!(repr);
     wast::custom_keyword!(s16);
     wast::custom_keyword!(s32);
     wast::custom_keyword!(s64);
     wast::custom_keyword!(s8);
     wast::custom_keyword!(string);
     wast::custom_keyword!(tag);
+    wast::custom_keyword!(tuple);
     wast::custom_keyword!(typename);
     wast::custom_keyword!(u16);
     wast::custom_keyword!(u32);
@@ -50,6 +52,7 @@ mod kw {
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
     wast::custom_keyword!(variant);
+    wast::custom_keyword!(bool_ = "bool");
 }
 
 mod annotation {
@@ -136,9 +139,10 @@ impl<'a> Parse<'a> for CommentSyntax<'a> {
                     None => break,
                 };
                 cursor = c;
-                comments.push(match comment {
-                    Comment::Block(s) => &s[2..s.len() - 2],
-                    Comment::Line(s) => &s[2..],
+                comments.push(if comment.starts_with(";;") {
+                    &comment[2..]
+                } else {
+                    &comment[2..comment.len() - 2]
                 });
             }
             Ok((comments, cursor))
@@ -277,6 +281,8 @@ impl<'a> Parse<'a> for TypenameSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
+    Tuple(TupleSyntax<'a>),
+    Expected(ExpectedSyntax<'a>),
     Flags(FlagsSyntax<'a>),
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
@@ -288,6 +294,7 @@ pub enum TypedefSyntax<'a> {
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
     String,
+    Bool,
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
@@ -300,11 +307,18 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
         } else if l.peek::<kw::string>() {
             parser.parse::<kw::string>()?;
             Ok(TypedefSyntax::String)
+        } else if l.peek::<kw::bool_>() {
+            parser.parse::<kw::bool_>()?;
+            Ok(TypedefSyntax::Bool)
         } else if l.peek::<wast::LParen>() {
             parser.parens(|parser| {
                 let mut l = parser.lookahead1();
                 if l.peek::<kw::r#enum>() {
                     Ok(TypedefSyntax::Enum(parser.parse()?))
+                } else if l.peek::<kw::tuple>() {
+                    Ok(TypedefSyntax::Tuple(parser.parse()?))
+                } else if l.peek::<kw::expected>() {
+                    Ok(TypedefSyntax::Expected(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
                 } else if l.peek::<kw::record>() {
@@ -378,6 +392,48 @@ impl<'a> Parse<'a> for EnumSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TupleSyntax<'a> {
+    pub types: Vec<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for TupleSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::tuple>()?;
+        let mut types = Vec::new();
+        while !parser.is_empty() {
+            types.push(parser.parse()?);
+        }
+        Ok(TupleSyntax { types })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExpectedSyntax<'a> {
+    pub ok: Option<Box<TypedefSyntax<'a>>>,
+    pub err: Option<Box<TypedefSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for ExpectedSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::expected>()?;
+        let ok = if !parser.is_empty() && !parser.peek2::<kw::error>() {
+            Some(Box::new(parser.parse()?))
+        } else {
+            None
+        };
+        let err = parser.parens(|p| {
+            p.parse::<kw::error>()?;
+            Ok(if p.is_empty() {
+                None
+            } else {
+                Some(Box::new(p.parse()?))
+            })
+        })?;
+        Ok(ExpectedSyntax { ok, err })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConstSyntax<'a> {
     pub ty: wast::Id<'a>,
     pub name: wast::Id<'a>,
@@ -397,17 +453,17 @@ impl<'a> Parse<'a> for ConstSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
-    pub bitflags_repr: Option<BuiltinType>,
+    pub repr: Option<BuiltinType>,
     pub flags: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for FlagsSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::flags>()?;
-        let bitflags_repr = if parser.peek2::<annotation::witx>() {
+        let repr = if parser.peek2::<annotation::witx>() {
             Some(parser.parens(|p| {
                 p.parse::<annotation::witx>()?;
-                p.parse::<kw::bitflags>()?;
+                p.parse::<kw::repr>()?;
                 p.parse()
             })?)
         } else {
@@ -417,10 +473,7 @@ impl<'a> Parse<'a> for FlagsSyntax<'a> {
         while !parser.is_empty() {
             flags.push(parser.parse()?);
         }
-        Ok(FlagsSyntax {
-            bitflags_repr,
-            flags,
-        })
+        Ok(FlagsSyntax { repr, flags })
     }
 }
 
