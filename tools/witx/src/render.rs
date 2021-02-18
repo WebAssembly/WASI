@@ -143,29 +143,56 @@ impl Type {
 
 impl RecordDatatype {
     pub fn to_sexpr(&self) -> SExpr {
-        let header = vec![SExpr::word("record")];
-        let members = self
-            .members
-            .iter()
-            .map(|m| {
-                SExpr::docs(
-                    &m.docs,
-                    SExpr::Vec(vec![
-                        SExpr::word("field"),
-                        m.name.to_sexpr(),
-                        m.tref.to_sexpr(),
-                    ]),
-                )
-            })
-            .collect::<Vec<SExpr>>();
-        SExpr::Vec([header, members].concat())
+        match self.kind {
+            RecordKind::Tuple => {
+                let mut tuple = vec![SExpr::word("tuple")];
+                for m in self.members.iter() {
+                    tuple.push(SExpr::docs(&m.docs, m.tref.to_sexpr()));
+                }
+                SExpr::Vec(tuple)
+            }
+            RecordKind::Bitflags(repr) => {
+                let mut flags = vec![SExpr::word("flags")];
+                flags.push(SExpr::Vec(vec![
+                    SExpr::word("@witx"),
+                    SExpr::word("repr"),
+                    repr.to_sexpr(),
+                ]));
+                flags.extend(
+                    self.members
+                        .iter()
+                        .map(|m| SExpr::docs(&m.docs, m.name.to_sexpr())),
+                );
+                SExpr::Vec(flags)
+            }
+            RecordKind::Other => {
+                let header = vec![SExpr::word("record")];
+                let members = self
+                    .members
+                    .iter()
+                    .map(|m| {
+                        SExpr::docs(
+                            &m.docs,
+                            SExpr::Vec(vec![
+                                SExpr::word("field"),
+                                m.name.to_sexpr(),
+                                m.tref.to_sexpr(),
+                            ]),
+                        )
+                    })
+                    .collect::<Vec<SExpr>>();
+                SExpr::Vec([header, members].concat())
+            }
+        }
     }
 }
 
 impl Variant {
     pub fn to_sexpr(&self) -> SExpr {
         let mut list = Vec::new();
-        if self.cases.iter().all(|c| c.tref.is_none()) {
+        if self.is_bool() {
+            return SExpr::word("bool");
+        } else if self.is_enum() {
             list.push(SExpr::word("enum"));
             list.push(SExpr::Vec(vec![
                 SExpr::word("@witx"),

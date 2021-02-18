@@ -322,7 +322,7 @@ pub(super) struct MdNamedType {
     pub id: String,
     pub name: String,
     pub docs: String,
-    pub r#type: Option<MdType>,
+    pub ty: Option<String>,
 }
 
 impl MdNamedType {
@@ -332,51 +332,8 @@ impl MdNamedType {
             id: id.as_ref().to_owned(),
             name: name.as_ref().to_owned(),
             docs: docs.as_ref().to_owned(),
-            r#type: None,
+            ty: None,
         }
-    }
-}
-
-/// Helper struct encapsulating the `TypeRef` value.
-// TODO `MdType` should probably store `TypeRef` and recursively
-// unwind itself into final `String` representation rather than
-// being outright flattened.
-#[derive(Debug)]
-pub(super) enum MdType {
-    Record,
-    Variant,
-    List { r#type: String },
-    Pointer { r#type: String },
-    ConstPointer { r#type: String },
-    Builtin { repr: String },
-    Handle,
-    Alias { r#type: String },
-}
-
-impl fmt::Display for MdType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Record => f.write_fmt(format_args!(": Record"))?,
-            Self::Variant => f.write_fmt(format_args!(": Variant"))?,
-            Self::List { r#type } => {
-                if r#type == "char" {
-                    f.write_str(": `string`")?
-                } else {
-                    f.write_fmt(format_args!(": `List<{}>`", r#type))?
-                }
-            }
-            Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
-            Self::ConstPointer { r#type } => {
-                f.write_fmt(format_args!(": `ConstPointer<{}>`", r#type))?
-            }
-            Self::Builtin { repr } => f.write_fmt(format_args!(": `{}`", repr))?,
-            Self::Handle => {}
-            Self::Alias { r#type } => {
-                f.write_fmt(format_args!(": [`{tt}`](#{tt})", tt = r#type))?
-            }
-        };
-
-        Ok(())
     }
 }
 
@@ -411,8 +368,8 @@ impl fmt::Display for MdNamedType {
             name = self.name,
         ))?;
 
-        if let Some(tt) = &self.r#type {
-            f.write_fmt(format_args!("{}", tt))?;
+        if let Some(tt) = &self.ty {
+            f.write_fmt(format_args!(": {}", tt))?;
         }
 
         writeln!(f, "\n{}", self.docs)

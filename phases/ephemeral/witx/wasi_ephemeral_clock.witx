@@ -18,9 +18,8 @@
   (@interface func (export "res_get")
     ;;; The clock for which to return the resolution.
     (param $id $clockid)
-    (result $error $errno)
     ;;; The resolution of the clock.
-    (result $resolution $timestamp)
+    (result $error (expected $timestamp (error $errno)))
   )
 
   ;;; Return the time value of a clock.
@@ -30,8 +29,7 @@
     (param $id $clockid)
     ;;; The maximum lag (exclusive) that the returned time value may have, compared to its actual value.
     (param $precision $timestamp)
-    (result $error $errno)
     ;;; The time value of the clock.
-    (result $time $timestamp)
+    (result $error (expected $timestamp (error $errno)))
   )
 )

@@ -21,8 +21,7 @@
     (param $out (@witx pointer $event))
     ;;; Both the number of subscriptions and events.
     (param $nsubscriptions $size)
-    (result $error $errno)
     ;;; The number of events stored.
-    (result $nevents $size)
+    (result $error (expected $size (error $errno)))
   )
 )
