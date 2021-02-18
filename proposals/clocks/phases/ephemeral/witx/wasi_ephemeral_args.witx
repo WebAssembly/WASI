@@ -14,15 +14,13 @@
   (@interface func (export "get")
     (param $argv (@witx pointer (@witx pointer (@witx char8))))
     (param $argv_buf (@witx pointer (@witx char8)))
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Return command-line argument data sizes.
   (@interface func (export "sizes_get")
-    (result $error $errno)
-    ;;; The number of arguments.
-    (result $argc $size)
-    ;;; The size of the argument string data.
-    (result $argv_buf_size $size)
+    ;;; Returns the number of arguments and the size of the argument string
+    ;;; data, or an error.
+    (result $error (expected (tuple $size $size) (error $errno)))
   )
 )

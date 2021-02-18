@@ -1,7 +1,7 @@
+/// Map witx types to core (wasm standard) types
+mod abi;
 /// Types describing a validated witx document
 mod ast;
-/// Map witx types to core (wasm standard) types
-mod coretypes;
 /// Render documentation
 mod docs;
 /// Interface for filesystem or mock IO
@@ -23,8 +23,8 @@ mod toplevel;
 /// Validate declarations into ast
 mod validate;
 
+pub use abi::*;
 pub use ast::*;
-pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use layout::{Layout, RecordMemberLayout, SizeAlign};

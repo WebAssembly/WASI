@@ -20,11 +20,8 @@
     (param $ri_data $iovec_array)
     ;;; Message flags.
     (param $ri_flags $riflags)
-    (result $error $errno)
-    ;;; Number of bytes stored in ri_data.
-    (result $ro_datalen $size)
-    ;;; Message flags.
-    (result $ro_flags $roflags)
+    ;;; Number of bytes stored in ri_data and message flags.
+    (result $error (expected (tuple $size $roflags) (error $errno)))
   )
 
   ;;; Send a message on a socket.
@@ -36,9 +33,8 @@
     (param $si_data $ciovec_array)
     ;;; Message flags.
     (param $si_flags $siflags)
-    (result $error $errno)
     ;;; Number of bytes transmitted.
-    (result $so_datalen $size)
+    (result $error (expected $size (error $errno)))
   )
 
   ;;; Shut down socket send and receive channels.
@@ -47,6 +43,6 @@
     (param $fd $fd)
     ;;; Which channels on the socket to shut down.
     (param $how $sdflags)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 )

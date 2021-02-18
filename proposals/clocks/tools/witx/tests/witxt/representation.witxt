@@ -1,8 +1,8 @@
 ;; type names don't matter
 (witx $a
-  (typename $a (flags (@witx bitflags u8) $b $c)))
+  (typename $a (flags (@witx repr u8) $b $c)))
 (witx $b
-  (typename $b (flags (@witx bitflags u8) $b $c)))
+  (typename $b (flags (@witx repr u8) $b $c)))
 
 (assert_representable eq $a "a" $b "b")
 (assert_representable eq $b "b" $a "a")
