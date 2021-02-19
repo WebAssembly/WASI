@@ -1,4 +1,4 @@
-use crate::BuiltinType;
+use crate::{Abi, BuiltinType};
 use wast::parser::{Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
@@ -486,7 +486,6 @@ impl<'a> Parse<'a> for RecordSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::record>()?;
         let mut fields = Vec::new();
-        fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
@@ -616,7 +615,7 @@ impl<'a> Parse<'a> for ModuleSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ModuleDeclSyntax<'a> {
     Import(ModuleImportSyntax<'a>),
-    Func(InterfaceFuncSyntax<'a>),
+    Export(InterfaceFuncSyntax<'a>),
 }
 
 impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
@@ -626,7 +625,13 @@ impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
             if l.peek::<kw::import>() {
                 Ok(ModuleDeclSyntax::Import(p.parse()?))
             } else if l.peek::<annotation::interface>() {
-                Ok(ModuleDeclSyntax::Func(p.parse()?))
+                Ok(ModuleDeclSyntax::Export(
+                    InterfaceFuncSyntax::parse_interface(p)?,
+                ))
+            } else if l.peek::<kw::export>() {
+                Ok(ModuleDeclSyntax::Export(InterfaceFuncSyntax::parse_export(
+                    p,
+                )?))
             } else {
                 Err(l.error())
             }
@@ -676,6 +681,7 @@ impl Parse<'_> for ImportTypeSyntax {
 
 #[derive(Debug, Clone)]
 pub struct InterfaceFuncSyntax<'a> {
+    pub abi: Abi,
     pub export: &'a str,
     pub export_loc: wast::Span,
     pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
@@ -683,8 +689,8 @@ pub struct InterfaceFuncSyntax<'a> {
     pub noreturn: bool,
 }
 
-impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
+impl<'a> InterfaceFuncSyntax<'a> {
+    fn parse_interface(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<annotation::interface>()?;
         parser.parse::<kw::func>()?;
 
@@ -693,6 +699,46 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
             Ok((p.cur_span(), p.parse()?))
         })?;
 
+        let (params, results, noreturn) = InterfaceFuncSyntax::parse_func_params(parser)?;
+
+        Ok(InterfaceFuncSyntax {
+            abi: Abi::Preview1,
+            export,
+            export_loc,
+            params,
+            results,
+            noreturn,
+        })
+    }
+
+    fn parse_export(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::export>()?;
+
+        let export_loc = parser.cur_span();
+        let export = parser.parse()?;
+
+        let (params, results, noreturn) = parser.parens(|p| {
+            p.parse::<kw::func>()?;
+            InterfaceFuncSyntax::parse_func_params(parser)
+        })?;
+
+        Ok(InterfaceFuncSyntax {
+            abi: Abi::Next,
+            export,
+            export_loc,
+            params,
+            results,
+            noreturn,
+        })
+    }
+
+    fn parse_func_params(
+        parser: Parser<'a>,
+    ) -> Result<(
+        Vec<Documented<'a, FieldSyntax<'a>>>,
+        Vec<Documented<'a, FieldSyntax<'a>>>,
+        bool,
+    )> {
         let mut params = Vec::new();
         let mut results = Vec::new();
         let mut noreturn = false;
@@ -717,14 +763,7 @@ impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
                 }
             }
         }
-
-        Ok(InterfaceFuncSyntax {
-            export,
-            export_loc,
-            params,
-            results,
-            noreturn,
-        })
+        Ok((params, results, noreturn))
     }
 }
 
@@ -733,6 +772,7 @@ enum InterfaceFuncField<'a> {
     Result(FieldSyntax<'a>),
     Noreturn,
 }
+
 impl<'a> Parse<'a> for InterfaceFuncField<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parens(|p| {

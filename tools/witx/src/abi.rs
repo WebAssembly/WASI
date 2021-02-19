@@ -21,8 +21,22 @@
 //! generators will need to implement the various instructions to support APIs.
 
 use crate::{
-    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, Type, TypeRef,
+    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype,
+    RecordKind, Type, TypeRef, Variant,
 };
+use std::mem;
+
+/// A raw WebAssembly signature with params and results.
+#[derive(Debug)]
+pub struct WasmSignature {
+    /// The WebAssembly parameters of this function.
+    pub params: Vec<WasmType>,
+    /// The WebAssembly results of this function.
+    pub results: Vec<WasmType>,
+    /// The raw types, if needed, returned through return pointer located in
+    /// `params`.
+    pub retptr: Option<Vec<WasmType>>,
+}
 
 /// Enumerates wasm types used by interface types when lowering/lifting.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -57,6 +71,9 @@ pub enum Abi {
     /// Note that this ABI is limited notably in its return values where it can
     /// only return 0 results or one `Result<T, enum>` lookalike.
     Preview1,
+
+    /// TODO
+    Next,
 }
 
 // Helper macro for defining instructions without having to have tons of
@@ -64,7 +81,7 @@ pub enum Abi {
 macro_rules! def_instruction {
     (
         $( #[$enum_attr:meta] )*
-        pub enum Instruction<'a> {
+        pub enum $name:ident<'a> {
             $(
                 $( #[$attr:meta] )*
                 $variant:ident $( {
@@ -76,7 +93,7 @@ macro_rules! def_instruction {
         }
     ) => {
         $( #[$enum_attr] )*
-        pub enum Instruction<'a> {
+        pub enum $name<'a> {
             $(
                 $( #[$attr] )*
                 $variant $( {
@@ -87,7 +104,7 @@ macro_rules! def_instruction {
             )*
         }
 
-        impl Instruction<'_> {
+        impl $name<'_> {
             /// How many operands does this instruction pop from the stack?
             #[allow(unused_variables)]
             pub fn operands_len(&self) -> usize {
@@ -126,9 +143,8 @@ def_instruction! {
         /// Depending on the context this may refer to wasm parameters or
         /// interface types parameters.
         GetArg { nth: usize } : [0] => [1],
-        /// Takes the value off the top of the stack and writes it into linear
-        /// memory. Pushes the address in linear memory as an `i32`.
-        AddrOf : [1] => [1],
+        /// Pushes the constant `val` onto the stack.
+        I32Const { val: i32 } : [0] => [1],
         /// Converts an interface type `char` value to a 32-bit integer
         /// representing the unicode scalar value.
         I32FromChar : [1] => [1],
@@ -140,8 +156,6 @@ def_instruction! {
         I32FromU32 : [1] => [1],
         /// Converts an interface type `s32` value to a wasm `i32`.
         I32FromS32 : [1] => [1],
-        /// Converts a language-specific `usize` value to a wasm `i32`.
-        I32FromUsize : [1] => [1],
         /// Converts an interface type `u16` value to a wasm `i32`.
         I32FromU16 : [1] => [1],
         /// Converts an interface type `s16` value to a wasm `i32`.
@@ -150,28 +164,15 @@ def_instruction! {
         I32FromU8 : [1] => [1],
         /// Converts an interface type `s8` value to a wasm `i32`.
         I32FromS8 : [1] => [1],
+        /// Converts a language-specific `usize` value to a wasm `i32`.
+        I32FromUsize : [1] => [1],
         /// Converts a language-specific C `char` value to a wasm `i32`.
         I32FromChar8 : [1] => [1],
-        /// Converts a language-specific pointer value to a wasm `i32`.
-        I32FromPointer : [1] => [1],
-        /// Converts a language-specific pointer value to a wasm `i32`.
-        I32FromConstPointer : [1] => [1],
         /// Converts a language-specific handle value to a wasm `i32`.
         I32FromHandle { ty: &'a NamedType } : [1] => [1],
-        /// Converts a language-specific record-of-bools to the packed
-        /// representation as an `i32`.
-        I32FromBitflags { ty: &'a NamedType } : [1] => [1],
-        /// Converts a language-specific record-of-bools to the packed
-        /// representation as an `i64`.
-        I64FromBitflags { ty: &'a NamedType } : [1] => [1],
         /// Converts an interface type list into its pointer/length, pushing
         /// them both on the stack.
         ListPointerLength : [1] => [2],
-        /// Pops two `i32` values from the stack and creates a list from them of
-        /// the specified type. The first operand is the pointer in linear
-        /// memory to the start of the list and the second operand is the
-        /// length.
-        ListFromPointerLength { ty: &'a TypeRef } : [2] => [1],
         /// Conversion an interface type `f32` value to a wasm `f32`.
         ///
         /// This may be a noop for some implementations, but it's here in case the
@@ -184,6 +185,12 @@ def_instruction! {
         /// native language representation of `f64` is different than the wasm
         /// representation of `f64`.
         F64FromIf64 : [1] => [1],
+        /// Converts a native wasm `i32` to a language-specific C `char`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        Char8FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to a language-specific `usize`.
+        UsizeFromI32 : [1] => [1],
 
         /// Represents a call to a raw WebAssembly API. The module/name are
         /// provided inline as well as the types if necessary.
@@ -229,18 +236,124 @@ def_instruction! {
         ///
         /// It's safe to assume that the `i32` is indeed a valid unicode code point.
         CharFromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific C `char`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        Char8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific `usize`.
-        UsizeFromI32 : [1] => [1],
         /// Converts a native wasm `f32` to an interface type `f32`.
         If32FromF32 : [1] => [1],
         /// Converts a native wasm `f64` to an interface type `f64`.
         If64FromF64 : [1] => [1],
         /// Converts a native wasm `i32` to an interface type `handle`.
         HandleFromI32 { ty: &'a NamedType } : [1] => [1],
+        /// Returns `amt` values on the stack. This is always the last
+        /// instruction.
+        Return { amt: usize } : [*amt] => [0],
+
+        /// Pops a record value off the stack, decomposes the record to all of
+        /// its fields, and then pushes the fields onto the stack.
+        RecordLower { ty: &'a RecordDatatype } : [1] => [ty.members.len()],
+        /// Pops all fields for a record off the stack and then composes them
+        /// into a record.
+        RecordLift { ty: &'a RecordDatatype } : [ty.members.len()] => [1],
+
+        /// This is a special instruction used at the entry of blocks used as
+        /// part of `ResultLower`, representing that the payload of that variant
+        /// being matched on should be pushed onto the stack.
+        VariantPayload : [0] => [1],
+
+        /// Pops a variant off the stack as well as `ty.cases.len()` blocks
+        /// from the code generator. Uses each of those blocks and the value
+        /// from the stack to produce `nresults` of items.
+        VariantLower {
+            ty: &'a Variant,
+            nresults: usize,
+        } : [1] => [*nresults],
+
+        /// Pops an `i32` off the stack as well as `ty.cases.len()` blocks
+        /// from the code generator. Uses each of those blocks and the value
+        /// from the stack to produce a final variant.
+        VariantLift { ty: &'a Variant } : [1] => [1],
+
+        /// Casts the top N items on the stack using the `Bitcast` enum
+        /// provided. Consumes the same number of operands that this produces.
+        Bitcasts { casts: &'a [Bitcast] } : [casts.len()] => [casts.len()],
+
+        /// Pushes a number of constant zeros for each wasm type on the stack.
+        ConstZero { tys: &'a [WasmType] } : [0] => [tys.len()],
+
+        /// Pops an `i32` from the stack and loads a little-endian `i32` from
+        /// it, using the specified constant offset.
+        I32Load { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `i64` from
+        /// it, using the specified constant offset.
+        I64Load { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `f32` from
+        /// it, using the specified constant offset.
+        F32Load { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `f64` from
+        /// it, using the specified constant offset.
+        F64Load { offset: i32 } : [1] => [1],
+        /// Pops an `i32` address from the stack and then an `i32` value.
+        /// Stores the value in little-endian at the pointer specified plus the
+        /// constant `offset`.
+        I32Store { offset: i32 } : [2] => [0],
+        /// Pops an `i32` address from the stack and then an `i64` value.
+        /// Stores the value in little-endian at the pointer specified plus the
+        /// constant `offset`.
+        I64Store { offset: i32 } : [2] => [0],
+        /// Pops an `i32` address from the stack and then an `f32` value.
+        /// Stores the value in little-endian at the pointer specified plus the
+        /// constant `offset`.
+        F32Store { offset: i32 } : [2] => [0],
+        /// Pops an `i32` address from the stack and then an `f64` value.
+        /// Stores the value in little-endian at the pointer specified plus the
+        /// constant `offset`.
+        F64Store { offset: i32 } : [2] => [0],
+
+        /// An instruction from an extended instruction set that's specific to
+        /// `*.witx` and the "Preview1" ABI.
+        Witx {
+            instr: &'a WitxInstruction<'a>,
+        } : [instr.operands_len()] => [instr.results_len()],
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Bitcast {
+    // Bitcasts
+    F32ToF64,
+    F32ToI32,
+    F64ToI64,
+    I32ToI64,
+
+    // Bitcasts
+    F64ToF32,
+    I32ToF32,
+    I64ToF64,
+    I64ToI32,
+
+    None,
+}
+
+def_instruction! {
+    #[derive(Debug)]
+    pub enum WitxInstruction<'a> {
+        /// Takes the value off the top of the stack and writes it into linear
+        /// memory. Pushes the address in linear memory as an `i32`.
+        AddrOf : [1] => [1],
+        /// Converts a language-specific pointer value to a wasm `i32`.
+        I32FromPointer : [1] => [1],
+        /// Converts a language-specific pointer value to a wasm `i32`.
+        I32FromConstPointer : [1] => [1],
+        /// Converts a language-specific record-of-bools to the packed
+        /// representation as an `i32`.
+        I32FromBitflags { ty: &'a NamedType } : [1] => [1],
+        /// Converts a language-specific record-of-bools to the packed
+        /// representation as an `i64`.
+        I64FromBitflags { ty: &'a NamedType } : [1] => [1],
+        /// Pops two `i32` values from the stack and creates a list from them of
+        /// the specified type. The first operand is the pointer in linear
+        /// memory to the start of the list and the second operand is the
+        /// length.
+        ListFromPointerLength { ty: &'a TypeRef } : [2] => [1],
+
         /// Converts a native wasm `i32` to a language-specific pointer.
         PointerFromI32 { ty: &'a TypeRef }: [1] => [1],
         /// Converts a native wasm `i32` to a language-specific pointer.
@@ -249,13 +362,6 @@ def_instruction! {
         BitflagsFromI32 { ty: &'a NamedType } : [1] => [1],
         /// Converts a native wasm `i64` to a language-specific record-of-bools.
         BitflagsFromI64 { ty: &'a NamedType } : [1] => [1],
-        /// Acquires the return pointer `n` and pushes an `i32` on the stack.
-        ///
-        /// Implementations of [`Bindgen`] may have [`Bindgen::allocate_space`]
-        /// called to reserve space in memory for the result of a computation to
-        /// get written. This instruction acquires a pointer to the space
-        /// reserved in `allocate_space`.
-        ReturnPointerGet { n: usize } : [0] => [1],
         /// Loads the interface types value from an `i32` pointer popped from
         /// the stack.
         Load { ty: &'a NamedType } : [1] => [1],
@@ -307,13 +413,6 @@ def_instruction! {
         /// WASI.  The raw return `i32` of a function is re-pushed onto the
         /// stack for reuse.
         ReuseReturn : [0] => [1],
-        /// Returns `amt` values on the stack. This is always the last
-        /// instruction.
-        Return { amt: usize } : [*amt] => [0],
-        /// This is a special instruction used at the entry of blocks used as
-        /// part of `ResultLower`, representing that the payload of that variant
-        /// being matched on should be pushed onto the stack.
-        VariantPayload : [0] => [1],
     }
 }
 
@@ -324,9 +423,20 @@ impl Abi {
     /// they're indeed representable.
     pub fn validate(
         &self,
-        _params: &[InterfaceFuncParam],
+        params: &[InterfaceFuncParam],
         results: &[InterfaceFuncParam],
     ) -> Result<(), String> {
+        match self {
+            Abi::Preview1 => {
+                // validated below...
+            }
+            Abi::Next => {
+                for ty in params.iter().chain(results) {
+                    validate_no_witx(ty.tref.type_())?;
+                }
+                return Ok(());
+            }
+        }
         assert_eq!(*self, Abi::Preview1);
         match results.len() {
             0 => {}
@@ -377,6 +487,49 @@ impl Abi {
     }
 }
 
+fn validate_no_witx(ty: &Type) -> Result<(), String> {
+    match ty {
+        Type::Record(r) => {
+            match r.kind {
+                RecordKind::Bitflags(_) => {
+                    return Err("cannot use `(@witx bitflags)` in this ABI".to_string())
+                }
+                RecordKind::Tuple | RecordKind::Other => {}
+            }
+            for r in r.members.iter() {
+                validate_no_witx(r.tref.type_())?;
+            }
+            Ok(())
+        }
+        Type::Variant(v) => {
+            if v.tag_repr != IntRepr::U32 {
+                return Err("cannot use `(@witx tag)` in this ABI".to_string());
+            }
+            for case in v.cases.iter() {
+                if let Some(ty) = &case.tref {
+                    validate_no_witx(ty.type_())?;
+                }
+            }
+            Ok(())
+        }
+        Type::Handle(_) => Ok(()),
+        Type::List(t) => validate_no_witx(t.type_()),
+        Type::Pointer(_) => return Err("cannot use `(@witx pointer)` in this ABI".to_string()),
+        Type::ConstPointer(_) => {
+            return Err("cannot use `(@witx const_pointer)` in this ABI".to_string())
+        }
+        Type::Builtin(BuiltinType::U8 { lang_c_char: true }) => {
+            return Err("cannot use `(@witx char8)` in this ABI".to_string());
+        }
+        Type::Builtin(BuiltinType::U32 {
+            lang_ptr_size: true,
+        }) => {
+            return Err("cannot use `(@witx usize)` in this ABI".to_string());
+        }
+        Type::Builtin(_) => Ok(()),
+    }
+}
+
 /// Trait for language implementors to use to generate glue code between native
 /// WebAssembly signatures and interface types signatures.
 ///
@@ -393,7 +546,7 @@ pub trait Bindgen {
     /// The intermediate type for fragments of code for this type.
     ///
     /// For most languages `String` is a suitable intermediate type.
-    type Operand;
+    type Operand: Clone;
 
     /// Emit code to implement the given instruction.
     ///
@@ -410,12 +563,24 @@ pub trait Bindgen {
         results: &mut Vec<Self::Operand>,
     );
 
-    /// Allocates temporary space in linear memory indexed by `slot` with enough
-    /// space to store `ty`.
+    /// Allocates temporary space in linear memory for the type `ty`.
     ///
     /// This is called when calling some wasm functions where a return pointer
-    /// is needed.
-    fn allocate_space(&mut self, slot: usize, ty: &NamedType);
+    /// is needed. Only used for the `Abi::Preview1` ABI.
+    ///
+    /// Returns an `Operand` which has type `i32` and is the base of the typed
+    /// allocation in memory.
+    fn allocate_typed_space(&mut self, ty: &NamedType) -> Self::Operand;
+
+    /// Allocates temporary space in linear memory for a fixed number of `i64`
+    /// values.
+    ///
+    /// This is only called in the `Abi::Next` ABI for when a function would
+    /// otherwise have multiple results.
+    ///
+    /// Returns an `Operand` which has type `i32` and points to the base of the
+    /// fixed-size-array allocation.
+    fn allocate_i64_array(&mut self, amt: usize) -> Self::Operand;
 
     /// Enters a new block of code to generate code for.
     ///
@@ -441,7 +606,7 @@ pub trait Bindgen {
     /// block before `push_block` was called. This must also save the results
     /// of the current block internally for instructions like `ResultLift` to
     /// use later.
-    fn finish_block(&mut self, operand: Option<Self::Operand>);
+    fn finish_block(&mut self, operand: &mut Vec<Self::Operand>);
 }
 
 impl InterfaceFunc {
@@ -449,70 +614,51 @@ impl InterfaceFunc {
     ///
     /// The first entry returned is the list of parameters and the second entry
     /// is the list of results for the wasm function signature.
-    pub fn wasm_signature(&self) -> (Vec<WasmType>, Vec<WasmType>) {
-        assert_eq!(self.abi, Abi::Preview1);
+    pub fn wasm_signature(&self) -> WasmSignature {
         let mut params = Vec::new();
         let mut results = Vec::new();
         for param in self.params.iter() {
             match &**param.tref.type_() {
-                Type::Builtin(BuiltinType::S8)
-                | Type::Builtin(BuiltinType::U8 { .. })
-                | Type::Builtin(BuiltinType::S16)
-                | Type::Builtin(BuiltinType::U16)
-                | Type::Builtin(BuiltinType::S32)
-                | Type::Builtin(BuiltinType::U32 { .. })
-                | Type::Builtin(BuiltinType::Char)
+                Type::Builtin(_)
                 | Type::Pointer(_)
                 | Type::ConstPointer(_)
                 | Type::Handle(_)
-                | Type::Variant(_) => params.push(WasmType::I32),
-
-                Type::Record(r) => match r.bitflags_repr() {
-                    Some(repr) => params.push(WasmType::from(repr)),
-                    None => params.push(WasmType::I32),
+                | Type::List(_) => {
+                    push_wasm(param.tref.type_(), &mut params);
+                }
+                ty @ Type::Variant(_) => match self.abi {
+                    Abi::Preview1 => params.push(WasmType::I32),
+                    Abi::Next => push_wasm(ty, &mut params),
                 },
-
-                Type::Builtin(BuiltinType::S64) | Type::Builtin(BuiltinType::U64) => {
-                    params.push(WasmType::I64)
-                }
-
-                Type::Builtin(BuiltinType::F32) => params.push(WasmType::F32),
-                Type::Builtin(BuiltinType::F64) => params.push(WasmType::F64),
-
-                Type::List(_) => {
-                    params.push(WasmType::I32);
-                    params.push(WasmType::I32);
-                }
+                Type::Record(r) => match self.abi {
+                    Abi::Preview1 => match r.bitflags_repr() {
+                        Some(repr) => params.push(WasmType::from(repr)),
+                        None => params.push(WasmType::I32),
+                    },
+                    Abi::Next => push_wasm(param.tref.type_(), &mut params),
+                },
             }
         }
 
         for param in self.results.iter() {
             match &**param.tref.type_() {
-                Type::Builtin(BuiltinType::S8)
-                | Type::Builtin(BuiltinType::U8 { .. })
-                | Type::Builtin(BuiltinType::S16)
-                | Type::Builtin(BuiltinType::U16)
-                | Type::Builtin(BuiltinType::S32)
-                | Type::Builtin(BuiltinType::U32 { .. })
-                | Type::Builtin(BuiltinType::Char)
+                Type::List(_)
+                | Type::Builtin(_)
                 | Type::Pointer(_)
                 | Type::ConstPointer(_)
-                | Type::Handle(_) => results.push(WasmType::I32),
-
-                Type::Builtin(BuiltinType::S64) | Type::Builtin(BuiltinType::U64) => {
-                    results.push(WasmType::I64)
+                | Type::Record(_)
+                | Type::Handle(_) => {
+                    push_wasm(param.tref.type_(), &mut results);
                 }
 
-                Type::Builtin(BuiltinType::F32) => results.push(WasmType::F32),
-                Type::Builtin(BuiltinType::F64) => results.push(WasmType::F64),
-
-                Type::Record(r) => match r.bitflags_repr() {
-                    Some(repr) => results.push(WasmType::from(repr)),
-                    None => unreachable!(),
-                },
-                Type::List(_) => unreachable!(),
-
                 Type::Variant(v) => {
+                    match self.abi {
+                        Abi::Preview1 => {} // handled below
+                        Abi::Next => {
+                            push_wasm(param.tref.type_(), &mut results);
+                            continue;
+                        }
+                    }
                     results.push(match v.tag_repr {
                         IntRepr::U64 => WasmType::I64,
                         IntRepr::U32 | IntRepr::U16 | IntRepr::U8 => WasmType::I32,
@@ -534,7 +680,21 @@ impl InterfaceFunc {
                 }
             }
         }
-        (params, results)
+
+        // Rust/C don't support multi-value well right now, so if a function
+        // would have multiple results then instead truncate it to have 0
+        // results and instead insert a return pointer.
+        let mut retptr = None;
+        if results.len() > 1 {
+            params.push(WasmType::I32);
+            retptr = Some(mem::take(&mut results));
+        }
+
+        WasmSignature {
+            params,
+            results,
+            retptr,
+        }
     }
 
     /// Generates an abstract sequence of instructions which represents this
@@ -553,103 +713,214 @@ impl InterfaceFunc {
     /// and it will also automatically convert the results of the WASI function
     /// back to a language-specific value.
     pub fn call_wasm(&self, module: &Id, bindgen: &mut impl Bindgen) {
-        assert_eq!(self.abi, Abi::Preview1);
-        Generator {
-            bindgen,
-            operands: vec![],
-            results: vec![],
-            stack: vec![],
-        }
-        .call_wasm(module, self);
+        Generator::new(self.abi, bindgen).call_wasm(module, self);
     }
 
     /// This is the dual of [`InterfaceFunc::call_wasm`], except that instead of
     /// calling a wasm signature it generates code to come from a wasm signature
     /// and call an interface types signature.
     pub fn call_interface(&self, module: &Id, bindgen: &mut impl Bindgen) {
-        assert_eq!(self.abi, Abi::Preview1);
-        Generator {
-            bindgen,
-            operands: vec![],
-            results: vec![],
-            stack: vec![],
-        }
-        .call_interface(module, self);
+        Generator::new(self.abi, bindgen).call_interface(module, self);
     }
 }
 
 struct Generator<'a, B: Bindgen> {
+    abi: Abi,
     bindgen: &'a mut B,
     operands: Vec<B::Operand>,
     results: Vec<B::Operand>,
     stack: Vec<B::Operand>,
+    return_pointers: Vec<B::Operand>,
 }
 
-impl<B: Bindgen> Generator<'_, B> {
+impl<'a, B: Bindgen> Generator<'a, B> {
+    fn new(abi: Abi, bindgen: &'a mut B) -> Generator<'a, B> {
+        Generator {
+            abi,
+            bindgen,
+            operands: Vec::new(),
+            results: Vec::new(),
+            stack: Vec::new(),
+            return_pointers: Vec::new(),
+        }
+    }
+
     fn call_wasm(&mut self, module: &Id, func: &InterfaceFunc) {
-        // Translate all parameters which are interface values by lowering them
-        // to their wasm types.
-        for (nth, param) in func.params.iter().enumerate() {
+        // Push all parameters for this function onto the stack, and then
+        // batch-lower everything all at once.
+        for nth in 0..func.params.len() {
             self.emit(&Instruction::GetArg { nth });
-            self.lower(&param.tref, None);
         }
+        self.lower_all(&func.params, None);
 
-        // If necessary for our ABI, insert return pointers for any returned
-        // values through a result.
-        assert!(func.results.len() < 2);
-        if let Some(result) = func.results.get(0) {
-            self.prep_return_pointer(&result.tref.type_());
-        }
+        // If necessary we may need to prepare a return pointer for this ABI.
+        // The `Preview1` ABI has most return values returned through pointers,
+        // and the `Next` ABI returns more-than-one values through a return
+        // pointer.
+        let sig = func.wasm_signature();
+        self.prep_return_pointer(&sig, &func.results);
 
-        let (params, results) = func.wasm_signature();
+        // Now that all the wasm args are prepared we can call the actual wasm
+        // function.
+        assert_eq!(self.stack.len(), sig.params.len());
         self.emit(&Instruction::CallWasm {
             module: module.as_str(),
             name: func.name.as_str(),
-            params: &params,
-            results: &results,
+            params: &sig.params,
+            results: &sig.results,
         });
 
-        // Lift the return value if one is present.
-        if let Some(result) = func.results.get(0) {
-            self.lift(&result.tref, true);
+        // In the `Next` ABI we model multiple return values by going through
+        // memory. Remove that indirection here by loading everything to
+        // simulate the function having many return values in our stack
+        // discipline.
+        if let Some(actual) = &sig.retptr {
+            self.load_retptr(actual);
         }
+
+        // Batch-lift all result values now that all the function's return
+        // values are on the stack.
+        self.lift_all(&func.results, true);
 
         self.emit(&Instruction::Return {
             amt: func.results.len(),
         });
+        assert!(self.stack.is_empty());
+    }
+
+    fn load_retptr(&mut self, types: &[WasmType]) {
+        assert_eq!(self.return_pointers.len(), 1);
+        for (i, ty) in types.iter().enumerate() {
+            self.stack.push(self.return_pointers[0].clone());
+            let offset = (i * 8) as i32;
+            match ty {
+                WasmType::I32 => self.emit(&Instruction::I32Load { offset }),
+                WasmType::I64 => self.emit(&Instruction::I64Load { offset }),
+                WasmType::F32 => self.emit(&Instruction::F32Load { offset }),
+                WasmType::F64 => self.emit(&Instruction::F64Load { offset }),
+            }
+        }
     }
 
     fn call_interface(&mut self, module: &Id, func: &InterfaceFunc) {
-        // Lift all wasm parameters into interface types first.
-        //
-        // Note that consuming arguments is somewhat janky right now by manually
-        // giving lists a second argument for their length. In the future we'll
-        // probably want to refactor the `lift` function to internally know how
-        // to consume arguments.
-        let mut nth = 0;
-        for param in func.params.iter() {
-            self.emit(&Instruction::GetArg { nth });
-            nth += 1;
-            if let Type::List(_) = &**param.tref.type_() {
-                self.emit(&Instruction::GetArg { nth });
-                nth += 1;
+        // Use `GetArg` to push all relevant arguments onto the stack. Note
+        // that we can't use the signature of this function directly due to
+        // various conversions and return pointers, so we need to somewhat
+        // manually calculate all the arguments which are converted as
+        // interface types arguments below.
+        let sig = func.wasm_signature();
+        let nargs = match self.abi {
+            Abi::Preview1 => {
+                func.params.len()
+                    + func
+                        .params
+                        .iter()
+                        .filter(|t| match &**t.tref.type_() {
+                            Type::List(_) => true,
+                            _ => false,
+                        })
+                        .count()
             }
-            self.lift(&param.tref, false);
+            Abi::Next => sig.params.len() - sig.retptr.is_some() as usize,
+        };
+        for nth in 0..nargs {
+            self.emit(&Instruction::GetArg { nth });
         }
 
+        // Once everything is on the stack we can lift all arguments one-by-one
+        // into their interface-types equivalent.
+        self.lift_all(&func.params, false);
+
+        // ... and that allows us to call the interface types function ...
         self.emit(&Instruction::CallInterface {
             module: module.as_str(),
             func,
         });
 
-        // Like above the current ABI only has at most one result, so lower it
-        // here if necessary.
-        if let Some(result) = func.results.get(0) {
-            self.lower(&result.tref, Some(&mut nth));
+        // ... and at the end we lower everything back into return values.
+        self.lower_all(&func.results, Some(nargs));
+
+        // Our ABI dictates that a list of returned types are returned through
+        // memories, so after we've got all the values on the stack perform
+        // all of the stores here.
+        if let Some(tys) = &sig.retptr {
+            self.store_retptr(tys, sig.params.len() - 1);
         }
 
-        let (_params, results) = func.wasm_signature();
-        self.emit(&Instruction::Return { amt: results.len() });
+        self.emit(&Instruction::Return {
+            amt: sig.results.len(),
+        });
+        assert!(self.stack.is_empty());
+    }
+
+    /// Assumes that the wasm values to create `tys` are all located on the
+    /// stack.
+    ///
+    /// Inserts instructions necesesary to lift those types into their
+    /// interface types equivalent.
+    fn lift_all(&mut self, tys: &[InterfaceFuncParam], is_return: bool) {
+        let mut temp = Vec::new();
+        let operands = tys
+            .iter()
+            .rev()
+            .map(|ty| {
+                let ntys = match self.abi {
+                    Abi::Preview1 => match &**ty.tref.type_() {
+                        Type::List(_) => 2,
+                        _ => 1,
+                    },
+                    Abi::Next => {
+                        temp.truncate(0);
+                        push_wasm(ty.tref.type_(), &mut temp);
+                        temp.len()
+                    }
+                };
+                self.stack
+                    .drain(self.stack.len() - ntys..)
+                    .collect::<Vec<_>>()
+            })
+            .collect::<Vec<_>>();
+        for (operands, ty) in operands.into_iter().rev().zip(tys) {
+            self.stack.extend(operands);
+            self.lift(&ty.tref, is_return);
+        }
+    }
+
+    /// Assumes that the value for `tys` is already on the stack, and then
+    /// converts all of those values into their wasm types by lowering each
+    /// argument in-order.
+    fn lower_all(&mut self, tys: &[InterfaceFuncParam], mut nargs: Option<usize>) {
+        let operands = self
+            .stack
+            .drain(self.stack.len() - tys.len()..)
+            .collect::<Vec<_>>();
+        for (operand, ty) in operands.into_iter().zip(tys) {
+            self.stack.push(operand);
+            self.lower(&ty.tref, nargs.as_mut());
+        }
+    }
+
+    /// Assumes `types.len()` values are on the stack and stores them all into
+    /// the return pointer of this function, specified in the last argument.
+    ///
+    /// This is only used with `Abi::Next`.
+    fn store_retptr(&mut self, types: &[WasmType], retptr_arg: usize) {
+        self.emit(&Instruction::GetArg { nth: retptr_arg });
+        let retptr = self.stack.pop().unwrap();
+        for (i, ty) in types.iter().enumerate().rev() {
+            self.stack.push(retptr.clone());
+            let offset = (i * 8) as i32;
+            match ty {
+                WasmType::I32 => self.emit(&Instruction::I32Store { offset }),
+                WasmType::I64 => self.emit(&Instruction::I64Store { offset }),
+                WasmType::F32 => self.emit(&Instruction::F32Store { offset }),
+                WasmType::F64 => self.emit(&Instruction::F64Store { offset }),
+            }
+        }
+    }
+
+    fn witx(&mut self, instr: &WitxInstruction<'_>) {
+        self.emit(&Instruction::Witx { instr });
     }
 
     fn emit(&mut self, inst: &Instruction<'_>) {
@@ -680,8 +951,21 @@ impl<B: Bindgen> Generator<'_, B> {
         self.stack.extend(self.results.drain(..));
     }
 
+    fn finish_block(&mut self, size: usize) {
+        self.operands.clear();
+        assert!(
+            size <= self.stack.len(),
+            "not enough operands on stack for finishing block",
+        );
+        self.operands
+            .extend(self.stack.drain((self.stack.len() - size)..));
+        self.bindgen.finish_block(&mut self.operands);
+    }
+
     fn lower(&mut self, ty: &TypeRef, retptr: Option<&mut usize>) {
         use Instruction::*;
+        use WitxInstruction::*;
+
         match &**ty.type_() {
             Type::Builtin(BuiltinType::S8) => self.emit(&I32FromS8),
             Type::Builtin(BuiltinType::U8 { lang_c_char: true }) => self.emit(&I32FromChar8),
@@ -698,29 +982,48 @@ impl<B: Bindgen> Generator<'_, B> {
             Type::Builtin(BuiltinType::S64) => self.emit(&I64FromS64),
             Type::Builtin(BuiltinType::U64) => self.emit(&I64FromU64),
             Type::Builtin(BuiltinType::Char) => self.emit(&I32FromChar),
-            Type::Pointer(_) => self.emit(&I32FromPointer),
-            Type::ConstPointer(_) => self.emit(&I32FromConstPointer),
+            Type::Builtin(BuiltinType::F32) => self.emit(&F32FromIf32),
+            Type::Builtin(BuiltinType::F64) => self.emit(&F64FromIf64),
+            Type::Pointer(_) => self.witx(&I32FromPointer),
+            Type::ConstPointer(_) => self.witx(&I32FromConstPointer),
             Type::Handle(_) => self.emit(&I32FromHandle {
                 ty: match ty {
                     TypeRef::Name(ty) => ty,
                     _ => unreachable!(),
                 },
             }),
+            Type::List(_) => self.emit(&ListPointerLength),
             Type::Record(r) => {
-                let ty = match ty {
-                    TypeRef::Name(ty) => ty,
-                    _ => unreachable!(),
-                };
-                match r.bitflags_repr() {
-                    Some(IntRepr::U64) => self.emit(&I64FromBitflags { ty }),
-                    Some(_) => self.emit(&I32FromBitflags { ty }),
-                    None => self.emit(&AddrOf),
+                if let Some(repr) = r.bitflags_repr() {
+                    let ty = match ty {
+                        TypeRef::Name(ty) => ty,
+                        _ => unreachable!(),
+                    };
+                    match repr {
+                        IntRepr::U64 => return self.witx(&I64FromBitflags { ty }),
+                        _ => return self.witx(&I32FromBitflags { ty }),
+                    }
+                }
+                match self.abi {
+                    Abi::Preview1 => self.witx(&AddrOf),
+                    Abi::Next => {
+                        self.emit(&RecordLower { ty: r });
+                        let fields = self
+                            .stack
+                            .drain(self.stack.len() - r.members.len()..)
+                            .collect::<Vec<_>>();
+                        for (member, field) in r.members.iter().zip(fields) {
+                            self.stack.push(field);
+                            self.lower(&member.tref, None);
+                        }
+                    }
                 }
             }
-            Type::Variant(v) => {
+
+            Type::Variant(v) if self.abi == Abi::Preview1 => {
                 // Enum-like variants are simply lowered to their discriminant.
                 if v.is_enum() {
-                    return self.emit(&EnumLower {
+                    return self.witx(&EnumLower {
                         ty: match ty {
                             TypeRef::Name(n) => n,
                             _ => unreachable!(),
@@ -732,7 +1035,7 @@ impl<B: Bindgen> Generator<'_, B> {
                 // otherwise it's an argument and we just pass the address.
                 let retptr = match retptr {
                     Some(ptr) => ptr,
-                    None => return self.emit(&AddrOf),
+                    None => return self.witx(&AddrOf),
                 };
 
                 // For the return position we emit some blocks to lower the
@@ -748,13 +1051,13 @@ impl<B: Bindgen> Generator<'_, B> {
                     let store = |me: &mut Self, ty: &TypeRef, n| {
                         me.emit(&GetArg { nth: *retptr + n });
                         match ty {
-                            TypeRef::Name(ty) => me.emit(&Store { ty }),
+                            TypeRef::Name(ty) => me.witx(&Store { ty }),
                             _ => unreachable!(),
                         }
                     };
                     match &**ok.type_() {
                         Type::Record(r) if r.is_tuple() => {
-                            self.emit(&TupleLower {
+                            self.witx(&TupleLower {
                                 amt: r.members.len(),
                             });
                             // Note that `rev()` is used here due to the order
@@ -767,56 +1070,119 @@ impl<B: Bindgen> Generator<'_, B> {
                         _ => store(self, ok, 0),
                     }
                 };
-                self.bindgen.finish_block(None);
+                self.finish_block(0);
 
                 self.bindgen.push_block();
-                let err_expr = if let Some(ty) = err {
+                if let Some(ty) = err {
                     self.emit(&VariantPayload);
                     self.lower(ty, None);
-                    Some(self.stack.pop().unwrap())
-                } else {
-                    None
-                };
-                self.bindgen.finish_block(err_expr);
+                }
+                self.finish_block(err.is_some() as usize);
 
-                self.emit(&ResultLower { ok, err });
+                self.witx(&ResultLower { ok, err });
             }
-            Type::Builtin(BuiltinType::F32) => self.emit(&F32FromIf32),
-            Type::Builtin(BuiltinType::F64) => self.emit(&F64FromIf64),
-            Type::List(_) => self.emit(&ListPointerLength),
+
+            Type::Variant(v) => {
+                let mut results = Vec::new();
+                let mut temp = Vec::new();
+                let mut casts = Vec::new();
+                push_wasm(ty.type_(), &mut results);
+                for (i, case) in v.cases.iter().enumerate() {
+                    self.bindgen.push_block();
+                    self.emit(&I32Const { val: i as i32 });
+                    let mut pushed = 1;
+                    if let Some(ty) = &case.tref {
+                        // Using the payload of this block we lower the type to
+                        // raw wasm values.
+                        self.emit(&VariantPayload);
+                        self.lower(ty, None);
+
+                        // Determine the types of all the wasm values we just
+                        // pushed, and record how many. If we pushed too few
+                        // then we'll need to push some zeros after this.
+                        temp.truncate(0);
+                        push_wasm(ty.type_(), &mut temp);
+                        pushed += temp.len();
+
+                        // For all the types pushed we may need to insert some
+                        // bitcasts. This will go through and cast everything
+                        // to the right type to ensure all blocks produce the
+                        // same set of results.
+                        casts.truncate(0);
+                        for (actual, expected) in temp.iter().zip(&results[1..]) {
+                            casts.push(cast(*actual, *expected));
+                        }
+                        if casts.iter().any(|c| *c != Bitcast::None) {
+                            self.emit(&Bitcasts { casts: &casts });
+                        }
+                    }
+
+                    // If we haven't pushed enough items in this block to match
+                    // what other variants are pushing then we need to push
+                    // some zeros.
+                    if pushed < results.len() {
+                        self.emit(&ConstZero {
+                            tys: &results[pushed..],
+                        });
+                    }
+                    self.finish_block(results.len());
+                }
+                self.emit(&VariantLower {
+                    ty: v,
+                    nresults: results.len(),
+                });
+            }
         }
     }
 
-    fn prep_return_pointer(&mut self, ty: &Type) {
-        // Return pointers are only needed for `Result<T, _>`...
-        let variant = match ty {
-            Type::Variant(v) => v,
-            _ => return,
-        };
-        // ... and only if `T` is actually present in `Result<T, _>`
-        let ok = match &variant.cases[0].tref {
-            Some(t) => t,
-            None => return,
-        };
+    fn prep_return_pointer(&mut self, sig: &WasmSignature, results: &[InterfaceFuncParam]) {
+        match self.abi {
+            Abi::Preview1 => {
+                assert!(results.len() < 2);
+                let ty = match results.get(0) {
+                    Some(ty) => ty.tref.type_(),
+                    None => return,
+                };
+                // Return pointers are only needed for `Result<T, _>`...
+                let variant = match &**ty {
+                    Type::Variant(v) => v,
+                    _ => return,
+                };
+                // ... and only if `T` is actually present in `Result<T, _>`
+                let ok = match &variant.cases[0].tref {
+                    Some(t) => t,
+                    None => return,
+                };
 
-        // Tuples have each individual item in a separate return pointer while
-        // all other types go through a singular return pointer.
-        let mut n = 0;
-        let mut prep = |ty: &TypeRef| {
-            match ty {
-                TypeRef::Name(ty) => self.bindgen.allocate_space(n, ty),
-                _ => unreachable!(),
-            }
-            self.emit(&Instruction::ReturnPointerGet { n });
-            n += 1;
-        };
-        match &**ok.type_() {
-            Type::Record(r) if r.is_tuple() => {
-                for member in r.members.iter() {
-                    prep(&member.tref);
+                // Tuples have each individual item in a separate return pointer while
+                // all other types go through a singular return pointer.
+                let mut prep = |ty: &TypeRef| {
+                    let ptr = match ty {
+                        TypeRef::Name(ty) => self.bindgen.allocate_typed_space(ty),
+                        _ => unreachable!(),
+                    };
+                    self.return_pointers.push(ptr.clone());
+                    self.stack.push(ptr);
+                };
+                match &**ok.type_() {
+                    Type::Record(r) if r.is_tuple() => {
+                        for member in r.members.iter() {
+                            prep(&member.tref);
+                        }
+                    }
+                    _ => prep(ok),
                 }
             }
-            _ => prep(ok),
+            // If a return pointer was automatically injected into this function
+            // then we need to allocate a proper amount of space for it and then
+            // add it to the stack to get passed to the callee.
+            Abi::Next => {
+                if let Some(results) = &sig.retptr {
+                    let ptr = self.bindgen.allocate_i64_array(results.len());
+                    self.return_pointers.push(ptr.clone());
+                    self.stack.push(ptr.clone());
+                }
+            }
         }
     }
 
@@ -824,6 +1190,8 @@ impl<B: Bindgen> Generator<'_, B> {
     // `lower` function above. This is intentional and should be kept this way!
     fn lift(&mut self, ty: &TypeRef, is_return: bool) {
         use Instruction::*;
+        use WitxInstruction::*;
+
         match &**ty.type_() {
             Type::Builtin(BuiltinType::S8) => self.emit(&S8FromI32),
             Type::Builtin(BuiltinType::U8 { lang_c_char: true }) => self.emit(&Char8FromI32),
@@ -842,24 +1210,62 @@ impl<B: Bindgen> Generator<'_, B> {
             Type::Builtin(BuiltinType::Char) => self.emit(&CharFromI32),
             Type::Builtin(BuiltinType::F32) => self.emit(&If32FromF32),
             Type::Builtin(BuiltinType::F64) => self.emit(&If64FromF64),
-            Type::Pointer(ty) => self.emit(&PointerFromI32 { ty }),
-            Type::ConstPointer(ty) => self.emit(&ConstPointerFromI32 { ty }),
+            Type::Pointer(ty) => self.witx(&PointerFromI32 { ty }),
+            Type::ConstPointer(ty) => self.witx(&ConstPointerFromI32 { ty }),
             Type::Handle(_) => self.emit(&HandleFromI32 {
                 ty: match ty {
                     TypeRef::Name(ty) => ty,
                     _ => unreachable!(),
                 },
             }),
-            Type::Variant(v) => {
+            Type::List(ty) => self.witx(&ListFromPointerLength { ty }),
+            Type::Record(r) => {
+                if let Some(repr) = r.bitflags_repr() {
+                    let ty = match ty {
+                        TypeRef::Name(ty) => ty,
+                        _ => unreachable!(),
+                    };
+                    match repr {
+                        IntRepr::U64 => return self.witx(&BitflagsFromI64 { ty }),
+                        _ => return self.witx(&BitflagsFromI32 { ty }),
+                    }
+                }
+                match self.abi {
+                    Abi::Preview1 => {
+                        let ty = match ty {
+                            TypeRef::Name(ty) => ty,
+                            _ => unreachable!(),
+                        };
+                        self.witx(&Load { ty })
+                    }
+                    Abi::Next => {
+                        let mut temp = Vec::new();
+                        push_wasm(ty.type_(), &mut temp);
+                        let mut args = self
+                            .stack
+                            .drain(self.stack.len() - temp.len()..)
+                            .collect::<Vec<_>>();
+                        for member in r.members.iter() {
+                            temp.truncate(0);
+                            push_wasm(member.tref.type_(), &mut temp);
+                            self.stack.extend(args.drain(..temp.len()));
+                            self.lift(&member.tref, false);
+                        }
+                        self.emit(&RecordLift { ty: r });
+                    }
+                }
+            }
+
+            Type::Variant(v) if self.abi == Abi::Preview1 => {
                 if v.is_enum() {
-                    return self.emit(&EnumLift {
+                    return self.witx(&EnumLift {
                         ty: match ty {
                             TypeRef::Name(n) => n,
                             _ => unreachable!(),
                         },
                     });
                 } else if !is_return {
-                    return self.emit(&Load {
+                    return self.witx(&Load {
                         ty: match ty {
                             TypeRef::Name(n) => n,
                             _ => unreachable!(),
@@ -869,13 +1275,13 @@ impl<B: Bindgen> Generator<'_, B> {
 
                 let (ok, err) = v.as_expected().unwrap();
                 self.bindgen.push_block();
-                let ok_expr = if let Some(ok) = ok {
+                if let Some(ok) = ok {
                     let mut n = 0;
                     let mut load = |ty: &TypeRef| {
-                        self.emit(&ReturnPointerGet { n });
+                        self.stack.push(self.return_pointers[n].clone());
                         n += 1;
                         match ty {
-                            TypeRef::Name(ty) => self.emit(&Load { ty }),
+                            TypeRef::Name(ty) => self.witx(&Load { ty }),
                             _ => unreachable!(),
                         }
                     };
@@ -884,42 +1290,156 @@ impl<B: Bindgen> Generator<'_, B> {
                             for member in r.members.iter() {
                                 load(&member.tref);
                             }
-                            self.emit(&TupleLift {
+                            self.witx(&TupleLift {
                                 amt: r.members.len(),
                             });
                         }
                         _ => load(ok),
                     }
-                    Some(self.stack.pop().unwrap())
-                } else {
-                    None
-                };
-                self.bindgen.finish_block(ok_expr);
+                }
+                self.finish_block(ok.is_some() as usize);
 
                 self.bindgen.push_block();
-                let err_expr = if let Some(ty) = err {
-                    self.emit(&ReuseReturn);
+                if let Some(ty) = err {
+                    self.witx(&ReuseReturn);
                     self.lift(ty, false);
-                    Some(self.stack.pop().unwrap())
-                } else {
-                    None
-                };
-                self.bindgen.finish_block(err_expr);
+                }
+                self.finish_block(err.is_some() as usize);
 
-                self.emit(&ResultLift);
+                self.witx(&ResultLift);
             }
-            Type::Record(r) => {
-                let ty = match ty {
-                    TypeRef::Name(ty) => ty,
-                    _ => unreachable!(),
-                };
-                match r.bitflags_repr() {
-                    Some(IntRepr::U64) => self.emit(&BitflagsFromI64 { ty }),
-                    Some(_) => self.emit(&BitflagsFromI32 { ty }),
-                    None => self.emit(&Load { ty }),
+
+            Type::Variant(v) => {
+                let mut params = Vec::new();
+                let mut temp = Vec::new();
+                let mut casts = Vec::new();
+                push_wasm(ty.type_(), &mut params);
+                let block_inputs = self
+                    .stack
+                    .drain(self.stack.len() - params.len() + 1..)
+                    .collect::<Vec<_>>();
+                for case in v.cases.iter() {
+                    self.bindgen.push_block();
+                    if let Some(ty) = &case.tref {
+                        // Push only the values we need for this variant onto
+                        // the stack.
+                        temp.truncate(0);
+                        push_wasm(ty.type_(), &mut temp);
+                        self.stack
+                            .extend(block_inputs[..temp.len()].iter().cloned());
+
+                        // Cast all the types we have on the stack to the actual
+                        // types needed for this variant, if necessary.
+                        casts.truncate(0);
+                        for (actual, expected) in temp.iter().zip(&params[1..]) {
+                            casts.push(cast(*expected, *actual));
+                        }
+                        if casts.iter().any(|c| *c != Bitcast::None) {
+                            self.emit(&Bitcasts { casts: &casts });
+                        }
+
+                        // Then recursively lift this variant's payload.
+                        self.lift(ty, false);
+                    }
+                    self.finish_block(case.tref.is_some() as usize);
+                }
+                self.emit(&VariantLift { ty: v });
+            }
+        }
+    }
+}
+
+fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
+    match ty {
+        Type::Builtin(BuiltinType::S8)
+        | Type::Builtin(BuiltinType::U8 { .. })
+        | Type::Builtin(BuiltinType::S16)
+        | Type::Builtin(BuiltinType::U16)
+        | Type::Builtin(BuiltinType::S32)
+        | Type::Builtin(BuiltinType::U32 { .. })
+        | Type::Builtin(BuiltinType::Char)
+        | Type::Pointer(_)
+        | Type::ConstPointer(_)
+        | Type::Handle(_) => result.push(WasmType::I32),
+
+        Type::Builtin(BuiltinType::U64) | Type::Builtin(BuiltinType::S64) => {
+            result.push(WasmType::I64)
+        }
+        Type::Builtin(BuiltinType::F32) => result.push(WasmType::F32),
+        Type::Builtin(BuiltinType::F64) => result.push(WasmType::F64),
+
+        Type::Record(r) => match r.bitflags_repr() {
+            Some(repr) => result.push(repr.into()),
+            None => {
+                for member in r.members.iter() {
+                    push_wasm(member.tref.type_(), result);
                 }
             }
-            Type::List(ty) => self.emit(&ListFromPointerLength { ty }),
+        },
+
+        Type::List(_) => {
+            result.push(WasmType::I32);
+            result.push(WasmType::I32);
         }
+
+        Type::Variant(v) => {
+            result.push(v.tag_repr.into());
+            let start = result.len();
+            let mut temp = Vec::new();
+
+            // Push each case's type onto a temporary vector, and then merge
+            // that vector into our final list starting at `start`. Note
+            // that this requires some degree of "unification" so we can
+            // handle things like `Result<i32, f32>` where that turns into
+            // `[i32 i32]` where the second `i32` might be the `f32`
+            // bitcasted.
+            for case in v.cases.iter() {
+                let ty = match &case.tref {
+                    Some(ty) => ty,
+                    None => continue,
+                };
+                push_wasm(ty.type_(), &mut temp);
+
+                for (i, ty) in temp.drain(..).enumerate() {
+                    match result.get_mut(start + i) {
+                        Some(prev) => *prev = unify(*prev, ty),
+                        None => result.push(ty),
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn unify(a: WasmType, b: WasmType) -> WasmType {
+    use WasmType::*;
+
+    match (a, b) {
+        (I64, _) | (_, I64) | (I32, F64) | (F64, I32) => I64,
+
+        (I32, I32) | (I32, F32) | (F32, I32) => I32,
+
+        (F32, F32) => F32,
+        (F64, F64) | (F32, F64) | (F64, F32) => F64,
+    }
+}
+
+fn cast(from: WasmType, to: WasmType) -> Bitcast {
+    use WasmType::*;
+
+    match (from, to) {
+        (I32, I32) | (I64, I64) | (F32, F32) | (F64, F64) => Bitcast::None,
+
+        (I32, I64) => Bitcast::I32ToI64,
+        (F32, F64) => Bitcast::F32ToF64,
+        (F32, I32) => Bitcast::F32ToI32,
+        (F64, I64) => Bitcast::F64ToI64,
+
+        (I64, I32) => Bitcast::I64ToI32,
+        (F64, F32) => Bitcast::F64ToF32,
+        (I32, F32) => Bitcast::I32ToF32,
+        (I64, F64) => Bitcast::I64ToF64,
+
+        (F32, I64) | (I64, F32) | (F64, I32) | (I32, F64) => unreachable!(),
     }
 }

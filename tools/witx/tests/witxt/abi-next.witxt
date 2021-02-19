@@ -1,0 +1,671 @@
+(assert_abi
+  (witx (module $x (export "f" (func))))
+  (wasm)
+  (call_wasm call.wasm return)
+  (call_interface call.interface return)
+)
+
+;; scalar arguments
+(assert_abi
+  (witx (module $x (export "f" (func (param $p u8)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_u8 arg0 call.wasm return)
+  (call_interface get-arg0 u8.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p s8)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_s8 arg0 call.wasm return)
+  (call_interface get-arg0 s8.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p u16)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_u16 arg0 call.wasm return)
+  (call_interface get-arg0 u16.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p s16)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_s16 arg0 call.wasm return)
+  (call_interface get-arg0 s16.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p u32)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_u32 arg0 call.wasm return)
+  (call_interface get-arg0 u32.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p s32)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_s32 arg0 call.wasm return)
+  (call_interface get-arg0 s32.from_i32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p u64)))))
+  (wasm (param i64))
+  (call_wasm get-arg0 i64.from_u64 arg0 call.wasm return)
+  (call_interface get-arg0 u64.from_i64 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p s64)))))
+  (wasm (param i64))
+  (call_wasm get-arg0 i64.from_s64 arg0 call.wasm return)
+  (call_interface get-arg0 s64.from_i64 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p f32)))))
+  (wasm (param f32))
+  (call_wasm get-arg0 f32.from_if32 arg0 call.wasm return)
+  (call_interface get-arg0 if32.from_f32 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p f64)))))
+  (wasm (param f64))
+  (call_wasm get-arg0 f64.from_if64 arg0 call.wasm return)
+  (call_interface get-arg0 if64.from_f64 arg0 call.interface return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (param $p char)))))
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_char arg0 call.wasm return)
+  (call_interface get-arg0 char.from_i32 arg0 call.interface return)
+)
+
+;; handle argument
+(assert_abi
+  (witx
+    (typename $y (handle))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32))
+  (call_wasm get-arg0 i32.from_handle arg0 call.wasm return)
+  (call_interface get-arg0 handle.from_i32 arg0 call.interface return)
+)
+
+;; record arguments
+(assert_abi
+  (witx
+    (typename $y (record))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm)
+  (call_wasm get-arg0 record-lower arg0 call.wasm return)
+  (call_interface record-lift call.interface return)
+)
+
+(assert_abi
+  (witx
+    (typename $y (record (field $a u32)))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32))
+  (call_wasm
+    get-arg0
+    record-lower arg0
+    i32.from_u32 field.a
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    u32.from_i32 arg0
+    record-lift
+    call.interface
+    return)
+)
+(assert_abi
+  (witx
+    (typename $y (record
+      (field $a u32)
+      (field $b s64)
+    ))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32 i64))
+  (call_wasm
+    get-arg0
+    record-lower arg0
+    i32.from_u32 field.a
+    i64.from_s64 field.b
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    u32.from_i32 arg0
+    s64.from_i64 arg1
+    record-lift
+    call.interface
+    return)
+)
+(assert_abi
+  (witx
+    (typename $empty (record))
+    (typename $tuple (tuple f64 u32))
+    (typename $y (record
+      (field $a u32)
+      (field $b $empty)
+      (field $c $tuple)
+    ))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32 f64 i32))
+  (call_wasm
+    get-arg0
+    record-lower arg0
+    i32.from_u32 field.a
+    record-lower field.b
+    record-lower field.c
+    f64.from_if64 field.0
+    i32.from_u32 field.1
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    get-arg2
+    u32.from_i32 arg0
+    record-lift         ;; empty struct lift
+    if64.from_f64 arg1
+    u32.from_i32 arg2
+    record-lift         ;; tuple lift
+    record-lift         ;; final struct lift
+    call.interface
+    return)
+)
+
+;; variant arguments
+(assert_abi
+  (witx
+    (typename $y (enum $a $b))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32))
+  (call_wasm
+    get-arg0
+    block.push
+      i32.const 0
+    block.finish
+    block.push
+      i32.const 1
+    block.finish
+    variant-lower arg0
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    block.push
+    block.finish
+    block.push
+    block.finish
+    variant-lift arg0
+    call.interface
+    return)
+)
+
+(assert_abi
+  (witx
+    (typename $y (union u32 f32))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    block.push
+      i32.const 0
+      variant-payload
+      i32.from_u32
+    block.finish
+    block.push
+      i32.const 1
+      variant-payload
+      f32.from_if32
+      f32-to-i32
+    block.finish
+    variant-lower arg0
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    block.push
+      u32.from_i32 arg1
+    block.finish
+    block.push
+      i32-to-f32 arg1
+      if32.from_f32
+    block.finish
+    variant-lift arg0
+    call.interface
+    return)
+)
+
+(assert_abi
+  (witx
+    (typename $y (variant (case $none) (case $some f64)))
+    (module $x (export "f" (func (param $p $y))))
+  )
+  (wasm (param i32 f64))
+  (call_wasm
+    get-arg0
+    block.push
+      i32.const 0
+      f64.const 0
+    block.finish
+    block.push
+      i32.const 1
+      variant-payload
+      f64.from_if64
+    block.finish
+    variant-lower arg0
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    block.push
+    block.finish
+    block.push
+      if64.from_f64 arg1
+    block.finish
+    variant-lift arg0
+    call.interface
+    return)
+)
+
+;; list arguments
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $p (list u8)))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    list.pointer_length arg0
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    list.from_pointer_length arg0 arg1
+    call.interface
+    return)
+)
+
+;; flavorful parameters
+(assert_abi
+  (witx
+    (typename $a (union (list u8) f32))
+    (typename $b (tuple f64 bool))
+    (typename $c (record
+      (field $a $a)
+      (field $b $b)
+    ))
+
+    (typename $d (tuple f32 f64))
+    (typename $e (variant
+      (case $a)
+      (case $b $d)
+      (case $c)
+    ))
+    (module $x (export "f" (func
+      (param $p1 $c)
+      (param $p2 s32)
+      (param $p3 $e)
+    )))
+  )
+  (wasm (param i32 i32 i32 f64 i32 i32 i32 f32 f64))
+  (call_wasm
+    get-arg0
+    get-arg1
+    get-arg2
+
+    ;; conversion of $p1
+    record-lower arg0
+      ;; conversion of $c.a
+      block.push
+        i32.const 0
+        variant-payload
+        list.pointer_length
+      block.finish
+      block.push
+        i32.const 1
+        variant-payload
+        f32.from_if32
+        f32-to-i32
+        i32.const 0
+      block.finish
+      variant-lower field.a
+
+      ;; conversion of $c.b
+      record-lower field.b
+      f64.from_if64 field.0
+      block.push
+        i32.const 0
+      block.finish
+      block.push
+        i32.const 1
+      block.finish
+      variant-lower field.1
+
+    ;; conversion of $p2
+    i32.from_s32 arg1
+
+    ;; conversion of $p3
+    block.push
+      i32.const 0
+      f32.const 0
+      f64.const 0
+    block.finish
+    block.push
+      i32.const 1
+      variant-payload
+      record-lower
+      f32.from_if32 field.0
+      f64.from_if64 field.1
+    block.finish
+    block.push
+      i32.const 2
+      f32.const 0
+      f64.const 0
+    block.finish
+    variant-lower arg2
+    call.wasm
+    return)
+
+  (call_interface
+    get-arg0
+    get-arg1
+    get-arg2
+    get-arg3
+    get-arg4
+    get-arg5
+    get-arg6
+    get-arg7
+    get-arg8
+
+    ;; decoding p1
+      ;; decode $a
+      block.push
+        list.from_pointer_length arg1 arg2
+      block.finish
+      block.push
+        i32-to-f32 arg1
+        if32.from_f32
+      block.finish
+      variant-lift arg0   ;; lift into $a
+
+      if64.from_f64 arg3  ;; decode $b field 0
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift arg4   ;; decode $b field 1's boolean
+      record-lift         ;; lift into $b
+
+      record-lift         ;; lift into $c
+
+    ;; decoding $p2
+    s32.from_i32 arg5
+
+    ;; decoding $p3
+    block.push
+    block.finish
+    block.push
+      if32.from_f32 arg7
+      if64.from_f64 arg8
+      record-lift         ;; lift into $d
+    block.finish
+    block.push
+    block.finish
+    variant-lift arg6     ;; lift into $e
+
+    call.interface
+
+    return)
+)
+
+;; scalar results
+(assert_abi
+  (witx (module $x (export "f" (func (result $p u8)))))
+  (wasm (result i32))
+  (call_wasm call.wasm u8.from_i32 ret0 return)
+  (call_interface call.interface i32.from_u8 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p s8)))))
+  (wasm (result i32))
+  (call_wasm call.wasm s8.from_i32 ret0 return)
+  (call_interface call.interface i32.from_s8 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p u16)))))
+  (wasm (result i32))
+  (call_wasm call.wasm u16.from_i32 ret0 return)
+  (call_interface call.interface i32.from_u16 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p s16)))))
+  (wasm (result i32))
+  (call_wasm call.wasm s16.from_i32 ret0 return)
+  (call_interface call.interface i32.from_s16 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p u32)))))
+  (wasm (result i32))
+  (call_wasm call.wasm u32.from_i32 ret0 return)
+  (call_interface call.interface i32.from_u32 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p s32)))))
+  (wasm (result i32))
+  (call_wasm call.wasm s32.from_i32 ret0 return)
+  (call_interface call.interface i32.from_s32 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p u64)))))
+  (wasm (result i64))
+  (call_wasm call.wasm u64.from_i64 ret0 return)
+  (call_interface call.interface i64.from_u64 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p s64)))))
+  (wasm (result i64))
+  (call_wasm call.wasm s64.from_i64 ret0 return)
+  (call_interface call.interface i64.from_s64 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p f32)))))
+  (wasm (result f32))
+  (call_wasm call.wasm if32.from_f32 ret0 return)
+  (call_interface call.interface f32.from_if32 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p f64)))))
+  (wasm (result f64))
+  (call_wasm call.wasm if64.from_f64 ret0 return)
+  (call_interface call.interface f64.from_if64 ret0 return)
+)
+(assert_abi
+  (witx (module $x (export "f" (func (result $p char)))))
+  (wasm (result i32))
+  (call_wasm call.wasm char.from_i32 ret0 return)
+  (call_interface call.interface i32.from_char ret0 return)
+)
+
+;; handle result
+(assert_abi
+  (witx
+    (typename $y (handle))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm (result i32))
+  (call_wasm call.wasm handle.from_i32 ret0 return)
+  (call_interface call.interface i32.from_handle ret0 return)
+)
+
+;; record results
+(assert_abi
+  (witx
+    (typename $y (record))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm)
+  (call_wasm call.wasm record-lift return)
+  (call_interface call.interface record-lower ret0 return)
+)
+(assert_abi
+  (witx
+    (typename $y (record (field $a s32)))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm (result i32))
+  (call_wasm call.wasm s32.from_i32 ret0 record-lift return)
+  (call_interface
+    call.interface
+    record-lower ret0
+    i32.from_s32 field.a
+    return)
+)
+(assert_abi
+  (witx
+    (typename $y (record (field $a s32) (field $b u32)))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm (param i32))
+  (call_wasm
+    call.wasm rp0
+    i32.load offset=0 rp0
+    i32.load offset=8 rp0
+    s32.from_i32
+    u32.from_i32
+    record-lift return)
+  (call_interface
+    call.interface
+    record-lower ret0
+    i32.from_s32 field.a
+    i32.from_u32 field.b
+    get-arg0
+    i32.store offset=8 arg0
+    i32.store offset=0 arg0
+    return)
+)
+
+;; variant results
+(assert_abi
+  (witx
+    (typename $y (enum $a $b))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm (result i32))
+  (call_wasm
+    call.wasm
+      block.push
+      block.finish
+      block.push
+      block.finish
+    variant-lift ret0
+    return)
+  (call_interface
+    call.interface
+      block.push
+        i32.const 0
+      block.finish
+      block.push
+        i32.const 1
+      block.finish
+    variant-lower ret0
+    return)
+)
+
+(assert_abi
+  (witx
+    (typename $y (variant (case $a f32) (case $b)))
+    (module $x (export "f" (func (result $p $y))))
+  )
+  (wasm (param i32))
+  (call_wasm
+    call.wasm rp0
+    i32.load offset=0 rp0
+    f32.load offset=8 rp0
+      block.push
+        if32.from_f32
+      block.finish
+      block.push
+      block.finish
+    variant-lift
+    return)
+  (call_interface
+    call.interface
+      block.push
+        i32.const 0
+        variant-payload
+        f32.from_if32
+      block.finish
+      block.push
+        i32.const 1
+        f32.const 0
+      block.finish
+    variant-lower ret0
+    get-arg0
+    f32.store offset=8 arg0
+    i32.store offset=0 arg0
+    return)
+)
+
+;; multiple results
+(assert_abi
+  (witx
+    (module $x (export "f" (func (result $a s32) (result $b f64) (result $c bool))))
+  )
+  (wasm (param i32))
+  (call_wasm
+    call.wasm rp0
+    i32.load offset=0 rp0
+    f64.load offset=8 rp0
+    i32.load offset=16 rp0
+
+    s32.from_i32
+    if64.from_f64
+    block.push
+    block.finish
+    block.push
+    block.finish
+    variant-lift
+    return
+  )
+  (call_interface
+    call.interface
+    i32.from_s32 ret0
+    f64.from_if64 ret1
+    block.push
+      i32.const 0
+    block.finish
+    block.push
+      i32.const 1
+    block.finish
+    variant-lower ret2
+
+    get-arg0
+
+    i32.store offset=16 arg0
+    f64.store offset=8 arg0
+    i32.store offset=0 arg0
+    return
+  )
+)
+
+;; invalid
+(assert_invalid
+  (witx (module $x (export "f" (func (result $x (@witx char8))))))
+  "cannot use `(@witx char8)"
+)
+(assert_invalid
+  (witx (module $x (export "f" (func (result $x (@witx pointer u8))))))
+  "cannot use `(@witx pointer)"
+)
+(assert_invalid
+  (witx (module $x (export "f" (func (result $x (@witx const_pointer u8))))))
+  "cannot use `(@witx const_pointer)"
+)

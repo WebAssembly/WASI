@@ -5,7 +5,7 @@ use crate::{
         HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TupleSyntax, TypedefSyntax,
         UnionSyntax, VariantSyntax,
     },
-    Abi, BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
+    BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
     InterfaceFunc, InterfaceFuncParam, Location, Module, ModuleDefinition, ModuleEntry,
     ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordKind, RecordMember, Type,
     TypeRef, Variant,
@@ -57,6 +57,8 @@ pub enum ValidationError {
         reason: String,
         location: Location,
     },
+    #[error("Variant has zero cases")]
+    ZeroCaseVariant { location: Location },
 }
 
 impl ValidationError {
@@ -70,6 +72,7 @@ impl ValidationError {
             | Abi { location, .. }
             | AnonymousRecord { location, .. }
             | UnionSizeMismatch { location, .. }
+            | ZeroCaseVariant { location }
             | InvalidUnionField { location, .. }
             | InvalidUnionTag { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
@@ -503,6 +506,11 @@ impl DocValidationScope<'_> {
         syntax: &VariantSyntax,
         span: wast::Span,
     ) -> Result<Variant, ValidationError> {
+        if syntax.cases.len() == 0 {
+            return Err(ValidationError::ZeroCaseVariant {
+                location: self.location(span),
+            });
+        }
         let (tag_repr, names) = self.union_tag_repr(&syntax.tag, span)?;
 
         if let Some(names) = &names {
@@ -659,7 +667,7 @@ impl<'a> ModuleValidation<'a> {
                     .insert(name, ModuleEntry::Import(Rc::downgrade(&rc_import)));
                 Ok(ModuleDefinition::Import(rc_import))
             }
-            ModuleDeclSyntax::Func(syntax) => {
+            ModuleDeclSyntax::Export(syntax) => {
                 let loc = self.doc.location(syntax.export_loc);
                 let name = self.scope.introduce(syntax.export, loc)?;
                 let mut argnames = IdentValidation::new();
@@ -699,14 +707,15 @@ impl<'a> ModuleValidation<'a> {
                     })
                     .collect::<Result<Vec<_>, _>>()?;
                 let noreturn = syntax.noreturn;
-                let abi = Abi::Preview1;
-                abi.validate(&params, &results)
+                syntax
+                    .abi
+                    .validate(&params, &results)
                     .map_err(|reason| ValidationError::Abi {
                         reason,
                         location: self.doc.location(syntax.export_loc),
                     })?;
                 let rc_func = Rc::new(InterfaceFunc {
-                    abi,
+                    abi: syntax.abi,
                     name: name.clone(),
                     params,
                     results,
