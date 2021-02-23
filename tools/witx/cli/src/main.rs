@@ -92,7 +92,7 @@ pub fn main() {
                 if diff_against_filesystem(&doc.to_md(), &output).is_err() {
                     println!("Docs in tree are out-of-date with witx files. Re-run this executable with the following arguments to to re-generate:");
                     println!(
-                        "docs {} --output {}",
+                        "> witx docs {} --output {}",
                         input
                             .iter()
                             .map(|p| p.to_string_lossy().into_owned())
