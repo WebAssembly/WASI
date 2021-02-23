@@ -21,9 +21,17 @@ jobs:
       if: matrix.os == 'macos-latest'
     - run: cargo fetch
       working-directory: tools/witx
-    - run: cargo build
+    - run: cargo build --all
       working-directory: tools/witx
     - run: cargo test
+      working-directory: tools/witx
+
+    - name: Check that docs reflect witx (Snapshot 1)
+      run: cargo run -p witx-cli -- docs --check ../../phases/snapshot/witx/wasi_snapshot_preview1.witx --output ../../phases/snapshot/docs.md
+      working-directory: tools/witx
+
+    - name: Check that docs reflect witx (Snapshot 0)
+      run: cargo run -p witx-cli -- docs --check ../../phases/old/snapshot_0/witx/wasi_unstable.witx --output ../../phases/old/snapshot_0/docs.md
       working-directory: tools/witx
 
   rustfmt:
