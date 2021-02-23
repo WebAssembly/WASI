@@ -10,8 +10,6 @@ mod io;
 mod layout;
 /// Witx syntax parsing from SExprs
 pub mod parser;
-/// Paths to witx documents for various proposal phases
-pub mod phases;
 /// Calculate required polyfill between interfaces
 pub mod polyfill;
 /// Render ast to text
