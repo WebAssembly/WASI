@@ -7,32 +7,16 @@ set -ueo pipefail
 # Command-line parsing; this script is meant to be run from a higher-level
 # script, so don't do anything fancy.
 runwasi="$1"
-compiler="$2"
-options="$3"
-input="$4"
+input="$2"
 
 # Compile names for generated files.
-wasm="$input.$options.wasm"
-stdout_observed="$input.$options.stdout.observed"
-stderr_observed="$input.$options.stderr.observed"
-exit_status_observed="$input.$options.exit_status.observed"
-
-# Optionally load compiler options from a file.
-if [ -e "$input.options" ]; then
-    file_options=$(cat "$input.options")
-else
-    file_options=
-fi
+wasm="$input"
+stdout_observed="$input.stdout.observed"
+stderr_observed="$input.stderr.observed"
+exit_status_observed="$input.exit_status.observed"
+tooldir=$(dirname $0)
 
 echo "Testing $input..."
-
-# Compile the testcase.
-$compiler $options $file_options "$input" -o "$wasm"
-
-# If we don't have a runwasi command, we're just doing compile-only testing.
-if [ "$runwasi" == "" ]; then
-    exit 0
-fi
 
 # Determine the input file to write to stdin.
 if [ -e "$input.stdin" ]; then
@@ -94,9 +78,9 @@ else
   stderr_expected="/dev/null"
 fi
 if [ -e "$input.exit_status.expected" ]; then
-  exit_status_expected="$input.exit_status.expected"
+  exit_status_expected="$tooldir/$input.exit_status.expected"
 else
-  exit_status_expected=../exit_status_zero
+  exit_status_expected="$tooldir/exit_status_zero"
 fi
 
 # If there are any differences, diff will return a non-zero exit status, and
