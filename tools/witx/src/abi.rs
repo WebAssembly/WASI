@@ -170,9 +170,50 @@ def_instruction! {
         I32FromChar8 : [1] => [1],
         /// Converts a language-specific handle value to a wasm `i32`.
         I32FromHandle { ty: &'a NamedType } : [1] => [1],
-        /// Converts an interface type list into its pointer/length, pushing
-        /// them both on the stack.
-        ListPointerLength : [1] => [2],
+        /// Lowers a list whose elements can be directly copied and interpreted
+        /// with no validation whatsoever.
+        ///
+        /// Pops a list value from the stack and pushes the pointer/length onto
+        /// the stack. Note that this consumes the list and the list must be an
+        /// owned allocation.
+        ListCanonLower { element: &'a TypeRef } : [1] => [2],
+        /// Lowers a list whose elements are copied one-by-one into a new list.
+        ///
+        /// Pops a list value from the stack and pushes the pointer/length onto
+        /// the stack. Note that this consumes the list as an owned allocation
+        /// and must produce an owned allocation.
+        ///
+        /// This operation also pops a block from the block stack which is used
+        /// as the iteration body of writing each element of the list consumed.
+        ListLower { element: &'a TypeRef } : [1] => [2],
+        /// Lifts a list which has a canonical representation into an interface
+        /// types value.
+        ///
+        /// This will consume two `i32` values from the stack, a pointer and a
+        /// length, and then produces an interface value list. Note that the
+        /// pointer/length popped are **owned** and need to be deallocated when
+        /// the interface type is dropped.
+        ListCanonLift { element: &'a TypeRef } : [2] => [1],
+        /// Lifts a list which into an interface types value.
+        ///
+        /// This will consume two `i32` values from the stack, a pointer and a
+        /// length, and then produces an interface value list. Note that the
+        /// pointer/length popped are **owned** and need to be deallocated when
+        /// the interface type is dropped.
+        ///
+        /// This will also pop a block from the block stack which is how to
+        /// read each individual element from the list.
+        ListLift { element: &'a TypeRef } : [2] => [1],
+        /// Pushes an operand onto the stack representing the list item from
+        /// each iteration of the list.
+        ///
+        /// This is only used inside of blocks related to lowering lists.
+        IterElem : [0] => [1],
+        /// Pushes an operand onto the stack representing the base pointer of
+        /// the next element in a list.
+        ///
+        /// This is sused for both lifting and lowering lists.
+        IterBasePointer : [0] => [1],
         /// Conversion an interface type `f32` value to a wasm `f32`.
         ///
         /// This may be a noop for some implementations, but it's here in case the
@@ -281,6 +322,22 @@ def_instruction! {
         /// Pops an `i32` from the stack and loads a little-endian `i32` from
         /// it, using the specified constant offset.
         I32Load { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `i8` from
+        /// it, using the specified constant offset. The value loaded is the
+        /// zero-extended to 32-bits
+        I32Load8U { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `i8` from
+        /// it, using the specified constant offset. The value loaded is the
+        /// sign-extended to 32-bits
+        I32Load8S { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `i16` from
+        /// it, using the specified constant offset. The value loaded is the
+        /// zero-extended to 32-bits
+        I32Load16U { offset: i32 } : [1] => [1],
+        /// Pops an `i32` from the stack and loads a little-endian `i16` from
+        /// it, using the specified constant offset. The value loaded is the
+        /// sign-extended to 32-bits
+        I32Load16S { offset: i32 } : [1] => [1],
         /// Pops an `i32` from the stack and loads a little-endian `i64` from
         /// it, using the specified constant offset.
         I64Load { offset: i32 } : [1] => [1],
@@ -290,10 +347,19 @@ def_instruction! {
         /// Pops an `i32` from the stack and loads a little-endian `f64` from
         /// it, using the specified constant offset.
         F64Load { offset: i32 } : [1] => [1],
+
         /// Pops an `i32` address from the stack and then an `i32` value.
         /// Stores the value in little-endian at the pointer specified plus the
         /// constant `offset`.
         I32Store { offset: i32 } : [2] => [0],
+        /// Pops an `i32` address from the stack and then an `i32` value.
+        /// Stores the low 8 bits of the value in little-endian at the pointer
+        /// specified plus the constant `offset`.
+        I32Store8 { offset: i32 } : [2] => [0],
+        /// Pops an `i32` address from the stack and then an `i32` value.
+        /// Stores the low 16 bits of the value in little-endian at the pointer
+        /// specified plus the constant `offset`.
+        I32Store16 { offset: i32 } : [2] => [0],
         /// Pops an `i32` address from the stack and then an `i64` value.
         /// Stores the value in little-endian at the pointer specified plus the
         /// constant `offset`.
@@ -353,6 +419,8 @@ def_instruction! {
         /// memory to the start of the list and the second operand is the
         /// length.
         ListFromPointerLength { ty: &'a TypeRef } : [2] => [1],
+        /// Pushes the pointer/length of a list as two `i32` parameters.
+        ListPointerLength : [1] => [2],
 
         /// Converts a native wasm `i32` to a language-specific pointer.
         PointerFromI32 { ty: &'a TypeRef }: [1] => [1],
@@ -992,7 +1060,22 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     _ => unreachable!(),
                 },
             }),
-            Type::List(_) => self.emit(&ListPointerLength),
+            Type::List(element) => match self.abi {
+                Abi::Preview1 => self.witx(&ListPointerLength),
+                Abi::Next => {
+                    if type_all_bits_valid(element.type_()) {
+                        self.emit(&ListCanonLower { element });
+                    } else {
+                        self.bindgen.push_block();
+                        self.emit(&IterElem);
+                        self.emit(&IterBasePointer);
+                        let addr = self.stack.pop().unwrap();
+                        self.write_to_memory(element, addr, 0);
+                        self.finish_block(0);
+                        self.emit(&ListLower { element });
+                    }
+                }
+            },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
                     let ty = match ty {
@@ -1218,7 +1301,21 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     _ => unreachable!(),
                 },
             }),
-            Type::List(ty) => self.witx(&ListFromPointerLength { ty }),
+            Type::List(element) => match self.abi {
+                Abi::Preview1 => self.witx(&ListFromPointerLength { ty: element }),
+                Abi::Next => {
+                    if type_all_bits_valid(element.type_()) {
+                        self.emit(&ListCanonLift { element });
+                    } else {
+                        self.bindgen.push_block();
+                        self.emit(&IterBasePointer);
+                        let addr = self.stack.pop().unwrap();
+                        self.read_from_memory(element, addr, 0);
+                        self.finish_block(1);
+                        self.emit(&ListLift { element });
+                    }
+                }
+            },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
                     let ty = match ty {
@@ -1347,6 +1444,160 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             }
         }
     }
+
+    fn write_to_memory(&mut self, ty: &TypeRef, addr: B::Operand, offset: i32) {
+        use Instruction::*;
+
+        match &**ty.type_() {
+            // Builtin types need different flavors of storage instructions
+            // depending on the size of the value written.
+            Type::Builtin(b) => {
+                self.lower(ty, None);
+                self.stack.push(addr);
+                match b {
+                    BuiltinType::S8 | BuiltinType::U8 { .. } => self.emit(&I32Store8 { offset }),
+                    BuiltinType::S16 | BuiltinType::U16 => self.emit(&I32Store16 { offset }),
+                    BuiltinType::S32 | BuiltinType::U32 { .. } | BuiltinType::Char => {
+                        self.emit(&I32Store { offset })
+                    }
+                    BuiltinType::S64 | BuiltinType::U64 => self.emit(&I64Store { offset }),
+                    BuiltinType::F32 => self.emit(&F32Store { offset }),
+                    BuiltinType::F64 => self.emit(&F64Store { offset }),
+                }
+            }
+
+            // Lowering all these types produces an `i32` which we can easily
+            // store into memory.
+            Type::Pointer(_) | Type::ConstPointer(_) | Type::Handle(_) => {
+                self.lower(ty, None);
+                self.stack.push(addr);
+                self.emit(&I32Store { offset })
+            }
+
+            // After lowering the list there's two i32 values on the stack
+            // which we write into memory, writing the pointer into the low address
+            // and the length into the high address.
+            Type::List(_) => {
+                self.lower(ty, None);
+                self.stack.push(addr.clone());
+                self.emit(&I32Store { offset: offset + 4 });
+                self.stack.push(addr);
+                self.emit(&I32Store { offset });
+            }
+
+            // Decompose the record into its components and then write all the
+            // components into memory one-by-one.
+            Type::Record(r) => {
+                self.emit(&RecordLower { ty: r });
+                let fields = self
+                    .stack
+                    .drain(self.stack.len() - r.members.len()..)
+                    .collect::<Vec<_>>();
+                for (layout, field) in r.member_layout().iter().zip(fields) {
+                    self.stack.push(field);
+                    self.write_to_memory(
+                        &layout.member.tref,
+                        addr.clone(),
+                        offset + (layout.offset as i32),
+                    );
+                }
+            }
+
+            // Each case will get its own block, and the first item in each
+            // case is writing the discriminant. After that if we have a
+            // payload we write the payload after the discriminant, aligned up
+            // to the type's alignment.
+            Type::Variant(v) => {
+                let payload_offset = offset + (v.payload_offset() as i32);
+                for (i, case) in v.cases.iter().enumerate() {
+                    self.bindgen.push_block();
+                    self.emit(&I32Const { val: i as i32 });
+                    self.stack.push(addr.clone());
+                    self.emit(&I32Store { offset });
+                    if let Some(ty) = &case.tref {
+                        self.emit(&VariantPayload);
+                        self.write_to_memory(ty, addr.clone(), payload_offset);
+                    }
+                    self.finish_block(0);
+                }
+                self.emit(&VariantLower { ty: v, nresults: 0 });
+            }
+        }
+    }
+
+    fn read_from_memory(&mut self, ty: &TypeRef, addr: B::Operand, offset: i32) {
+        use Instruction::*;
+
+        match &**ty.type_() {
+            // Builtin types need different flavors of load instructions
+            // depending on the size of the value written, but then they're all
+            // lifted the same way.
+            Type::Builtin(b) => {
+                self.stack.push(addr);
+                match b {
+                    BuiltinType::S8 => self.emit(&I32Load8S { offset }),
+                    BuiltinType::U8 { .. } => self.emit(&I32Load8U { offset }),
+                    BuiltinType::S16 => self.emit(&I32Load16S { offset }),
+                    BuiltinType::U16 => self.emit(&I32Load16U { offset }),
+                    BuiltinType::S32 | BuiltinType::U32 { .. } | BuiltinType::Char => {
+                        self.emit(&I32Load { offset })
+                    }
+                    BuiltinType::S64 | BuiltinType::U64 => self.emit(&I64Load { offset }),
+                    BuiltinType::F32 => self.emit(&F32Load { offset }),
+                    BuiltinType::F64 => self.emit(&F64Load { offset }),
+                }
+                self.lift(ty, false);
+            }
+
+            // These types are all easily lifted from an `i32`
+            Type::Pointer(_) | Type::ConstPointer(_) | Type::Handle(_) => {
+                self.stack.push(addr);
+                self.emit(&I32Load { offset });
+                self.lift(ty, false);
+            }
+
+            // Read the pointer/len and then perform the standard lifting
+            // proceses.
+            Type::List(_) => {
+                self.stack.push(addr.clone());
+                self.emit(&I32Load { offset });
+                self.stack.push(addr);
+                self.emit(&I32Load { offset: offset + 4 });
+                self.lift(ty, false);
+            }
+
+            // Read and lift each field individually, adjusting the offset
+            // as we go along, then aggregate all the fields into the record.
+            Type::Record(r) => {
+                for layout in r.member_layout() {
+                    self.read_from_memory(
+                        &layout.member.tref,
+                        addr.clone(),
+                        offset + (layout.offset as i32),
+                    );
+                }
+                self.emit(&RecordLift { ty: r });
+            }
+
+            // Each case will get its own block, and we'll dispatch to the
+            // right block based on the `i32.load` we initially perform. Each
+            // individual block is pretty simple and just reads the payload type
+            // from the corresponding offset if one is available.
+            Type::Variant(v) => {
+                self.stack.push(addr.clone());
+                self.emit(&I32Load { offset });
+                let payload_offset = offset + (v.payload_offset() as i32);
+                for case in v.cases.iter() {
+                    self.bindgen.push_block();
+                    if let Some(ty) = &case.tref {
+                        self.read_from_memory(ty, addr.clone(), payload_offset);
+                    }
+                    self.finish_block(case.tref.is_some() as usize);
+                }
+                self.emit(&VariantLift { ty: v });
+            }
+        }
+    }
 }
 
 fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
@@ -1441,5 +1692,31 @@ fn cast(from: WasmType, to: WasmType) -> Bitcast {
         (I64, F64) => Bitcast::I64ToF64,
 
         (F32, I64) | (I64, F32) | (F64, I32) | (I32, F64) => unreachable!(),
+    }
+}
+
+fn type_all_bits_valid(ty: &Type) -> bool {
+    match ty {
+        Type::Record(r) => r
+            .members
+            .iter()
+            .all(|t| type_all_bits_valid(t.tref.type_())),
+
+        Type::Builtin(BuiltinType::Char) | Type::Variant(_) | Type::Handle(_) | Type::List(_) => {
+            false
+        }
+
+        Type::Builtin(BuiltinType::U8 { .. })
+        | Type::Builtin(BuiltinType::S8)
+        | Type::Builtin(BuiltinType::U16)
+        | Type::Builtin(BuiltinType::S16)
+        | Type::Builtin(BuiltinType::U32 { .. })
+        | Type::Builtin(BuiltinType::S32)
+        | Type::Builtin(BuiltinType::U64)
+        | Type::Builtin(BuiltinType::S64)
+        | Type::Builtin(BuiltinType::F32)
+        | Type::Builtin(BuiltinType::F64)
+        | Type::Pointer(_)
+        | Type::ConstPointer(_) => true,
     }
 }
