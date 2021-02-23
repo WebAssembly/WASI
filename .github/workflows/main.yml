@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Test
+    name: Test witx tools
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -21,17 +21,36 @@ jobs:
       if: matrix.os == 'macos-latest'
     - run: cargo fetch
       working-directory: tools/witx
-    - run: cargo build --all
+    - run: cargo test --all
       working-directory: tools/witx
-    - run: cargo test
+
+  validate:
+    name: Validate witx files and docs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Rust (rustup)
+      shell: bash
+      run: rustup update stable --no-self-update && rustup default stable
+      if: matrix.os != 'macos-latest'
+
+    - name: Install Rust (macos)
+      run: |
+        curl https://sh.rustup.rs | sh -s -- -y
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      if: matrix.os == 'macos-latest'
+      # Install witx cli tool
+    - run: cargo install -path cli
       working-directory: tools/witx
 
     - name: Check that docs reflect witx (Snapshot 1)
-      run: cargo run -p witx-cli -- docs --check ../../phases/snapshot/witx/wasi_snapshot_preview1.witx --output ../../phases/snapshot/docs.md
+      run: witx docs --check ../../phases/snapshot/witx/wasi_snapshot_preview1.witx --output ../../phases/snapshot/docs.md
       working-directory: tools/witx
-
     - name: Check that docs reflect witx (Snapshot 0)
-      run: cargo run -p witx-cli -- docs --check ../../phases/old/snapshot_0/witx/wasi_unstable.witx --output ../../phases/old/snapshot_0/docs.md
+      run: witx docs --check ../../phases/old/snapshot_0/witx/wasi_unstable.witx --output ../../phases/old/snapshot_0/docs.md
       working-directory: tools/witx
 
   rustfmt:
