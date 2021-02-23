@@ -282,13 +282,13 @@
   (wasm (param i32 i32))
   (call_wasm
     get-arg0
-    list.pointer_length arg0
+    list.canon_lower arg0
     call.wasm
     return)
   (call_interface
     get-arg0
     get-arg1
-    list.from_pointer_length arg0 arg1
+    list.canon_lift arg0 arg1
     call.interface
     return)
 )
@@ -327,7 +327,7 @@
       block.push
         i32.const 0
         variant-payload
-        list.pointer_length
+        list.canon_lower
       block.finish
       block.push
         i32.const 1
@@ -388,7 +388,7 @@
     ;; decoding p1
       ;; decode $a
       block.push
-        list.from_pointer_length arg1 arg2
+        list.canon_lift arg1 arg2
       block.finish
       block.push
         i32-to-f32 arg1
@@ -668,4 +668,116 @@
 (assert_invalid
   (witx (module $x (export "f" (func (result $x (@witx const_pointer u8))))))
   "cannot use `(@witx const_pointer)"
+)
+
+;; fancy list parameters
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $a (list (tuple u32 u32))))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    list.canon_lower arg0
+    call.wasm
+    return
+  )
+  (call_interface
+    get-arg0
+    get-arg1
+    list.canon_lift arg0 arg1
+    call.interface
+    return
+  )
+)
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $a (list bool)))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    block.push
+      iter-elem
+      iter-base-pointer
+      block.push
+        i32.const 0
+        i32.store offset=0
+      block.finish
+      block.push
+        i32.const 1
+        i32.store offset=0
+      block.finish
+      variant-lower
+    block.finish
+    list.lower arg0
+    call.wasm
+    return
+  )
+  (call_interface
+    get-arg0
+    get-arg1
+    block.push
+      iter-base-pointer
+      i32.load offset=0
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift
+    block.finish
+    list.lift arg0 arg1
+    call.interface
+    return
+  )
+)
+(assert_abi
+  (witx
+    (typename $a (record (field $x bool) (field $y (list u8))))
+    (module $x (export "f" (func (param $a (list $a)))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    block.push
+      iter-elem
+      iter-base-pointer
+      record-lower
+      block.push
+        i32.const 0
+        i32.store offset=0
+      block.finish
+      block.push
+        i32.const 1
+        i32.store offset=0
+      block.finish
+      variant-lower field.x
+      list.canon_lower field.y
+      i32.store offset=8
+      i32.store offset=4
+    block.finish
+    list.lower arg0
+    call.wasm
+    return
+  )
+  (call_interface
+    get-arg0
+    get-arg1
+    block.push
+      iter-base-pointer
+      i32.load offset=0
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift
+      i32.load offset=4
+      i32.load offset=8
+      list.canon_lift
+      record-lift
+    block.finish
+    list.lift arg0 arg1
+    call.interface
+    return
+  )
 )

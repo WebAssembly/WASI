@@ -379,7 +379,6 @@ impl witx::Bindgen for AbiBindgen<'_> {
             I32FromHandle { .. } => self.assert("i32.from_handle"),
             F32FromIf32 => self.assert("f32.from_if32"),
             F64FromIf64 => self.assert("f64.from_if64"),
-            ListPointerLength => self.assert("list.pointer_length"),
             CallWasm {
                 results: call_results,
                 ..
@@ -453,13 +452,27 @@ impl witx::Bindgen for AbiBindgen<'_> {
                 }
             }
             I32Load { offset } => self.assert_mem("i32.load", *offset),
+            I32Load8U { offset } => self.assert_mem("i32.load8u", *offset),
+            I32Load8S { offset } => self.assert_mem("i32.load8s", *offset),
+            I32Load16U { offset } => self.assert_mem("i32.load16u", *offset),
+            I32Load16S { offset } => self.assert_mem("i32.load16s", *offset),
             I64Load { offset } => self.assert_mem("i64.load", *offset),
             F32Load { offset } => self.assert_mem("f32.load", *offset),
             F64Load { offset } => self.assert_mem("f64.load", *offset),
             I32Store { offset } => self.assert_mem("i32.store", *offset),
+            I32Store8 { offset } => self.assert_mem("i32.store8", *offset),
+            I32Store16 { offset } => self.assert_mem("i32.store16", *offset),
             I64Store { offset } => self.assert_mem("i64.store", *offset),
             F32Store { offset } => self.assert_mem("f32.store", *offset),
             F64Store { offset } => self.assert_mem("f64.store", *offset),
+
+            ListCanonLower { .. } => self.assert("list.canon_lower"),
+            ListLower { .. } => self.assert("list.lower"),
+            ListCanonLift { .. } => self.assert("list.canon_lift"),
+            ListLift { .. } => self.assert("list.lift"),
+            IterElem => self.assert("iter-elem"),
+            IterBasePointer => self.assert("iter-base-pointer"),
+
             Witx { instr } => match instr {
                 I32FromBitflags { .. } => self.assert("i32.from_bitflags"),
                 BitflagsFromI32 { .. } => self.assert("bitflags.from_i32"),
@@ -475,6 +488,7 @@ impl witx::Bindgen for AbiBindgen<'_> {
                 TupleLower { .. } => self.assert("tuple.lower"),
                 ReuseReturn => self.assert("reuse_return"),
                 ListFromPointerLength { .. } => self.assert("list.from_pointer_length"),
+                ListPointerLength => self.assert("list.pointer_length"),
                 Load { .. } => self.assert("load"),
                 Store { .. } => self.assert("store"),
                 I32FromPointer => self.assert("i32.from_pointer"),
