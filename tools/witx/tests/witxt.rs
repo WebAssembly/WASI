@@ -411,7 +411,7 @@ impl witx::Bindgen for AbiBindgen<'_> {
             Return { .. } => self.assert("return"),
             VariantPayload => self.assert("variant-payload"),
             RecordLift { .. } => self.assert("record-lift"),
-            RecordLower { ty } => {
+            RecordLower { ty, .. } => {
                 self.assert("record-lower");
                 for member in ty.members.iter() {
                     results.push(Operand::Field(member.name.as_str().to_string()));
@@ -436,6 +436,8 @@ impl witx::Bindgen for AbiBindgen<'_> {
                         witx::Bitcast::F64ToF32 => self.assert("f64-to-f32"),
                         witx::Bitcast::I32ToF32 => self.assert("i32-to-f32"),
                         witx::Bitcast::I64ToF64 => self.assert("i64-to-f64"),
+                        witx::Bitcast::F32ToI64 => self.assert("f32-to-i64"),
+                        witx::Bitcast::I64ToF32 => self.assert("i64-to-f32"),
                     }
                     self.assert_op(&operand);
                 }

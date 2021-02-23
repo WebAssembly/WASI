@@ -292,6 +292,23 @@
     call.interface
     return)
 )
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $p (list char)))))
+  )
+  (wasm (param i32 i32))
+  (call_wasm
+    get-arg0
+    list.canon_lower arg0
+    call.wasm
+    return)
+  (call_interface
+    get-arg0
+    get-arg1
+    list.canon_lift arg0 arg1
+    call.interface
+    return)
+)
 
 ;; flavorful parameters
 (assert_abi

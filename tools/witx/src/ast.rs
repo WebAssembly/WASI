@@ -183,6 +183,13 @@ impl TypeRef {
         }
     }
 
+    pub fn name(&self) -> Option<&NamedType> {
+        match self {
+            TypeRef::Name(n) => Some(n),
+            TypeRef::Value(_) => None,
+        }
+    }
+
     pub fn named(&self) -> bool {
         match self {
             TypeRef::Name(_) => true,

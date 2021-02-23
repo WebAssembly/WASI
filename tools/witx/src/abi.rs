@@ -176,7 +176,10 @@ def_instruction! {
         /// Pops a list value from the stack and pushes the pointer/length onto
         /// the stack. Note that this consumes the list and the list must be an
         /// owned allocation.
-        ListCanonLower { element: &'a TypeRef } : [1] => [2],
+        ListCanonLower {
+            element: &'a TypeRef,
+            malloc: String,
+        } : [1] => [2],
         /// Lowers a list whose elements are copied one-by-one into a new list.
         ///
         /// Pops a list value from the stack and pushes the pointer/length onto
@@ -185,7 +188,10 @@ def_instruction! {
         ///
         /// This operation also pops a block from the block stack which is used
         /// as the iteration body of writing each element of the list consumed.
-        ListLower { element: &'a TypeRef } : [1] => [2],
+        ListLower {
+            element: &'a TypeRef,
+            malloc: String,
+        } : [1] => [2],
         /// Lifts a list which has a canonical representation into an interface
         /// types value.
         ///
@@ -193,7 +199,10 @@ def_instruction! {
         /// length, and then produces an interface value list. Note that the
         /// pointer/length popped are **owned** and need to be deallocated when
         /// the interface type is dropped.
-        ListCanonLift { element: &'a TypeRef } : [2] => [1],
+        ListCanonLift {
+            element: &'a TypeRef,
+            free: String,
+        } : [2] => [1],
         /// Lifts a list which into an interface types value.
         ///
         /// This will consume two `i32` values from the stack, a pointer and a
@@ -203,7 +212,10 @@ def_instruction! {
         ///
         /// This will also pop a block from the block stack which is how to
         /// read each individual element from the list.
-        ListLift { element: &'a TypeRef } : [2] => [1],
+        ListLift {
+            element: &'a TypeRef,
+            free: String,
+        } : [2] => [1],
         /// Pushes an operand onto the stack representing the list item from
         /// each iteration of the list.
         ///
@@ -289,10 +301,16 @@ def_instruction! {
 
         /// Pops a record value off the stack, decomposes the record to all of
         /// its fields, and then pushes the fields onto the stack.
-        RecordLower { ty: &'a RecordDatatype } : [1] => [ty.members.len()],
+        RecordLower {
+            ty: &'a RecordDatatype,
+            name: Option<&'a NamedType>,
+        } : [1] => [ty.members.len()],
         /// Pops all fields for a record off the stack and then composes them
         /// into a record.
-        RecordLift { ty: &'a RecordDatatype } : [ty.members.len()] => [1],
+        RecordLift {
+            ty: &'a RecordDatatype,
+            name: Option<&'a NamedType>,
+        } : [ty.members.len()] => [1],
 
         /// This is a special instruction used at the entry of blocks used as
         /// part of `ResultLower`, representing that the payload of that variant
@@ -304,13 +322,17 @@ def_instruction! {
         /// from the stack to produce `nresults` of items.
         VariantLower {
             ty: &'a Variant,
+            name: Option<&'a NamedType>,
             nresults: usize,
         } : [1] => [*nresults],
 
         /// Pops an `i32` off the stack as well as `ty.cases.len()` blocks
         /// from the code generator. Uses each of those blocks and the value
         /// from the stack to produce a final variant.
-        VariantLift { ty: &'a Variant } : [1] => [1],
+        VariantLift {
+            ty: &'a Variant,
+            name: Option<&'a NamedType>,
+        } : [1] => [1],
 
         /// Casts the top N items on the stack using the `Bitcast` enum
         /// provided. Consumes the same number of operands that this produces.
@@ -383,17 +405,19 @@ def_instruction! {
 
 #[derive(Debug, PartialEq)]
 pub enum Bitcast {
-    // Bitcasts
+    // Upcasts
     F32ToF64,
     F32ToI32,
     F64ToI64,
     I32ToI64,
+    F32ToI64,
 
-    // Bitcasts
+    // Downcasts
     F64ToF32,
     I32ToF32,
     I64ToF64,
     I64ToI32,
+    I64ToF32,
 
     None,
 }
@@ -1055,16 +1079,14 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Pointer(_) => self.witx(&I32FromPointer),
             Type::ConstPointer(_) => self.witx(&I32FromConstPointer),
             Type::Handle(_) => self.emit(&I32FromHandle {
-                ty: match ty {
-                    TypeRef::Name(ty) => ty,
-                    _ => unreachable!(),
-                },
+                ty: ty.name().unwrap(),
             }),
             Type::List(element) => match self.abi {
                 Abi::Preview1 => self.witx(&ListPointerLength),
                 Abi::Next => {
-                    if type_all_bits_valid(element.type_()) {
-                        self.emit(&ListCanonLower { element });
+                    let malloc = String::from("witx_malloc");
+                    if type_all_bits_valid(element) || is_char(element) {
+                        self.emit(&ListCanonLower { element, malloc });
                     } else {
                         self.bindgen.push_block();
                         self.emit(&IterElem);
@@ -1072,16 +1094,13 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         let addr = self.stack.pop().unwrap();
                         self.write_to_memory(element, addr, 0);
                         self.finish_block(0);
-                        self.emit(&ListLower { element });
+                        self.emit(&ListLower { element, malloc });
                     }
                 }
             },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
-                    let ty = match ty {
-                        TypeRef::Name(ty) => ty,
-                        _ => unreachable!(),
-                    };
+                    let ty = ty.name().unwrap();
                     match repr {
                         IntRepr::U64 => return self.witx(&I64FromBitflags { ty }),
                         _ => return self.witx(&I32FromBitflags { ty }),
@@ -1090,7 +1109,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 match self.abi {
                     Abi::Preview1 => self.witx(&AddrOf),
                     Abi::Next => {
-                        self.emit(&RecordLower { ty: r });
+                        self.emit(&RecordLower {
+                            ty: r,
+                            name: ty.name(),
+                        });
                         let fields = self
                             .stack
                             .drain(self.stack.len() - r.members.len()..)
@@ -1107,10 +1129,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // Enum-like variants are simply lowered to their discriminant.
                 if v.is_enum() {
                     return self.witx(&EnumLower {
-                        ty: match ty {
-                            TypeRef::Name(n) => n,
-                            _ => unreachable!(),
-                        },
+                        ty: ty.name().unwrap(),
                     });
                 }
 
@@ -1133,10 +1152,9 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     self.emit(&VariantPayload);
                     let store = |me: &mut Self, ty: &TypeRef, n| {
                         me.emit(&GetArg { nth: *retptr + n });
-                        match ty {
-                            TypeRef::Name(ty) => me.witx(&Store { ty }),
-                            _ => unreachable!(),
-                        }
+                        me.witx(&Store {
+                            ty: ty.name().unwrap(),
+                        });
                     };
                     match &**ok.type_() {
                         Type::Record(r) if r.is_tuple() => {
@@ -1213,6 +1231,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 self.emit(&VariantLower {
                     ty: v,
                     nresults: results.len(),
+                    name: ty.name(),
                 });
             }
         }
@@ -1240,10 +1259,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // Tuples have each individual item in a separate return pointer while
                 // all other types go through a singular return pointer.
                 let mut prep = |ty: &TypeRef| {
-                    let ptr = match ty {
-                        TypeRef::Name(ty) => self.bindgen.allocate_typed_space(ty),
-                        _ => unreachable!(),
-                    };
+                    let ptr = self.bindgen.allocate_typed_space(ty.name().unwrap());
                     self.return_pointers.push(ptr.clone());
                     self.stack.push(ptr);
                 };
@@ -1296,32 +1312,27 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Pointer(ty) => self.witx(&PointerFromI32 { ty }),
             Type::ConstPointer(ty) => self.witx(&ConstPointerFromI32 { ty }),
             Type::Handle(_) => self.emit(&HandleFromI32 {
-                ty: match ty {
-                    TypeRef::Name(ty) => ty,
-                    _ => unreachable!(),
-                },
+                ty: ty.name().unwrap(),
             }),
             Type::List(element) => match self.abi {
                 Abi::Preview1 => self.witx(&ListFromPointerLength { ty: element }),
                 Abi::Next => {
-                    if type_all_bits_valid(element.type_()) {
-                        self.emit(&ListCanonLift { element });
+                    let free = String::from("witx_free");
+                    if type_all_bits_valid(element) || is_char(element) {
+                        self.emit(&ListCanonLift { element, free });
                     } else {
                         self.bindgen.push_block();
                         self.emit(&IterBasePointer);
                         let addr = self.stack.pop().unwrap();
                         self.read_from_memory(element, addr, 0);
                         self.finish_block(1);
-                        self.emit(&ListLift { element });
+                        self.emit(&ListLift { element, free });
                     }
                 }
             },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
-                    let ty = match ty {
-                        TypeRef::Name(ty) => ty,
-                        _ => unreachable!(),
-                    };
+                    let ty = ty.name().unwrap();
                     match repr {
                         IntRepr::U64 => return self.witx(&BitflagsFromI64 { ty }),
                         _ => return self.witx(&BitflagsFromI32 { ty }),
@@ -1329,10 +1340,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 }
                 match self.abi {
                     Abi::Preview1 => {
-                        let ty = match ty {
-                            TypeRef::Name(ty) => ty,
-                            _ => unreachable!(),
-                        };
+                        let ty = ty.name().unwrap();
                         self.witx(&Load { ty })
                     }
                     Abi::Next => {
@@ -1348,7 +1356,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                             self.stack.extend(args.drain(..temp.len()));
                             self.lift(&member.tref, false);
                         }
-                        self.emit(&RecordLift { ty: r });
+                        self.emit(&RecordLift {
+                            ty: r,
+                            name: ty.name(),
+                        });
                     }
                 }
             }
@@ -1356,17 +1367,11 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Variant(v) if self.abi == Abi::Preview1 => {
                 if v.is_enum() {
                     return self.witx(&EnumLift {
-                        ty: match ty {
-                            TypeRef::Name(n) => n,
-                            _ => unreachable!(),
-                        },
+                        ty: ty.name().unwrap(),
                     });
                 } else if !is_return {
                     return self.witx(&Load {
-                        ty: match ty {
-                            TypeRef::Name(n) => n,
-                            _ => unreachable!(),
-                        },
+                        ty: ty.name().unwrap(),
                     });
                 }
 
@@ -1377,10 +1382,9 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     let mut load = |ty: &TypeRef| {
                         self.stack.push(self.return_pointers[n].clone());
                         n += 1;
-                        match ty {
-                            TypeRef::Name(ty) => self.witx(&Load { ty }),
-                            _ => unreachable!(),
-                        }
+                        self.witx(&Load {
+                            ty: ty.name().unwrap(),
+                        });
                     };
                     match &**ok.type_() {
                         Type::Record(r) if r.is_tuple() => {
@@ -1440,7 +1444,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                     self.finish_block(case.tref.is_some() as usize);
                 }
-                self.emit(&VariantLift { ty: v });
+                self.emit(&VariantLift {
+                    ty: v,
+                    name: ty.name(),
+                });
             }
         }
     }
@@ -1488,7 +1495,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             // Decompose the record into its components and then write all the
             // components into memory one-by-one.
             Type::Record(r) => {
-                self.emit(&RecordLower { ty: r });
+                self.emit(&RecordLower {
+                    ty: r,
+                    name: ty.name(),
+                });
                 let fields = self
                     .stack
                     .drain(self.stack.len() - r.members.len()..)
@@ -1520,7 +1530,11 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                     self.finish_block(0);
                 }
-                self.emit(&VariantLower { ty: v, nresults: 0 });
+                self.emit(&VariantLower {
+                    ty: v,
+                    nresults: 0,
+                    name: ty.name(),
+                });
             }
         }
     }
@@ -1576,7 +1590,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         offset + (layout.offset as i32),
                     );
                 }
-                self.emit(&RecordLift { ty: r });
+                self.emit(&RecordLift {
+                    ty: r,
+                    name: ty.name(),
+                });
             }
 
             // Each case will get its own block, and we'll dispatch to the
@@ -1594,7 +1611,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                     self.finish_block(case.tref.is_some() as usize);
                 }
-                self.emit(&VariantLift { ty: v });
+                self.emit(&VariantLift {
+                    ty: v,
+                    name: ty.name(),
+                });
             }
         }
     }
@@ -1691,16 +1711,15 @@ fn cast(from: WasmType, to: WasmType) -> Bitcast {
         (I32, F32) => Bitcast::I32ToF32,
         (I64, F64) => Bitcast::I64ToF64,
 
-        (F32, I64) | (I64, F32) | (F64, I32) | (I32, F64) => unreachable!(),
+        (F32, I64) => Bitcast::F32ToI64,
+        (I64, F32) => Bitcast::I64ToF32,
+        (F64, I32) | (I32, F64) => unreachable!(),
     }
 }
 
-fn type_all_bits_valid(ty: &Type) -> bool {
-    match ty {
-        Type::Record(r) => r
-            .members
-            .iter()
-            .all(|t| type_all_bits_valid(t.tref.type_())),
+fn type_all_bits_valid(ty: &TypeRef) -> bool {
+    match &**ty.type_() {
+        Type::Record(r) => r.members.iter().all(|t| type_all_bits_valid(&t.tref)),
 
         Type::Builtin(BuiltinType::Char) | Type::Variant(_) | Type::Handle(_) | Type::List(_) => {
             false
@@ -1718,5 +1737,11 @@ fn type_all_bits_valid(ty: &Type) -> bool {
         | Type::Builtin(BuiltinType::F64)
         | Type::Pointer(_)
         | Type::ConstPointer(_) => true,
+    }
+}
+fn is_char(ty: &TypeRef) -> bool {
+    match &**ty.type_() {
+        Type::Builtin(BuiltinType::Char) => true,
+        _ => false,
     }
 }
