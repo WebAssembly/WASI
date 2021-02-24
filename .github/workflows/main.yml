@@ -43,6 +43,21 @@ jobs:
     - name: Check that docs reflect witx (Snapshot 0)
       run: witx docs --check ../../phases/old/snapshot_0/witx/wasi_unstable.witx --output ../../phases/old/snapshot_0/docs.md
       working-directory: tools/witx
+    - name: Check that docs reflect witx (Ephemeral)
+      run: >
+        witx docs --check \
+        ../../phases/ephemeral/witx/wasi_ephemeral_args.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_clock.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_environ.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_fd.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_path.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_poll.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_proc.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_random.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_sched.witx \
+        ../../phases/ephemeral/witx/wasi_ephemeral_sock.witx \
+        --output ../../phases/ephemeral/docs.md
+      working-directory: tools/witx
 
   rustfmt:
     name: Rustfmt
