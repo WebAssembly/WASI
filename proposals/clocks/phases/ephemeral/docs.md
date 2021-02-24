@@ -1211,7 +1211,8 @@ When type is [`preopentype::dir`](#preopentype.dir):
 
 #### <a href="#get" name="get"></a> `get(argv: Pointer<Pointer<u8>>, argv_buf: Pointer<u8>) -> Result<(), errno>`
 Read command-line argument data.
-The size of the array should match that returned by [`sizes_get`](#sizes_get)
+The size of the array should match that returned by [`sizes_get`](#sizes_get).
+Each argument is expected to be `\0` terminated.
 
 ##### Params
 - <a href="#get.argv" name="get.argv"></a> `argv`: `Pointer<Pointer<u8>>`
@@ -1327,6 +1328,7 @@ The time value of the clock.
 #### <a href="#get" name="get"></a> `get(environ: Pointer<Pointer<u8>>, environ_buf: Pointer<u8>) -> Result<(), errno>`
 Read environment variable data.
 The sizes of the buffers should match that returned by [`sizes_get`](#sizes_get).
+Key/value pairs are expected to be joined with `=`s, and terminated with `\0`s.
 
 ##### Params
 - <a href="#get.environ" name="get.environ"></a> `environ`: `Pointer<Pointer<u8>>`
