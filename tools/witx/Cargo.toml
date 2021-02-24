@@ -20,9 +20,6 @@ thiserror = "1.0"
 wast = { version = "33.0.0", default-features = false }
 
 [dev-dependencies]
-diff = "0.1.11"
-pretty_env_logger = "0.4"
-structopt = "0.3"
 rayon = "1.0"
 
 [[test]]
