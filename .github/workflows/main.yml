@@ -26,24 +26,15 @@ jobs:
 
   validate:
     name: Validate witx files and docs
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: Install Rust (rustup)
       shell: bash
       run: rustup update stable --no-self-update && rustup default stable
-      if: matrix.os != 'macos-latest'
 
-    - name: Install Rust (macos)
-      run: |
-        curl https://sh.rustup.rs | sh -s -- -y
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-      if: matrix.os == 'macos-latest'
       # Install witx cli tool
-    - run: cargo install -path cli
+    - run: cargo install --path cli
       working-directory: tools/witx
 
     - name: Check that docs reflect witx (Snapshot 1)
