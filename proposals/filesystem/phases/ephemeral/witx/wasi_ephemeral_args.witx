@@ -10,7 +10,8 @@
   (import "memory" (memory))
 
   ;;; Read command-line argument data.
-  ;;; The size of the array should match that returned by `sizes_get`
+  ;;; The size of the array should match that returned by `sizes_get`.
+  ;;; Each argument is expected to be `\0` terminated.
   (@interface func (export "get")
     (param $argv (@witx pointer (@witx pointer (@witx char8))))
     (param $argv_buf (@witx pointer (@witx char8)))
