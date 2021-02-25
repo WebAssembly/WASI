@@ -1278,9 +1278,9 @@ The size of the array should match that returned by [`args_sizes_get`](#args_siz
 - <a href="#args_get.error" name="args_get.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#args_get.error.ok" name="args_get.error.ok"></a> `ok`
 
@@ -1301,7 +1301,7 @@ data, or an error.
 ###### Variant Layout
 - size: 12
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#args_sizes_get.error.ok" name="args_sizes_get.error.ok"></a> `ok`: `(size, size)`
 
@@ -1332,9 +1332,9 @@ The sizes of the buffers should match that returned by [`environ_sizes_get`](#en
 - <a href="#environ_get.error" name="environ_get.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#environ_get.error.ok" name="environ_get.error.ok"></a> `ok`
 
@@ -1355,7 +1355,7 @@ environment variable data.
 ###### Variant Layout
 - size: 12
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#environ_sizes_get.error.ok" name="environ_sizes_get.error.ok"></a> `ok`: `(size, size)`
 
@@ -1390,7 +1390,7 @@ The resolution of the clock, or an error if one happened.
 ###### Variant Layout
 - size: 16
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#clock_res_get.error.ok" name="clock_res_get.error.ok"></a> `ok`: [`timestamp`](#timestamp)
 
@@ -1417,7 +1417,7 @@ The time value of the clock.
 ###### Variant Layout
 - size: 16
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#clock_time_get.error.ok" name="clock_time_get.error.ok"></a> `ok`: [`timestamp`](#timestamp)
 
@@ -1446,9 +1446,9 @@ The advice.
 - <a href="#fd_advise.error" name="fd_advise.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_advise.error.ok" name="fd_advise.error.ok"></a> `ok`
 
@@ -1474,9 +1474,9 @@ The length of the area that is allocated.
 - <a href="#fd_allocate.error" name="fd_allocate.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_allocate.error.ok" name="fd_allocate.error.ok"></a> `ok`
 
@@ -1496,9 +1496,9 @@ Note: This is similar to `close` in POSIX.
 - <a href="#fd_close.error" name="fd_close.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_close.error.ok" name="fd_close.error.ok"></a> `ok`
 
@@ -1518,9 +1518,9 @@ Note: This is similar to `fdatasync` in POSIX.
 - <a href="#fd_datasync.error" name="fd_datasync.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_datasync.error.ok" name="fd_datasync.error.ok"></a> `ok`
 
@@ -1543,7 +1543,7 @@ The buffer where the file descriptor's attributes are stored.
 ###### Variant Layout
 - size: 32
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_fdstat_get.error.ok" name="fd_fdstat_get.error.ok"></a> `ok`: [`fdstat`](#fdstat)
 
@@ -1566,9 +1566,9 @@ The desired values of the file descriptor flags.
 - <a href="#fd_fdstat_set_flags.error" name="fd_fdstat_set_flags.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_fdstat_set_flags.error.ok" name="fd_fdstat_set_flags.error.ok"></a> `ok`
 
@@ -1593,9 +1593,9 @@ The desired rights of the file descriptor.
 - <a href="#fd_fdstat_set_rights.error" name="fd_fdstat_set_rights.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_fdstat_set_rights.error.ok" name="fd_fdstat_set_rights.error.ok"></a> `ok`
 
@@ -1617,7 +1617,7 @@ The buffer where the file's attributes are stored.
 ###### Variant Layout
 - size: 72
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_filestat_get.error.ok" name="fd_filestat_get.error.ok"></a> `ok`: [`filestat`](#filestat)
 
@@ -1640,9 +1640,9 @@ The desired file size.
 - <a href="#fd_filestat_set_size.error" name="fd_filestat_set_size.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_filestat_set_size.error.ok" name="fd_filestat_set_size.error.ok"></a> `ok`
 
@@ -1671,9 +1671,9 @@ A bitmask indicating which timestamps to adjust.
 - <a href="#fd_filestat_set_times.error" name="fd_filestat_set_times.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_filestat_set_times.error.ok" name="fd_filestat_set_times.error.ok"></a> `ok`
 
@@ -1702,7 +1702,7 @@ The number of bytes read.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_pread.error.ok" name="fd_pread.error.ok"></a> `ok`: [`size`](#size)
 
@@ -1724,7 +1724,7 @@ The buffer where the description is stored.
 ###### Variant Layout
 - size: 12
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_prestat_get.error.ok" name="fd_prestat_get.error.ok"></a> `ok`: [`prestat`](#prestat)
 
@@ -1748,9 +1748,9 @@ A buffer into which to write the preopened directory name.
 - <a href="#fd_prestat_dir_name.error" name="fd_prestat_dir_name.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_prestat_dir_name.error.ok" name="fd_prestat_dir_name.error.ok"></a> `ok`
 
@@ -1779,7 +1779,7 @@ The number of bytes written.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_pwrite.error.ok" name="fd_pwrite.error.ok"></a> `ok`: [`size`](#size)
 
@@ -1805,7 +1805,7 @@ The number of bytes read.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_read.error.ok" name="fd_read.error.ok"></a> `ok`: [`size`](#size)
 
@@ -1843,7 +1843,7 @@ The number of bytes stored in the read buffer. If less than the size of the read
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_readdir.error.ok" name="fd_readdir.error.ok"></a> `ok`: [`size`](#size)
 
@@ -1872,9 +1872,9 @@ The file descriptor to overwrite.
 - <a href="#fd_renumber.error" name="fd_renumber.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_renumber.error.ok" name="fd_renumber.error.ok"></a> `ok`
 
@@ -1903,7 +1903,7 @@ The new offset of the file descriptor, relative to the start of the file.
 ###### Variant Layout
 - size: 16
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_seek.error.ok" name="fd_seek.error.ok"></a> `ok`: [`filesize`](#filesize)
 
@@ -1923,9 +1923,9 @@ Note: This is similar to `fsync` in POSIX.
 - <a href="#fd_sync.error" name="fd_sync.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_sync.error.ok" name="fd_sync.error.ok"></a> `ok`
 
@@ -1948,7 +1948,7 @@ The current offset of the file descriptor, relative to the start of the file.
 ###### Variant Layout
 - size: 16
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_tell.error.ok" name="fd_tell.error.ok"></a> `ok`: [`filesize`](#filesize)
 
@@ -1973,7 +1973,7 @@ List of scatter/gather vectors from which to retrieve data.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#fd_write.error.ok" name="fd_write.error.ok"></a> `ok`: [`size`](#size)
 
@@ -1996,9 +1996,9 @@ The path at which to create the directory.
 - <a href="#path_create_directory.error" name="path_create_directory.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_create_directory.error.ok" name="path_create_directory.error.ok"></a> `ok`
 
@@ -2027,7 +2027,7 @@ The buffer where the file's attributes are stored.
 ###### Variant Layout
 - size: 72
 - align: 8
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_filestat_get.error.ok" name="path_filestat_get.error.ok"></a> `ok`: [`filestat`](#filestat)
 
@@ -2062,9 +2062,9 @@ A bitmask indicating which timestamps to adjust.
 - <a href="#path_filestat_set_times.error" name="path_filestat_set_times.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_filestat_set_times.error.ok" name="path_filestat_set_times.error.ok"></a> `ok`
 
@@ -2096,9 +2096,9 @@ The destination path at which to create the hard link.
 - <a href="#path_link.error" name="path_link.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_link.error.ok" name="path_link.error.ok"></a> `ok`
 
@@ -2149,7 +2149,7 @@ The file descriptor of the file that has been opened.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_open.error.ok" name="path_open.error.ok"></a> `ok`: [`fd`](#fd)
 
@@ -2180,7 +2180,7 @@ The number of bytes placed in the buffer.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_readlink.error.ok" name="path_readlink.error.ok"></a> `ok`: [`size`](#size)
 
@@ -2204,9 +2204,9 @@ The path to a directory to remove.
 - <a href="#path_remove_directory.error" name="path_remove_directory.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_remove_directory.error.ok" name="path_remove_directory.error.ok"></a> `ok`
 
@@ -2235,9 +2235,9 @@ The destination path to which to rename the file or directory.
 - <a href="#path_rename.error" name="path_rename.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_rename.error.ok" name="path_rename.error.ok"></a> `ok`
 
@@ -2263,9 +2263,9 @@ The destination path at which to create the symbolic link.
 - <a href="#path_symlink.error" name="path_symlink.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_symlink.error.ok" name="path_symlink.error.ok"></a> `ok`
 
@@ -2289,9 +2289,9 @@ The path to a file to unlink.
 - <a href="#path_unlink_file.error" name="path_unlink_file.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#path_unlink_file.error.ok" name="path_unlink_file.error.ok"></a> `ok`
 
@@ -2320,7 +2320,7 @@ The number of events stored.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#poll_oneoff.error.ok" name="poll_oneoff.error.ok"></a> `ok`: [`size`](#size)
 
@@ -2354,9 +2354,9 @@ The signal condition to trigger.
 - <a href="#proc_raise.error" name="proc_raise.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#proc_raise.error.ok" name="proc_raise.error.ok"></a> `ok`
 
@@ -2374,9 +2374,9 @@ Note: This is similar to [`sched_yield`](#sched_yield) in POSIX.
 - <a href="#sched_yield.error" name="sched_yield.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#sched_yield.error.ok" name="sched_yield.error.ok"></a> `ok`
 
@@ -2403,9 +2403,9 @@ The buffer to fill with random data.
 - <a href="#random_get.error" name="random_get.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#random_get.error.ok" name="random_get.error.ok"></a> `ok`
 
@@ -2435,7 +2435,7 @@ Number of bytes stored in ri_data and message flags.
 ###### Variant Layout
 - size: 12
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#sock_recv.error.ok" name="sock_recv.error.ok"></a> `ok`: `(size, roflags)`
 
@@ -2474,7 +2474,7 @@ Number of bytes transmitted.
 ###### Variant Layout
 - size: 8
 - align: 4
-- tag_size: 4
+- tag_size: 1
 ###### Variant cases
 - <a href="#sock_send.error.ok" name="sock_send.error.ok"></a> `ok`: [`size`](#size)
 
@@ -2497,9 +2497,9 @@ Which channels on the socket to shut down.
 - <a href="#sock_shutdown.error" name="sock_shutdown.error"></a> `error`: `Result<(), errno>`
 
 ###### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 4
+- size: 4
+- align: 2
+- tag_size: 1
 ###### Variant cases
 - <a href="#sock_shutdown.error.ok" name="sock_shutdown.error.ok"></a> `ok`
 

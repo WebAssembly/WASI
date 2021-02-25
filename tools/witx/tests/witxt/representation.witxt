@@ -31,9 +31,9 @@
 
 ;; enums
 (witx $a
-  (typename $a (enum $b $c)))
+  (typename $a (enum (@witx tag u32) $b $c)))
 (witx $b
-  (typename $b (enum $b $c $d)))
+  (typename $b (enum (@witx tag u32) $b $c $d)))
 (assert_representable superset $a "a" $b "b")
 (assert_representable noteq $b "b" $a "a")
 

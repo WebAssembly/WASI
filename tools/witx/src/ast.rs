@@ -437,6 +437,16 @@ pub struct Variant {
 }
 
 impl Variant {
+    pub fn infer_repr(cases: usize) -> IntRepr {
+        match cases {
+            n if n < u8::max_value() as usize => IntRepr::U8,
+            n if n < u16::max_value() as usize => IntRepr::U16,
+            n if n < u32::max_value() as usize => IntRepr::U32,
+            n if n < u64::max_value() as usize => IntRepr::U64,
+            _ => panic!("too many cases to fit in a repr"),
+        }
+    }
+
     /// If this variant looks like an `expected` shorthand, return the ok/err
     /// types associated with this result.
     ///

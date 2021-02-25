@@ -752,9 +752,6 @@ fn validate_no_witx(ty: &Type) -> Result<(), String> {
             Ok(())
         }
         Type::Variant(v) => {
-            if v.tag_repr != IntRepr::U32 {
-                return Err("cannot use `(@witx tag)` in this ABI".to_string());
-            }
             for case in v.cases.iter() {
                 if let Some(ty) = &case.tref {
                     validate_no_witx(ty.type_())?;
@@ -1782,26 +1779,12 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // memory.
                 Some(repr) => {
                     let name = ty.name().unwrap();
-                    let store = match repr {
-                        IntRepr::U64 => {
-                            self.emit(&I64FromBitflags { ty: r, name });
-                            I64Store { offset }
-                        }
-                        IntRepr::U32 => {
-                            self.emit(&I32FromBitflags { ty: r, name });
-                            I32Store { offset }
-                        }
-                        IntRepr::U16 => {
-                            self.emit(&I32FromBitflags { ty: r, name });
-                            I32Store16 { offset }
-                        }
-                        IntRepr::U8 => {
-                            self.emit(&I32FromBitflags { ty: r, name });
-                            I32Store8 { offset }
-                        }
-                    };
+                    self.emit(&match repr {
+                        IntRepr::U64 => I64FromBitflags { ty: r, name },
+                        _ => I32FromBitflags { ty: r, name },
+                    });
                     self.stack.push(addr);
-                    self.emit(&store);
+                    self.store_intrepr(offset, repr);
                 }
 
                 // Decompose the record into its components and then write all
@@ -1836,7 +1819,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     self.bindgen.push_block();
                     self.emit(&I32Const { val: i as i32 });
                     self.stack.push(addr.clone());
-                    self.emit(&I32Store { offset });
+                    self.store_intrepr(offset, v.tag_repr);
                     if let Some(ty) = &case.tref {
                         self.emit(&VariantPayload);
                         self.write_to_memory(ty, addr.clone(), payload_offset);
@@ -1898,15 +1881,12 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // memory.
                 Some(repr) => {
                     let name = ty.name().unwrap();
-                    let (load, cast) = match repr {
-                        IntRepr::U64 => (I64Load { offset }, I64FromBitflags { ty: r, name }),
-                        IntRepr::U32 => (I32Load { offset }, I32FromBitflags { ty: r, name }),
-                        IntRepr::U16 => (I32Load16U { offset }, I32FromBitflags { ty: r, name }),
-                        IntRepr::U8 => (I32Load8U { offset }, I32FromBitflags { ty: r, name }),
-                    };
                     self.stack.push(addr);
-                    self.emit(&load);
-                    self.emit(&cast);
+                    self.load_intrepr(offset, repr);
+                    self.emit(&match repr {
+                        IntRepr::U64 => I64FromBitflags { ty: r, name },
+                        _ => I32FromBitflags { ty: r, name },
+                    });
                 }
                 // Read and lift each field individually, adjusting the offset
                 // as we go along, then aggregate all the fields into the
@@ -1932,7 +1912,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             // from the corresponding offset if one is available.
             Type::Variant(v) => {
                 self.stack.push(addr.clone());
-                self.emit(&I32Load { offset });
+                self.load_intrepr(offset, v.tag_repr);
                 let payload_offset = offset + (v.payload_offset() as i32);
                 for case in v.cases.iter() {
                     self.bindgen.push_block();
@@ -1947,6 +1927,24 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 });
             }
         }
+    }
+
+    fn load_intrepr(&mut self, offset: i32, repr: IntRepr) {
+        self.emit(&match repr {
+            IntRepr::U64 => Instruction::I64Load { offset },
+            IntRepr::U32 => Instruction::I32Load { offset },
+            IntRepr::U16 => Instruction::I32Load16U { offset },
+            IntRepr::U8 => Instruction::I32Load8U { offset },
+        });
+    }
+
+    fn store_intrepr(&mut self, offset: i32, repr: IntRepr) {
+        self.emit(&match repr {
+            IntRepr::U64 => Instruction::I64Store { offset },
+            IntRepr::U32 => Instruction::I32Store { offset },
+            IntRepr::U16 => Instruction::I32Store16 { offset },
+            IntRepr::U8 => Instruction::I32Store8 { offset },
+        });
     }
 }
 

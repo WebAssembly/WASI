@@ -150,7 +150,7 @@ impl DocValidation {
             entries: HashMap::new(),
             constant_scopes: HashMap::new(),
             bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
-                tag_repr: IntRepr::U32,
+                tag_repr: IntRepr::U8,
                 cases: vec![
                     Case {
                         name: Id::new("false"),
@@ -343,7 +343,7 @@ impl DocValidationScope<'_> {
         let mut enum_scope = IdentValidation::new();
         let tag_repr = match &syntax.repr {
             Some(repr) => self.validate_int_repr(repr, span)?,
-            None => IntRepr::U32,
+            None => Variant::infer_repr(syntax.members.len()),
         };
         let cases = syntax
             .members
@@ -400,7 +400,7 @@ impl DocValidationScope<'_> {
             None => None,
         };
         Ok(Variant {
-            tag_repr: IntRepr::U32,
+            tag_repr: IntRepr::U8,
             cases: vec![
                 Case {
                     name: Id::new("ok"),
@@ -498,7 +498,10 @@ impl DocValidationScope<'_> {
                 })
             })
             .collect::<Result<Vec<_>, _>>()?;
-        Ok(Variant { tag_repr, cases })
+        Ok(Variant {
+            tag_repr: tag_repr.unwrap_or_else(|| Variant::infer_repr(cases.len())),
+            cases,
+        })
     }
 
     fn validate_variant(
@@ -565,17 +568,20 @@ impl DocValidationScope<'_> {
             cases.sort_by_key(|c| name_pos[&&c.name]);
         }
 
-        Ok(Variant { tag_repr, cases })
+        Ok(Variant {
+            tag_repr: tag_repr.unwrap_or_else(|| Variant::infer_repr(cases.len())),
+            cases,
+        })
     }
 
     fn union_tag_repr(
         &self,
         tag: &Option<Box<TypedefSyntax<'_>>>,
         span: wast::Span,
-    ) -> Result<(IntRepr, Option<Vec<Id>>), ValidationError> {
+    ) -> Result<(Option<IntRepr>, Option<Vec<Id>>), ValidationError> {
         let ty = match tag {
             Some(tag) => self.validate_datatype(tag, false, span)?,
-            None => return Ok((IntRepr::U32, None)),
+            None => return Ok((None, None)),
         };
         match &**ty.type_() {
             Type::Variant(e) => {
@@ -589,12 +595,12 @@ impl DocValidationScope<'_> {
                     }
                     names.push(c.name.clone());
                 }
-                return Ok((e.tag_repr, Some(names)));
+                return Ok((Some(e.tag_repr), Some(names)));
             }
-            Type::Builtin(BuiltinType::U8 { .. }) => return Ok((IntRepr::U8, None)),
-            Type::Builtin(BuiltinType::U16) => return Ok((IntRepr::U16, None)),
-            Type::Builtin(BuiltinType::U32 { .. }) => return Ok((IntRepr::U32, None)),
-            Type::Builtin(BuiltinType::U64) => return Ok((IntRepr::U64, None)),
+            Type::Builtin(BuiltinType::U8 { .. }) => return Ok((Some(IntRepr::U8), None)),
+            Type::Builtin(BuiltinType::U16) => return Ok((Some(IntRepr::U16), None)),
+            Type::Builtin(BuiltinType::U32 { .. }) => return Ok((Some(IntRepr::U32), None)),
+            Type::Builtin(BuiltinType::U64) => return Ok((Some(IntRepr::U64), None)),
             _ => {}
         }
 

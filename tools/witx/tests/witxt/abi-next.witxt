@@ -719,11 +719,11 @@
       iter-base-pointer
       block.push
         i32.const 0
-        i32.store offset=0
+        i32.store8 offset=0
       block.finish
       block.push
         i32.const 1
-        i32.store offset=0
+        i32.store8 offset=0
       block.finish
       variant-lower
     block.finish
@@ -736,7 +736,7 @@
     get-arg1
     block.push
       iter-base-pointer
-      i32.load offset=0
+      i32.load8u offset=0
       block.push
       block.finish
       block.push
@@ -762,11 +762,11 @@
       record-lower
       block.push
         i32.const 0
-        i32.store offset=0
+        i32.store8 offset=0
       block.finish
       block.push
         i32.const 1
-        i32.store offset=0
+        i32.store8 offset=0
       block.finish
       variant-lower field.x
       list.canon_lower field.y
@@ -782,7 +782,7 @@
     get-arg1
     block.push
       iter-base-pointer
-      i32.load offset=0
+      i32.load8u offset=0
       block.push
       block.finish
       block.push
