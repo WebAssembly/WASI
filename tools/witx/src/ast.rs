@@ -379,6 +379,43 @@ impl RecordDatatype {
     }
 }
 
+impl RecordKind {
+    pub fn infer(members: &[RecordMember]) -> RecordKind {
+        if members.len() == 0 {
+            return RecordKind::Other;
+        }
+
+        // Structs-of-bools are classified to get represented as bitflags.
+        if members.iter().all(|t| is_bool(&t.tref)) {
+            match members.len() {
+                n if n <= 8 => return RecordKind::Bitflags(IntRepr::U8),
+                n if n <= 16 => return RecordKind::Bitflags(IntRepr::U16),
+                n if n <= 32 => return RecordKind::Bitflags(IntRepr::U32),
+                n if n <= 64 => return RecordKind::Bitflags(IntRepr::U64),
+                _ => {}
+            }
+        }
+
+        // Members with consecutive integer names get represented as tuples.
+        if members
+            .iter()
+            .enumerate()
+            .all(|(i, m)| m.name.as_str().parse().ok() == Some(i))
+        {
+            return RecordKind::Tuple;
+        }
+
+        return RecordKind::Other;
+
+        fn is_bool(t: &TypeRef) -> bool {
+            match &**t.type_() {
+                Type::Variant(v) => v.is_bool(),
+                _ => false,
+            }
+        }
+    }
+}
+
 /// A type which represents how values can be one of a set of possible cases.
 ///
 /// This type maps to an `enum` in languages like Rust, but doesn't have an

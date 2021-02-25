@@ -116,6 +116,14 @@
   (declared_import get-arg0 i64.from_bitflags arg0 call.wasm return)
   (defined_import get-arg0 bitflags.from_i64 arg0 call.interface return)
 )
+(assert_abi
+  (witx
+    (typename $a (record (field $x bool)))
+    (module $x (@interface func (export "f") (param $p $a)))
+  )
+  (wasm (param i32))
+  (declared_import get-arg0 i32.from_bitflags arg0 call.wasm return)
+)
 
 ;; struct parameter
 (assert_abi

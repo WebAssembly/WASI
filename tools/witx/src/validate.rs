@@ -422,8 +422,8 @@ impl DocValidationScope<'_> {
         span: wast::Span,
     ) -> Result<RecordDatatype, ValidationError> {
         let repr = match syntax.repr {
-            Some(ty) => self.validate_int_repr(&ty, span)?,
-            None => IntRepr::U32,
+            Some(ty) => Some(RecordKind::Bitflags(self.validate_int_repr(&ty, span)?)),
+            None => None,
         };
         let mut flags_scope = IdentValidation::new();
         let mut members = Vec::new();
@@ -437,7 +437,7 @@ impl DocValidationScope<'_> {
             });
         }
         Ok(RecordDatatype {
-            kind: RecordKind::Bitflags(repr),
+            kind: repr.unwrap_or_else(|| RecordKind::infer(&members)),
             members,
         })
     }
@@ -461,7 +461,7 @@ impl DocValidationScope<'_> {
             .collect::<Result<Vec<RecordMember>, _>>()?;
 
         Ok(RecordDatatype {
-            kind: RecordKind::Other,
+            kind: RecordKind::infer(&members),
             members,
         })
     }
