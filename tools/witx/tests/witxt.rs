@@ -194,9 +194,8 @@ impl WitxtRunner<'_> {
             }
             WitxtDirective::AssertAbi {
                 witx,
-                wasm,
-                interface,
                 wasm_signature: (wasm_params, wasm_results),
+                abis,
                 ..
             } => {
                 let doc = witx.document(contents, test)?;
@@ -215,18 +214,16 @@ impl WitxtRunner<'_> {
                     );
                 }
 
-                let mut check = AbiBindgen {
-                    abi: wasm.instrs.iter(),
-                    err: None,
-                    contents,
-                    next_rp: 0,
-                };
-                func.call_wasm(&module.name, &mut check);
-                check.check()?;
-                check.abi = interface.instrs.iter();
-                check.next_rp = 0;
-                func.call_interface(&module.name, &mut check);
-                check.check()?;
+                for abi in abis {
+                    let mut check = AbiBindgen {
+                        abi: abi.instrs.iter(),
+                        err: None,
+                        contents,
+                        next_rp: 0,
+                    };
+                    func.call(&module.name, abi.mode, &mut check);
+                    check.check()?;
+                }
             }
         }
         Ok(())
@@ -376,7 +373,8 @@ impl witx::Bindgen for AbiBindgen<'_> {
             I32FromU8 => self.assert("i32.from_u8"),
             I32FromS8 => self.assert("i32.from_s8"),
             I32FromChar8 => self.assert("i32.from_char8"),
-            I32FromHandle { .. } => self.assert("i32.from_handle"),
+            I32FromBorrowedHandle { .. } => self.assert("i32.from_borrowed_handle"),
+            I32FromOwnedHandle { .. } => self.assert("i32.from_owned_handle"),
             F32FromIf32 => self.assert("f32.from_if32"),
             F64FromIf64 => self.assert("f64.from_if64"),
             CallWasm {
@@ -407,7 +405,8 @@ impl witx::Bindgen for AbiBindgen<'_> {
             UsizeFromI32 => self.assert("usize.from_i32"),
             If32FromF32 => self.assert("if32.from_f32"),
             If64FromF64 => self.assert("if64.from_f64"),
-            HandleFromI32 { .. } => self.assert("handle.from_i32"),
+            HandleBorrowedFromI32 { .. } => self.assert("handle.borrowed_from_i32"),
+            HandleOwnedFromI32 { .. } => self.assert("handle.owned_from_i32"),
             Return { .. } => self.assert("return"),
             VariantPayload => self.assert("variant-payload"),
             RecordLift { .. } => self.assert("record-lift"),
@@ -544,6 +543,10 @@ mod kw {
     wast::custom_keyword!(i64);
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
+    wast::custom_keyword!(declared_import);
+    wast::custom_keyword!(declared_export);
+    wast::custom_keyword!(defined_import);
+    wast::custom_keyword!(defined_export);
 }
 
 struct Witxt<'a> {
@@ -577,8 +580,7 @@ enum WitxtDirective<'a> {
         span: wast::Span,
         witx: Witx<'a>,
         wasm_signature: (Vec<WasmType>, Vec<WasmType>),
-        wasm: Abi<'a>,
-        interface: Abi<'a>,
+        abis: Vec<Abi<'a>>,
     },
 }
 
@@ -642,14 +644,13 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
                     }
                     Ok((params, results))
                 })?,
-                wasm: parser.parens(|p| {
-                    p.parse::<kw::call_wasm>()?;
-                    p.parse()
-                })?,
-                interface: parser.parens(|p| {
-                    p.parse::<kw::call_interface>()?;
-                    p.parse()
-                })?,
+                abis: {
+                    let mut abis = Vec::new();
+                    while !parser.is_empty() {
+                        abis.push(parser.parens(|p| p.parse())?)
+                    }
+                    abis
+                },
             })
         } else {
             Err(l.error())
@@ -761,11 +762,28 @@ impl<'a> Parse<'a> for RepEquality {
 }
 
 struct Abi<'a> {
+    mode: witx::CallMode,
     instrs: Vec<(wast::Span, &'a str)>,
 }
 
 impl<'a> Parse<'a> for Abi<'a> {
     fn parse(parser: Parser<'a>) -> parser::Result<Self> {
+        let mut l = parser.lookahead1();
+        let mode = if l.peek::<kw::declared_import>() {
+            parser.parse::<kw::declared_import>()?;
+            witx::CallMode::DeclaredImport
+        } else if l.peek::<kw::declared_export>() {
+            parser.parse::<kw::declared_export>()?;
+            witx::CallMode::DeclaredExport
+        } else if l.peek::<kw::defined_import>() {
+            parser.parse::<kw::defined_import>()?;
+            witx::CallMode::DefinedImport
+        } else if l.peek::<kw::defined_export>() {
+            parser.parse::<kw::defined_export>()?;
+            witx::CallMode::DefinedExport
+        } else {
+            return Err(l.error());
+        };
         let mut instrs = Vec::new();
         while !parser.is_empty() {
             instrs.push(parser.step(|cursor| {
@@ -779,6 +797,6 @@ impl<'a> Parse<'a> for Abi<'a> {
                 Ok(((cursor.cur_span(), kw), next))
             })?);
         }
-        Ok(Abi { instrs })
+        Ok(Abi { mode, instrs })
     }
 }

@@ -1,76 +1,76 @@
 (assert_abi
   (witx (module $x (export "f" (func))))
   (wasm)
-  (call_wasm call.wasm return)
-  (call_interface call.interface return)
+  (declared_import call.wasm return)
+  (defined_import call.interface return)
 )
 
 ;; scalar arguments
 (assert_abi
   (witx (module $x (export "f" (func (param $p u8)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u8 arg0 call.wasm return)
-  (call_interface get-arg0 u8.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u8 arg0 call.wasm return)
+  (defined_import get-arg0 u8.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p s8)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s8 arg0 call.wasm return)
-  (call_interface get-arg0 s8.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s8 arg0 call.wasm return)
+  (defined_import get-arg0 s8.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p u16)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u16 arg0 call.wasm return)
-  (call_interface get-arg0 u16.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u16 arg0 call.wasm return)
+  (defined_import get-arg0 u16.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p s16)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s16 arg0 call.wasm return)
-  (call_interface get-arg0 s16.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s16 arg0 call.wasm return)
+  (defined_import get-arg0 s16.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p u32)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u32 arg0 call.wasm return)
-  (call_interface get-arg0 u32.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u32 arg0 call.wasm return)
+  (defined_import get-arg0 u32.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p s32)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s32 arg0 call.wasm return)
-  (call_interface get-arg0 s32.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s32 arg0 call.wasm return)
+  (defined_import get-arg0 s32.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p u64)))))
   (wasm (param i64))
-  (call_wasm get-arg0 i64.from_u64 arg0 call.wasm return)
-  (call_interface get-arg0 u64.from_i64 arg0 call.interface return)
+  (declared_import get-arg0 i64.from_u64 arg0 call.wasm return)
+  (defined_import get-arg0 u64.from_i64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p s64)))))
   (wasm (param i64))
-  (call_wasm get-arg0 i64.from_s64 arg0 call.wasm return)
-  (call_interface get-arg0 s64.from_i64 arg0 call.interface return)
+  (declared_import get-arg0 i64.from_s64 arg0 call.wasm return)
+  (defined_import get-arg0 s64.from_i64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p f32)))))
   (wasm (param f32))
-  (call_wasm get-arg0 f32.from_if32 arg0 call.wasm return)
-  (call_interface get-arg0 if32.from_f32 arg0 call.interface return)
+  (declared_import get-arg0 f32.from_if32 arg0 call.wasm return)
+  (defined_import get-arg0 if32.from_f32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p f64)))))
   (wasm (param f64))
-  (call_wasm get-arg0 f64.from_if64 arg0 call.wasm return)
-  (call_interface get-arg0 if64.from_f64 arg0 call.interface return)
+  (declared_import get-arg0 f64.from_if64 arg0 call.wasm return)
+  (defined_import get-arg0 if64.from_f64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (param $p char)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_char arg0 call.wasm return)
-  (call_interface get-arg0 char.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_char arg0 call.wasm return)
+  (defined_import get-arg0 char.from_i32 arg0 call.interface return)
 )
 
 ;; handle argument
@@ -80,8 +80,8 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_handle arg0 call.wasm return)
-  (call_interface get-arg0 handle.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_borrowed_handle arg0 call.wasm return)
+  (defined_import get-arg0 handle.borrowed_from_i32 arg0 call.interface return)
 )
 
 ;; record arguments
@@ -91,8 +91,8 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm)
-  (call_wasm get-arg0 record-lower arg0 call.wasm return)
-  (call_interface record-lift call.interface return)
+  (declared_import get-arg0 record-lower arg0 call.wasm return)
+  (defined_import record-lift call.interface return)
 )
 
 (assert_abi
@@ -101,13 +101,13 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32))
-  (call_wasm
+  (declared_import
     get-arg0
     record-lower arg0
     i32.from_u32 field.a
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     u32.from_i32 arg0
     record-lift
@@ -123,14 +123,14 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32 i64))
-  (call_wasm
+  (declared_import
     get-arg0
     record-lower arg0
     i32.from_u32 field.a
     i64.from_s64 field.b
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     u32.from_i32 arg0
@@ -151,7 +151,7 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32 f64 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     record-lower arg0
     i32.from_u32 field.a
@@ -161,7 +161,7 @@
     i32.from_u32 field.1
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     get-arg2
@@ -182,7 +182,7 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32))
-  (call_wasm
+  (declared_import
     get-arg0
     block.push
       i32.const 0
@@ -193,7 +193,7 @@
     variant-lower arg0
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     block.push
     block.finish
@@ -210,7 +210,7 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     block.push
       i32.const 0
@@ -226,7 +226,7 @@
     variant-lower arg0
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     block.push
@@ -247,7 +247,7 @@
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32 f64))
-  (call_wasm
+  (declared_import
     get-arg0
     block.push
       i32.const 0
@@ -261,7 +261,7 @@
     variant-lower arg0
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     block.push
@@ -280,12 +280,12 @@
     (module $x (export "f" (func (param $p (list u8)))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     list.canon_lower arg0
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     list.canon_lift arg0 arg1
@@ -297,12 +297,12 @@
     (module $x (export "f" (func (param $p (list char)))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     list.canon_lower arg0
     call.wasm
     return)
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     list.canon_lift arg0 arg1
@@ -333,7 +333,7 @@
     )))
   )
   (wasm (param i32 i32 i32 f64 i32 i32 i32 f32 f64))
-  (call_wasm
+  (declared_import
     get-arg0
     get-arg1
     get-arg2
@@ -391,7 +391,7 @@
     call.wasm
     return)
 
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     get-arg2
@@ -447,68 +447,68 @@
 (assert_abi
   (witx (module $x (export "f" (func (result $p u8)))))
   (wasm (result i32))
-  (call_wasm call.wasm u8.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u8 ret0 return)
+  (declared_import call.wasm u8.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u8 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p s8)))))
   (wasm (result i32))
-  (call_wasm call.wasm s8.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s8 ret0 return)
+  (declared_import call.wasm s8.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s8 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p u16)))))
   (wasm (result i32))
-  (call_wasm call.wasm u16.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u16 ret0 return)
+  (declared_import call.wasm u16.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u16 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p s16)))))
   (wasm (result i32))
-  (call_wasm call.wasm s16.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s16 ret0 return)
+  (declared_import call.wasm s16.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s16 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p u32)))))
   (wasm (result i32))
-  (call_wasm call.wasm u32.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u32 ret0 return)
+  (declared_import call.wasm u32.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u32 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p s32)))))
   (wasm (result i32))
-  (call_wasm call.wasm s32.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s32 ret0 return)
+  (declared_import call.wasm s32.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s32 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p u64)))))
   (wasm (result i64))
-  (call_wasm call.wasm u64.from_i64 ret0 return)
-  (call_interface call.interface i64.from_u64 ret0 return)
+  (declared_import call.wasm u64.from_i64 ret0 return)
+  (defined_import call.interface i64.from_u64 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p s64)))))
   (wasm (result i64))
-  (call_wasm call.wasm s64.from_i64 ret0 return)
-  (call_interface call.interface i64.from_s64 ret0 return)
+  (declared_import call.wasm s64.from_i64 ret0 return)
+  (defined_import call.interface i64.from_s64 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p f32)))))
   (wasm (result f32))
-  (call_wasm call.wasm if32.from_f32 ret0 return)
-  (call_interface call.interface f32.from_if32 ret0 return)
+  (declared_import call.wasm if32.from_f32 ret0 return)
+  (defined_import call.interface f32.from_if32 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p f64)))))
   (wasm (result f64))
-  (call_wasm call.wasm if64.from_f64 ret0 return)
-  (call_interface call.interface f64.from_if64 ret0 return)
+  (declared_import call.wasm if64.from_f64 ret0 return)
+  (defined_import call.interface f64.from_if64 ret0 return)
 )
 (assert_abi
   (witx (module $x (export "f" (func (result $p char)))))
   (wasm (result i32))
-  (call_wasm call.wasm char.from_i32 ret0 return)
-  (call_interface call.interface i32.from_char ret0 return)
+  (declared_import call.wasm char.from_i32 ret0 return)
+  (defined_import call.interface i32.from_char ret0 return)
 )
 
 ;; handle result
@@ -518,8 +518,8 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (result i32))
-  (call_wasm call.wasm handle.from_i32 ret0 return)
-  (call_interface call.interface i32.from_handle ret0 return)
+  (declared_import call.wasm handle.owned_from_i32 ret0 return)
+  (defined_import call.interface i32.from_owned_handle ret0 return)
 )
 
 ;; record results
@@ -529,8 +529,8 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm)
-  (call_wasm call.wasm record-lift return)
-  (call_interface call.interface record-lower ret0 return)
+  (declared_import call.wasm record-lift return)
+  (defined_import call.interface record-lower ret0 return)
 )
 (assert_abi
   (witx
@@ -538,8 +538,8 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (result i32))
-  (call_wasm call.wasm s32.from_i32 ret0 record-lift return)
-  (call_interface
+  (declared_import call.wasm s32.from_i32 ret0 record-lift return)
+  (defined_import
     call.interface
     record-lower ret0
     i32.from_s32 field.a
@@ -551,14 +551,14 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (param i32))
-  (call_wasm
+  (declared_import
     call.wasm rp0
     i32.load offset=0 rp0
     i32.load offset=8 rp0
     s32.from_i32
     u32.from_i32
     record-lift return)
-  (call_interface
+  (defined_import
     call.interface
     record-lower ret0
     i32.from_s32 field.a
@@ -576,7 +576,7 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (result i32))
-  (call_wasm
+  (declared_import
     call.wasm
       block.push
       block.finish
@@ -584,7 +584,7 @@
       block.finish
     variant-lift ret0
     return)
-  (call_interface
+  (defined_import
     call.interface
       block.push
         i32.const 0
@@ -602,7 +602,7 @@
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (param i32))
-  (call_wasm
+  (declared_import
     call.wasm rp0
     i32.load offset=0 rp0
     f32.load offset=8 rp0
@@ -613,7 +613,7 @@
       block.finish
     variant-lift
     return)
-  (call_interface
+  (defined_import
     call.interface
       block.push
         i32.const 0
@@ -637,7 +637,7 @@
     (module $x (export "f" (func (result $a s32) (result $b f64) (result $c bool))))
   )
   (wasm (param i32))
-  (call_wasm
+  (declared_import
     call.wasm rp0
     i32.load offset=0 rp0
     f64.load offset=8 rp0
@@ -652,7 +652,7 @@
     variant-lift
     return
   )
-  (call_interface
+  (defined_import
     call.interface
     i32.from_s32 ret0
     f64.from_if64 ret1
@@ -693,13 +693,13 @@
     (module $x (export "f" (func (param $a (list (tuple u32 u32))))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     list.canon_lower arg0
     call.wasm
     return
   )
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     list.canon_lift arg0 arg1
@@ -712,7 +712,7 @@
     (module $x (export "f" (func (param $a (list bool)))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     block.push
       iter-elem
@@ -731,7 +731,7 @@
     call.wasm
     return
   )
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     block.push
@@ -754,7 +754,7 @@
     (module $x (export "f" (func (param $a (list $a)))))
   )
   (wasm (param i32 i32))
-  (call_wasm
+  (declared_import
     get-arg0
     block.push
       iter-elem
@@ -777,7 +777,7 @@
     call.wasm
     return
   )
-  (call_interface
+  (defined_import
     get-arg0
     get-arg1
     block.push

@@ -1,100 +1,100 @@
 (assert_abi
   (witx (module $x (@interface func (export "f"))))
   (wasm)
-  (call_wasm call.wasm return)
-  (call_interface call.interface return)
+  (declared_import call.wasm return)
+  (defined_import call.interface return)
 )
 
 ;; scalar arguments
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p u8))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u8 arg0 call.wasm return)
-  (call_interface get-arg0 u8.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u8 arg0 call.wasm return)
+  (defined_import get-arg0 u8.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p s8))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s8 arg0 call.wasm return)
-  (call_interface get-arg0 s8.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s8 arg0 call.wasm return)
+  (defined_import get-arg0 s8.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p u16))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u16 arg0 call.wasm return)
-  (call_interface get-arg0 u16.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u16 arg0 call.wasm return)
+  (defined_import get-arg0 u16.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p s16))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s16 arg0 call.wasm return)
-  (call_interface get-arg0 s16.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s16 arg0 call.wasm return)
+  (defined_import get-arg0 s16.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p u32))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_u32 arg0 call.wasm return)
-  (call_interface get-arg0 u32.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_u32 arg0 call.wasm return)
+  (defined_import get-arg0 u32.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p s32))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_s32 arg0 call.wasm return)
-  (call_interface get-arg0 s32.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_s32 arg0 call.wasm return)
+  (defined_import get-arg0 s32.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p u64))))
   (wasm (param i64))
-  (call_wasm get-arg0 i64.from_u64 arg0 call.wasm return)
-  (call_interface get-arg0 u64.from_i64 arg0 call.interface return)
+  (declared_import get-arg0 i64.from_u64 arg0 call.wasm return)
+  (defined_import get-arg0 u64.from_i64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p s64))))
   (wasm (param i64))
-  (call_wasm get-arg0 i64.from_s64 arg0 call.wasm return)
-  (call_interface get-arg0 s64.from_i64 arg0 call.interface return)
+  (declared_import get-arg0 i64.from_s64 arg0 call.wasm return)
+  (defined_import get-arg0 s64.from_i64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p f32))))
   (wasm (param f32))
-  (call_wasm get-arg0 f32.from_if32 arg0 call.wasm return)
-  (call_interface get-arg0 if32.from_f32 arg0 call.interface return)
+  (declared_import get-arg0 f32.from_if32 arg0 call.wasm return)
+  (defined_import get-arg0 if32.from_f32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p f64))))
   (wasm (param f64))
-  (call_wasm get-arg0 f64.from_if64 arg0 call.wasm return)
-  (call_interface get-arg0 if64.from_f64 arg0 call.interface return)
+  (declared_import get-arg0 f64.from_if64 arg0 call.wasm return)
+  (defined_import get-arg0 if64.from_f64 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p (@witx usize)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_usize arg0 call.wasm return)
-  (call_interface get-arg0 usize.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_usize arg0 call.wasm return)
+  (defined_import get-arg0 usize.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p (@witx char8)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_char8 arg0 call.wasm return)
-  (call_interface get-arg0 char8.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_char8 arg0 call.wasm return)
+  (defined_import get-arg0 char8.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p char))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_char arg0 call.wasm return)
-  (call_interface get-arg0 char.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_char arg0 call.wasm return)
+  (defined_import get-arg0 char.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p (@witx pointer u8)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_pointer arg0 call.wasm return)
-  (call_interface get-arg0 pointer.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_pointer arg0 call.wasm return)
+  (defined_import get-arg0 pointer.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (param $p (@witx const_pointer u8)))))
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_const_pointer arg0 call.wasm return)
-  (call_interface get-arg0 const_pointer.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_const_pointer arg0 call.wasm return)
+  (defined_import get-arg0 const_pointer.from_i32 arg0 call.interface return)
 )
 
 ;; flags parameter
@@ -104,8 +104,8 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_bitflags arg0 call.wasm return)
-  (call_interface get-arg0 bitflags.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_bitflags arg0 call.wasm return)
+  (defined_import get-arg0 bitflags.from_i32 arg0 call.interface return)
 )
 (assert_abi
   (witx
@@ -113,8 +113,8 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i64))
-  (call_wasm get-arg0 i64.from_bitflags arg0 call.wasm return)
-  (call_interface get-arg0 bitflags.from_i64 arg0 call.interface return)
+  (declared_import get-arg0 i64.from_bitflags arg0 call.wasm return)
+  (defined_import get-arg0 bitflags.from_i64 arg0 call.interface return)
 )
 
 ;; struct parameter
@@ -124,8 +124,8 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 addr-of arg0 call.wasm return)
-  (call_interface get-arg0 load arg0 call.interface return)
+  (declared_import get-arg0 addr-of arg0 call.wasm return)
+  (defined_import get-arg0 load arg0 call.interface return)
 )
 
 ;; handle parameter
@@ -135,8 +135,8 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 i32.from_handle arg0 call.wasm return)
-  (call_interface get-arg0 handle.from_i32 arg0 call.interface return)
+  (declared_import get-arg0 i32.from_borrowed_handle arg0 call.wasm return)
+  (defined_import get-arg0 handle.borrowed_from_i32 arg0 call.interface return)
 )
 
 ;; list parameter
@@ -145,8 +145,8 @@
     (module $x (@interface func (export "f") (param $p (list u8))))
   )
   (wasm (param i32 i32))
-  (call_wasm get-arg0 list.pointer_length arg0 call.wasm return)
-  (call_interface
+  (declared_import get-arg0 list.pointer_length arg0 call.wasm return)
+  (defined_import
     get-arg0
     get-arg1
     list.from_pointer_length arg0 arg1
@@ -161,8 +161,8 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 enum.lower arg0 call.wasm return)
-  (call_interface get-arg0 enum.lift arg0 call.interface return)
+  (declared_import get-arg0 enum.lower arg0 call.wasm return)
+  (defined_import get-arg0 enum.lift arg0 call.interface return)
 )
 (assert_abi
   (witx
@@ -170,100 +170,100 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (call_wasm get-arg0 addr-of arg0 call.wasm return)
-  (call_interface get-arg0 load arg0 call.interface return)
+  (declared_import get-arg0 addr-of arg0 call.wasm return)
+  (defined_import get-arg0 load arg0 call.interface return)
 )
 
 ;; scalar returns
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p u8))))
   (wasm (result i32))
-  (call_wasm call.wasm u8.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u8 ret0 return)
+  (declared_import call.wasm u8.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u8 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p s8))))
   (wasm (result i32))
-  (call_wasm call.wasm s8.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s8 ret0 return)
+  (declared_import call.wasm s8.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s8 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p u16))))
   (wasm (result i32))
-  (call_wasm call.wasm u16.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u16 ret0 return)
+  (declared_import call.wasm u16.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u16 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p s16))))
   (wasm (result i32))
-  (call_wasm call.wasm s16.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s16 ret0 return)
+  (declared_import call.wasm s16.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s16 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p u32))))
   (wasm (result i32))
-  (call_wasm call.wasm u32.from_i32 ret0 return)
-  (call_interface call.interface i32.from_u32 ret0 return)
+  (declared_import call.wasm u32.from_i32 ret0 return)
+  (defined_import call.interface i32.from_u32 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p s32))))
   (wasm (result i32))
-  (call_wasm call.wasm s32.from_i32 ret0 return)
-  (call_interface call.interface i32.from_s32 ret0 return)
+  (declared_import call.wasm s32.from_i32 ret0 return)
+  (defined_import call.interface i32.from_s32 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p u64))))
   (wasm (result i64))
-  (call_wasm call.wasm u64.from_i64 ret0 return)
-  (call_interface call.interface i64.from_u64 ret0 return)
+  (declared_import call.wasm u64.from_i64 ret0 return)
+  (defined_import call.interface i64.from_u64 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p s64))))
   (wasm (result i64))
-  (call_wasm call.wasm s64.from_i64 ret0 return)
-  (call_interface call.interface i64.from_s64 ret0 return)
+  (declared_import call.wasm s64.from_i64 ret0 return)
+  (defined_import call.interface i64.from_s64 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p f32))))
   (wasm (result f32))
-  (call_wasm call.wasm if32.from_f32 ret0 return)
-  (call_interface call.interface f32.from_if32 ret0 return)
+  (declared_import call.wasm if32.from_f32 ret0 return)
+  (defined_import call.interface f32.from_if32 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p f64))))
   (wasm (result f64))
-  (call_wasm call.wasm if64.from_f64 ret0 return)
-  (call_interface call.interface f64.from_if64 ret0 return)
+  (declared_import call.wasm if64.from_f64 ret0 return)
+  (defined_import call.interface f64.from_if64 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p (@witx usize)))))
   (wasm (result i32))
-  (call_wasm call.wasm usize.from_i32 ret0 return)
-  (call_interface call.interface i32.from_usize ret0 return)
+  (declared_import call.wasm usize.from_i32 ret0 return)
+  (defined_import call.interface i32.from_usize ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p (@witx char8)))))
   (wasm (result i32))
-  (call_wasm call.wasm char8.from_i32 ret0 return)
-  (call_interface call.interface i32.from_char8 ret0 return)
+  (declared_import call.wasm char8.from_i32 ret0 return)
+  (defined_import call.interface i32.from_char8 ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p char))))
   (wasm (result i32))
-  (call_wasm call.wasm char.from_i32 ret0 return)
-  (call_interface call.interface i32.from_char ret0 return)
+  (declared_import call.wasm char.from_i32 ret0 return)
+  (defined_import call.interface i32.from_char ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p (@witx pointer u8)))))
   (wasm (result i32))
-  (call_wasm call.wasm pointer.from_i32 ret0 return)
-  (call_interface call.interface i32.from_pointer ret0 return)
+  (declared_import call.wasm pointer.from_i32 ret0 return)
+  (defined_import call.interface i32.from_pointer ret0 return)
 )
 (assert_abi
   (witx (module $x (@interface func (export "f") (result $p (@witx const_pointer u8)))))
   (wasm (result i32))
-  (call_wasm call.wasm const_pointer.from_i32 ret0 return)
-  (call_interface call.interface i32.from_const_pointer ret0 return)
+  (declared_import call.wasm const_pointer.from_i32 ret0 return)
+  (defined_import call.interface i32.from_const_pointer ret0 return)
 )
 
 ;; flags ret0 return
@@ -273,8 +273,8 @@
     (module $x (@interface func (export "f") (result $p $a)))
   )
   (wasm (result i32))
-  (call_wasm call.wasm bitflags.from_i32 ret0 return)
-  (call_interface call.interface i32.from_bitflags ret0 return)
+  (declared_import call.wasm bitflags.from_i32 ret0 return)
+  (defined_import call.interface i32.from_bitflags ret0 return)
 )
 (assert_abi
   (witx
@@ -282,8 +282,8 @@
     (module $x (@interface func (export "f") (result $p $a)))
   )
   (wasm (result i64))
-  (call_wasm call.wasm bitflags.from_i64 ret0 return)
-  (call_interface call.interface i64.from_bitflags ret0 return)
+  (declared_import call.wasm bitflags.from_i64 ret0 return)
+  (defined_import call.interface i64.from_bitflags ret0 return)
 )
 
 ;; handle ret0 return
@@ -293,8 +293,8 @@
     (module $x (@interface func (export "f") (result $p $a)))
   )
   (wasm (result i32))
-  (call_wasm call.wasm handle.from_i32 ret0 return)
-  (call_interface call.interface i32.from_handle ret0 return)
+  (declared_import call.wasm handle.owned_from_i32 ret0 return)
+  (defined_import call.interface i32.from_owned_handle ret0 return)
 )
 
 ;; struct return -- not supported
@@ -354,7 +354,7 @@
   )
   (wasm (result i32))
 
-  (call_wasm
+  (declared_import
     call.wasm
     ;; ok block, nothing happens
     block.push
@@ -368,7 +368,7 @@
     result.lift ret0
     return)
 
-  (call_interface
+  (defined_import
     call.interface
 
     ;; ok block, nothing happens
@@ -396,7 +396,7 @@
   )
   (wasm (param i32) (result i32))
 
-  (call_wasm
+  (declared_import
     call.wasm rp0
 
     ;; ok block, load the return pointer and have it be the result for the `Ok`
@@ -412,7 +412,7 @@
     result.lift ret0
     return)
 
-  (call_interface
+  (defined_import
     call.interface
 
     ;; store the successful result at the first return pointer (the first param)
@@ -442,7 +442,7 @@
   )
   (wasm (param i32 i32) (result i32))
 
-  (call_wasm
+  (declared_import
     call.wasm rp0 rp1
 
     block.push
@@ -459,7 +459,7 @@
     result.lift ret0
     return)
 
-  (call_interface
+  (defined_import
     call.interface
 
     ;; note the reverse order since we're consuming the results of lowering the

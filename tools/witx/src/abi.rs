@@ -143,203 +143,18 @@ def_instruction! {
         /// Depending on the context this may refer to wasm parameters or
         /// interface types parameters.
         GetArg { nth: usize } : [0] => [1],
+
+        // Integer const/manipulation instructions
+
         /// Pushes the constant `val` onto the stack.
         I32Const { val: i32 } : [0] => [1],
-        /// Converts an interface type `char` value to a 32-bit integer
-        /// representing the unicode scalar value.
-        I32FromChar : [1] => [1],
-        /// Converts an interface type `u64` value to a wasm `i64`.
-        I64FromU64 : [1] => [1],
-        /// Converts an interface type `s64` value to a wasm `i64`.
-        I64FromS64 : [1] => [1],
-        /// Converts an interface type `u32` value to a wasm `i32`.
-        I32FromU32 : [1] => [1],
-        /// Converts an interface type `s32` value to a wasm `i32`.
-        I32FromS32 : [1] => [1],
-        /// Converts an interface type `u16` value to a wasm `i32`.
-        I32FromU16 : [1] => [1],
-        /// Converts an interface type `s16` value to a wasm `i32`.
-        I32FromS16 : [1] => [1],
-        /// Converts an interface type `u8` value to a wasm `i32`.
-        I32FromU8 : [1] => [1],
-        /// Converts an interface type `s8` value to a wasm `i32`.
-        I32FromS8 : [1] => [1],
-        /// Converts a language-specific `usize` value to a wasm `i32`.
-        I32FromUsize : [1] => [1],
-        /// Converts a language-specific C `char` value to a wasm `i32`.
-        I32FromChar8 : [1] => [1],
-        /// Converts a language-specific handle value to a wasm `i32`.
-        I32FromHandle { ty: &'a NamedType } : [1] => [1],
-        /// Lowers a list whose elements can be directly copied and interpreted
-        /// with no validation whatsoever.
-        ///
-        /// Pops a list value from the stack and pushes the pointer/length onto
-        /// the stack. Note that this consumes the list and the list must be an
-        /// owned allocation.
-        ListCanonLower {
-            element: &'a TypeRef,
-            malloc: String,
-        } : [1] => [2],
-        /// Lowers a list whose elements are copied one-by-one into a new list.
-        ///
-        /// Pops a list value from the stack and pushes the pointer/length onto
-        /// the stack. Note that this consumes the list as an owned allocation
-        /// and must produce an owned allocation.
-        ///
-        /// This operation also pops a block from the block stack which is used
-        /// as the iteration body of writing each element of the list consumed.
-        ListLower {
-            element: &'a TypeRef,
-            malloc: String,
-        } : [1] => [2],
-        /// Lifts a list which has a canonical representation into an interface
-        /// types value.
-        ///
-        /// This will consume two `i32` values from the stack, a pointer and a
-        /// length, and then produces an interface value list. Note that the
-        /// pointer/length popped are **owned** and need to be deallocated when
-        /// the interface type is dropped.
-        ListCanonLift {
-            element: &'a TypeRef,
-            free: String,
-        } : [2] => [1],
-        /// Lifts a list which into an interface types value.
-        ///
-        /// This will consume two `i32` values from the stack, a pointer and a
-        /// length, and then produces an interface value list. Note that the
-        /// pointer/length popped are **owned** and need to be deallocated when
-        /// the interface type is dropped.
-        ///
-        /// This will also pop a block from the block stack which is how to
-        /// read each individual element from the list.
-        ListLift {
-            element: &'a TypeRef,
-            free: String,
-        } : [2] => [1],
-        /// Pushes an operand onto the stack representing the list item from
-        /// each iteration of the list.
-        ///
-        /// This is only used inside of blocks related to lowering lists.
-        IterElem : [0] => [1],
-        /// Pushes an operand onto the stack representing the base pointer of
-        /// the next element in a list.
-        ///
-        /// This is sused for both lifting and lowering lists.
-        IterBasePointer : [0] => [1],
-        /// Conversion an interface type `f32` value to a wasm `f32`.
-        ///
-        /// This may be a noop for some implementations, but it's here in case the
-        /// native language representation of `f32` is different than the wasm
-        /// representation of `f32`.
-        F32FromIf32 : [1] => [1],
-        /// Conversion an interface type `f64` value to a wasm `f64`.
-        ///
-        /// This may be a noop for some implementations, but it's here in case the
-        /// native language representation of `f64` is different than the wasm
-        /// representation of `f64`.
-        F64FromIf64 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific C `char`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        Char8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific `usize`.
-        UsizeFromI32 : [1] => [1],
-
-        /// Represents a call to a raw WebAssembly API. The module/name are
-        /// provided inline as well as the types if necessary.
-        CallWasm {
-            module: &'a str,
-            name: &'a str,
-            params: &'a [WasmType],
-            results: &'a [WasmType],
-        } : [params.len()] => [results.len()],
-
-        /// Same as `CallWasm`, except the dual where an interface is being
-        /// called rather than a raw wasm function.
-        CallInterface {
-            module: &'a str,
-            func: &'a InterfaceFunc,
-        } : [func.params.len()] => [func.results.len()],
-
-        /// Converts a native wasm `i32` to an interface type `s8`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        S8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u8`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        U8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `s16`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        S16FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u16`.
-        ///
-        /// This will truncate the upper bits of the `i32`.
-        U16FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `s32`.
-        S32FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u32`.
-        U32FromI32 : [1] => [1],
-        /// Converts a native wasm `i64` to an interface type `s64`.
-        S64FromI64 : [1] => [1],
-        /// Converts a native wasm `i64` to an interface type `u64`.
-        U64FromI64 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `char`.
-        ///
-        /// It's safe to assume that the `i32` is indeed a valid unicode code point.
-        CharFromI32 : [1] => [1],
-        /// Converts a native wasm `f32` to an interface type `f32`.
-        If32FromF32 : [1] => [1],
-        /// Converts a native wasm `f64` to an interface type `f64`.
-        If64FromF64 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `handle`.
-        HandleFromI32 { ty: &'a NamedType } : [1] => [1],
-        /// Returns `amt` values on the stack. This is always the last
-        /// instruction.
-        Return { amt: usize } : [*amt] => [0],
-
-        /// Pops a record value off the stack, decomposes the record to all of
-        /// its fields, and then pushes the fields onto the stack.
-        RecordLower {
-            ty: &'a RecordDatatype,
-            name: Option<&'a NamedType>,
-        } : [1] => [ty.members.len()],
-        /// Pops all fields for a record off the stack and then composes them
-        /// into a record.
-        RecordLift {
-            ty: &'a RecordDatatype,
-            name: Option<&'a NamedType>,
-        } : [ty.members.len()] => [1],
-
-        /// This is a special instruction used at the entry of blocks used as
-        /// part of `ResultLower`, representing that the payload of that variant
-        /// being matched on should be pushed onto the stack.
-        VariantPayload : [0] => [1],
-
-        /// Pops a variant off the stack as well as `ty.cases.len()` blocks
-        /// from the code generator. Uses each of those blocks and the value
-        /// from the stack to produce `nresults` of items.
-        VariantLower {
-            ty: &'a Variant,
-            name: Option<&'a NamedType>,
-            nresults: usize,
-        } : [1] => [*nresults],
-
-        /// Pops an `i32` off the stack as well as `ty.cases.len()` blocks
-        /// from the code generator. Uses each of those blocks and the value
-        /// from the stack to produce a final variant.
-        VariantLift {
-            ty: &'a Variant,
-            name: Option<&'a NamedType>,
-        } : [1] => [1],
-
         /// Casts the top N items on the stack using the `Bitcast` enum
         /// provided. Consumes the same number of operands that this produces.
         Bitcasts { casts: &'a [Bitcast] } : [casts.len()] => [casts.len()],
-
         /// Pushes a number of constant zeros for each wasm type on the stack.
         ConstZero { tys: &'a [WasmType] } : [0] => [tys.len()],
+
+        // Memory load/store instructions
 
         /// Pops an `i32` from the stack and loads a little-endian `i32` from
         /// it, using the specified constant offset.
@@ -394,6 +209,342 @@ def_instruction! {
         /// Stores the value in little-endian at the pointer specified plus the
         /// constant `offset`.
         F64Store { offset: i32 } : [2] => [0],
+
+        // Scalar lifting/lowering
+
+        /// Converts an interface type `char` value to a 32-bit integer
+        /// representing the unicode scalar value.
+        I32FromChar : [1] => [1],
+        /// Converts an interface type `u64` value to a wasm `i64`.
+        I64FromU64 : [1] => [1],
+        /// Converts an interface type `s64` value to a wasm `i64`.
+        I64FromS64 : [1] => [1],
+        /// Converts an interface type `u32` value to a wasm `i32`.
+        I32FromU32 : [1] => [1],
+        /// Converts an interface type `s32` value to a wasm `i32`.
+        I32FromS32 : [1] => [1],
+        /// Converts an interface type `u16` value to a wasm `i32`.
+        I32FromU16 : [1] => [1],
+        /// Converts an interface type `s16` value to a wasm `i32`.
+        I32FromS16 : [1] => [1],
+        /// Converts an interface type `u8` value to a wasm `i32`.
+        I32FromU8 : [1] => [1],
+        /// Converts an interface type `s8` value to a wasm `i32`.
+        I32FromS8 : [1] => [1],
+        /// Converts a language-specific `usize` value to a wasm `i32`.
+        I32FromUsize : [1] => [1],
+        /// Converts a language-specific C `char` value to a wasm `i32`.
+        I32FromChar8 : [1] => [1],
+        /// Conversion an interface type `f32` value to a wasm `f32`.
+        ///
+        /// This may be a noop for some implementations, but it's here in case the
+        /// native language representation of `f32` is different than the wasm
+        /// representation of `f32`.
+        F32FromIf32 : [1] => [1],
+        /// Conversion an interface type `f64` value to a wasm `f64`.
+        ///
+        /// This may be a noop for some implementations, but it's here in case the
+        /// native language representation of `f64` is different than the wasm
+        /// representation of `f64`.
+        F64FromIf64 : [1] => [1],
+
+        /// Converts a native wasm `i32` to an interface type `s8`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        S8FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `u8`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        U8FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `s16`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        S16FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `u16`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        U16FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `s32`.
+        S32FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `u32`.
+        U32FromI32 : [1] => [1],
+        /// Converts a native wasm `i64` to an interface type `s64`.
+        S64FromI64 : [1] => [1],
+        /// Converts a native wasm `i64` to an interface type `u64`.
+        U64FromI64 : [1] => [1],
+        /// Converts a native wasm `i32` to an interface type `char`.
+        ///
+        /// It's safe to assume that the `i32` is indeed a valid unicode code point.
+        CharFromI32 : [1] => [1],
+        /// Converts a native wasm `f32` to an interface type `f32`.
+        If32FromF32 : [1] => [1],
+        /// Converts a native wasm `f64` to an interface type `f64`.
+        If64FromF64 : [1] => [1],
+        /// Converts a native wasm `i32` to a language-specific C `char`.
+        ///
+        /// This will truncate the upper bits of the `i32`.
+        Char8FromI32 : [1] => [1],
+        /// Converts a native wasm `i32` to a language-specific `usize`.
+        UsizeFromI32 : [1] => [1],
+
+        // Handles
+
+        /// Converts a "borrowed" handle into a wasm `i32` value.
+        ///
+        /// A "borrowed" handle in this case means one where ownership is not
+        /// being relinquished. This is only used for lowering interface types
+        /// parameters.
+        ///
+        /// Situations that this is used are:
+        ///
+        /// * A wasm exported function receives, as a parameter, handles defined
+        ///   by the wasm module itself. This is effectively proof of ownership
+        ///   by an external caller (be it host or wasm module) and the
+        ///   ownership of the handle still lies with the caller. The wasm
+        ///   module is only receiving a reference to the resource.
+        ///
+        /// * A wasm module is calling an import with a handle defined by the
+        ///   import's module. Sort of the converse of the previous case this
+        ///   means that the wasm module is handing out a reference to a
+        ///   resource that it owns. The type in the wasm module, for example,
+        ///   needs to reflect this.
+        ///
+        /// This instruction is not used for return values in either
+        /// export/import positions.
+        I32FromBorrowedHandle { ty: &'a NamedType } : [1] => [1],
+
+        /// Converts an "owned" handle into a wasm `i32` value.
+        ///
+        /// This conversion is used for handle values which are crossing a
+        /// module boundary for perhaps the first time. Some example cases of
+        /// when this conversion is used are:
+        ///
+        /// * When a host defines a function to be imported, returned handles
+        ///   use this instruction. Handles being returned to wasm a granting a
+        ///   capability, which means that this new capability is typically
+        ///   wrapped up in a new integer descriptor.
+        ///
+        /// * When a wasm module calls an imported function with a type defined
+        ///   by itself, then it's granting a capability to the callee. This
+        ///   means that the wasm module's type is being granted for the first
+        ///   time, possibly, so it needs to be an owned value that's consumed.
+        ///   Note that this doesn't actually happen with `*.witx` today due to
+        ///   the lack of handle type imports.
+        ///
+        /// * When a wasm module export returns a handle defined within the
+        ///   module, then it's similar to calling an imported function with
+        ///   that handle. The capability is being granted to the caller of the
+        ///   export, so the owned value is wrapped up in an `i32`.
+        ///
+        /// * When a host is calling a wasm module with a capability defined by
+        ///   the host, its' similar to the host import returning a capability.
+        ///   This would be granting the wasm module with the capability so an
+        ///   owned version with a fresh handle is passed to the wasm module.
+        ///   Note that this doesn't happen today with `*.witx` due to the lack
+        ///   of handle type imports.
+        ///
+        /// Basically this instruction is used for handle->wasm conversions
+        /// depending on the calling context and where the handle type in
+        /// question was defined.
+        I32FromOwnedHandle { ty: &'a NamedType } : [1] => [1],
+
+        /// Converts a native wasm `i32` into an owned handle value.
+        ///
+        /// This is the converse of `I32FromOwnedHandle` and is used in similar
+        /// situations:
+        ///
+        /// * A host definition of an import receives a handle defined in the
+        ///   module itself.
+        /// * A wasm module calling an import receives a handle defined by the
+        ///   import.
+        /// * A wasm module's export receives a handle defined by an external
+        ///   module.
+        /// * A host calling a wasm export receives a handle defined in the
+        ///   module.
+        ///
+        /// Note that like `I32FromOwnedHandle` the first and third bullets
+        /// above don't happen today because witx can't express type imports
+        /// just yet.
+        HandleOwnedFromI32 { ty: &'a NamedType } : [1] => [1],
+
+        /// Converts a native wasm `i32` into a borrowedhandle value.
+        ///
+        /// This is the converse of `I32FromBorrowedHandle` and is used in similar
+        /// situations:
+        ///
+        /// * An exported wasm function receives, as a parameter, a handle that
+        ///   is defined by the wasm module.
+        /// * An host-defined imported function is receiving a handle, as a
+        ///   parameter, that is defined by the host itself.
+        HandleBorrowedFromI32 { ty: &'a NamedType } : [1] => [1],
+
+        // lists
+
+        /// Lowers a list where the element's layout in the native language is
+        /// expected to match the canonical ABI definition of interface types.
+        ///
+        /// Pops a list value from the stack and pushes the pointer/length onto
+        /// the stack. If `malloc` is set to `Some` then this is expected to
+        /// *consume* the list which means that the data needs to be copied. An
+        /// allocation/copy is expected when:
+        ///
+        /// * A host is calling a wasm export with a list (it needs to copy the
+        ///   list in to the callee's module, allocating space with `malloc`)
+        /// * A wasm export is returning a list (it's expected to use `malloc`
+        ///   to give ownership of the list to the caller.
+        /// * A host is returning a list in a import definition, meaning that
+        ///   space needs to be allocated in the caller with `malloc`).
+        ///
+        /// A copy does not happen (e.g. `malloc` is `None`) when:
+        ///
+        /// * A wasm module calls an import with the list. In this situation
+        ///   it's expected the caller will know how to access this module's
+        ///   memory (e.g. the host has raw access or wasm-to-wasm communication
+        ///   would copy the list).
+        ///
+        /// Note that the adapter is not responsible for cleaning up this list.
+        /// It's either owned by the caller (`malloc` is `None`) or the
+        /// receiving end is responsible for cleanup (`malloc` is `Some`)
+        ListCanonLower {
+            element: &'a TypeRef,
+            malloc: Option<String>,
+        } : [1] => [2],
+
+        /// Lowers a list where the element's layout in the native language is
+        /// not expected to match the canonical ABI definition of interface
+        /// types.
+        ///
+        /// Pops a list value from the stack and pushes the pointer/length onto
+        /// the stack. This operation also pops a block from the block stack
+        /// which is used as the iteration body of writing each element of the
+        /// list consumed.
+        ///
+        /// The `malloc` function is expected to be used within the
+        /// wasm module to allocate memory. The `owned` flag is set similar to
+        /// the ownership of `ListCanonLower`, meaning it's always `true` except
+        /// for when the lowering is happening for a wasm module calling an
+        /// imported function.
+        ///
+        /// Note, though, that the `owned` flag is only describing the interface
+        /// types value we're lowering from. This instruction is expected to
+        /// always create an owned allocation as part of lowering. Lifting on
+        /// the other side will always deallocate the list passed.
+        ListLower {
+            element: &'a TypeRef,
+            malloc: String,
+            owned: bool,
+        } : [1] => [2],
+
+        /// Lifts a list which has a canonical representation into an interface
+        /// types value.
+        ///
+        /// The term "canonical" representation here means that the
+        /// representation of the interface types value in the native language
+        /// exactly matches the canonical ABI definition of the type.
+        ///
+        /// This will consume two `i32` values from the stack, a pointer and a
+        /// length, and then produces an interface value list. If the `free`
+        /// field is set to `Some` then the pointer/length should be considered
+        /// an owned allocation and need to be deallocated by the receiver. If
+        /// it is set to `None` then a view is provided but it does not need to
+        /// be deallocated.
+        ///
+        /// The `free` field is set to `Some` in similar situations as described
+        /// by `ListCanonLower`.
+        ListCanonLift {
+            element: &'a TypeRef,
+            free: Option<String>,
+        } : [2] => [1],
+
+        /// Lifts a list which into an interface types value.
+        ///
+        /// This will consume two `i32` values from the stack, a pointer and a
+        /// length, and then produces an interface value list. Note that the
+        /// pointer/length popped are **owned** and need to be deallocated with
+        /// the wasm `free` function when the list is no longer needed.
+        ///
+        /// This will also pop a block from the block stack which is how to
+        /// read each individual element from the list.
+        ListLift {
+            element: &'a TypeRef,
+            free: String,
+        } : [2] => [1],
+
+        /// Pushes an operand onto the stack representing the list item from
+        /// each iteration of the list.
+        ///
+        /// This is only used inside of blocks related to lowering lists.
+        IterElem : [0] => [1],
+
+        /// Pushes an operand onto the stack representing the base pointer of
+        /// the next element in a list.
+        ///
+        /// This is used for both lifting and lowering lists.
+        IterBasePointer : [0] => [1],
+
+        // records
+
+        /// Pops a record value off the stack, decomposes the record to all of
+        /// its fields, and then pushes the fields onto the stack.
+        RecordLower {
+            ty: &'a RecordDatatype,
+            name: Option<&'a NamedType>,
+        } : [1] => [ty.members.len()],
+
+        /// Pops all fields for a record off the stack and then composes them
+        /// into a record.
+        RecordLift {
+            ty: &'a RecordDatatype,
+            name: Option<&'a NamedType>,
+        } : [ty.members.len()] => [1],
+
+        // variants
+
+        /// This is a special instruction used at the entry of blocks used as
+        /// part of `ResultLower`, representing that the payload of that variant
+        /// being matched on should be pushed onto the stack.
+        VariantPayload : [0] => [1],
+
+        /// Pops a variant off the stack as well as `ty.cases.len()` blocks
+        /// from the code generator. Uses each of those blocks and the value
+        /// from the stack to produce `nresults` of items.
+        VariantLower {
+            ty: &'a Variant,
+            name: Option<&'a NamedType>,
+            nresults: usize,
+        } : [1] => [*nresults],
+
+        /// Pops an `i32` off the stack as well as `ty.cases.len()` blocks
+        /// from the code generator. Uses each of those blocks and the value
+        /// from the stack to produce a final variant.
+        VariantLift {
+            ty: &'a Variant,
+            name: Option<&'a NamedType>,
+        } : [1] => [1],
+
+        // calling/control flow
+
+        /// Represents a call to a raw WebAssembly API. The module/name are
+        /// provided inline as well as the types if necessary.
+        CallWasm {
+            module: &'a str,
+            name: &'a str,
+            params: &'a [WasmType],
+            results: &'a [WasmType],
+        } : [params.len()] => [results.len()],
+
+        /// Same as `CallWasm`, except the dual where an interface is being
+        /// called rather than a raw wasm function.
+        CallInterface {
+            module: &'a str,
+            func: &'a InterfaceFunc,
+        } : [func.params.len()] => [func.results.len()],
+
+        /// Returns `amt` values on the stack. This is always the last
+        /// instruction.
+        Return { amt: usize } : [*amt] => [0],
+
+        // ...
 
         /// An instruction from an extended instruction set that's specific to
         /// `*.witx` and the "Preview1" ABI.
@@ -804,20 +955,56 @@ impl InterfaceFunc {
     /// language-specific values into the wasm types to call a WASI function,
     /// and it will also automatically convert the results of the WASI function
     /// back to a language-specific value.
-    pub fn call_wasm(&self, module: &Id, bindgen: &mut impl Bindgen) {
-        Generator::new(self.abi, bindgen).call_wasm(module, self);
+    pub fn call(&self, module: &Id, mode: CallMode, bindgen: &mut impl Bindgen) {
+        Generator::new(self.abi, mode, bindgen).call(module, self);
     }
+}
 
-    /// This is the dual of [`InterfaceFunc::call_wasm`], except that instead of
-    /// calling a wasm signature it generates code to come from a wasm signature
-    /// and call an interface types signature.
-    pub fn call_interface(&self, module: &Id, bindgen: &mut impl Bindgen) {
-        Generator::new(self.abi, bindgen).call_interface(module, self);
-    }
+/// Modes of calling a WebAssembly or host function.
+///
+/// Each mode may have a slightly different codegen for some types, so
+/// [`InterfaceFunc::call`] takes this as a parameter to know in what context
+/// the invocation is happening within.
+pub enum CallMode {
+    /// A defined export is being called.
+    ///
+    /// This typically means that a code generator is generating a shim function
+    /// to get exported from a WebAssembly module and the shim is calling a
+    /// native language function defined within the wasm module. In this mode
+    /// arguments are being lifted from wasm types to interface types, and
+    /// results are being lowered.
+    DefinedExport,
+
+    /// A declared export is being called.
+    ///
+    /// This typically means that a code generator is generating calls to a
+    /// WebAssembly module, for example a JS host calling a WebAssembly
+    /// instance. In this mode the native language's arguments are being lowered
+    /// to wasm values and the results of the function are lifted back into the
+    /// native language.
+    DeclaredExport,
+
+    /// A defined import is being called.
+    ///
+    /// This is typically used for code generators that are creating bindings in
+    /// a host for a function imported by WebAssembly. In this mode a function
+    /// with a wasm signature is generated and that function's wasm arguments
+    /// are lifted into the native language's arguments. The results are then
+    /// lowered back into wasm arguments to return.
+    DefinedImport,
+
+    /// A declared import is being called
+    ///
+    /// This is typically used for code generators that are calling an imported
+    /// function from within a wasm module. In this mode native language
+    /// arguments are lowered to wasm values, and the results of the import are
+    /// lifted back into the native language.
+    DeclaredImport,
 }
 
 struct Generator<'a, B: Bindgen> {
     abi: Abi,
+    mode: CallMode,
     bindgen: &'a mut B,
     operands: Vec<B::Operand>,
     results: Vec<B::Operand>,
@@ -826,9 +1013,10 @@ struct Generator<'a, B: Bindgen> {
 }
 
 impl<'a, B: Bindgen> Generator<'a, B> {
-    fn new(abi: Abi, bindgen: &'a mut B) -> Generator<'a, B> {
+    fn new(abi: Abi, mode: CallMode, bindgen: &'a mut B) -> Generator<'a, B> {
         Generator {
             abi,
+            mode,
             bindgen,
             operands: Vec::new(),
             results: Vec::new(),
@@ -837,46 +1025,103 @@ impl<'a, B: Bindgen> Generator<'a, B> {
         }
     }
 
-    fn call_wasm(&mut self, module: &Id, func: &InterfaceFunc) {
-        // Push all parameters for this function onto the stack, and then
-        // batch-lower everything all at once.
-        for nth in 0..func.params.len() {
-            self.emit(&Instruction::GetArg { nth });
-        }
-        self.lower_all(&func.params, None);
-
-        // If necessary we may need to prepare a return pointer for this ABI.
-        // The `Preview1` ABI has most return values returned through pointers,
-        // and the `Next` ABI returns more-than-one values through a return
-        // pointer.
+    fn call(&mut self, module: &Id, func: &InterfaceFunc) {
         let sig = func.wasm_signature();
-        self.prep_return_pointer(&sig, &func.results);
 
-        // Now that all the wasm args are prepared we can call the actual wasm
-        // function.
-        assert_eq!(self.stack.len(), sig.params.len());
-        self.emit(&Instruction::CallWasm {
-            module: module.as_str(),
-            name: func.name.as_str(),
-            params: &sig.params,
-            results: &sig.results,
-        });
+        match self.mode {
+            CallMode::DeclaredExport | CallMode::DeclaredImport => {
+                // Push all parameters for this function onto the stack, and
+                // then batch-lower everything all at once.
+                for nth in 0..func.params.len() {
+                    self.emit(&Instruction::GetArg { nth });
+                }
+                self.lower_all(&func.params, None);
 
-        // In the `Next` ABI we model multiple return values by going through
-        // memory. Remove that indirection here by loading everything to
-        // simulate the function having many return values in our stack
-        // discipline.
-        if let Some(actual) = &sig.retptr {
-            self.load_retptr(actual);
+                // If necessary we may need to prepare a return pointer for this
+                // ABI. The `Preview1` ABI has most return values returned
+                // through pointers, and the `Next` ABI returns more-than-one
+                // values through a return pointer.
+                self.prep_return_pointer(&sig, &func.results);
+
+                // Now that all the wasm args are prepared we can call the
+                // actual wasm function.
+                assert_eq!(self.stack.len(), sig.params.len());
+                self.emit(&Instruction::CallWasm {
+                    module: module.as_str(),
+                    name: func.name.as_str(),
+                    params: &sig.params,
+                    results: &sig.results,
+                });
+
+                // In the `Next` ABI we model multiple return values by going
+                // through memory. Remove that indirection here by loading
+                // everything to simulate the function having many return values
+                // in our stack discipline.
+                if let Some(actual) = &sig.retptr {
+                    self.load_retptr(actual);
+                }
+
+                // Batch-lift all result values now that all the function's return
+                // values are on the stack.
+                self.lift_all(&func.results, true);
+
+                self.emit(&Instruction::Return {
+                    amt: func.results.len(),
+                });
+            }
+
+            CallMode::DefinedExport | CallMode::DefinedImport => {
+                // Use `GetArg` to push all relevant arguments onto the stack.
+                // Note that we can't use the signature of this function
+                // directly due to various conversions and return pointers, so
+                // we need to somewhat manually calculate all the arguments
+                // which are converted as interface types arguments below.
+                let sig = func.wasm_signature();
+                let nargs = match self.abi {
+                    Abi::Preview1 => {
+                        func.params.len()
+                            + func
+                                .params
+                                .iter()
+                                .filter(|t| match &**t.tref.type_() {
+                                    Type::List(_) => true,
+                                    _ => false,
+                                })
+                                .count()
+                    }
+                    Abi::Next => sig.params.len() - sig.retptr.is_some() as usize,
+                };
+                for nth in 0..nargs {
+                    self.emit(&Instruction::GetArg { nth });
+                }
+
+                // Once everything is on the stack we can lift all arguments
+                // one-by-one into their interface-types equivalent.
+                self.lift_all(&func.params, false);
+
+                // ... and that allows us to call the interface types function
+                self.emit(&Instruction::CallInterface {
+                    module: module.as_str(),
+                    func,
+                });
+
+                // ... and at the end we lower everything back into return
+                // values.
+                self.lower_all(&func.results, Some(nargs));
+
+                // Our ABI dictates that a list of returned types are returned
+                // through memories, so after we've got all the values on the
+                // stack perform all of the stores here.
+                if let Some(tys) = &sig.retptr {
+                    self.store_retptr(tys, sig.params.len() - 1);
+                }
+
+                self.emit(&Instruction::Return {
+                    amt: sig.results.len(),
+                });
+            }
         }
 
-        // Batch-lift all result values now that all the function's return
-        // values are on the stack.
-        self.lift_all(&func.results, true);
-
-        self.emit(&Instruction::Return {
-            amt: func.results.len(),
-        });
         assert!(self.stack.is_empty());
     }
 
@@ -892,57 +1137,6 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 WasmType::F64 => self.emit(&Instruction::F64Load { offset }),
             }
         }
-    }
-
-    fn call_interface(&mut self, module: &Id, func: &InterfaceFunc) {
-        // Use `GetArg` to push all relevant arguments onto the stack. Note
-        // that we can't use the signature of this function directly due to
-        // various conversions and return pointers, so we need to somewhat
-        // manually calculate all the arguments which are converted as
-        // interface types arguments below.
-        let sig = func.wasm_signature();
-        let nargs = match self.abi {
-            Abi::Preview1 => {
-                func.params.len()
-                    + func
-                        .params
-                        .iter()
-                        .filter(|t| match &**t.tref.type_() {
-                            Type::List(_) => true,
-                            _ => false,
-                        })
-                        .count()
-            }
-            Abi::Next => sig.params.len() - sig.retptr.is_some() as usize,
-        };
-        for nth in 0..nargs {
-            self.emit(&Instruction::GetArg { nth });
-        }
-
-        // Once everything is on the stack we can lift all arguments one-by-one
-        // into their interface-types equivalent.
-        self.lift_all(&func.params, false);
-
-        // ... and that allows us to call the interface types function ...
-        self.emit(&Instruction::CallInterface {
-            module: module.as_str(),
-            func,
-        });
-
-        // ... and at the end we lower everything back into return values.
-        self.lower_all(&func.results, Some(nargs));
-
-        // Our ABI dictates that a list of returned types are returned through
-        // memories, so after we've got all the values on the stack perform
-        // all of the stores here.
-        if let Some(tys) = &sig.retptr {
-            self.store_retptr(tys, sig.params.len() - 1);
-        }
-
-        self.emit(&Instruction::Return {
-            amt: sig.results.len(),
-        });
-        assert!(self.stack.is_empty());
     }
 
     /// Assumes that the wasm values to create `tys` are all located on the
@@ -1078,15 +1272,74 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Builtin(BuiltinType::F64) => self.emit(&F64FromIf64),
             Type::Pointer(_) => self.witx(&I32FromPointer),
             Type::ConstPointer(_) => self.witx(&I32FromConstPointer),
-            Type::Handle(_) => self.emit(&I32FromHandle {
-                ty: ty.name().unwrap(),
-            }),
+            Type::Handle(_) => {
+                let ty = ty.name().unwrap();
+                let borrowed = match self.mode {
+                    // There's one of three possible situations we're in:
+                    //
+                    // * The handle is defined by the wasm module itself. This
+                    //   is the only actual possible scenario today due to how
+                    //   witx is defined. In this situation the handle is owned
+                    //   by the host and "proof of ownership" is being offered
+                    //   and there's no need to relinquish ownership.
+                    //
+                    // * The handle is defined by the host, and it's passing it
+                    //   to a wasm module. This should use an owned conversion.
+                    //   This isn't expressible in today's `*.witx` format.
+                    //
+                    // * The handle is defined by neither the host or the wasm
+                    //   mdoule. This means that the host is passing a
+                    //   capability from another wasm module into this one,
+                    //   meaning it's doing so by reference since the host is
+                    //   retaining access to its own
+                    //
+                    // Note, again, only the first bullet here is possible
+                    // today, hence the hardcoded `true` value. We'll need to
+                    // refactor `witx` to expose the other possibilities.
+                    CallMode::DeclaredExport => true,
+
+                    // Like above there's one of three possibilities. This means
+                    // a wasm module is calling an imported function with a
+                    // handle, and the handle is owned by either the wasm
+                    // module, the imported function we're calling, or neither.
+                    //
+                    // An owned value is only used when the wasm module passes
+                    // its own handle to the import. Otherwise a borrowed value
+                    // is always used because the wasm module retains ownership
+                    // of the original handle since it's a reference to
+                    // something owned elsewhere.
+                    //
+                    // Today the only expressible case is that an imported
+                    // function receives a handle that it itself defined, so
+                    // it's always borrowed.
+                    CallMode::DeclaredImport => true,
+
+                    // This means that a return value is being lowered, which is
+                    // never borrowed.
+                    CallMode::DefinedExport | CallMode::DefinedImport => false,
+                };
+                if borrowed {
+                    self.emit(&I32FromBorrowedHandle { ty });
+                } else {
+                    self.emit(&I32FromOwnedHandle { ty });
+                }
+            }
             Type::List(element) => match self.abi {
                 Abi::Preview1 => self.witx(&ListPointerLength),
                 Abi::Next => {
+                    // Lowering parameters calling a declared import means we
+                    // don't need to pass ownership, but we pass ownership in
+                    // all other cases.
+                    let owned = match self.mode {
+                        CallMode::DeclaredImport => false,
+                        _ => true,
+                    };
                     let malloc = String::from("witx_malloc");
                     if type_all_bits_valid(element) || is_char(element) {
-                        self.emit(&ListCanonLower { element, malloc });
+                        self.emit(&ListCanonLower {
+                            element,
+                            malloc: if owned { Some(malloc) } else { None },
+                        });
                     } else {
                         self.bindgen.push_block();
                         self.emit(&IterElem);
@@ -1094,7 +1347,11 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         let addr = self.stack.pop().unwrap();
                         self.write_to_memory(element, addr, 0);
                         self.finish_block(0);
-                        self.emit(&ListLower { element, malloc });
+                        self.emit(&ListLower {
+                            element,
+                            malloc,
+                            owned,
+                        });
                     }
                 }
             },
@@ -1311,15 +1568,36 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Builtin(BuiltinType::F64) => self.emit(&If64FromF64),
             Type::Pointer(ty) => self.witx(&PointerFromI32 { ty }),
             Type::ConstPointer(ty) => self.witx(&ConstPointerFromI32 { ty }),
-            Type::Handle(_) => self.emit(&HandleFromI32 {
-                ty: ty.name().unwrap(),
-            }),
+            Type::Handle(_) => {
+                let ty = ty.name().unwrap();
+                // For more information on these values see the comments in
+                // `lower` above.
+                let borrowed = match self.mode {
+                    CallMode::DefinedExport | CallMode::DefinedImport => true,
+                    CallMode::DeclaredExport | CallMode::DeclaredImport => false,
+                };
+                if borrowed {
+                    self.emit(&HandleBorrowedFromI32 { ty });
+                } else {
+                    self.emit(&HandleOwnedFromI32 { ty });
+                }
+            }
             Type::List(element) => match self.abi {
                 Abi::Preview1 => self.witx(&ListFromPointerLength { ty: element }),
                 Abi::Next => {
+                    // Lifting the arguments of a defined import means that, if
+                    // possible, the caller still retains ownership and we don't
+                    // free anything.
+                    let owned = match self.mode {
+                        CallMode::DefinedImport => false,
+                        _ => true,
+                    };
                     let free = String::from("witx_free");
                     if type_all_bits_valid(element) || is_char(element) {
-                        self.emit(&ListCanonLift { element, free });
+                        self.emit(&ListCanonLift {
+                            element,
+                            free: if owned { Some(free) } else { None },
+                        });
                     } else {
                         self.bindgen.push_block();
                         self.emit(&IterBasePointer);
