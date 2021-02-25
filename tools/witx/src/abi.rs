@@ -909,6 +909,16 @@ impl InterfaceFunc {
     /// and it will also automatically convert the results of the WASI function
     /// back to a language-specific value.
     pub fn call(&self, module: &Id, mode: CallMode, bindgen: &mut impl Bindgen) {
+        if Abi::Preview1 == self.abi {
+            match mode {
+                // The Preview1 ABI only works with WASI which is only intended
+                // for use with these modes.
+                CallMode::DefinedImport | CallMode::DeclaredImport => {}
+                _ => {
+                    panic!("the preview1 ABI only supports import modes");
+                }
+            }
+        }
         Generator::new(self.abi, mode, bindgen).call(module, self);
     }
 }
