@@ -133,7 +133,13 @@
   )
   (wasm (param i32))
   (declared_import get-arg0 addr-of arg0 call.wasm return)
-  (defined_import get-arg0 load arg0 call.interface return)
+  (defined_import
+    get-arg0
+    i32.load8u offset=0 arg0
+    u8.from_i32
+    record-lift
+    call.interface
+    return)
 )
 
 ;; handle parameter
@@ -153,11 +159,11 @@
     (module $x (@interface func (export "f") (param $p (list u8))))
   )
   (wasm (param i32 i32))
-  (declared_import get-arg0 list.pointer_length arg0 call.wasm return)
+  (declared_import get-arg0 list.canon_lower arg0 call.wasm return)
   (defined_import
     get-arg0
     get-arg1
-    list.from_pointer_length arg0 arg1
+    list.canon_lift arg0 arg1
     call.interface
     return)
 )
@@ -169,8 +175,21 @@
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
-  (declared_import get-arg0 enum.lower arg0 call.wasm return)
-  (defined_import get-arg0 enum.lift arg0 call.interface return)
+  (declared_import
+    get-arg0
+    block.push
+      i32.const 0
+    block.finish
+    variant-lower arg0
+    call.wasm
+    return)
+  (defined_import
+    get-arg0
+    block.push
+    block.finish
+    variant-lift arg0
+    call.interface
+    return)
 )
 (assert_abi
   (witx
@@ -179,7 +198,16 @@
   )
   (wasm (param i32))
   (declared_import get-arg0 addr-of arg0 call.wasm return)
-  (defined_import get-arg0 load arg0 call.interface return)
+  (defined_import
+    get-arg0
+    i32.load8u offset=0 arg0
+    block.push
+      f32.load offset=4 arg0
+      if32.from_f32
+    block.finish
+    variant-lift
+    call.interface
+    return)
 )
 
 ;; scalar returns
@@ -370,10 +398,14 @@
     ;; err block, we lift the return value as the num
     block.push
       reuse_return
-      enum.lift
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift
     block.finish
     ;; consumes 2 blocks and uses the return value of the call to discriminate
-    result.lift ret0
+    variant-lift ret0
     return)
 
   (defined_import
@@ -381,16 +413,23 @@
 
     ;; ok block, nothing happens
     block.push
+      i32.const 0
     block.finish
 
     ;; err block, lift the enum
     block.push
       variant-payload
-      enum.lower
+      block.push
+        i32.const 0
+      block.finish
+      block.push
+        i32.const 1
+      block.finish
+      variant-lower
     block.finish
 
     ;; consume the 2 blocks and lower based on the call
-    result.lower ret0
+    variant-lower ret0
     return)
 )
 
@@ -409,15 +448,20 @@
 
     ;; ok block, load the return pointer and have it be the result for the `Ok`
     block.push
-      load rp0
+      i32.load offset=0 rp0
+      u32.from_i32
     block.finish
 
     block.push
       reuse_return
-      enum.lift
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift
     block.finish
 
-    result.lift ret0
+    variant-lift ret0
     return)
 
   (defined_import
@@ -427,15 +471,23 @@
     block.push
       variant-payload
       get-arg0
-      store arg0
+      i32.from_u32
+      i32.store offset=0 arg0
+      i32.const 0
     block.finish
 
     block.push
       variant-payload
-      enum.lower
+      block.push
+        i32.const 0
+      block.finish
+      block.push
+        i32.const 1
+      block.finish
+      variant-lower
     block.finish
 
-    result.lower ret0
+    variant-lower ret0
     return)
 )
 
@@ -454,17 +506,24 @@
     call.wasm rp0 rp1
 
     block.push
-      load rp0
-      load rp1
-      tuple.lift
+      i32.load offset=0 rp0
+      u32.from_i32
+      i32.load offset=0 rp1
+      u32.from_i32
+      record-lift
+      record-lift
     block.finish
 
     block.push
       reuse_return
-      enum.lift
+      block.push
+      block.finish
+      block.push
+      block.finish
+      variant-lift
     block.finish
 
-    result.lift ret0
+    variant-lift ret0
     return)
 
   (defined_import
@@ -474,18 +533,28 @@
     ;; tuple
     block.push
       variant-payload
-      tuple.lower
+      record-lower
       get-arg1
-      store arg1
+      record-lower field.1
+      i32.from_u32 field.a
+      i32.store offset=0 arg1
       get-arg0
-      store arg0
+      i32.from_u32 field.0
+      i32.store offset=0 arg0
+      i32.const 0
     block.finish
 
     block.push
       variant-payload
-      enum.lower
+      block.push
+        i32.const 0
+      block.finish
+      block.push
+        i32.const 1
+      block.finish
+      variant-lower
     block.finish
 
-    result.lower ret0
+    variant-lower ret0
     return)
 )

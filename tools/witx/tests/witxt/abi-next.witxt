@@ -858,7 +858,7 @@
     block.push
       iter-base-pointer
       i32.load8u offset=0
-      i32.from_bitflags
+      bitflags.from_i32
     block.finish
     list.lift
     return

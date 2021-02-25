@@ -338,7 +338,7 @@ impl AbiBindgen<'_> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum Operand {
     Op(usize),
     Ret(usize),
@@ -482,17 +482,7 @@ impl witx::Bindgen for AbiBindgen<'_> {
             Witx { instr } => match instr {
                 PointerFromI32 { .. } => self.assert("pointer.from_i32"),
                 ConstPointerFromI32 { .. } => self.assert("const_pointer.from_i32"),
-                ResultLift => self.assert("result.lift"),
-                ResultLower { .. } => self.assert("result.lower"),
-                EnumLift { .. } => self.assert("enum.lift"),
-                EnumLower { .. } => self.assert("enum.lower"),
-                TupleLift { .. } => self.assert("tuple.lift"),
-                TupleLower { .. } => self.assert("tuple.lower"),
                 ReuseReturn => self.assert("reuse_return"),
-                ListFromPointerLength { .. } => self.assert("list.from_pointer_length"),
-                ListPointerLength => self.assert("list.pointer_length"),
-                Load { .. } => self.assert("load"),
-                Store { .. } => self.assert("store"),
                 I32FromPointer => self.assert("i32.from_pointer"),
                 I32FromConstPointer => self.assert("i32.from_const_pointer"),
                 AddrOf => self.assert("addr-of"),
