@@ -9,7 +9,7 @@ pub struct SizeAlign {
 
 impl SizeAlign {
     fn zero() -> SizeAlign {
-        SizeAlign { size: 0, align: 0 }
+        SizeAlign { size: 0, align: 1 }
     }
     fn append_field(&mut self, other: &SizeAlign) {
         self.align = self.align.max(other.align);
@@ -137,7 +137,7 @@ impl Layout for RecordDatatype {
 
 impl Layout for Variant {
     fn mem_size_align(&self) -> SizeAlign {
-        let mut max = SizeAlign { size: 0, align: 0 };
+        let mut max = SizeAlign::zero();
         for case in self.cases.iter() {
             let mut size = self.tag_repr.mem_size_align();
             if let Some(payload) = &case.tref {
