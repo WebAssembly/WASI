@@ -474,11 +474,12 @@ impl witx::Bindgen for AbiBindgen<'_> {
             IterElem => self.assert("iter-elem"),
             IterBasePointer => self.assert("iter-base-pointer"),
 
+            I32FromBitflags { .. } => self.assert("i32.from_bitflags"),
+            BitflagsFromI32 { .. } => self.assert("bitflags.from_i32"),
+            I64FromBitflags { .. } => self.assert("i64.from_bitflags"),
+            BitflagsFromI64 { .. } => self.assert("bitflags.from_i64"),
+
             Witx { instr } => match instr {
-                I32FromBitflags { .. } => self.assert("i32.from_bitflags"),
-                BitflagsFromI32 { .. } => self.assert("bitflags.from_i32"),
-                I64FromBitflags { .. } => self.assert("i64.from_bitflags"),
-                BitflagsFromI64 { .. } => self.assert("bitflags.from_i64"),
                 PointerFromI32 { .. } => self.assert("pointer.from_i32"),
                 ConstPointerFromI32 { .. } => self.assert("const_pointer.from_i32"),
                 ResultLift => self.assert("result.lift"),

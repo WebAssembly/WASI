@@ -798,3 +798,69 @@
     return
   )
 )
+
+;; bitflags
+(assert_abi
+  (witx
+    (typename $a (flags $a $b))
+    (module $x (export "f" (func (param $a $a) (result $b $a))))
+  )
+  (wasm (param i32) (result i32))
+  (declared_import
+    get-arg0
+    i32.from_bitflags arg0
+    call.wasm
+    bitflags.from_i32 ret0
+    return
+  )
+  (defined_import
+    get-arg0
+    bitflags.from_i32 arg0
+    call.interface
+    i32.from_bitflags ret0
+    return
+  )
+)
+(assert_abi
+  (witx
+    (typename $a (flags
+      $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7
+      $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15
+      $f16 $f17 $f18 $f19 $f20 $f21 $f22 $f23
+      $f24 $f25 $f26 $f27 $f28 $f29 $f30 $f31
+      $f32
+    ))
+    (module $x (export "f" (func (param $a $a) (result $b $a))))
+  )
+  (wasm (param i64) (result i64))
+)
+(assert_abi
+  (witx
+    (typename $a (flags $a $b))
+    (module $x (export "f" (func
+      (param $a (list $a))
+      (result $b (list $a))
+    )))
+  )
+  (wasm (param i32 i32 i32))
+  (declared_import
+    get-arg0
+    block.push
+      iter-elem
+      iter-base-pointer
+      i32.from_bitflags
+      i32.store8 offset=0
+    block.finish
+    list.lower arg0
+    call.wasm rp0
+    i32.load offset=0 rp0
+    i32.load offset=8 rp0
+    block.push
+      iter-base-pointer
+      i32.load8u offset=0
+      i32.from_bitflags
+    block.finish
+    list.lift
+    return
+  )
+)

@@ -21,8 +21,8 @@
 //! generators will need to implement the various instructions to support APIs.
 
 use crate::{
-    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype,
-    RecordKind, Type, TypeRef, Variant,
+    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype, Type,
+    TypeRef, Variant,
 };
 use std::mem;
 
@@ -498,6 +498,29 @@ def_instruction! {
             name: Option<&'a NamedType>,
         } : [ty.members.len()] => [1],
 
+        /// Converts a language-specific record-of-bools to the packed
+        /// representation as an `i32`.
+        I32FromBitflags {
+            ty: &'a RecordDatatype,
+            name: &'a NamedType,
+        } : [1] => [1],
+        /// Converts a language-specific record-of-bools to the packed
+        /// representation as an `i64`.
+        I64FromBitflags {
+            ty: &'a RecordDatatype,
+            name: &'a NamedType,
+        } : [1] => [1],
+        /// Converts a native wasm `i32` to a language-specific record-of-bools.
+        BitflagsFromI32 {
+            ty: &'a RecordDatatype,
+            name: &'a NamedType,
+        } : [1] => [1],
+        /// Converts a native wasm `i64` to a language-specific record-of-bools.
+        BitflagsFromI64 {
+            ty: &'a RecordDatatype,
+            name: &'a NamedType,
+        } : [1] => [1],
+
         // variants
 
         /// This is a special instruction used at the entry of blocks used as
@@ -583,12 +606,6 @@ def_instruction! {
         I32FromPointer : [1] => [1],
         /// Converts a language-specific pointer value to a wasm `i32`.
         I32FromConstPointer : [1] => [1],
-        /// Converts a language-specific record-of-bools to the packed
-        /// representation as an `i32`.
-        I32FromBitflags { ty: &'a NamedType } : [1] => [1],
-        /// Converts a language-specific record-of-bools to the packed
-        /// representation as an `i64`.
-        I64FromBitflags { ty: &'a NamedType } : [1] => [1],
         /// Pops two `i32` values from the stack and creates a list from them of
         /// the specified type. The first operand is the pointer in linear
         /// memory to the start of the list and the second operand is the
@@ -601,10 +618,6 @@ def_instruction! {
         PointerFromI32 { ty: &'a TypeRef }: [1] => [1],
         /// Converts a native wasm `i32` to a language-specific pointer.
         ConstPointerFromI32 { ty: &'a TypeRef } : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific record-of-bools.
-        BitflagsFromI32 { ty: &'a NamedType } : [1] => [1],
-        /// Converts a native wasm `i64` to a language-specific record-of-bools.
-        BitflagsFromI64 { ty: &'a NamedType } : [1] => [1],
         /// Loads the interface types value from an `i32` pointer popped from
         /// the stack.
         Load { ty: &'a NamedType } : [1] => [1],
@@ -733,12 +746,6 @@ impl Abi {
 fn validate_no_witx(ty: &Type) -> Result<(), String> {
     match ty {
         Type::Record(r) => {
-            match r.kind {
-                RecordKind::Bitflags(_) => {
-                    return Err("cannot use `(@witx bitflags)` in this ABI".to_string())
-                }
-                RecordKind::Tuple | RecordKind::Other => {}
-            }
             for r in r.members.iter() {
                 validate_no_witx(r.tref.type_())?;
             }
@@ -1357,10 +1364,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
-                    let ty = ty.name().unwrap();
+                    let name = ty.name().unwrap();
                     match repr {
-                        IntRepr::U64 => return self.witx(&I64FromBitflags { ty }),
-                        _ => return self.witx(&I32FromBitflags { ty }),
+                        IntRepr::U64 => return self.emit(&I64FromBitflags { ty: r, name }),
+                        _ => return self.emit(&I32FromBitflags { ty: r, name }),
                     }
                 }
                 match self.abi {
@@ -1610,10 +1617,10 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             },
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
-                    let ty = ty.name().unwrap();
+                    let name = ty.name().unwrap();
                     match repr {
-                        IntRepr::U64 => return self.witx(&BitflagsFromI64 { ty }),
-                        _ => return self.witx(&BitflagsFromI32 { ty }),
+                        IntRepr::U64 => return self.emit(&BitflagsFromI64 { ty: r, name }),
+                        _ => return self.emit(&BitflagsFromI32 { ty: r, name }),
                     }
                 }
                 match self.abi {
@@ -1770,26 +1777,54 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 self.emit(&I32Store { offset });
             }
 
-            // Decompose the record into its components and then write all the
-            // components into memory one-by-one.
-            Type::Record(r) => {
-                self.emit(&RecordLower {
-                    ty: r,
-                    name: ty.name(),
-                });
-                let fields = self
-                    .stack
-                    .drain(self.stack.len() - r.members.len()..)
-                    .collect::<Vec<_>>();
-                for (layout, field) in r.member_layout().iter().zip(fields) {
-                    self.stack.push(field);
-                    self.write_to_memory(
-                        &layout.member.tref,
-                        addr.clone(),
-                        offset + (layout.offset as i32),
-                    );
+            Type::Record(r) => match r.bitflags_repr() {
+                // Bitflags just have their appropriate width written into
+                // memory.
+                Some(repr) => {
+                    let name = ty.name().unwrap();
+                    let store = match repr {
+                        IntRepr::U64 => {
+                            self.emit(&I64FromBitflags { ty: r, name });
+                            I64Store { offset }
+                        }
+                        IntRepr::U32 => {
+                            self.emit(&I32FromBitflags { ty: r, name });
+                            I32Store { offset }
+                        }
+                        IntRepr::U16 => {
+                            self.emit(&I32FromBitflags { ty: r, name });
+                            I32Store16 { offset }
+                        }
+                        IntRepr::U8 => {
+                            self.emit(&I32FromBitflags { ty: r, name });
+                            I32Store8 { offset }
+                        }
+                    };
+                    self.stack.push(addr);
+                    self.emit(&store);
                 }
-            }
+
+                // Decompose the record into its components and then write all
+                // the components into memory one-by-one.
+                None => {
+                    self.emit(&RecordLower {
+                        ty: r,
+                        name: ty.name(),
+                    });
+                    let fields = self
+                        .stack
+                        .drain(self.stack.len() - r.members.len()..)
+                        .collect::<Vec<_>>();
+                    for (layout, field) in r.member_layout().iter().zip(fields) {
+                        self.stack.push(field);
+                        self.write_to_memory(
+                            &layout.member.tref,
+                            addr.clone(),
+                            offset + (layout.offset as i32),
+                        );
+                    }
+                }
+            },
 
             // Each case will get its own block, and the first item in each
             // case is writing the discriminant. After that if we have a
@@ -1858,21 +1893,38 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 self.lift(ty, false);
             }
 
-            // Read and lift each field individually, adjusting the offset
-            // as we go along, then aggregate all the fields into the record.
-            Type::Record(r) => {
-                for layout in r.member_layout() {
-                    self.read_from_memory(
-                        &layout.member.tref,
-                        addr.clone(),
-                        offset + (layout.offset as i32),
-                    );
+            Type::Record(r) => match r.bitflags_repr() {
+                // Bitflags just have their appropriate size read from
+                // memory.
+                Some(repr) => {
+                    let name = ty.name().unwrap();
+                    let (load, cast) = match repr {
+                        IntRepr::U64 => (I64Load { offset }, I64FromBitflags { ty: r, name }),
+                        IntRepr::U32 => (I32Load { offset }, I32FromBitflags { ty: r, name }),
+                        IntRepr::U16 => (I32Load16U { offset }, I32FromBitflags { ty: r, name }),
+                        IntRepr::U8 => (I32Load8U { offset }, I32FromBitflags { ty: r, name }),
+                    };
+                    self.stack.push(addr);
+                    self.emit(&load);
+                    self.emit(&cast);
                 }
-                self.emit(&RecordLift {
-                    ty: r,
-                    name: ty.name(),
-                });
-            }
+                // Read and lift each field individually, adjusting the offset
+                // as we go along, then aggregate all the fields into the
+                // record.
+                None => {
+                    for layout in r.member_layout() {
+                        self.read_from_memory(
+                            &layout.member.tref,
+                            addr.clone(),
+                            offset + (layout.offset as i32),
+                        );
+                    }
+                    self.emit(&RecordLift {
+                        ty: r,
+                        name: ty.name(),
+                    });
+                }
+            },
 
             // Each case will get its own block, and we'll dispatch to the
             // right block based on the `i32.load` we initially perform. Each
