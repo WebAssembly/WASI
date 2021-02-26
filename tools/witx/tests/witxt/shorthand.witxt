@@ -57,3 +57,9 @@
 (witx $b
   (typename $a (variant (case $0 u32) (case $1 u64))))
 (assert_representable eq $a "a" $b "a")
+
+(witx $a
+  (typename $a (option u32)))
+(witx $b
+  (typename $a (variant (case $none) (case $some u32))))
+(assert_representable eq $a "a" $b "a")

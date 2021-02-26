@@ -447,6 +447,29 @@ impl Variant {
         }
     }
 
+    /// If this variant looks like an `option` shorthand, return the type
+    /// associated with option.
+    ///
+    /// Only matches variants fo the form:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "none")
+    ///     (case "some" ty))
+    /// ```
+    pub fn as_option(&self) -> Option<&TypeRef> {
+        if self.cases.len() != 2 {
+            return None;
+        }
+        if self.cases[0].name != "none" || self.cases[0].tref.is_some() {
+            return None;
+        }
+        if self.cases[1].name != "some" {
+            return None;
+        }
+        self.cases[1].tref.as_ref()
+    }
+
     /// If this variant looks like an `expected` shorthand, return the ok/err
     /// types associated with this result.
     ///
