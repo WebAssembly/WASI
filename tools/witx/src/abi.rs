@@ -1310,7 +1310,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         _ => true,
                     };
                     let malloc = String::from("witx_malloc");
-                    if type_all_bits_valid(element) || is_char(element) {
+                    if element.type_().all_bits_valid() || is_char(element) {
                         self.emit(&ListCanonLower {
                             element,
                             malloc: if owned { Some(malloc) } else { None },
@@ -1573,7 +1573,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         _ => true,
                     };
                     let free = String::from("witx_free");
-                    if type_all_bits_valid(element) || is_char(element) {
+                    if element.type_().all_bits_valid() || is_char(element) {
                         self.emit(&ListCanonLift {
                             element,
                             free: if owned { Some(free) } else { None },
@@ -2030,28 +2030,6 @@ fn cast(from: WasmType, to: WasmType) -> Bitcast {
     }
 }
 
-fn type_all_bits_valid(ty: &TypeRef) -> bool {
-    match &**ty.type_() {
-        Type::Record(r) => r.members.iter().all(|t| type_all_bits_valid(&t.tref)),
-
-        Type::Builtin(BuiltinType::Char) | Type::Variant(_) | Type::Handle(_) | Type::List(_) => {
-            false
-        }
-
-        Type::Builtin(BuiltinType::U8 { .. })
-        | Type::Builtin(BuiltinType::S8)
-        | Type::Builtin(BuiltinType::U16)
-        | Type::Builtin(BuiltinType::S16)
-        | Type::Builtin(BuiltinType::U32 { .. })
-        | Type::Builtin(BuiltinType::S32)
-        | Type::Builtin(BuiltinType::U64)
-        | Type::Builtin(BuiltinType::S64)
-        | Type::Builtin(BuiltinType::F32)
-        | Type::Builtin(BuiltinType::F64)
-        | Type::Pointer(_)
-        | Type::ConstPointer(_) => true,
-    }
-}
 fn is_char(ty: &TypeRef) -> bool {
     match &**ty.type_() {
         Type::Builtin(BuiltinType::Char) => true,

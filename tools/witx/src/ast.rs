@@ -254,6 +254,35 @@ impl Type {
             Builtin(_) => "builtin",
         }
     }
+
+    /// Returns whether the in-memory representation of this type will always be
+    /// valid regardless of the value of all the bits in memory.
+    ///
+    /// This is only true for numerical types, pointers, and records of these
+    /// values. This is used for canonical lifting/lowering of lists.
+    pub fn all_bits_valid(&self) -> bool {
+        match self {
+            Type::Record(r) => r.members.iter().all(|t| t.tref.type_().all_bits_valid()),
+
+            Type::Builtin(BuiltinType::Char)
+            | Type::Variant(_)
+            | Type::Handle(_)
+            | Type::List(_) => false,
+
+            Type::Builtin(BuiltinType::U8 { .. })
+            | Type::Builtin(BuiltinType::S8)
+            | Type::Builtin(BuiltinType::U16)
+            | Type::Builtin(BuiltinType::S16)
+            | Type::Builtin(BuiltinType::U32 { .. })
+            | Type::Builtin(BuiltinType::S32)
+            | Type::Builtin(BuiltinType::U64)
+            | Type::Builtin(BuiltinType::S64)
+            | Type::Builtin(BuiltinType::F32)
+            | Type::Builtin(BuiltinType::F64)
+            | Type::Pointer(_)
+            | Type::ConstPointer(_) => true,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
