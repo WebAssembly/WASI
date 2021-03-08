@@ -402,12 +402,13 @@ def_instruction! {
         ///   memory (e.g. the host has raw access or wasm-to-wasm communication
         ///   would copy the list).
         ///
-        /// Note that the adapter is not responsible for cleaning up this list.
-        /// It's either owned by the caller (`malloc` is `None`) or the
-        /// receiving end is responsible for cleanup (`malloc` is `Some`)
+        /// If `malloc` is `Some` then the adapter is not responsible for
+        /// cleaning up this list because the other end is receiving the
+        /// allocation. If `malloc` is `None` then the adapter is responsible
+        /// for cleaning up any temporary allocation it created, if any.
         ListCanonLower {
             element: &'a TypeRef,
-            malloc: Option<String>,
+            malloc: Option<&'a str>,
         } : [1] => [2],
 
         /// Lowers a list where the element's layout in the native language is
@@ -419,20 +420,13 @@ def_instruction! {
         /// which is used as the iteration body of writing each element of the
         /// list consumed.
         ///
-        /// The `malloc` function is expected to be used within the
-        /// wasm module to allocate memory. The `owned` flag is set similar to
-        /// the ownership of `ListCanonLower`, meaning it's always `true` except
-        /// for when the lowering is happening for a wasm module calling an
-        /// imported function.
-        ///
-        /// Note, though, that the `owned` flag is only describing the interface
-        /// types value we're lowering from. This instruction is expected to
-        /// always create an owned allocation as part of lowering. Lifting on
-        /// the other side will always deallocate the list passed.
+        /// The `malloc` field here behaves the same way as `ListCanonLower`.
+        /// It's only set to `None` when a wasm module calls a declared import.
+        /// Otherwise lowering in other contexts requires allocating memory for
+        /// the receiver to own.
         ListLower {
             element: &'a TypeRef,
-            malloc: String,
-            owned: bool,
+            malloc: Option<&'a str>,
         } : [1] => [2],
 
         /// Lifts a list which has a canonical representation into an interface
@@ -450,10 +444,13 @@ def_instruction! {
         /// be deallocated.
         ///
         /// The `free` field is set to `Some` in similar situations as described
-        /// by `ListCanonLower`.
+        /// by `ListCanonLower`. If `free` is `Some` then the memory must be
+        /// deallocated after the lifted list is done being consumed. If it is
+        /// `None` then the receiver of the lifted list does not own the memory
+        /// and must leave the memory as-is.
         ListCanonLift {
             element: &'a TypeRef,
-            free: Option<String>,
+            free: Option<&'a str>,
         } : [2] => [1],
 
         /// Lifts a list which into an interface types value.
@@ -467,7 +464,7 @@ def_instruction! {
         /// read each individual element from the list.
         ListLift {
             element: &'a TypeRef,
-            free: String,
+            free: Option<&'a str>,
         } : [2] => [1],
 
         /// Pushes an operand onto the stack representing the list item from
@@ -1305,16 +1302,12 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     // Lowering parameters calling a declared import means we
                     // don't need to pass ownership, but we pass ownership in
                     // all other cases.
-                    let owned = match self.mode {
-                        CallMode::DeclaredImport => false,
-                        _ => true,
+                    let malloc = match self.mode {
+                        CallMode::DeclaredImport => None,
+                        _ => Some("witx_malloc"),
                     };
-                    let malloc = String::from("witx_malloc");
                     if element.type_().all_bits_valid() || is_char(element) {
-                        self.emit(&ListCanonLower {
-                            element,
-                            malloc: if owned { Some(malloc) } else { None },
-                        });
+                        self.emit(&ListCanonLower { element, malloc });
                     } else {
                         self.push_block();
                         self.emit(&IterElem);
@@ -1322,11 +1315,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         let addr = self.stack.pop().unwrap();
                         self.write_to_memory(element, addr, 0);
                         self.finish_block(0);
-                        self.emit(&ListLower {
-                            element,
-                            malloc,
-                            owned,
-                        });
+                        self.emit(&ListLower { element, malloc });
                     }
                 }
             },
@@ -1568,16 +1557,12 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     // Lifting the arguments of a defined import means that, if
                     // possible, the caller still retains ownership and we don't
                     // free anything.
-                    let owned = match self.mode {
-                        CallMode::DefinedImport => false,
-                        _ => true,
+                    let free = match self.mode {
+                        CallMode::DefinedImport => None,
+                        _ => Some("witx_free"),
                     };
-                    let free = String::from("witx_free");
                     if element.type_().all_bits_valid() || is_char(element) {
-                        self.emit(&ListCanonLift {
-                            element,
-                            free: if owned { Some(free) } else { None },
-                        });
+                        self.emit(&ListCanonLift { element, free });
                     } else {
                         self.push_block();
                         self.emit(&IterBasePointer);
