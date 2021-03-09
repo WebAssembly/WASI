@@ -15,3 +15,8 @@ cargo run -p witx-cli -- docs $1 \
   ../../phases/ephemeral/witx/wasi_ephemeral_sched.witx \
   ../../phases/ephemeral/witx/wasi_ephemeral_sock.witx \
   --output ../../phases/ephemeral/docs.md
+
+for dir in ../../standard/*/witx; do
+  cargo run -p witx-cli -- docs $1 "$dir"/*.witx \
+    --output "$dir"/../docs.md
+done
