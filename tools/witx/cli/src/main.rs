@@ -262,9 +262,7 @@ fn diff_against_filesystem(expected: &str, path: &Path) -> Result<(), ()> {
     }
 
     eprintln!();
-    eprintln!(
-        "To regenerate the files, run `tools/repo_docs.sh`."
-    );
+    eprintln!("To regenerate the files, run `tools/repo_docs.sh`.");
     eprintln!();
     Err(())
 }
