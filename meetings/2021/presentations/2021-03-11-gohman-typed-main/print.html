@@ -214,7 +214,7 @@
 <p>In WebAssembly, the address space isn't everything.</p>
 <p>Calls arguments are part of the call instruction.</p>
 <h1 id="webassembly-has-a-static-type-system"><a class="header" href="#webassembly-has-a-static-type-system">WebAssembly has a static type system</a></h1>
-<p>It has an up-front validation step, rather than just SIGILL on thy fly.</p>
+<p>It has an up-front validation step, rather than just SIGILL on the fly.</p>
 <h2 id="two-perspectives"><a class="header" href="#two-perspectives">Two perspectives</a></h2>
 <p>Minimize the differences to maximize compatibility?</p>
 <p>Or take advantages of the differences to do new things?</p>
@@ -255,7 +255,7 @@
 <h2 id="example-an-f32-argument"><a class="header" href="#example-an-f32-argument">Example: an <code>f32</code> argument</a></h2>
 <p>The user might type <code>&quot;6.283185</code>&quot;</p>
 <p>In some locales, the user might type <code>&quot;6,283185&quot;</code>.</p>
-<p>Or &quot;0x1.921fb5p+2&quot;`.</p>
+<p>Or `&quot;0x1.921fb5p+2&quot;`.</p>
 <p>Parsing in the Wasm engine means that all programs have a consistent
 interface.</p>
 <h2 id="example-a-handle-argument"><a class="header" href="#example-a-handle-argument">Example: a handle argument</a></h2>
