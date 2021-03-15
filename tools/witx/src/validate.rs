@@ -1,11 +1,11 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DeclSyntax, Documented, EnumSyntax, ExpectedSyntax, FlagsSyntax,
-        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, OptionSyntax, RecordSyntax, TupleSyntax,
-        TypedefSyntax, UnionSyntax, VariantSyntax,
+        BufferSyntax, CommentSyntax, DeclSyntax, Documented, EnumSyntax, ExpectedSyntax,
+        FlagsSyntax, HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, OptionSyntax, RecordSyntax,
+        TupleSyntax, TypedefSyntax, UnionSyntax, VariantSyntax,
     },
-    BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
+    Buffer, BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
     InterfaceFunc, InterfaceFuncParam, Location, Module, ModuleDefinition, ModuleEntry,
     ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordKind, RecordMember, Type,
     TypeRef, Variant,
@@ -328,6 +328,7 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::ConstPointer(syntax) => {
                     Type::ConstPointer(self.validate_datatype(syntax, false, span)?)
                 }
+                TypedefSyntax::Buffer(syntax) => Type::Buffer(self.validate_buffer(syntax, span)?),
                 TypedefSyntax::Builtin(builtin) => Type::Builtin(*builtin),
                 TypedefSyntax::String => {
                     Type::List(TypeRef::Value(Rc::new(Type::Builtin(BuiltinType::Char))))
@@ -644,6 +645,17 @@ impl DocValidationScope<'_> {
         _span: wast::Span,
     ) -> Result<HandleDatatype, ValidationError> {
         Ok(HandleDatatype {})
+    }
+
+    fn validate_buffer(
+        &self,
+        syntax: &BufferSyntax,
+        span: wast::Span,
+    ) -> Result<Buffer, ValidationError> {
+        Ok(Buffer {
+            out: syntax.out,
+            tref: self.validate_datatype(&syntax.ty, false, span)?,
+        })
     }
 
     fn validate_int_repr(

@@ -236,6 +236,8 @@ pub enum Type {
     /// A `witx`-specific type representing a raw const pointer into linear
     /// memory
     ConstPointer(TypeRef),
+    /// A buffer type representing a window in memory
+    Buffer(Buffer),
     /// A builtin base-case type.
     Builtin(BuiltinType),
 }
@@ -251,6 +253,7 @@ impl Type {
             List(_) => "list",
             Pointer(_) => "pointer",
             ConstPointer(_) => "constpointer",
+            Buffer(_) => "buffer",
             Builtin(_) => "builtin",
         }
     }
@@ -267,6 +270,7 @@ impl Type {
             Type::Builtin(BuiltinType::Char)
             | Type::Variant(_)
             | Type::Handle(_)
+            | Type::Buffer(_)
             | Type::List(_) => false,
 
             Type::Builtin(BuiltinType::U8 { .. })
@@ -694,4 +698,14 @@ pub struct Constant {
     pub name: Id,
     pub value: u64,
     pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Buffer {
+    /// Whether or not this is an `out` buffer (`true`) or an `in` buffer
+    /// (`false`)
+    pub out: bool,
+
+    /// The type of items this buffer contains
+    pub tref: TypeRef,
 }

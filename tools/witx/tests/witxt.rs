@@ -13,7 +13,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::str;
 use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
-use wast::parser::{self, Parse, ParseBuffer, Parser};
+use wast::parser::{self, Cursor, Parse, ParseBuffer, Parser, Peek};
 use witx::{Documentation, Instruction, Representable, WasmType};
 
 fn main() {
@@ -194,24 +194,25 @@ impl WitxtRunner<'_> {
             }
             WitxtDirective::AssertAbi {
                 witx,
-                wasm_signature: (wasm_params, wasm_results),
+                wasm_signatures,
                 abis,
                 ..
             } => {
                 let doc = witx.document(contents, test)?;
                 let module = doc.modules().next().ok_or_else(|| anyhow!("no modules"))?;
                 let func = module.funcs().next().ok_or_else(|| anyhow!("no funcs"))?;
-
-                let sig = func.wasm_signature();
-                if sig.params != wasm_params {
-                    bail!("expected params {:?}, found {:?}", wasm_params, sig.params);
-                }
-                if sig.results != wasm_results {
-                    bail!(
-                        "expected results {:?}, found {:?}",
-                        wasm_results,
-                        sig.results
-                    );
+                for (mode, wasm_params, wasm_results) in wasm_signatures.iter() {
+                    let sig = func.wasm_signature(*mode);
+                    if sig.params != *wasm_params {
+                        bail!("expected params {:?}, found {:?}", wasm_params, sig.params);
+                    }
+                    if sig.results != *wasm_results {
+                        bail!(
+                            "expected results {:?}, found {:?}",
+                            wasm_results,
+                            sig.results
+                        );
+                    }
                 }
 
                 for abi in abis {
@@ -479,6 +480,11 @@ impl witx::Bindgen for AbiBindgen<'_> {
             I64FromBitflags { .. } => self.assert("i64.from_bitflags"),
             BitflagsFromI64 { .. } => self.assert("bitflags.from_i64"),
 
+            BufferLowerPtrLen { .. } => self.assert("buffer.lower_ptr_len"),
+            BufferLowerHandle { .. } => self.assert("buffer.lower_handle"),
+            BufferLiftPtrLen { .. } => self.assert("buffer.lift_ptr_len"),
+            BufferLiftHandle { .. } => self.assert("buffer.lift_handle"),
+
             Witx { instr } => match instr {
                 PointerFromI32 { .. } => self.assert("pointer.from_i32"),
                 ConstPointerFromI32 { .. } => self.assert("const_pointer.from_i32"),
@@ -570,7 +576,7 @@ enum WitxtDirective<'a> {
     AssertAbi {
         span: wast::Span,
         witx: Witx<'a>,
-        wasm_signature: (Vec<WasmType>, Vec<WasmType>),
+        wasm_signatures: Vec<(witx::CallMode, Vec<WasmType>, Vec<WasmType>)>,
         abis: Vec<Abi<'a>>,
     },
 }
@@ -611,30 +617,40 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
             Ok(WitxtDirective::AssertAbi {
                 span,
                 witx: parser.parens(|p| p.parse())?,
-                wasm_signature: parser.parens(|p| {
-                    p.parse::<kw::wasm>()?;
-                    let mut params = Vec::new();
-                    let mut results = Vec::new();
-                    if p.peek2::<kw::param>() {
-                        p.parens(|p| {
-                            p.parse::<kw::param>()?;
-                            while !p.is_empty() {
-                                params.push(parse_wasmtype(p)?);
+                wasm_signatures: {
+                    let mut signatures = Vec::new();
+                    while parser.peek2::<kw::wasm>() {
+                        signatures.push(parser.parens(|p| {
+                            p.parse::<kw::wasm>()?;
+                            let mode = p
+                                .parse::<Option<CallMode>>()?
+                                .map(|p| p.0)
+                                .unwrap_or(witx::CallMode::DeclaredImport);
+                            let mut params = Vec::new();
+                            let mut results = Vec::new();
+                            if p.peek2::<kw::param>() {
+                                p.parens(|p| {
+                                    p.parse::<kw::param>()?;
+                                    while !p.is_empty() {
+                                        params.push(parse_wasmtype(p)?);
+                                    }
+                                    Ok(())
+                                })?;
                             }
-                            Ok(())
-                        })?;
-                    }
-                    if p.peek2::<kw::result>() {
-                        p.parens(|p| {
-                            p.parse::<kw::result>()?;
-                            while !p.is_empty() {
-                                results.push(parse_wasmtype(p)?);
+                            if p.peek2::<kw::result>() {
+                                p.parens(|p| {
+                                    p.parse::<kw::result>()?;
+                                    while !p.is_empty() {
+                                        results.push(parse_wasmtype(p)?);
+                                    }
+                                    Ok(())
+                                })?;
                             }
-                            Ok(())
-                        })?;
+                            Ok((mode, params, results))
+                        })?);
                     }
-                    Ok((params, results))
-                })?,
+                    signatures
+                },
                 abis: {
                     let mut abis = Vec::new();
                     while !parser.is_empty() {
@@ -789,5 +805,41 @@ impl<'a> Parse<'a> for Abi<'a> {
             })?);
         }
         Ok(Abi { mode, instrs })
+    }
+}
+
+struct CallMode(witx::CallMode);
+
+impl<'a> Parse<'a> for CallMode {
+    fn parse(parser: Parser<'a>) -> parser::Result<Self> {
+        let mut l = parser.lookahead1();
+        Ok(CallMode(if l.peek::<kw::declared_import>() {
+            parser.parse::<kw::declared_import>()?;
+            witx::CallMode::DeclaredImport
+        } else if l.peek::<kw::declared_export>() {
+            parser.parse::<kw::declared_export>()?;
+            witx::CallMode::DeclaredExport
+        } else if l.peek::<kw::defined_import>() {
+            parser.parse::<kw::defined_import>()?;
+            witx::CallMode::DefinedImport
+        } else if l.peek::<kw::defined_export>() {
+            parser.parse::<kw::defined_export>()?;
+            witx::CallMode::DefinedExport
+        } else {
+            return Err(l.error());
+        }))
+    }
+}
+
+impl Peek for CallMode {
+    fn peek(cursor: Cursor<'_>) -> bool {
+        kw::declared_import::peek(cursor)
+            || kw::declared_export::peek(cursor)
+            || kw::defined_import::peek(cursor)
+            || kw::defined_export::peek(cursor)
+    }
+
+    fn display() -> &'static str {
+        "call mode"
     }
 }

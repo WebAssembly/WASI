@@ -19,23 +19,23 @@ impl SizeAlign {
 }
 
 pub trait Layout {
-    fn mem_size_align(&self) -> SizeAlign;
-    fn mem_size(&self) -> usize {
-        self.mem_size_align().size
+    fn mem_size_align(&self, export: bool) -> SizeAlign;
+    fn mem_size(&self, export: bool) -> usize {
+        self.mem_size_align(export).size
     }
-    fn mem_align(&self) -> usize {
-        self.mem_size_align().align
+    fn mem_align(&self, export: bool) -> usize {
+        self.mem_size_align(export).align
     }
 }
 
 impl TypeRef {
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+    fn layout(&self, export: bool, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         if let Some(hit) = cache.get(self) {
             return *hit;
         }
         let layout = match &self {
-            TypeRef::Name(nt) => nt.layout(cache),
-            TypeRef::Value(v) => v.layout(cache),
+            TypeRef::Name(nt) => nt.layout(export, cache),
+            TypeRef::Value(v) => v.layout(export, cache),
         };
         cache.insert(self.clone(), layout);
         layout
@@ -43,50 +43,54 @@ impl TypeRef {
 }
 
 impl Layout for TypeRef {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
         let mut cache = HashMap::new();
-        self.layout(&mut cache)
+        self.layout(export, &mut cache)
     }
 }
 
 impl NamedType {
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        self.tref.layout(cache)
+    fn layout(&self, export: bool, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        self.tref.layout(export, cache)
     }
 }
 impl Layout for NamedType {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
         let mut cache = HashMap::new();
-        self.layout(&mut cache)
+        self.layout(export, &mut cache)
     }
 }
 
 impl Type {
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+    fn layout(&self, export: bool, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
             Type::Record(s) => match s.bitflags_repr() {
-                Some(repr) => repr.mem_size_align(),
-                None => s.layout(cache),
+                Some(repr) => repr.mem_size_align(export),
+                None => s.layout(export, cache),
             },
-            Type::Variant(s) => s.mem_size_align(),
-            Type::Handle(h) => h.mem_size_align(),
+            Type::Variant(s) => s.mem_size_align(export),
+            Type::Handle(h) => h.mem_size_align(export),
             Type::List { .. } => SizeAlign { size: 8, align: 4 }, // Pointer and Length
-            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::S32.mem_size_align(),
-            Type::Builtin(b) => b.mem_size_align(),
+            Type::Pointer { .. } | Type::ConstPointer { .. } => {
+                BuiltinType::S32.mem_size_align(export)
+            }
+            Type::Buffer(_) if export => SizeAlign { size: 4, align: 4 },
+            Type::Buffer(_) => SizeAlign { size: 8, align: 4 },
+            Type::Builtin(b) => b.mem_size_align(export),
         }
     }
 }
 
 impl Layout for Type {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
         let mut cache = HashMap::new();
-        self.layout(&mut cache)
+        self.layout(export, &mut cache)
     }
 }
 
 impl Layout for IntRepr {
-    fn mem_size_align(&self) -> SizeAlign {
-        self.to_builtin().mem_size_align()
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
+        self.to_builtin().mem_size_align(export)
     }
 }
 
@@ -96,18 +100,19 @@ pub struct RecordMemberLayout<'a> {
 }
 
 impl RecordDatatype {
-    pub fn member_layout(&self) -> Vec<RecordMemberLayout> {
-        self.member_layout_(&mut HashMap::new()).1
+    pub fn member_layout(&self, export: bool) -> Vec<RecordMemberLayout> {
+        self.member_layout_(export, &mut HashMap::new()).1
     }
 
     fn member_layout_(
         &self,
+        export: bool,
         cache: &mut HashMap<TypeRef, SizeAlign>,
     ) -> (SizeAlign, Vec<RecordMemberLayout>) {
         let mut members = Vec::new();
         let mut sa = SizeAlign::zero();
         for m in self.members.iter() {
-            let member = m.tref.layout(cache);
+            let member = m.tref.layout(export, cache);
             sa.append_field(&member);
             members.push(RecordMemberLayout {
                 member: m,
@@ -118,30 +123,30 @@ impl RecordDatatype {
         (sa, members)
     }
 
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        self.member_layout_(cache).0
+    fn layout(&self, export: bool, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
+        self.member_layout_(export, cache).0
     }
 }
 
 impl Layout for RecordDatatype {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
         match self.bitflags_repr() {
-            Some(repr) => repr.mem_size_align(),
+            Some(repr) => repr.mem_size_align(export),
             None => {
                 let mut cache = HashMap::new();
-                self.layout(&mut cache)
+                self.layout(export, &mut cache)
             }
         }
     }
 }
 
 impl Layout for Variant {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
         let mut max = SizeAlign::zero();
         for case in self.cases.iter() {
-            let mut size = self.tag_repr.mem_size_align();
+            let mut size = self.tag_repr.mem_size_align(export);
             if let Some(payload) = &case.tref {
-                size.append_field(&payload.mem_size_align());
+                size.append_field(&payload.mem_size_align(export));
             }
             size.size = align_to(size.size, size.align);
             max.size = max.size.max(size.size);
@@ -152,11 +157,11 @@ impl Layout for Variant {
 }
 
 impl Variant {
-    pub fn payload_offset(&self) -> usize {
-        let mut offset = self.tag_repr.mem_size_align().size;
+    pub fn payload_offset(&self, export: bool) -> usize {
+        let mut offset = self.tag_repr.mem_size_align(export).size;
         for case in self.cases.iter() {
             if let Some(payload) = &case.tref {
-                offset = offset.max(align_to(offset, payload.mem_size_align().align));
+                offset = offset.max(align_to(offset, payload.mem_size_align(export).align));
             }
         }
         offset
@@ -198,13 +203,13 @@ mod test {
 }
 
 impl Layout for HandleDatatype {
-    fn mem_size_align(&self) -> SizeAlign {
-        BuiltinType::S32.mem_size_align()
+    fn mem_size_align(&self, export: bool) -> SizeAlign {
+        BuiltinType::S32.mem_size_align(export)
     }
 }
 
 impl Layout for BuiltinType {
-    fn mem_size_align(&self) -> SizeAlign {
+    fn mem_size_align(&self, _export: bool) -> SizeAlign {
         match self {
             BuiltinType::U8 { .. } | BuiltinType::S8 => SizeAlign { size: 1, align: 1 },
             BuiltinType::U16 | BuiltinType::S16 => SizeAlign { size: 2, align: 2 },

@@ -54,6 +54,8 @@ mod kw {
     wast::custom_keyword!(variant);
     wast::custom_keyword!(bool_ = "bool");
     wast::custom_keyword!(option);
+    wast::custom_keyword!(in_buffer = "in-buffer");
+    wast::custom_keyword!(out_buffer = "out-buffer");
 }
 
 mod annotation {
@@ -293,6 +295,7 @@ pub enum TypedefSyntax<'a> {
     List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
+    Buffer(BufferSyntax<'a>),
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
     String,
@@ -333,6 +336,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Variant(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
+                } else if l.peek::<kw::in_buffer>() || l.peek::<kw::out_buffer>() {
+                    Ok(TypedefSyntax::Buffer(parser.parse()?))
                 } else if l.peek::<kw::list>() {
                     parser.parse::<kw::list>()?;
                     Ok(TypedefSyntax::List(Box::new(parser.parse()?)))
@@ -608,6 +613,26 @@ impl<'a> Parse<'a> for HandleSyntax {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::handle>()?;
         Ok(HandleSyntax {})
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BufferSyntax<'a> {
+    pub out: bool,
+    pub ty: Box<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for BufferSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let out = if parser.peek::<kw::in_buffer>() {
+            parser.parse::<kw::in_buffer>()?;
+            false
+        } else {
+            parser.parse::<kw::out_buffer>()?;
+            true
+        };
+        let ty = Box::new(parser.parse()?);
+        Ok(BufferSyntax { out, ty })
     }
 }
 

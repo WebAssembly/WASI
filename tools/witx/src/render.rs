@@ -136,6 +136,7 @@ impl Type {
                 SExpr::word("const_pointer"),
                 p.to_sexpr(),
             ]),
+            Type::Buffer(_) => unimplemented!(),
             Type::Builtin(b) => b.to_sexpr(),
         }
     }

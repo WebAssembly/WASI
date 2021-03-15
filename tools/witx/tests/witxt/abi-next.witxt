@@ -864,3 +864,214 @@
     return
   )
 )
+
+;; buffers
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $a (in-buffer u8)))))
+  )
+  (wasm declared_import (param i32 i32))
+  (wasm defined_import (param i32 i32))
+  (wasm declared_export (param i32))
+  (wasm defined_export (param i32))
+
+  (declared_import
+    get-arg0
+
+    ;; definition of how to write to the buffer to-be-read by the callee
+    iter-base-pointer
+    block.push
+      variant-payload
+      i32.from_u8
+      i32.store8 offset=0
+    block.finish
+
+    buffer.lower_ptr_len arg0
+    call.wasm
+    return)
+
+  (defined_import
+    get-arg0
+    get-arg1
+
+    ;; definition of how to read to the buffer from the caller
+    iter-base-pointer
+    block.push
+      i32.load8u offset=0
+      u8.from_i32
+    block.finish
+
+    buffer.lift_ptr_len arg0 arg1
+    call.interface
+    return)
+
+  (declared_export
+    get-arg0
+
+    ;; definition of how to write to the buffer to-be-read by the callee
+    iter-base-pointer
+    block.push
+      variant-payload
+      i32.from_u8
+      i32.store8 offset=0
+    block.finish
+
+    buffer.lower_handle arg0
+    call.wasm
+    return)
+
+  (defined_export
+    get-arg0
+
+    ;; definition of how to read to the buffer from the caller
+    iter-base-pointer
+    block.push
+      i32.load8u offset=0
+      u8.from_i32
+    block.finish
+
+    buffer.lift_handle arg0
+    call.interface
+    return)
+)
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $a (out-buffer u8)))))
+  )
+  (wasm declared_import (param i32 i32))
+  (wasm defined_import (param i32 i32))
+  (wasm declared_export (param i32))
+  (wasm defined_export (param i32))
+
+  (declared_import
+    get-arg0
+
+    iter-base-pointer
+    block.push
+      i32.load8u offset=0
+      u8.from_i32
+    block.finish
+
+    buffer.lower_ptr_len arg0
+    call.wasm
+    return)
+
+  (defined_import
+    get-arg0
+    get-arg1
+
+    ;; definition of how to read to the buffer from the caller
+    iter-base-pointer
+    block.push
+      variant-payload
+      i32.from_u8
+      i32.store8 offset=0
+    block.finish
+
+    buffer.lift_ptr_len arg0 arg1
+    call.interface
+    return)
+)
+
+(assert_invalid
+  (witx
+    (module $x (export "f" (func (result $a (in-buffer u8)))))
+  )
+  "cannot use buffers in the result position"
+)
+(assert_invalid
+  (witx
+    (module $x (export "f" (func (result $a (out-buffer u8)))))
+  )
+  "cannot use buffers in the result position"
+)
+(assert_invalid
+  (witx
+    (module $x (export "f" (func (param $a (out-buffer (in-buffer u8))))))
+  )
+  "cannot use buffers in the result position"
+)
+(assert_abi
+  (witx
+    (module $x (export "f" (func (param $a (list (in-buffer u8))))))
+  )
+  (wasm declared_import (param i32 i32))
+  (wasm declared_export (param i32 i32))
+  (declared_import
+    get-arg0
+    block.push
+      iter-elem
+      iter-base-pointer
+
+      iter-base-pointer
+      block.push
+        variant-payload
+        i32.from_u8
+        i32.store8 offset=0
+      block.finish
+      buffer.lower_ptr_len
+
+      i32.store offset=4
+      i32.store offset=0
+    block.finish
+    list.lower arg0
+    call.wasm
+    return)
+
+  (defined_import
+    get-arg0
+    get-arg1
+    block.push
+      iter-base-pointer
+      i32.load offset=0
+      i32.load offset=4
+
+      iter-base-pointer
+      block.push
+        i32.load8u offset=0
+        u8.from_i32
+      block.finish
+      buffer.lift_ptr_len
+    block.finish
+    list.lift arg0 arg1
+    call.interface
+    return)
+
+  (declared_export
+    get-arg0
+    block.push
+      iter-elem
+      iter-base-pointer
+
+      iter-base-pointer
+      block.push
+        variant-payload
+        i32.from_u8
+        i32.store8 offset=0
+      block.finish
+      buffer.lower_handle
+
+      i32.store offset=0
+    block.finish
+    list.lower arg0
+    call.wasm
+    return)
+
+  (defined_export
+    get-arg0
+    get-arg1
+    block.push
+      iter-base-pointer
+      i32.load offset=0
+
+      iter-base-pointer
+      block.push
+        i32.load8u offset=0
+        u8.from_i32
+      block.finish
+      buffer.lift_handle
+    block.finish
+    list.lift arg0 arg1
+    call.interface
+    return)
+)

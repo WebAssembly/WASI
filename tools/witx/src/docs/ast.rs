@@ -33,8 +33,8 @@ impl ToMarkdown for Document {
                 format!(
                     "{}\nSize: {}\n\nAlignment: {}\n",
                     &d.docs,
-                    &d.mem_size(),
-                    &d.mem_align()
+                    &d.mem_size(false),
+                    &d.mem_align(false)
                 )
                 .as_str(),
             ));
@@ -95,6 +95,7 @@ impl ToMarkdown for Type {
             Self::List(_) => {}
             Self::Pointer(_) => {}
             Self::ConstPointer(_) => {}
+            Self::Buffer(_) => {}
             Self::Builtin(_) => {}
         }
     }
@@ -105,7 +106,7 @@ impl ToMarkdown for RecordDatatype {
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Record members"));
 
-        for member_layout in &self.member_layout() {
+        for member_layout in &self.member_layout(false) {
             let member = member_layout.member;
             let offset = member_layout.offset;
             let name = member.name.as_str();
@@ -139,7 +140,7 @@ impl ToMarkdown for Variant {
             let heading = heading_from_node(&node, 1);
             node.new_child(MdSection::new(heading, "Variant Layout"));
 
-            let whole = self.mem_size_align();
+            let whole = self.mem_size_align(false);
             node.new_child(MdSection::new(
                 MdHeading::new_bullet(),
                 format!("size: {}", whole.size),
@@ -149,7 +150,7 @@ impl ToMarkdown for Variant {
                 format!("align: {}", whole.align),
             ));
 
-            let tag = self.tag_repr.mem_size_align();
+            let tag = self.tag_repr.mem_size_align(false);
             node.new_child(MdSection::new(
                 MdHeading::new_bullet(),
                 format!("tag_size: {}", tag.size),
@@ -346,6 +347,7 @@ impl TypeRef {
                         format!("Variant")
                     }
                 }
+                Type::Buffer(_) => format!("buffer"),
             },
         }
     }

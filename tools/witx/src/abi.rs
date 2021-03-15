@@ -21,8 +21,8 @@
 //! generators will need to implement the various instructions to support APIs.
 
 use crate::{
-    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype, Type,
-    TypeRef, Variant,
+    Buffer, BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype,
+    Type, TypeRef, Variant,
 };
 use std::mem;
 
@@ -479,6 +479,19 @@ def_instruction! {
         /// This is used for both lifting and lowering lists.
         IterBasePointer : [0] => [1],
 
+        // buffers
+
+        /// Pops a buffer value, pushes the pointer/length of where it points
+        /// to in memory.
+        BufferLowerPtrLen { buffer: &'a Buffer } : [1] => [2],
+        /// Pops a buffer value, pushes an integer handle for the buffer.
+        BufferLowerHandle { buffer: &'a Buffer } : [1] => [1],
+        /// Pops a ptr/len, pushes a buffer wrapping that ptr/len of the memory
+        /// from the origin module.
+        BufferLiftPtrLen { buffer: &'a Buffer } : [2] => [1],
+        /// Pops an i32, pushes a buffer wrapping that i32 handle.
+        BufferLiftHandle { buffer: &'a Buffer } : [1] => [1],
+
         // records
 
         /// Pops a record value off the stack, decomposes the record to all of
@@ -628,16 +641,17 @@ impl Abi {
         params: &[InterfaceFuncParam],
         results: &[InterfaceFuncParam],
     ) -> Result<(), String> {
+        for ty in params.iter() {
+            self.validate_ty(ty.tref.type_(), true)?;
+        }
+        for ty in results.iter() {
+            self.validate_ty(ty.tref.type_(), false)?;
+        }
         match self {
             Abi::Preview1 => {
                 // validated below...
             }
-            Abi::Next => {
-                for ty in params.iter().chain(results) {
-                    validate_no_witx(ty.tref.type_())?;
-                }
-                return Ok(());
-            }
+            Abi::Next => return Ok(()),
         }
         assert_eq!(*self, Abi::Preview1);
         match results.len() {
@@ -681,45 +695,69 @@ impl Abi {
                     }
                 }
                 Type::Record(r) if r.bitflags_repr().is_some() => {}
-                Type::Record(_) | Type::List(_) => return Err("invalid return type".to_string()),
+                Type::Record(_) | Type::List(_) | Type::Buffer(_) => {
+                    return Err("invalid return type".to_string())
+                }
             },
             _ => return Err("more than one result".to_string()),
         }
         Ok(())
     }
-}
 
-fn validate_no_witx(ty: &Type) -> Result<(), String> {
-    match ty {
-        Type::Record(r) => {
-            for r in r.members.iter() {
-                validate_no_witx(r.tref.type_())?;
-            }
-            Ok(())
-        }
-        Type::Variant(v) => {
-            for case in v.cases.iter() {
-                if let Some(ty) = &case.tref {
-                    validate_no_witx(ty.type_())?;
+    fn validate_ty(&self, ty: &Type, param: bool) -> Result<(), String> {
+        match ty {
+            Type::Record(r) => {
+                for r in r.members.iter() {
+                    self.validate_ty(r.tref.type_(), param)?;
                 }
+                Ok(())
             }
-            Ok(())
+            Type::Variant(v) => {
+                for case in v.cases.iter() {
+                    if let Some(ty) = &case.tref {
+                        self.validate_ty(ty.type_(), param)?;
+                    }
+                }
+                Ok(())
+            }
+            Type::Handle(_) => Ok(()),
+            Type::List(t) => self.validate_ty(t.type_(), param),
+            Type::Pointer(t) => {
+                if let Abi::Next = self {
+                    return Err("cannot use `(@witx pointer)` in this ABI".to_string());
+                }
+                self.validate_ty(t.type_(), param)
+            }
+            Type::ConstPointer(t) => {
+                if let Abi::Next = self {
+                    return Err("cannot use `(@witx const_pointer)` in this ABI".to_string());
+                }
+                self.validate_ty(t.type_(), param)
+            }
+            Type::Builtin(BuiltinType::U8 { lang_c_char: true }) => {
+                if let Abi::Next = self {
+                    return Err("cannot use `(@witx char8)` in this ABI".to_string());
+                }
+                Ok(())
+            }
+            Type::Builtin(BuiltinType::U32 {
+                lang_ptr_size: true,
+            }) => {
+                if let Abi::Next = self {
+                    return Err("cannot use `(@witx usize)` in this ABI".to_string());
+                }
+                Ok(())
+            }
+            Type::Buffer(t) => {
+                if !param {
+                    return Err("cannot use buffers in the result position".to_string());
+                }
+                // If this is an output buffer then validate `t` as if it were a
+                // result because the callee can't give us buffers back.
+                self.validate_ty(t.tref.type_(), param && !t.out)
+            }
+            Type::Builtin(_) => Ok(()),
         }
-        Type::Handle(_) => Ok(()),
-        Type::List(t) => validate_no_witx(t.type_()),
-        Type::Pointer(_) => return Err("cannot use `(@witx pointer)` in this ABI".to_string()),
-        Type::ConstPointer(_) => {
-            return Err("cannot use `(@witx const_pointer)` in this ABI".to_string())
-        }
-        Type::Builtin(BuiltinType::U8 { lang_c_char: true }) => {
-            return Err("cannot use `(@witx char8)` in this ABI".to_string());
-        }
-        Type::Builtin(BuiltinType::U32 {
-            lang_ptr_size: true,
-        }) => {
-            return Err("cannot use `(@witx usize)` in this ABI".to_string());
-        }
-        Type::Builtin(_) => Ok(()),
     }
 }
 
@@ -807,7 +845,7 @@ impl InterfaceFunc {
     ///
     /// The first entry returned is the list of parameters and the second entry
     /// is the list of results for the wasm function signature.
-    pub fn wasm_signature(&self) -> WasmSignature {
+    pub fn wasm_signature(&self, mode: CallMode) -> WasmSignature {
         let mut params = Vec::new();
         let mut results = Vec::new();
         for param in self.params.iter() {
@@ -816,19 +854,20 @@ impl InterfaceFunc {
                 | Type::Pointer(_)
                 | Type::ConstPointer(_)
                 | Type::Handle(_)
-                | Type::List(_) => {
-                    push_wasm(param.tref.type_(), &mut params);
+                | Type::List(_)
+                | Type::Buffer(_) => {
+                    push_wasm(mode, param.tref.type_(), &mut params);
                 }
                 ty @ Type::Variant(_) => match self.abi {
                     Abi::Preview1 => params.push(WasmType::I32),
-                    Abi::Next => push_wasm(ty, &mut params),
+                    Abi::Next => push_wasm(mode, ty, &mut params),
                 },
                 Type::Record(r) => match self.abi {
                     Abi::Preview1 => match r.bitflags_repr() {
                         Some(repr) => params.push(WasmType::from(repr)),
                         None => params.push(WasmType::I32),
                     },
-                    Abi::Next => push_wasm(param.tref.type_(), &mut params),
+                    Abi::Next => push_wasm(mode, param.tref.type_(), &mut params),
                 },
             }
         }
@@ -840,15 +879,16 @@ impl InterfaceFunc {
                 | Type::Pointer(_)
                 | Type::ConstPointer(_)
                 | Type::Record(_)
-                | Type::Handle(_) => {
-                    push_wasm(param.tref.type_(), &mut results);
+                | Type::Handle(_)
+                | Type::Buffer(_) => {
+                    push_wasm(mode, param.tref.type_(), &mut results);
                 }
 
                 Type::Variant(v) => {
                     match self.abi {
                         Abi::Preview1 => {} // handled below
                         Abi::Next => {
-                            push_wasm(param.tref.type_(), &mut results);
+                            push_wasm(mode, param.tref.type_(), &mut results);
                             continue;
                         }
                     }
@@ -925,7 +965,7 @@ impl InterfaceFunc {
 /// Each mode may have a slightly different codegen for some types, so
 /// [`InterfaceFunc::call`] takes this as a parameter to know in what context
 /// the invocation is happening within.
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum CallMode {
     /// A defined export is being called.
     ///
@@ -963,6 +1003,22 @@ pub enum CallMode {
     DeclaredImport,
 }
 
+impl CallMode {
+    pub fn export(&self) -> bool {
+        match self {
+            CallMode::DefinedExport | CallMode::DeclaredExport => true,
+            CallMode::DefinedImport | CallMode::DeclaredImport => false,
+        }
+    }
+
+    pub fn defined(&self) -> bool {
+        match self {
+            CallMode::DefinedExport | CallMode::DefinedImport => true,
+            CallMode::DeclaredExport | CallMode::DeclaredImport => false,
+        }
+    }
+}
+
 struct Generator<'a, B: Bindgen> {
     abi: Abi,
     mode: CallMode,
@@ -987,7 +1043,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
     }
 
     fn call(&mut self, module: &Id, func: &InterfaceFunc) {
-        let sig = func.wasm_signature();
+        let sig = func.wasm_signature(self.mode);
 
         match self.mode {
             CallMode::DeclaredExport | CallMode::DeclaredImport => {
@@ -1037,7 +1093,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // directly due to various conversions and return pointers, so
                 // we need to somewhat manually calculate all the arguments
                 // which are converted as interface types arguments below.
-                let sig = func.wasm_signature();
+                let sig = func.wasm_signature(self.mode);
                 let nargs = match self.abi {
                     Abi::Preview1 => {
                         func.params.len()
@@ -1122,7 +1178,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     },
                     Abi::Next => {
                         temp.truncate(0);
-                        push_wasm(ty.tref.type_(), &mut temp);
+                        push_wasm(self.mode, ty.tref.type_(), &mut temp);
                         temp.len()
                     }
                 };
@@ -1319,6 +1375,24 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                 }
             },
+            Type::Buffer(buffer) => {
+                self.translate_buffer(buffer);
+                match self.mode {
+                    // When calling an imported function we're passing a raw view
+                    // into memory, and the adapter will convert it into something
+                    // else if necessary.
+                    CallMode::DeclaredImport => self.emit(&BufferLowerPtrLen { buffer }),
+
+                    // When calling an exported function we're passing a handle to
+                    // the caller's memory, and this part of the adapter is
+                    // responsible for converting it into something that's a handle.
+                    CallMode::DeclaredExport => self.emit(&BufferLowerHandle { buffer }),
+
+                    // Buffers are only used in the parameter position, which means
+                    // lowering a buffer should never happen in these contexts.
+                    CallMode::DefinedImport | CallMode::DefinedExport => unreachable!(),
+                }
+            }
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
                     let name = ty.name().unwrap();
@@ -1410,7 +1484,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 let mut results = Vec::new();
                 let mut temp = Vec::new();
                 let mut casts = Vec::new();
-                push_wasm(ty.type_(), &mut results);
+                push_wasm(self.mode, ty.type_(), &mut results);
                 for (i, case) in v.cases.iter().enumerate() {
                     self.push_block();
                     self.emit(&I32Const { val: i as i32 });
@@ -1425,7 +1499,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         // pushed, and record how many. If we pushed too few
                         // then we'll need to push some zeros after this.
                         temp.truncate(0);
-                        push_wasm(ty.type_(), &mut temp);
+                        push_wasm(self.mode, ty.type_(), &mut temp);
                         pushed += temp.len();
 
                         // For all the types pushed we may need to insert some
@@ -1573,6 +1647,23 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                 }
             },
+            Type::Buffer(buffer) => {
+                self.translate_buffer(buffer);
+                match self.mode {
+                    // When calling a defined imported function then we're coming
+                    // from a pointer/length, and the embedding context will figure
+                    // out what to do with that pointer/length.
+                    CallMode::DefinedImport => self.emit(&BufferLiftPtrLen { buffer }),
+
+                    // When calling an exported function we're given a handle to the
+                    // buffer, which is then interpreted in the calling context.
+                    CallMode::DefinedExport => self.emit(&BufferLiftHandle { buffer }),
+
+                    // Buffers are only used in the parameter position, which means
+                    // lifting a buffer should never happen in these contexts.
+                    CallMode::DeclaredImport | CallMode::DeclaredExport => unreachable!(),
+                }
+            }
             Type::Record(r) => {
                 if let Some(repr) = r.bitflags_repr() {
                     let name = ty.name().unwrap();
@@ -1588,14 +1679,14 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                     }
                     Abi::Next => {
                         let mut temp = Vec::new();
-                        push_wasm(ty.type_(), &mut temp);
+                        push_wasm(self.mode, ty.type_(), &mut temp);
                         let mut args = self
                             .stack
                             .drain(self.stack.len() - temp.len()..)
                             .collect::<Vec<_>>();
                         for member in r.members.iter() {
                             temp.truncate(0);
-                            push_wasm(member.tref.type_(), &mut temp);
+                            push_wasm(self.mode, member.tref.type_(), &mut temp);
                             self.stack.extend(args.drain(..temp.len()));
                             self.lift(&member.tref);
                         }
@@ -1666,7 +1757,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 let mut params = Vec::new();
                 let mut temp = Vec::new();
                 let mut casts = Vec::new();
-                push_wasm(ty.type_(), &mut params);
+                push_wasm(self.mode, ty.type_(), &mut params);
                 let block_inputs = self
                     .stack
                     .drain(self.stack.len() + 1 - params.len()..)
@@ -1677,7 +1768,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         // Push only the values we need for this variant onto
                         // the stack.
                         temp.truncate(0);
-                        push_wasm(ty.type_(), &mut temp);
+                        push_wasm(self.mode, ty.type_(), &mut temp);
                         self.stack
                             .extend(block_inputs[..temp.len()].iter().cloned());
 
@@ -1744,6 +1835,19 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 self.emit(&I32Store { offset });
             }
 
+            // Lower the buffer to its raw values, and then write the values
+            // into memory, which may be more than one value depending on our
+            // call mode.
+            Type::Buffer(_) => {
+                self.lower(ty, None);
+                if let CallMode::DeclaredImport = self.mode {
+                    self.stack.push(addr.clone());
+                    self.emit(&I32Store { offset: offset + 4 });
+                }
+                self.stack.push(addr);
+                self.emit(&I32Store { offset });
+            }
+
             Type::Record(r) => match r.bitflags_repr() {
                 // Bitflags just have their appropriate width written into
                 // memory.
@@ -1768,7 +1872,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                         .stack
                         .drain(self.stack.len() - r.members.len()..)
                         .collect::<Vec<_>>();
-                    for (layout, field) in r.member_layout().iter().zip(fields) {
+                    for (layout, field) in r.member_layout(self.mode.export()).iter().zip(fields) {
                         self.stack.push(field);
                         self.write_to_memory(
                             &layout.member.tref,
@@ -1784,7 +1888,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             // payload we write the payload after the discriminant, aligned up
             // to the type's alignment.
             Type::Variant(v) => {
-                let payload_offset = offset + (v.payload_offset() as i32);
+                let payload_offset = offset + (v.payload_offset(self.mode.export()) as i32);
                 for (i, case) in v.cases.iter().enumerate() {
                     self.push_block();
                     self.emit(&I32Const { val: i as i32 });
@@ -1846,6 +1950,18 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 self.lift(ty);
             }
 
+            // Read the requisite number of values from memory and then lift as
+            // appropriate.
+            Type::Buffer(_) => {
+                self.stack.push(addr.clone());
+                self.emit(&I32Load { offset });
+                if let CallMode::DefinedImport = self.mode {
+                    self.stack.push(addr);
+                    self.emit(&I32Load { offset: offset + 4 });
+                }
+                self.lift(ty);
+            }
+
             Type::Record(r) => match r.bitflags_repr() {
                 // Bitflags just have their appropriate size read from
                 // memory.
@@ -1862,7 +1978,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
                 // as we go along, then aggregate all the fields into the
                 // record.
                 None => {
-                    for layout in r.member_layout() {
+                    for layout in r.member_layout(self.mode.export()) {
                         self.read_from_memory(
                             &layout.member.tref,
                             addr.clone(),
@@ -1883,7 +1999,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             Type::Variant(v) => {
                 self.stack.push(addr.clone());
                 self.load_intrepr(offset, v.tag_repr);
-                let payload_offset = offset + (v.payload_offset() as i32);
+                let payload_offset = offset + (v.payload_offset(self.mode.export()) as i32);
                 for case in v.cases.iter() {
                     self.push_block();
                     if let Some(ty) = &case.tref {
@@ -1916,9 +2032,36 @@ impl<'a, B: Bindgen> Generator<'a, B> {
             IntRepr::U8 => Instruction::I32Store8 { offset },
         });
     }
+
+    fn translate_buffer(&mut self, buffer: &Buffer) {
+        let do_write = match self.mode {
+            // For declared items, input/output is defined in the context of
+            // what the callee will do. The callee will read input buffers,
+            // meaning we write to them, and write to ouptut buffers, meaning
+            // we'll read from them.
+            CallMode::DeclaredImport | CallMode::DeclaredExport => !buffer.out,
+
+            // Defined item mirror declared imports because buffers are
+            // defined from the caller's perspective, so we don't invert the
+            // `out` setting like above.
+            CallMode::DefinedImport | CallMode::DefinedExport => buffer.out,
+        };
+        self.emit(&Instruction::IterBasePointer);
+        let addr = self.stack.pop().unwrap();
+        if do_write {
+            self.push_block();
+            self.emit(&Instruction::VariantPayload);
+            self.write_to_memory(&buffer.tref, addr, 0);
+            self.finish_block(0);
+        } else {
+            self.push_block();
+            self.read_from_memory(&buffer.tref, addr, 0);
+            self.finish_block(1);
+        }
+    }
 }
 
-fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
+fn push_wasm(mode: CallMode, ty: &Type, result: &mut Vec<WasmType>) {
     match ty {
         Type::Builtin(BuiltinType::S8)
         | Type::Builtin(BuiltinType::U8 { .. })
@@ -1941,7 +2084,7 @@ fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
             Some(repr) => result.push(repr.into()),
             None => {
                 for member in r.members.iter() {
-                    push_wasm(member.tref.type_(), result);
+                    push_wasm(mode, member.tref.type_(), result);
                 }
             }
         },
@@ -1949,6 +2092,14 @@ fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
         Type::List(_) => {
             result.push(WasmType::I32);
             result.push(WasmType::I32);
+        }
+
+        Type::Buffer(_) => {
+            result.push(WasmType::I32);
+            match mode {
+                CallMode::DefinedExport | CallMode::DeclaredExport => {}
+                CallMode::DefinedImport | CallMode::DeclaredImport => result.push(WasmType::I32),
+            }
         }
 
         Type::Variant(v) => {
@@ -1967,7 +2118,7 @@ fn push_wasm(ty: &Type, result: &mut Vec<WasmType>) {
                     Some(ty) => ty,
                     None => continue,
                 };
-                push_wasm(ty.type_(), &mut temp);
+                push_wasm(mode, ty.type_(), &mut temp);
 
                 for (i, ty) in temp.drain(..).enumerate() {
                     match result.get_mut(start + i) {
