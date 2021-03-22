@@ -54,7 +54,7 @@ Alignment: 2
 - <a href="#errno.success" name="errno.success"></a> `success`
 No error occurred. System call completed successfully.
 
-- <a href="#errno.too_big" name="errno.too_big"></a> `too_big`
+- <a href="#errno.toobig" name="errno.toobig"></a> `toobig`
 Argument list too long. This is similar to `E2BIG` in POSIX.
 
 - <a href="#errno.access" name="errno.access"></a> `access`
