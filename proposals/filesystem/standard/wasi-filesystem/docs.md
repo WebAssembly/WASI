@@ -54,8 +54,8 @@ Alignment: 2
 - <a href="#errno.success" name="errno.success"></a> `success`
 No error occurred. System call completed successfully.
 
-- <a href="#errno.2big" name="errno.2big"></a> `2big`
-Argument list too long.
+- <a href="#errno.too_big" name="errno.too_big"></a> `too_big`
+Argument list too long. This is similar to `E2BIG` in POSIX.
 
 - <a href="#errno.access" name="errno.access"></a> `access`
 Permission denied.

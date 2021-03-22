@@ -38,8 +38,8 @@
   (enum (@witx tag u16)
     ;;; No error occurred. System call completed successfully.
     $success
-    ;;; Argument list too long.
-    $2big
+    ;;; Argument list too long. This is similar to `E2BIG` in POSIX.
+    $too_big
     ;;; Permission denied.
     $access
     ;;; Address in use.
