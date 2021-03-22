@@ -1,2 +1,2 @@
-(use "type_a.witx")
+(use $a from $type_a)
 (typename $b (record (field $member_a $a)))

@@ -1,26 +1,53 @@
 # Types
-## <a href="#size" name="size"></a> `size`: `usize`
-An array size.
+## <a href="#advice" name="advice"></a> `advice`: `Variant`
+File or memory access pattern advisory information.
 
-Note: This is similar to `size_t` in POSIX.
+Size: 1
 
-Size: 4
+Alignment: 1
+
+### Variant cases
+- <a href="#advice.normal" name="advice.normal"></a> `normal`
+The application has no advice to give on its behavior with respect to the specified data.
+
+- <a href="#advice.sequential" name="advice.sequential"></a> `sequential`
+The application expects to access the specified data sequentially from lower offsets to higher offsets.
+
+- <a href="#advice.random" name="advice.random"></a> `random`
+The application expects to access the specified data in a random order.
+
+- <a href="#advice.willneed" name="advice.willneed"></a> `willneed`
+The application expects to access the specified data in the near future.
+
+- <a href="#advice.dontneed" name="advice.dontneed"></a> `dontneed`
+The application expects that it will not access the specified data in the near future.
+
+- <a href="#advice.noreuse" name="advice.noreuse"></a> `noreuse`
+The application expects to access the specified data once and then not reuse it thereafter.
+
+## <a href="#ciovec" name="ciovec"></a> `ciovec`: `Record`
+A region of memory for scatter/gather writes.
+
+Size: 8
 
 Alignment: 4
 
-## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
-Non-negative file size or length of a region within a file.
+### Record members
+- <a href="#ciovec.buf" name="ciovec.buf"></a> `buf`: `ConstPointer<u8>`
+The address of the buffer to be written.
+
+Offset: 0
+
+- <a href="#ciovec.buf_len" name="ciovec.buf_len"></a> `buf_len`: [`size`](#size)
+The length of the buffer to be written.
+
+Offset: 4
+
+## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `List<ciovec>`
 
 Size: 8
 
-Alignment: 8
-
-## <a href="#timestamp" name="timestamp"></a> `timestamp`: `u64`
-Timestamp in nanoseconds.
-
-Size: 8
-
-Alignment: 8
+Alignment: 4
 
 ## <a href="#clockid" name="clockid"></a> `clockid`: `Variant`
 Identifiers for clocks.
@@ -39,6 +66,56 @@ The store-wide monotonic clock, which is defined as a clock measuring
 real time, whose value cannot be adjusted and which cannot have negative
 clock jumps. The epoch of this clock is undefined. The absolute time
 value of this clock therefore has no meaning.
+
+## <a href="#device" name="device"></a> `device`: `u64`
+Identifier for a device containing a file system. Can be used in combination
+with [`inode`](#inode) to uniquely identify a file or directory in the filesystem.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#dircookie" name="dircookie"></a> `dircookie`: `u64`
+A reference to the offset of a directory entry.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#dirent" name="dirent"></a> `dirent`: `Record`
+A directory entry.
+
+Size: 24
+
+Alignment: 8
+
+### Record members
+- <a href="#dirent.d_next" name="dirent.d_next"></a> `d_next`: [`dircookie`](#dircookie)
+The offset of the next directory entry stored in this directory.
+
+Offset: 0
+
+- <a href="#dirent.d_ino" name="dirent.d_ino"></a> `d_ino`: [`inode`](#inode)
+The serial number of the file referred to by this directory entry.
+
+Offset: 8
+
+- <a href="#dirent.d_type" name="dirent.d_type"></a> `d_type`: [`filetype`](#filetype)
+The type of the file referred to by this directory entry.
+
+Offset: 16
+
+- <a href="#dirent.d_namlen" name="dirent.d_namlen"></a> `d_namlen`: [`dirnamlen`](#dirnamlen)
+The length of the name of the directory entry.
+
+Offset: 20
+
+## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
+The type for the [`dirent::d_namlen`](#dirent.d_namlen) field of [`dirent`](#dirent).
+
+Size: 4
+
+Alignment: 4
 
 ## <a href="#errno" name="errno"></a> `errno`: `Variant`
 Error codes returned by functions.
@@ -282,6 +359,487 @@ Cross-device link.
 - <a href="#errno.notcapable" name="errno.notcapable"></a> `notcapable`
 Extension: Capabilities insufficient.
 
+## <a href="#event" name="event"></a> `event`: `Record`
+An event that occurred.
+
+Size: 40
+
+Alignment: 8
+
+### Record members
+- <a href="#event.userdata" name="event.userdata"></a> `userdata`: [`userdata`](#userdata)
+User-provided value that got attached to [`subscription::userdata`](#subscription.userdata).
+
+Offset: 0
+
+- <a href="#event.error" name="event.error"></a> `error`: [`errno`](#errno)
+If non-zero, an error that occurred while processing the subscription request.
+
+Offset: 8
+
+- <a href="#event.u" name="event.u"></a> `u`: [`event_u`](#event_u)
+The type of the event that occurred, and the contents of the event
+
+Offset: 16
+
+## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: `Record`
+The contents of an [`event`](#event) when type is [`eventtype::fd_read`](#eventtype.fd_read) or
+[`eventtype::fd_write`](#eventtype.fd_write).
+
+Size: 16
+
+Alignment: 8
+
+### Record members
+- <a href="#event_fd_readwrite.nbytes" name="event_fd_readwrite.nbytes"></a> `nbytes`: [`filesize`](#filesize)
+The number of bytes available for reading or writing.
+
+Offset: 0
+
+- <a href="#event_fd_readwrite.flags" name="event_fd_readwrite.flags"></a> `flags`: [`eventrwflags`](#eventrwflags)
+The state of the file descriptor.
+
+Offset: 8
+
+## <a href="#event_u" name="event_u"></a> `event_u`: `Variant`
+The contents of an [`event`](#event).
+
+Size: 24
+
+Alignment: 8
+
+### Variant Layout
+- size: 24
+- align: 8
+- tag_size: 1
+### Variant cases
+- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
+
+- <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
+
+- <a href="#event_u.fd_write" name="event_u.fd_write"></a> `fd_write`: [`event_fd_readwrite`](#event_fd_readwrite)
+
+## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: `Record`
+The state of the file descriptor subscribed to with
+[`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`: `bool`
+The peer of this socket has closed or disconnected.
+
+Bit: 0
+
+## <a href="#eventtype" name="eventtype"></a> `eventtype`: `Variant`
+Type of a subscription to an event or its occurrence.
+
+Size: 1
+
+Alignment: 1
+
+### Variant cases
+- <a href="#eventtype.clock" name="eventtype.clock"></a> `clock`
+The time value of clock [`subscription_clock::id`](#subscription_clock.id) has
+reached timestamp [`subscription_clock::timeout`](#subscription_clock.timeout).
+
+- <a href="#eventtype.fd_read" name="eventtype.fd_read"></a> `fd_read`
+File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has data
+available for reading. This event always triggers for regular files.
+
+- <a href="#eventtype.fd_write" name="eventtype.fd_write"></a> `fd_write`
+File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has capacity
+available for writing. This event always triggers for regular files.
+
+## <a href="#exitcode" name="exitcode"></a> `exitcode`: `u8`
+Exit code generated by a program when exiting.
+
+Size: 1
+
+Alignment: 1
+
+## <a href="#fd" name="fd"></a> `fd`: `Handle`
+A file descriptor handle.
+
+Size: 4
+
+Alignment: 4
+
+### Supertypes
+## <a href="#fdflags" name="fdflags"></a> `fdflags`: `Record`
+File descriptor flags.
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#fdflags.append" name="fdflags.append"></a> `append`: `bool`
+Append mode: Data written to the file is always appended to the file's end.
+
+Bit: 0
+
+- <a href="#fdflags.dsync" name="fdflags.dsync"></a> `dsync`: `bool`
+Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
+
+Bit: 1
+
+- <a href="#fdflags.nonblock" name="fdflags.nonblock"></a> `nonblock`: `bool`
+Non-blocking mode.
+
+Bit: 2
+
+- <a href="#fdflags.rsync" name="fdflags.rsync"></a> `rsync`: `bool`
+Synchronized read I/O operations.
+
+Bit: 3
+
+- <a href="#fdflags.sync" name="fdflags.sync"></a> `sync`: `bool`
+Write according to synchronized I/O file integrity completion. In
+addition to synchronizing the data stored in the file, the implementation
+may also synchronously update the file's metadata.
+
+Bit: 4
+
+## <a href="#fdstat" name="fdstat"></a> `fdstat`: `Record`
+File descriptor attributes.
+
+Size: 24
+
+Alignment: 8
+
+### Record members
+- <a href="#fdstat.fs_filetype" name="fdstat.fs_filetype"></a> `fs_filetype`: [`filetype`](#filetype)
+File type.
+
+Offset: 0
+
+- <a href="#fdstat.fs_flags" name="fdstat.fs_flags"></a> `fs_flags`: [`fdflags`](#fdflags)
+File descriptor flags.
+
+Offset: 2
+
+- <a href="#fdstat.fs_rights_base" name="fdstat.fs_rights_base"></a> `fs_rights_base`: [`rights`](#rights)
+Rights that apply to this file descriptor.
+
+Offset: 8
+
+- <a href="#fdstat.fs_rights_inheriting" name="fdstat.fs_rights_inheriting"></a> `fs_rights_inheriting`: [`rights`](#rights)
+Maximum set of rights that may be installed on new file descriptors that
+are created through this file descriptor, e.g., through `path_open`.
+
+Offset: 16
+
+## <a href="#filedelta" name="filedelta"></a> `filedelta`: `s64`
+Relative offset within a file.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
+Non-negative file size or length of a region within a file.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#filestat" name="filestat"></a> `filestat`: `Record`
+File attributes.
+
+Size: 64
+
+Alignment: 8
+
+### Record members
+- <a href="#filestat.dev" name="filestat.dev"></a> `dev`: [`device`](#device)
+Device ID of device containing the file.
+
+Offset: 0
+
+- <a href="#filestat.ino" name="filestat.ino"></a> `ino`: [`inode`](#inode)
+File serial number.
+
+Offset: 8
+
+- <a href="#filestat.filetype" name="filestat.filetype"></a> `filetype`: [`filetype`](#filetype)
+File type.
+
+Offset: 16
+
+- <a href="#filestat.permissions" name="filestat.permissions"></a> `permissions`: [`permissions`](#permissions)
+File permissions.
+
+Offset: 17
+
+- <a href="#filestat.nlink" name="filestat.nlink"></a> `nlink`: [`linkcount`](#linkcount)
+Number of hard links to the file.
+
+Offset: 24
+
+- <a href="#filestat.size" name="filestat.size"></a> `size`: [`filesize`](#filesize)
+For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
+
+Offset: 32
+
+- <a href="#filestat.atim" name="filestat.atim"></a> `atim`: [`timestamp`](#timestamp)
+Last data access timestamp.
+
+Offset: 40
+
+- <a href="#filestat.mtim" name="filestat.mtim"></a> `mtim`: [`timestamp`](#timestamp)
+Last data modification timestamp.
+
+Offset: 48
+
+- <a href="#filestat.ctim" name="filestat.ctim"></a> `ctim`: [`timestamp`](#timestamp)
+Last file status change timestamp.
+
+Offset: 56
+
+## <a href="#filetype" name="filetype"></a> `filetype`: `Variant`
+The type of a file descriptor or file.
+
+Size: 1
+
+Alignment: 1
+
+### Variant cases
+- <a href="#filetype.unknown" name="filetype.unknown"></a> `unknown`
+The type of the file descriptor or file is unknown or is different from any of the other types specified.
+
+- <a href="#filetype.block_device" name="filetype.block_device"></a> `block_device`
+The file descriptor or file refers to a block device inode.
+
+- <a href="#filetype.character_device" name="filetype.character_device"></a> `character_device`
+The file descriptor or file refers to a character device inode.
+
+- <a href="#filetype.directory" name="filetype.directory"></a> `directory`
+The file descriptor or file refers to a directory inode.
+
+- <a href="#filetype.regular_file" name="filetype.regular_file"></a> `regular_file`
+The file descriptor or file refers to a regular file inode.
+
+- <a href="#filetype.socket_dgram" name="filetype.socket_dgram"></a> `socket_dgram`
+The file descriptor or file refers to a datagram socket.
+
+- <a href="#filetype.socket_stream" name="filetype.socket_stream"></a> `socket_stream`
+The file descriptor or file refers to a byte-stream socket.
+
+- <a href="#filetype.symbolic_link" name="filetype.symbolic_link"></a> `symbolic_link`
+The file refers to a symbolic link inode.
+
+- <a href="#filetype.fifo" name="filetype.fifo"></a> `fifo`
+The file descriptor or file refers to a FIFO.
+
+## <a href="#fstflags" name="fstflags"></a> `fstflags`: `Record`
+Which file time attributes to adjust.
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`: `bool`
+Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
+
+Bit: 0
+
+- <a href="#fstflags.atim_now" name="fstflags.atim_now"></a> `atim_now`: `bool`
+Adjust the last data access timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
+
+Bit: 1
+
+- <a href="#fstflags.mtim" name="fstflags.mtim"></a> `mtim`: `bool`
+Adjust the last data modification timestamp to the value stored in [`filestat::mtim`](#filestat.mtim).
+
+Bit: 2
+
+- <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`: `bool`
+Adjust the last data modification timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
+
+Bit: 3
+
+## <a href="#inode" name="inode"></a> `inode`: `u64`
+File serial number that is unique within its file system.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#iovec" name="iovec"></a> `iovec`: `Record`
+A region of memory for scatter/gather reads.
+
+Size: 8
+
+Alignment: 4
+
+### Record members
+- <a href="#iovec.buf" name="iovec.buf"></a> `buf`: `Pointer<u8>`
+The address of the buffer to be filled.
+
+Offset: 0
+
+- <a href="#iovec.buf_len" name="iovec.buf_len"></a> `buf_len`: [`size`](#size)
+The length of the buffer to be filled.
+
+Offset: 4
+
+## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `List<iovec>`
+
+Size: 8
+
+Alignment: 4
+
+## <a href="#linkcount" name="linkcount"></a> `linkcount`: `u64`
+Number of hard links to an inode.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: `Record`
+Flags determining the method of how paths are resolved.
+
+Size: 4
+
+Alignment: 4
+
+### Record members
+- <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`: `bool`
+As long as the resolved path corresponds to a symbolic link, it is expanded.
+
+Bit: 0
+
+## <a href="#oflags" name="oflags"></a> `oflags`: `Record`
+Open flags used by `path_open`.
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#oflags.create" name="oflags.create"></a> `create`: `bool`
+Create file if it does not exist.
+
+Bit: 0
+
+- <a href="#oflags.directory" name="oflags.directory"></a> `directory`: `bool`
+Fail if not a directory.
+
+Bit: 1
+
+- <a href="#oflags.excl" name="oflags.excl"></a> `excl`: `bool`
+Fail if file already exists.
+
+Bit: 2
+
+- <a href="#oflags.trunc" name="oflags.trunc"></a> `trunc`: `bool`
+Truncate file to size 0.
+
+Bit: 3
+
+## <a href="#permissions" name="permissions"></a> `permissions`: `Record`
+File permissions. This represents the permissions associated with a
+file in a filesystem, and don't fully reflect all the conditions
+which determine whether a given WASI program can access the file.
+
+Size: 1
+
+Alignment: 1
+
+### Record members
+- <a href="#permissions.read" name="permissions.read"></a> `read`: `bool`
+For files, permission to read the file.
+For directories, permission to do [`readdir`](#readdir) and access files
+within the directory.
+
+Note: This is similar to the read bit being set on files, and the
+read *and* execute bits being set on directories, in POSIX.
+
+Bit: 0
+
+- <a href="#permissions.write" name="permissions.write"></a> `write`: `bool`
+For files, permission to mutate the file.
+For directories, permission to create, remove, and rename items
+within the directory.
+
+Bit: 1
+
+- <a href="#permissions.execute" name="permissions.execute"></a> `execute`: `bool`
+For files, permission to "execute" the file, using whatever
+concept of "executing" the host filesystem has.
+This flag is not valid for directories.
+
+Bit: 2
+
+- <a href="#permissions.private" name="permissions.private"></a> `private`: `bool`
+For filesystems which have a concept of multiple "users", this flag
+indicates that the file is only accessible by the effective "user"
+that the WASI store uses to access the filesystem, and inaccessible
+to other "users".
+
+Bit: 3
+
+## <a href="#preopentype" name="preopentype"></a> `preopentype`: `Variant`
+Identifiers for preopened capabilities.
+
+Size: 1
+
+Alignment: 1
+
+### Variant cases
+- <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
+A pre-opened directory.
+
+## <a href="#prestat" name="prestat"></a> `prestat`: `Variant`
+Information about a pre-opened capability.
+
+Size: 8
+
+Alignment: 4
+
+### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 1
+### Variant cases
+- <a href="#prestat.dir" name="prestat.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
+When type is [`preopentype::dir`](#preopentype.dir):
+
+## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: `Record`
+The contents of a [`prestat`](#prestat) when its type is [`preopentype::dir`](#preopentype.dir).
+
+Size: 4
+
+Alignment: 4
+
+### Record members
+- <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
+The length of the directory name for use with `fd_prestat_dir_name`.
+
+Offset: 0
+
+## <a href="#riflags" name="riflags"></a> `riflags`: `Record`
+Flags provided to `sock_recv`.
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`: `bool`
+Returns the message without removing it from the socket's receive queue.
+
+Bit: 0
+
+- <a href="#riflags.recv_waitall" name="riflags.recv_waitall"></a> `recv_waitall`: `bool`
+On byte-stream sockets, block until the full amount of data can be returned.
+
+Bit: 1
+
 ## <a href="#rights" name="rights"></a> `rights`: `Record`
 File descriptor rights, determining which actions may be performed.
 
@@ -462,543 +1020,53 @@ The right to invoke `sock_shutdown`.
 
 Bit: 30
 
-## <a href="#fd" name="fd"></a> `fd`: `Handle`
-A file descriptor handle.
+## <a href="#roflags" name="roflags"></a> `roflags`: `Record`
+Flags returned by `sock_recv`.
+
+Size: 2
+
+Alignment: 2
+
+### Record members
+- <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`: `bool`
+Returned by `sock_recv`: Message data has been truncated.
+
+Bit: 0
+
+## <a href="#sdflags" name="sdflags"></a> `sdflags`: `Record`
+Which channels on a socket to shut down.
+
+Size: 1
+
+Alignment: 1
+
+### Record members
+- <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`: `bool`
+Disables further receive operations.
+
+Bit: 0
+
+- <a href="#sdflags.wr" name="sdflags.wr"></a> `wr`: `bool`
+Disables further send operations.
+
+Bit: 1
+
+## <a href="#siflags" name="siflags"></a> `siflags`: `u16`
+Flags provided to `sock_send`. As there are currently no flags
+defined, it must be set to zero.
+
+Size: 2
+
+Alignment: 2
+
+## <a href="#size" name="size"></a> `size`: `usize`
+An array size.
+
+Note: This is similar to `size_t` in POSIX.
 
 Size: 4
 
 Alignment: 4
-
-### Supertypes
-## <a href="#iovec" name="iovec"></a> `iovec`: `Record`
-A region of memory for scatter/gather reads.
-
-Size: 8
-
-Alignment: 4
-
-### Record members
-- <a href="#iovec.buf" name="iovec.buf"></a> `buf`: `Pointer<u8>`
-The address of the buffer to be filled.
-
-Offset: 0
-
-- <a href="#iovec.buf_len" name="iovec.buf_len"></a> `buf_len`: [`size`](#size)
-The length of the buffer to be filled.
-
-Offset: 4
-
-## <a href="#ciovec" name="ciovec"></a> `ciovec`: `Record`
-A region of memory for scatter/gather writes.
-
-Size: 8
-
-Alignment: 4
-
-### Record members
-- <a href="#ciovec.buf" name="ciovec.buf"></a> `buf`: `ConstPointer<u8>`
-The address of the buffer to be written.
-
-Offset: 0
-
-- <a href="#ciovec.buf_len" name="ciovec.buf_len"></a> `buf_len`: [`size`](#size)
-The length of the buffer to be written.
-
-Offset: 4
-
-## <a href="#iovec_array" name="iovec_array"></a> `iovec_array`: `List<iovec>`
-
-Size: 8
-
-Alignment: 4
-
-## <a href="#ciovec_array" name="ciovec_array"></a> `ciovec_array`: `List<ciovec>`
-
-Size: 8
-
-Alignment: 4
-
-## <a href="#filedelta" name="filedelta"></a> `filedelta`: `s64`
-Relative offset within a file.
-
-Size: 8
-
-Alignment: 8
-
-## <a href="#whence" name="whence"></a> `whence`: `Variant`
-The position relative to which to set the offset of the file descriptor.
-
-Size: 1
-
-Alignment: 1
-
-### Variant cases
-- <a href="#whence.set" name="whence.set"></a> `set`
-Seek relative to start-of-file.
-
-- <a href="#whence.cur" name="whence.cur"></a> `cur`
-Seek relative to current position.
-
-- <a href="#whence.end" name="whence.end"></a> `end`
-Seek relative to end-of-file.
-
-## <a href="#dircookie" name="dircookie"></a> `dircookie`: `u64`
-A reference to the offset of a directory entry.
-
-Size: 8
-
-Alignment: 8
-
-### Constants
-- <a href="#dircookie.start" name="dircookie.start"></a> `start`
-
-## <a href="#dirnamlen" name="dirnamlen"></a> `dirnamlen`: `u32`
-The type for the [`dirent::d_namlen`](#dirent.d_namlen) field of [`dirent`](#dirent).
-
-Size: 4
-
-Alignment: 4
-
-## <a href="#inode" name="inode"></a> `inode`: `u64`
-File serial number that is unique within its file system.
-
-Size: 8
-
-Alignment: 8
-
-## <a href="#filetype" name="filetype"></a> `filetype`: `Variant`
-The type of a file descriptor or file.
-
-Size: 1
-
-Alignment: 1
-
-### Variant cases
-- <a href="#filetype.unknown" name="filetype.unknown"></a> `unknown`
-The type of the file descriptor or file is unknown or is different from any of the other types specified.
-
-- <a href="#filetype.block_device" name="filetype.block_device"></a> `block_device`
-The file descriptor or file refers to a block device inode.
-
-- <a href="#filetype.character_device" name="filetype.character_device"></a> `character_device`
-The file descriptor or file refers to a character device inode.
-
-- <a href="#filetype.directory" name="filetype.directory"></a> `directory`
-The file descriptor or file refers to a directory inode.
-
-- <a href="#filetype.regular_file" name="filetype.regular_file"></a> `regular_file`
-The file descriptor or file refers to a regular file inode.
-
-- <a href="#filetype.socket_dgram" name="filetype.socket_dgram"></a> `socket_dgram`
-The file descriptor or file refers to a datagram socket.
-
-- <a href="#filetype.socket_stream" name="filetype.socket_stream"></a> `socket_stream`
-The file descriptor or file refers to a byte-stream socket.
-
-- <a href="#filetype.symbolic_link" name="filetype.symbolic_link"></a> `symbolic_link`
-The file refers to a symbolic link inode.
-
-- <a href="#filetype.fifo" name="filetype.fifo"></a> `fifo`
-The file descriptor or file refers to a FIFO.
-
-## <a href="#dirent" name="dirent"></a> `dirent`: `Record`
-A directory entry.
-
-Size: 24
-
-Alignment: 8
-
-### Record members
-- <a href="#dirent.d_next" name="dirent.d_next"></a> `d_next`: [`dircookie`](#dircookie)
-The offset of the next directory entry stored in this directory.
-
-Offset: 0
-
-- <a href="#dirent.d_ino" name="dirent.d_ino"></a> `d_ino`: [`inode`](#inode)
-The serial number of the file referred to by this directory entry.
-
-Offset: 8
-
-- <a href="#dirent.d_type" name="dirent.d_type"></a> `d_type`: [`filetype`](#filetype)
-The type of the file referred to by this directory entry.
-
-Offset: 16
-
-- <a href="#dirent.d_namlen" name="dirent.d_namlen"></a> `d_namlen`: [`dirnamlen`](#dirnamlen)
-The length of the name of the directory entry.
-
-Offset: 20
-
-## <a href="#advice" name="advice"></a> `advice`: `Variant`
-File or memory access pattern advisory information.
-
-Size: 1
-
-Alignment: 1
-
-### Variant cases
-- <a href="#advice.normal" name="advice.normal"></a> `normal`
-The application has no advice to give on its behavior with respect to the specified data.
-
-- <a href="#advice.sequential" name="advice.sequential"></a> `sequential`
-The application expects to access the specified data sequentially from lower offsets to higher offsets.
-
-- <a href="#advice.random" name="advice.random"></a> `random`
-The application expects to access the specified data in a random order.
-
-- <a href="#advice.willneed" name="advice.willneed"></a> `willneed`
-The application expects to access the specified data in the near future.
-
-- <a href="#advice.dontneed" name="advice.dontneed"></a> `dontneed`
-The application expects that it will not access the specified data in the near future.
-
-- <a href="#advice.noreuse" name="advice.noreuse"></a> `noreuse`
-The application expects to access the specified data once and then not reuse it thereafter.
-
-## <a href="#fdflags" name="fdflags"></a> `fdflags`: `Record`
-File descriptor flags.
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#fdflags.append" name="fdflags.append"></a> `append`: `bool`
-Append mode: Data written to the file is always appended to the file's end.
-
-Bit: 0
-
-- <a href="#fdflags.dsync" name="fdflags.dsync"></a> `dsync`: `bool`
-Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
-
-Bit: 1
-
-- <a href="#fdflags.nonblock" name="fdflags.nonblock"></a> `nonblock`: `bool`
-Non-blocking mode.
-
-Bit: 2
-
-- <a href="#fdflags.rsync" name="fdflags.rsync"></a> `rsync`: `bool`
-Synchronized read I/O operations.
-
-Bit: 3
-
-- <a href="#fdflags.sync" name="fdflags.sync"></a> `sync`: `bool`
-Write according to synchronized I/O file integrity completion. In
-addition to synchronizing the data stored in the file, the implementation
-may also synchronously update the file's metadata.
-
-Bit: 4
-
-## <a href="#fdstat" name="fdstat"></a> `fdstat`: `Record`
-File descriptor attributes.
-
-Size: 24
-
-Alignment: 8
-
-### Record members
-- <a href="#fdstat.fs_filetype" name="fdstat.fs_filetype"></a> `fs_filetype`: [`filetype`](#filetype)
-File type.
-
-Offset: 0
-
-- <a href="#fdstat.fs_flags" name="fdstat.fs_flags"></a> `fs_flags`: [`fdflags`](#fdflags)
-File descriptor flags.
-
-Offset: 2
-
-- <a href="#fdstat.fs_rights_base" name="fdstat.fs_rights_base"></a> `fs_rights_base`: [`rights`](#rights)
-Rights that apply to this file descriptor.
-
-Offset: 8
-
-- <a href="#fdstat.fs_rights_inheriting" name="fdstat.fs_rights_inheriting"></a> `fs_rights_inheriting`: [`rights`](#rights)
-Maximum set of rights that may be installed on new file descriptors that
-are created through this file descriptor, e.g., through `path_open`.
-
-Offset: 16
-
-## <a href="#device" name="device"></a> `device`: `u64`
-Identifier for a device containing a file system. Can be used in combination
-with [`inode`](#inode) to uniquely identify a file or directory in the filesystem.
-
-Size: 8
-
-Alignment: 8
-
-## <a href="#fstflags" name="fstflags"></a> `fstflags`: `Record`
-Which file time attributes to adjust.
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#fstflags.atim" name="fstflags.atim"></a> `atim`: `bool`
-Adjust the last data access timestamp to the value stored in [`filestat::atim`](#filestat.atim).
-
-Bit: 0
-
-- <a href="#fstflags.atim_now" name="fstflags.atim_now"></a> `atim_now`: `bool`
-Adjust the last data access timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
-
-Bit: 1
-
-- <a href="#fstflags.mtim" name="fstflags.mtim"></a> `mtim`: `bool`
-Adjust the last data modification timestamp to the value stored in [`filestat::mtim`](#filestat.mtim).
-
-Bit: 2
-
-- <a href="#fstflags.mtim_now" name="fstflags.mtim_now"></a> `mtim_now`: `bool`
-Adjust the last data modification timestamp to the time of clock [`clockid::realtime`](#clockid.realtime).
-
-Bit: 3
-
-## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: `Record`
-Flags determining the method of how paths are resolved.
-
-Size: 4
-
-Alignment: 4
-
-### Record members
-- <a href="#lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> `symlink_follow`: `bool`
-As long as the resolved path corresponds to a symbolic link, it is expanded.
-
-Bit: 0
-
-## <a href="#oflags" name="oflags"></a> `oflags`: `Record`
-Open flags used by `path_open`.
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#oflags.create" name="oflags.create"></a> `create`: `bool`
-Create file if it does not exist.
-
-Bit: 0
-
-- <a href="#oflags.directory" name="oflags.directory"></a> `directory`: `bool`
-Fail if not a directory.
-
-Bit: 1
-
-- <a href="#oflags.excl" name="oflags.excl"></a> `excl`: `bool`
-Fail if file already exists.
-
-Bit: 2
-
-- <a href="#oflags.trunc" name="oflags.trunc"></a> `trunc`: `bool`
-Truncate file to size 0.
-
-Bit: 3
-
-## <a href="#linkcount" name="linkcount"></a> `linkcount`: `u64`
-Number of hard links to an inode.
-
-Size: 8
-
-Alignment: 8
-
-## <a href="#permissions" name="permissions"></a> `permissions`: `Record`
-File permissions. This represents the permissions associated with a
-file in a filesystem, and don't fully reflect all the conditions
-which determine whether a given WASI program can access the file.
-
-Size: 1
-
-Alignment: 1
-
-### Record members
-- <a href="#permissions.read" name="permissions.read"></a> `read`: `bool`
-For files, permission to read the file.
-For directories, permission to do [`readdir`](#readdir) and access files
-within the directory.
-
-Note: This is similar to the read bit being set on files, and the
-read *and* execute bits being set on directories, in POSIX.
-
-Bit: 0
-
-- <a href="#permissions.write" name="permissions.write"></a> `write`: `bool`
-For files, permission to mutate the file.
-For directories, permission to create, remove, and rename items
-within the directory.
-
-Bit: 1
-
-- <a href="#permissions.execute" name="permissions.execute"></a> `execute`: `bool`
-For files, permission to "execute" the file, using whatever
-concept of "executing" the host filesystem has.
-This flag is not valid for directories.
-
-Bit: 2
-
-- <a href="#permissions.private" name="permissions.private"></a> `private`: `bool`
-For filesystems which have a concept of multiple "users", this flag
-indicates that the file is only accessible by the effective "user"
-that the WASI store uses to access the filesystem, and inaccessible
-to other "users".
-
-Bit: 3
-
-## <a href="#filestat" name="filestat"></a> `filestat`: `Record`
-File attributes.
-
-Size: 64
-
-Alignment: 8
-
-### Record members
-- <a href="#filestat.dev" name="filestat.dev"></a> `dev`: [`device`](#device)
-Device ID of device containing the file.
-
-Offset: 0
-
-- <a href="#filestat.ino" name="filestat.ino"></a> `ino`: [`inode`](#inode)
-File serial number.
-
-Offset: 8
-
-- <a href="#filestat.filetype" name="filestat.filetype"></a> `filetype`: [`filetype`](#filetype)
-File type.
-
-Offset: 16
-
-- <a href="#filestat.permissions" name="filestat.permissions"></a> `permissions`: [`permissions`](#permissions)
-File permissions.
-
-Offset: 17
-
-- <a href="#filestat.nlink" name="filestat.nlink"></a> `nlink`: [`linkcount`](#linkcount)
-Number of hard links to the file.
-
-Offset: 24
-
-- <a href="#filestat.size" name="filestat.size"></a> `size`: [`filesize`](#filesize)
-For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
-
-Offset: 32
-
-- <a href="#filestat.atim" name="filestat.atim"></a> `atim`: [`timestamp`](#timestamp)
-Last data access timestamp.
-
-Offset: 40
-
-- <a href="#filestat.mtim" name="filestat.mtim"></a> `mtim`: [`timestamp`](#timestamp)
-Last data modification timestamp.
-
-Offset: 48
-
-- <a href="#filestat.ctim" name="filestat.ctim"></a> `ctim`: [`timestamp`](#timestamp)
-Last file status change timestamp.
-
-Offset: 56
-
-## <a href="#userdata" name="userdata"></a> `userdata`: `u64`
-User-provided value that may be attached to objects that is retained when
-extracted from the implementation.
-
-Size: 8
-
-Alignment: 8
-
-## <a href="#eventtype" name="eventtype"></a> `eventtype`: `Variant`
-Type of a subscription to an event or its occurrence.
-
-Size: 1
-
-Alignment: 1
-
-### Variant cases
-- <a href="#eventtype.clock" name="eventtype.clock"></a> `clock`
-The time value of clock [`subscription_clock::id`](#subscription_clock.id) has
-reached timestamp [`subscription_clock::timeout`](#subscription_clock.timeout).
-
-- <a href="#eventtype.fd_read" name="eventtype.fd_read"></a> `fd_read`
-File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has data
-available for reading. This event always triggers for regular files.
-
-- <a href="#eventtype.fd_write" name="eventtype.fd_write"></a> `fd_write`
-File descriptor [`subscription_fd_readwrite::fd`](#subscription_fd_readwrite.fd) has capacity
-available for writing. This event always triggers for regular files.
-
-## <a href="#eventrwflags" name="eventrwflags"></a> `eventrwflags`: `Record`
-The state of the file descriptor subscribed to with
-[`eventtype::fd_read`](#eventtype.fd_read) or [`eventtype::fd_write`](#eventtype.fd_write).
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#eventrwflags.fd_readwrite_hangup" name="eventrwflags.fd_readwrite_hangup"></a> `fd_readwrite_hangup`: `bool`
-The peer of this socket has closed or disconnected.
-
-Bit: 0
-
-## <a href="#event_fd_readwrite" name="event_fd_readwrite"></a> `event_fd_readwrite`: `Record`
-The contents of an [`event`](#event) when type is [`eventtype::fd_read`](#eventtype.fd_read) or
-[`eventtype::fd_write`](#eventtype.fd_write).
-
-Size: 16
-
-Alignment: 8
-
-### Record members
-- <a href="#event_fd_readwrite.nbytes" name="event_fd_readwrite.nbytes"></a> `nbytes`: [`filesize`](#filesize)
-The number of bytes available for reading or writing.
-
-Offset: 0
-
-- <a href="#event_fd_readwrite.flags" name="event_fd_readwrite.flags"></a> `flags`: [`eventrwflags`](#eventrwflags)
-The state of the file descriptor.
-
-Offset: 8
-
-## <a href="#event_u" name="event_u"></a> `event_u`: `Variant`
-The contents of an [`event`](#event).
-
-Size: 24
-
-Alignment: 8
-
-### Variant Layout
-- size: 24
-- align: 8
-- tag_size: 1
-### Variant cases
-- <a href="#event_u.clock" name="event_u.clock"></a> `clock`
-
-- <a href="#event_u.fd_read" name="event_u.fd_read"></a> `fd_read`: [`event_fd_readwrite`](#event_fd_readwrite)
-
-- <a href="#event_u.fd_write" name="event_u.fd_write"></a> `fd_write`: [`event_fd_readwrite`](#event_fd_readwrite)
-
-## <a href="#event" name="event"></a> `event`: `Record`
-An event that occurred.
-
-Size: 40
-
-Alignment: 8
-
-### Record members
-- <a href="#event.userdata" name="event.userdata"></a> `userdata`: [`userdata`](#userdata)
-User-provided value that got attached to [`subscription::userdata`](#subscription.userdata).
-
-Offset: 0
-
-- <a href="#event.error" name="event.error"></a> `error`: [`errno`](#errno)
-If non-zero, an error that occurred while processing the subscription request.
-
-Offset: 8
-
-- <a href="#event.u" name="event.u"></a> `u`: [`event_u`](#event_u)
-The type of the event that occurred, and the contents of the event
-
-Offset: 16
 
 ## <a href="#subclockflags" name="subclockflags"></a> `subclockflags`: `Record`
 Flags determining how to interpret the timestamp provided in
@@ -1017,6 +1085,25 @@ provided in [`subscription_clock::timeout`](#subscription_clock.timeout) relativ
 current time value of clock [`subscription_clock::id`](#subscription_clock.id).
 
 Bit: 0
+
+## <a href="#subscription" name="subscription"></a> `subscription`: `Record`
+Subscription to an event.
+
+Size: 48
+
+Alignment: 8
+
+### Record members
+- <a href="#subscription.userdata" name="subscription.userdata"></a> `userdata`: [`userdata`](#userdata)
+User-provided value that is attached to the subscription in the
+implementation and returned through [`event::userdata`](#event.userdata).
+
+Offset: 0
+
+- <a href="#subscription.u" name="subscription.u"></a> `u`: [`subscription_u`](#subscription_u)
+The type of the event to which to subscribe, and the contents of the subscription.
+
+Offset: 8
 
 ## <a href="#subscription_clock" name="subscription_clock"></a> `subscription_clock`: `Record`
 The contents of a [`subscription`](#subscription) when type is [`eventtype::clock`](#eventtype.clock).
@@ -1079,137 +1166,40 @@ Alignment: 8
 
 - <a href="#subscription_u.fd_write" name="subscription_u.fd_write"></a> `fd_write`: [`subscription_fd_readwrite`](#subscription_fd_readwrite)
 
-## <a href="#subscription" name="subscription"></a> `subscription`: `Record`
-Subscription to an event.
-
-Size: 48
-
-Alignment: 8
-
-### Record members
-- <a href="#subscription.userdata" name="subscription.userdata"></a> `userdata`: [`userdata`](#userdata)
-User-provided value that is attached to the subscription in the
-implementation and returned through [`event::userdata`](#event.userdata).
-
-Offset: 0
-
-- <a href="#subscription.u" name="subscription.u"></a> `u`: [`subscription_u`](#subscription_u)
-The type of the event to which to subscribe, and the contents of the subscription.
-
-Offset: 8
-
-## <a href="#exitcode" name="exitcode"></a> `exitcode`: `u8`
-Exit code generated by a program when exiting.
-
-Size: 1
-
-Alignment: 1
-
-### Constants
-- <a href="#exitcode.success" name="exitcode.success"></a> `success`
-
-- <a href="#exitcode.failure" name="exitcode.failure"></a> `failure`
-
-## <a href="#riflags" name="riflags"></a> `riflags`: `Record`
-Flags provided to `sock_recv`.
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#riflags.recv_peek" name="riflags.recv_peek"></a> `recv_peek`: `bool`
-Returns the message without removing it from the socket's receive queue.
-
-Bit: 0
-
-- <a href="#riflags.recv_waitall" name="riflags.recv_waitall"></a> `recv_waitall`: `bool`
-On byte-stream sockets, block until the full amount of data can be returned.
-
-Bit: 1
-
-## <a href="#roflags" name="roflags"></a> `roflags`: `Record`
-Flags returned by `sock_recv`.
-
-Size: 2
-
-Alignment: 2
-
-### Record members
-- <a href="#roflags.recv_data_truncated" name="roflags.recv_data_truncated"></a> `recv_data_truncated`: `bool`
-Returned by `sock_recv`: Message data has been truncated.
-
-Bit: 0
-
-## <a href="#siflags" name="siflags"></a> `siflags`: `u16`
-Flags provided to `sock_send`. As there are currently no flags
-defined, it must be set to zero.
-
-Size: 2
-
-Alignment: 2
-
-## <a href="#sdflags" name="sdflags"></a> `sdflags`: `Record`
-Which channels on a socket to shut down.
-
-Size: 1
-
-Alignment: 1
-
-### Record members
-- <a href="#sdflags.rd" name="sdflags.rd"></a> `rd`: `bool`
-Disables further receive operations.
-
-Bit: 0
-
-- <a href="#sdflags.wr" name="sdflags.wr"></a> `wr`: `bool`
-Disables further send operations.
-
-Bit: 1
-
-## <a href="#preopentype" name="preopentype"></a> `preopentype`: `Variant`
-Identifiers for preopened capabilities.
-
-Size: 1
-
-Alignment: 1
-
-### Variant cases
-- <a href="#preopentype.dir" name="preopentype.dir"></a> `dir`
-A pre-opened directory.
-
-## <a href="#prestat_dir" name="prestat_dir"></a> `prestat_dir`: `Record`
-The contents of a [`prestat`](#prestat) when its type is [`preopentype::dir`](#preopentype.dir).
-
-Size: 4
-
-Alignment: 4
-
-### Record members
-- <a href="#prestat_dir.pr_name_len" name="prestat_dir.pr_name_len"></a> `pr_name_len`: [`size`](#size)
-The length of the directory name for use with `fd_prestat_dir_name`.
-
-Offset: 0
-
-## <a href="#prestat" name="prestat"></a> `prestat`: `Variant`
-Information about a pre-opened capability.
+## <a href="#timestamp" name="timestamp"></a> `timestamp`: `u64`
+Timestamp in nanoseconds.
 
 Size: 8
 
-Alignment: 4
+Alignment: 8
 
-### Variant Layout
-- size: 8
-- align: 4
-- tag_size: 1
+## <a href="#userdata" name="userdata"></a> `userdata`: `u64`
+User-provided value that may be attached to objects that is retained when
+extracted from the implementation.
+
+Size: 8
+
+Alignment: 8
+
+## <a href="#whence" name="whence"></a> `whence`: `Variant`
+The position relative to which to set the offset of the file descriptor.
+
+Size: 1
+
+Alignment: 1
+
 ### Variant cases
-- <a href="#prestat.dir" name="prestat.dir"></a> `dir`: [`prestat_dir`](#prestat_dir)
-When type is [`preopentype::dir`](#preopentype.dir):
+- <a href="#whence.set" name="whence.set"></a> `set`
+Seek relative to start-of-file.
+
+- <a href="#whence.cur" name="whence.cur"></a> `cur`
+Seek relative to current position.
+
+- <a href="#whence.end" name="whence.end"></a> `end`
+Seek relative to end-of-file.
 
 # Modules
 ## <a href="#wasi_ephemeral_args" name="wasi_ephemeral_args"></a> wasi_ephemeral_args
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -1267,8 +1257,6 @@ Offset: 4
 - <a href="#sizes_get.error.err" name="sizes_get.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_clock" name="wasi_ephemeral_clock"></a> wasi_ephemeral_clock
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -1324,8 +1312,6 @@ The time value of the clock.
 - <a href="#time_get.error.err" name="time_get.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_environ" name="wasi_ephemeral_environ"></a> wasi_ephemeral_environ
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -1383,8 +1369,6 @@ Offset: 4
 - <a href="#sizes_get.error.err" name="sizes_get.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_fd" name="wasi_ephemeral_fd"></a> wasi_ephemeral_fd
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -1987,8 +1971,6 @@ The number of bytes written.
 - <a href="#write.error.err" name="write.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_path" name="wasi_ephemeral_path"></a> wasi_ephemeral_path
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -2353,8 +2335,6 @@ The path to a file to unlink.
 - <a href="#unlink_file.error.err" name="unlink_file.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_poll" name="wasi_ephemeral_poll"></a> wasi_ephemeral_poll
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -2388,7 +2368,6 @@ The number of events stored.
 - <a href="#oneoff.error.err" name="oneoff.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_proc" name="wasi_ephemeral_proc"></a> wasi_ephemeral_proc
-### Imports
 ### Functions
 
 ---
@@ -2407,8 +2386,6 @@ The exit code returned by the process.
 
 ##### Results
 ## <a href="#wasi_ephemeral_random" name="wasi_ephemeral_random"></a> wasi_ephemeral_random
-### Imports
-#### Memory
 ### Functions
 
 ---
@@ -2440,7 +2417,6 @@ The buffer to fill with random data.
 - <a href="#get.error.err" name="get.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_sched" name="wasi_ephemeral_sched"></a> wasi_ephemeral_sched
-### Imports
 ### Functions
 
 ---
@@ -2463,8 +2439,6 @@ Note: This is similar to [`yield`](#yield) in POSIX.
 - <a href="#yield.error.err" name="yield.error.err"></a> `err`: [`errno`](#errno)
 
 ## <a href="#wasi_ephemeral_sock" name="wasi_ephemeral_sock"></a> wasi_ephemeral_sock
-### Imports
-#### Memory
 ### Functions
 
 ---
