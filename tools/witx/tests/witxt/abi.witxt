@@ -131,7 +131,8 @@
 ;; handle parameter
 (assert_abi
   (witx
-    (typename $a (handle))
+    (resource $a)
+    (typename $a (handle $a))
     (module $x (@interface func (export "f") (param $p $a)))
   )
   (wasm (param i32))
@@ -284,7 +285,8 @@
 ;; handle return
 (assert_abi
   (witx
-    (typename $a (handle))
+    (resource $a)
+    (typename $a (handle $a))
     (module $x (@interface func (export "f") (result $p $a)))
   )
   (wasm (result i32))

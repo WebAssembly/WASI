@@ -45,6 +45,9 @@ pub struct Module {
     types: Vec<Rc<NamedType>>,
     type_map: HashMap<Id, Rc<NamedType>>,
 
+    resources: Vec<Rc<Resource>>,
+    resource_map: HashMap<Id, Rc<Resource>>,
+
     funcs: Vec<Rc<Function>>,
     func_map: HashMap<Id, Rc<Function>>,
 
@@ -61,6 +64,8 @@ impl Module {
             module_id,
             types: Default::default(),
             type_map: Default::default(),
+            resources: Default::default(),
+            resource_map: Default::default(),
             funcs: Default::default(),
             func_map: Default::default(),
             constants: Default::default(),
@@ -78,6 +83,14 @@ impl Module {
     pub(crate) fn push_type(&mut self, ty: Rc<NamedType>) {
         assert!(self.type_map.insert(ty.name.clone(), ty.clone()).is_none());
         self.types.push(ty);
+    }
+
+    pub(crate) fn push_resource(&mut self, r: Rc<Resource>) {
+        assert!(self
+            .resource_map
+            .insert(r.name.clone(), r.clone())
+            .is_none());
+        self.resources.push(r);
     }
 
     pub(crate) fn push_func(&mut self, func: Rc<Function>) {
@@ -98,6 +111,14 @@ impl Module {
 
     pub fn typenames<'a>(&'a self) -> impl Iterator<Item = &'a Rc<NamedType>> + 'a {
         self.types.iter()
+    }
+
+    pub fn resource(&self, name: &Id) -> Option<Rc<Resource>> {
+        self.resource_map.get(name).cloned()
+    }
+
+    pub fn resources<'a>(&'a self) -> impl Iterator<Item = &'a Rc<Resource>> + 'a {
+        self.resources.iter()
     }
 
     /// All of the (unique) types used as "err" variant of results returned from
@@ -499,11 +520,37 @@ impl Case {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct HandleDatatype {}
+pub struct Resource {
+    /// The local name within the module this resource is defined within. This
+    /// may differ from the id of the resource itself.
+    pub name: Id,
+    /// The unique id assigned to this resource.
+    pub resource_id: ResourceId,
+    /// Documentation in the defining module, if any.
+    pub docs: String,
+}
+
+/// A unique id used to determine whether two handles are nominally referring
+/// to the same resource.
+///
+/// An id is composed of the definition location (a module id) and the original
+/// name within that module.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ResourceId {
+    pub name: Id,
+    pub module_id: ModuleId,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HandleDatatype {
+    /// The resource that this handle references, used for determining if two
+    /// handle types are nominally equal to one another.
+    pub resource_id: ResourceId,
+}
 
 impl HandleDatatype {
-    pub fn type_equal(&self, _other: &HandleDatatype) -> bool {
-        true
+    pub fn type_equal(&self, other: &HandleDatatype) -> bool {
+        self.resource_id == other.resource_id
     }
 }
 

@@ -27,7 +27,8 @@
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (handle)))
+    (resource $x)
+    (typename $a (@witx pointer (handle $x)))
   )
   "Anonymous structured types")
 

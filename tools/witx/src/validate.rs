@@ -6,7 +6,8 @@ use crate::{
         VariantSyntax,
     },
     Abi, BuiltinType, Case, Constant, Function, HandleDatatype, Id, IntRepr, Location, Module,
-    ModuleId, NamedType, Param, RecordDatatype, RecordKind, RecordMember, Type, TypeRef, Variant,
+    ModuleId, NamedType, Param, RecordDatatype, RecordKind, RecordMember, Resource, ResourceId,
+    Type, TypeRef, Variant,
 };
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -131,6 +132,7 @@ impl IdentValidation {
 pub struct ModuleValidation<'a> {
     module: Module,
     type_ns: IdentValidation,
+    resource_ns: IdentValidation,
     func_ns: IdentValidation,
     constant_ns: HashMap<Id, IdentValidation>,
     bool_ty: TypeRef,
@@ -145,6 +147,7 @@ impl<'a> ModuleValidation<'a> {
         Self {
             module: Module::new(name, module_id),
             type_ns: IdentValidation::new(),
+            resource_ns: IdentValidation::new(),
             func_ns: IdentValidation::new(),
             constant_ns: HashMap::new(),
             bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
@@ -193,22 +196,59 @@ impl<'a> ModuleValidation<'a> {
                     self.type_ns.introduce(ty.name.as_str(), loc)?;
                     self.module.push_type(ty.clone());
                 }
+                for r in module.resources() {
+                    let loc = self.location(span);
+                    self.resource_ns.introduce(r.name.as_str(), loc)?;
+                    self.module.push_resource(r.clone());
+                }
             }
             UsedNames::List(names) => {
                 for name in names {
-                    let loc = self.location(name.span());
-                    let id = self.type_ns.introduce(name.name(), loc)?;
-                    let ty = match module.typename(&id) {
-                        Some(ty) => ty,
-                        None => {
-                            return Err(ValidationError::UnknownName {
-                                name: name.name().to_string(),
-                                location: self.location(name.span()),
-                            }
-                            .into());
+                    let mut used = false;
+                    let id = Id::new(name.other_name.name());
+                    let other_loc = self.location(name.other_name.span());
+                    let our_loc = self.location(name.our_name.span());
+
+                    if let Some(ty) = module.typename(&id) {
+                        let id = self
+                            .type_ns
+                            .introduce(name.our_name.name(), our_loc.clone())?;
+                        let ty = if name.other_name.name() == name.our_name.name() {
+                            ty
+                        } else {
+                            Rc::new(NamedType {
+                                name: id,
+                                module: self.module.module_id().clone(),
+                                tref: TypeRef::Name(ty),
+                                docs: String::new(),
+                            })
+                        };
+                        self.module.push_type(ty);
+                        used = true;
+                    }
+
+                    if let Some(r) = module.resource(&id) {
+                        let id = self.resource_ns.introduce(name.our_name.name(), our_loc)?;
+                        let r = if name.other_name.name() == name.our_name.name() {
+                            r
+                        } else {
+                            Rc::new(Resource {
+                                name: id,
+                                resource_id: r.resource_id.clone(),
+                                docs: String::new(),
+                            })
+                        };
+                        self.module.push_resource(r);
+                        used = true;
+                    }
+
+                    if !used {
+                        return Err(ValidationError::UnknownName {
+                            name: name.other_name.name().to_string(),
+                            location: other_loc,
                         }
-                    };
-                    self.module.push_type(ty);
+                        .into());
+                    }
                 }
             }
         }
@@ -228,9 +268,24 @@ impl<'a> ModuleValidation<'a> {
                 let tref = self.validate_datatype(&decl.def, true, decl.ident.span())?;
 
                 self.module.push_type(Rc::new(NamedType {
-                    name: name.clone(),
+                    name,
                     module: self.module.module_id().clone(),
                     tref,
+                    docs,
+                }));
+            }
+
+            DeclSyntax::Resource(decl) => {
+                let loc = self.location(decl.ident.span());
+                let name = self.resource_ns.introduce(decl.ident.name(), loc)?;
+                let docs = comments.docs();
+
+                self.module.push_resource(Rc::new(Resource {
+                    name: name.clone(),
+                    resource_id: ResourceId {
+                        name,
+                        module_id: self.module.module_id().clone(),
+                    },
                     docs,
                 }));
             }
@@ -631,10 +686,15 @@ impl<'a> ModuleValidation<'a> {
 
     fn validate_handle(
         &self,
-        _syntax: &HandleSyntax,
+        syntax: &HandleSyntax,
         _span: wast::Span,
     ) -> Result<HandleDatatype, ValidationError> {
-        Ok(HandleDatatype {})
+        let loc = self.location(syntax.resource.span());
+        let name = self.resource_ns.get(syntax.resource.name(), loc)?;
+        let resource = self.module.resource(&name).unwrap();
+        Ok(HandleDatatype {
+            resource_id: resource.resource_id.clone(),
+        })
     }
 
     fn validate_int_repr(
