@@ -1,5 +1,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4323447.svg)](https://doi.org/10.5281/zenodo.4323447)
     
+This repository is a clone of github.com/WebAssembly/WASI/. It is meant for
+discussion, prototype specification and implementation of the WASI Clocks
+proposal.
+
+Original README from upstream repo follows...
+
 # WebAssembly System Interface
 
 ![WASI](WASI.png)
