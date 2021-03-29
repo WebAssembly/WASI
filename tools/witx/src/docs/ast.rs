@@ -340,6 +340,12 @@ impl TypeRef {
                             None => "()".to_string(),
                         };
                         format!("Result<{}, {}>", ok, err)
+                    } else if let Some(some) = v.as_option() {
+                        let some = match some {
+                            Some(ty) => ty.type_name(),
+                            None => "()".to_string(),
+                        };
+                        format!("Option<{}>", some)
                     } else if v.is_bool() {
                         format!("bool")
                     } else {

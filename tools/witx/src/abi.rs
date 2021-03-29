@@ -274,6 +274,15 @@ def_instruction! {
         /// WASI and intentionally differs from the type-level grammar of
         /// interface types results.
         ResultLift : [1] => [1],
+        /// Pops a native wasm `i32` from the stack, as well as one block
+        /// internally from the code generator.
+        ///
+        /// If the value is 0 then the "some" block value should be used.
+        ///
+        /// Note that this is a special instruction matching the current ABI of
+        /// WASI and intentionally differs from the type-level grammar of
+        /// interface types results.
+        OptionLift : [1] => [1],
         /// Pops a native interface value from the stack as well as two blocks
         /// internally from the code generator.
         ///
@@ -286,6 +295,18 @@ def_instruction! {
         ResultLower {
             ok: Option<&'a TypeRef>,
             err: Option<&'a TypeRef>,
+        } : [1] => [1],
+        /// Pops a native interface value from the stack as well as one block
+        /// internally from the code generator.
+        ///
+        /// A `match` is performed on the value popped and the corresponding
+        /// block for some/none is used depending on value. This pushes a single
+        /// `i32` onto the stack representing the error code for this result.
+        ///
+        /// Note that like `OptionLift` this is specialized to the current WASI
+        /// ABI.
+        OptionLower {
+            some: Option<&'a TypeRef>,
         } : [1] => [1],
         /// Converts a native wasm `i32` to an interface type `enum` value.
         ///
@@ -333,45 +354,68 @@ impl Abi {
             1 => match &**results[0].tref.type_() {
                 Type::Handle(_) | Type::Builtin(_) | Type::ConstPointer(_) | Type::Pointer(_) => {}
                 Type::Variant(v) => {
-                    let (ok, err) = match v.as_expected() {
-                        Some(pair) => pair,
-                        None => return Err("invalid return type".to_string()),
-                    };
-                    if let Some(ty) = ok {
-                        match &**ty.type_() {
-                            Type::Record(r) if r.is_tuple() => {
-                                for member in r.members.iter() {
-                                    if !member.tref.named() {
-                                        return Err(
-                                            "only named types are allowed in results".to_string()
-                                        );
-                                    }
-                                }
-                            }
-                            _ => {
-                                if !ty.named() {
-                                    return Err(
-                                        "only named types are allowed in results".to_string()
-                                    );
-                                }
-                            }
-                        }
-                    }
-                    if let Some(ty) = err {
-                        if !ty.named() {
-                            return Err("only named types are allowed in results".to_string());
-                        }
-                        if let Type::Variant(v) = &**ty.type_() {
-                            if v.is_enum() {
-                                return Ok(());
-                            }
-                        }
+                    if let Some((ok, err)) = v.as_expected() {
+                        Self::validate_expected(ok, err)?;
+                    } else if let Some(some) = v.as_option() {
+                        Self::validate_option(some)?;
+                    } else {
+                        return Err("invalid return type".to_string());
                     }
                 }
                 Type::Record(r) if r.bitflags_repr().is_some() => {}
                 Type::Record(_) | Type::List(_) => return Err("invalid return type".to_string()),
             },
             _ => return Err("more than one result".to_string()),
+        }
+        Ok(())
+    }
+
+    fn validate_expected(ok: Option<&TypeRef>, err: Option<&TypeRef>) -> Result<(), String> {
+        if let Some(ty) = ok {
+            match &**ty.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    for member in r.members.iter() {
+                        if !member.tref.named() {
+                            return Err("only named types are allowed in results".to_string());
+                        }
+                    }
+                }
+                _ => {
+                    if !ty.named() {
+                        return Err("only named types are allowed in results".to_string());
+                    }
+                }
+            }
+        }
+        if let Some(ty) = err {
+            if !ty.named() {
+                return Err("only named types are allowed in results".to_string());
+            }
+            if let Type::Variant(v) = &**ty.type_() {
+                if v.is_enum() {
+                    return Ok(());
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_option(some: Option<&TypeRef>) -> Result<(), String> {
+        if let Some(ty) = some {
+            match &**ty.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    for member in r.members.iter() {
+                        if !member.tref.named() {
+                            return Err("only named types are allowed in options".to_string());
+                        }
+                    }
+                }
+                _ => {
+                    if !ty.named() {
+                        return Err("only named types are allowed in options".to_string());
+                    }
+                }
+            }
         }
         Ok(())
     }
@@ -741,50 +785,92 @@ impl<B: Bindgen> Generator<'_, B> {
                 // lowering the error enum.
                 //
                 // Note that this is all very specific to the current WASI ABI.
-                let (ok, err) = v.as_expected().unwrap();
-                self.bindgen.push_block();
-                if let Some(ok) = ok {
-                    self.emit(&VariantPayload);
-                    let store = |me: &mut Self, ty: &TypeRef, n| {
-                        me.emit(&GetArg { nth: *retptr + n });
-                        match ty {
-                            TypeRef::Name(ty) => me.emit(&Store { ty }),
-                            _ => unreachable!(),
-                        }
-                    };
-                    match &**ok.type_() {
-                        Type::Record(r) if r.is_tuple() => {
-                            self.emit(&TupleLower {
-                                amt: r.members.len(),
-                            });
-                            // Note that `rev()` is used here due to the order
-                            // that tuples are pushed onto the stack and how we
-                            // consume the last item first from the stack.
-                            for (i, member) in r.members.iter().enumerate().rev() {
-                                store(self, &member.tref, i);
-                            }
-                        }
-                        _ => store(self, ok, 0),
-                    }
-                };
-                self.bindgen.finish_block(None);
-
-                self.bindgen.push_block();
-                let err_expr = if let Some(ty) = err {
-                    self.emit(&VariantPayload);
-                    self.lower(ty, None);
-                    Some(self.stack.pop().unwrap())
+                if let Some((ok, err)) = v.as_expected() {
+                    self.lower_expected(ok, err, retptr);
+                } else if let Some(some) = v.as_option() {
+                    self.lower_option(some, retptr);
                 } else {
-                    None
-                };
-                self.bindgen.finish_block(err_expr);
-
-                self.emit(&ResultLower { ok, err });
+                    panic!("unimplemented variant type");
+                }
             }
             Type::Builtin(BuiltinType::F32) => self.emit(&F32FromIf32),
             Type::Builtin(BuiltinType::F64) => self.emit(&F64FromIf64),
             Type::List(_) => self.emit(&ListPointerLength),
         }
+    }
+
+    fn lower_expected(&mut self, ok: Option<&TypeRef>, err: Option<&TypeRef>, retptr: &mut usize) {
+        use Instruction::*;
+        self.bindgen.push_block();
+        if let Some(ok) = ok {
+            self.emit(&VariantPayload);
+            let store = |me: &mut Self, ty: &TypeRef, n| {
+                me.emit(&GetArg { nth: *retptr + n });
+                match ty {
+                    TypeRef::Name(ty) => me.emit(&Store { ty }),
+                    _ => unreachable!(),
+                }
+            };
+            match &**ok.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    self.emit(&TupleLower {
+                        amt: r.members.len(),
+                    });
+                    // Note that `rev()` is used here due to the order
+                    // that tuples are pushed onto the stack and how we
+                    // consume the last item first from the stack.
+                    for (i, member) in r.members.iter().enumerate().rev() {
+                        store(self, &member.tref, i);
+                    }
+                }
+                _ => store(self, ok, 0),
+            }
+        };
+        self.bindgen.finish_block(None);
+
+        self.bindgen.push_block();
+        let err_expr = if let Some(ty) = err {
+            self.emit(&VariantPayload);
+            self.lower(ty, None);
+            Some(self.stack.pop().unwrap())
+        } else {
+            None
+        };
+        self.bindgen.finish_block(err_expr);
+
+        self.emit(&ResultLower { ok, err });
+    }
+
+    fn lower_option(&mut self, some: Option<&TypeRef>, retptr: &mut usize) {
+        use Instruction::*;
+        self.bindgen.push_block();
+        if let Some(some) = some {
+            self.emit(&VariantPayload);
+            let store = |me: &mut Self, ty: &TypeRef, n| {
+                me.emit(&GetArg { nth: *retptr + n });
+                match ty {
+                    TypeRef::Name(ty) => me.emit(&Store { ty }),
+                    _ => unreachable!(),
+                }
+            };
+            match &**some.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    self.emit(&TupleLower {
+                        amt: r.members.len(),
+                    });
+                    // Note that `rev()` is used here due to the order
+                    // that tuples are pushed onto the stack and how we
+                    // consume the last item first from the stack.
+                    for (i, member) in r.members.iter().enumerate().rev() {
+                        store(self, &member.tref, i);
+                    }
+                }
+                _ => store(self, some, 0),
+            }
+        };
+        self.bindgen.finish_block(None);
+
+        self.emit(&OptionLower { some });
     }
 
     fn prep_return_pointer(&mut self, ty: &Type) {
@@ -867,46 +953,13 @@ impl<B: Bindgen> Generator<'_, B> {
                     });
                 }
 
-                let (ok, err) = v.as_expected().unwrap();
-                self.bindgen.push_block();
-                let ok_expr = if let Some(ok) = ok {
-                    let mut n = 0;
-                    let mut load = |ty: &TypeRef| {
-                        self.emit(&ReturnPointerGet { n });
-                        n += 1;
-                        match ty {
-                            TypeRef::Name(ty) => self.emit(&Load { ty }),
-                            _ => unreachable!(),
-                        }
-                    };
-                    match &**ok.type_() {
-                        Type::Record(r) if r.is_tuple() => {
-                            for member in r.members.iter() {
-                                load(&member.tref);
-                            }
-                            self.emit(&TupleLift {
-                                amt: r.members.len(),
-                            });
-                        }
-                        _ => load(ok),
-                    }
-                    Some(self.stack.pop().unwrap())
+                if let Some((ok, err)) = v.as_expected() {
+                    self.lift_expected(ok, err);
+                } else if let Some(some) = v.as_option() {
+                    self.lift_option(some);
                 } else {
-                    None
-                };
-                self.bindgen.finish_block(ok_expr);
-
-                self.bindgen.push_block();
-                let err_expr = if let Some(ty) = err {
-                    self.emit(&ReuseReturn);
-                    self.lift(ty, false);
-                    Some(self.stack.pop().unwrap())
-                } else {
-                    None
-                };
-                self.bindgen.finish_block(err_expr);
-
-                self.emit(&ResultLift);
+                    panic!("unimplemented variant type");
+                }
             }
             Type::Record(r) => {
                 let ty = match ty {
@@ -921,5 +974,81 @@ impl<B: Bindgen> Generator<'_, B> {
             }
             Type::List(ty) => self.emit(&ListFromPointerLength { ty }),
         }
+    }
+
+    fn lift_expected(&mut self, ok: Option<&TypeRef>, err: Option<&TypeRef>) {
+        use Instruction::*;
+        self.bindgen.push_block();
+        let ok_expr = if let Some(ok) = ok {
+            let mut n = 0;
+            let mut load = |ty: &TypeRef| {
+                self.emit(&ReturnPointerGet { n });
+                n += 1;
+                match ty {
+                    TypeRef::Name(ty) => self.emit(&Load { ty }),
+                    _ => unreachable!(),
+                }
+            };
+            match &**ok.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    for member in r.members.iter() {
+                        load(&member.tref);
+                    }
+                    self.emit(&TupleLift {
+                        amt: r.members.len(),
+                    });
+                }
+                _ => load(ok),
+            }
+            Some(self.stack.pop().unwrap())
+        } else {
+            None
+        };
+        self.bindgen.finish_block(ok_expr);
+
+        self.bindgen.push_block();
+        let err_expr = if let Some(ty) = err {
+            self.emit(&ReuseReturn);
+            self.lift(ty, false);
+            Some(self.stack.pop().unwrap())
+        } else {
+            None
+        };
+        self.bindgen.finish_block(err_expr);
+
+        self.emit(&ResultLift);
+    }
+
+    fn lift_option(&mut self, some: Option<&TypeRef>) {
+        use Instruction::*;
+        self.bindgen.push_block();
+        let some_expr = if let Some(some) = some {
+            let mut n = 0;
+            let mut load = |ty: &TypeRef| {
+                self.emit(&ReturnPointerGet { n });
+                n += 1;
+                match ty {
+                    TypeRef::Name(ty) => self.emit(&Load { ty }),
+                    _ => unreachable!(),
+                }
+            };
+            match &**some.type_() {
+                Type::Record(r) if r.is_tuple() => {
+                    for member in r.members.iter() {
+                        load(&member.tref);
+                    }
+                    self.emit(&TupleLift {
+                        amt: r.members.len(),
+                    });
+                }
+                _ => load(some),
+            }
+            Some(self.stack.pop().unwrap())
+        } else {
+            None
+        };
+        self.bindgen.finish_block(some_expr);
+
+        self.emit(&OptionLift);
     }
 }

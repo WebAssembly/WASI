@@ -31,6 +31,7 @@ mod kw {
     wast::custom_keyword!(handle);
     wast::custom_keyword!(list);
     wast::custom_keyword!(noreturn);
+    wast::custom_keyword!(option);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(record);
     wast::custom_keyword!(r#const = "const");
@@ -283,6 +284,7 @@ pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
     Tuple(TupleSyntax<'a>),
     Expected(ExpectedSyntax<'a>),
+    Option(OptionSyntax<'a>),
     Flags(FlagsSyntax<'a>),
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
@@ -319,6 +321,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Tuple(parser.parse()?))
                 } else if l.peek::<kw::expected>() {
                     Ok(TypedefSyntax::Expected(parser.parse()?))
+                } else if l.peek::<kw::option>() {
+                    Ok(TypedefSyntax::Option(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
                 } else if l.peek::<kw::record>() {
@@ -430,6 +434,23 @@ impl<'a> Parse<'a> for ExpectedSyntax<'a> {
             })
         })?;
         Ok(ExpectedSyntax { ok, err })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OptionSyntax<'a> {
+    pub some: Option<Box<TypedefSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for OptionSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::option>()?;
+        let some = if !parser.is_empty() && !parser.peek2::<kw::error>() {
+            Some(Box::new(parser.parse()?))
+        } else {
+            None
+        };
+        Ok(OptionSyntax { some })
     }
 }
 

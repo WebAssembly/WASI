@@ -370,6 +370,8 @@ impl witx::Bindgen for AbiBindgen<'_> {
             ReturnPointerGet { n } => self.assert(&format!("return_pointer.get{}", n)),
             ResultLift => self.assert("result.lift"),
             ResultLower { .. } => self.assert("result.lower"),
+            OptionLift => self.assert("option.lift"),
+            OptionLower { .. } => self.assert("option.lower"),
             EnumLift { .. } => self.assert("enum.lift"),
             EnumLower { .. } => self.assert("enum.lower"),
             TupleLift { .. } => self.assert("tuple.lift"),

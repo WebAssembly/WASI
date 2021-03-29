@@ -2,8 +2,8 @@ use crate::{
     io::{Filesystem, WitxIo},
     parser::{
         CommentSyntax, DeclSyntax, Documented, EnumSyntax, ExpectedSyntax, FlagsSyntax,
-        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TupleSyntax, TypedefSyntax,
-        UnionSyntax, VariantSyntax,
+        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, OptionSyntax, RecordSyntax, TupleSyntax,
+        TypedefSyntax, UnionSyntax, VariantSyntax,
     },
     Abi, BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
     InterfaceFunc, InterfaceFuncParam, Location, Module, ModuleDefinition, ModuleEntry,
@@ -306,6 +306,9 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::Expected(syntax) => {
                     Type::Variant(self.validate_expected(&syntax, span)?)
                 }
+                TypedefSyntax::Option(syntax) => {
+                    Type::Variant(self.validate_option(&syntax, span)?)
+                }
                 TypedefSyntax::Flags(syntax) => Type::Record(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Variant(self.validate_union(&syntax, span)?),
@@ -397,7 +400,7 @@ impl DocValidationScope<'_> {
             None => None,
         };
         Ok(Variant {
-            tag_repr: IntRepr::U32,
+            tag_repr: IntRepr::U8,
             cases: vec![
                 Case {
                     name: Id::new("ok"),
@@ -407,6 +410,32 @@ impl DocValidationScope<'_> {
                 Case {
                     name: Id::new("err"),
                     tref: err_ty,
+                    docs: String::new(),
+                },
+            ],
+        })
+    }
+
+    fn validate_option(
+        &self,
+        syntax: &OptionSyntax,
+        span: wast::Span,
+    ) -> Result<Variant, ValidationError> {
+        let some_ty = match &syntax.some {
+            Some(some) => Some(self.validate_datatype(some, false, span)?),
+            None => None,
+        };
+        Ok(Variant {
+            tag_repr: IntRepr::U8,
+            cases: vec![
+                Case {
+                    name: Id::new("some"),
+                    tref: some_ty,
+                    docs: String::new(),
+                },
+                Case {
+                    name: Id::new("none"),
+                    tref: None,
                     docs: String::new(),
                 },
             ],

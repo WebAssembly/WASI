@@ -339,6 +339,13 @@
   )
   "ABI error: only named types are allowed in results"
 )
+(assert_invalid
+  (witx
+    (typename $a (option f32))
+    (module $x (@interface func (export "f") (result $p $a)))
+  )
+  "ABI error: only named types are allowed in options"
+)
 
 ;; Result<(), $errno>
 (assert_abi
@@ -486,5 +493,44 @@
     block.finish
 
     result.lower
+    return)
+)
+
+;; Option<$ty>
+(assert_abi
+  (witx
+    (typename $size u32)
+    (typename $a (option $size))
+    (module $x (@interface func (export "f") (result $p $a)))
+  )
+  (wasm (param i32) (result i32))
+
+  (call_wasm
+    ;; make space for the return value and push its pointer
+    allocate-space
+    return_pointer.get0
+
+    call.wasm
+
+    ;; some block, load the return pointer and have it be the result for the `Some`
+    block.push
+      return_pointer.get0
+      load
+    block.finish
+
+    option.lift
+    return)
+
+  (call_interface
+    call.interface
+
+    ;; store the successful result at the first return pointer (the first param)
+    block.push
+      variant-payload
+      get-arg0
+      store
+    block.finish
+
+    option.lower
     return)
 )

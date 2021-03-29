@@ -396,7 +396,7 @@ impl Variant {
     /// If this variant looks like an `expected` shorthand, return the ok/err
     /// types associated with this result.
     ///
-    /// Only matches variants fo the form:
+    /// Only matches variants of the form:
     ///
     /// ```text
     /// (variant
@@ -414,6 +414,32 @@ impl Variant {
             return None;
         }
         Some((self.cases[0].tref.as_ref(), self.cases[1].tref.as_ref()))
+    }
+
+    /// If this variant looks like an `option` shorthand, return the some
+    /// type associated with this result.
+    ///
+    /// Only matches variants of the form:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "some" some?)
+    ///     (case "none"))
+    /// ```
+    pub fn as_option(&self) -> Option<Option<&TypeRef>> {
+        if self.cases.len() != 2 {
+            return None;
+        }
+        if self.cases[0].name != "some" {
+            return None;
+        }
+        if self.cases[1].name != "none" {
+            return None;
+        }
+        if self.cases[1].tref.is_some() {
+            return None;
+        }
+        Some(self.cases[0].tref.as_ref())
     }
 
     /// Returns whether this variant type is "bool-like" meaning that it matches

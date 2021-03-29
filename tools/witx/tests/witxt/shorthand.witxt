@@ -7,25 +7,37 @@
 (witx $a
   (typename $a (expected (error))))
 (witx $b
-  (typename $a (variant (case $ok) (case $err))))
+  (typename $a (variant (@witx tag u8) (case $ok) (case $err))))
+(assert_representable eq $a "a" $b "a")
+
+(witx $a
+  (typename $a (option)))
+(witx $b
+  (typename $a (variant (@witx tag u8) (case $some) (case $none))))
 (assert_representable eq $a "a" $b "a")
 
 (witx $a
   (typename $a (expected (error u32))))
 (witx $b
-  (typename $a (variant (case $ok) (case $err u32))))
+  (typename $a (variant (@witx tag u8) (case $ok) (case $err u32))))
 (assert_representable eq $a "a" $b "a")
 
 (witx $a
   (typename $a (expected u32 (error))))
 (witx $b
-  (typename $a (variant (case $ok u32) (case $err))))
+  (typename $a (variant (@witx tag u8) (case $ok u32) (case $err))))
 (assert_representable eq $a "a" $b "a")
 
 (witx $a
   (typename $a (expected u32 (error u64))))
 (witx $b
-  (typename $a (variant (case $ok u32) (case $err u64))))
+  (typename $a (variant (@witx tag u8) (case $ok u32) (case $err u64))))
+(assert_representable eq $a "a" $b "a")
+
+(witx $a
+  (typename $a (option u32)))
+(witx $b
+  (typename $a (variant (@witx tag u8) (case $some u32) (case $none))))
 (assert_representable eq $a "a" $b "a")
 
 (witx $a
