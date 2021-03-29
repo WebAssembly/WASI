@@ -5,12 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use "typenames.witx")
+(use $clockid $timestamp $errno from $typenames)
 
 (module $wasi_ephemeral_clock
-  ;;; Linear memory to be accessed by WASI functions that need it.
-  (import "memory" (memory))
-
   ;;; Return the resolution of a clock.
   ;;; Implementations are required to provide a non-zero value for supported clocks. For unsupported clocks,
   ;;; return `errno::inval`.

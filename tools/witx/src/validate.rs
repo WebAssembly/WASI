@@ -1,14 +1,12 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DeclSyntax, Documented, EnumSyntax, ExpectedSyntax, FlagsSyntax,
-        HandleSyntax, ImportTypeSyntax, ModuleDeclSyntax, RecordSyntax, TupleSyntax, TypedefSyntax,
-        UnionSyntax, VariantSyntax,
+        CommentSyntax, DeclSyntax, EnumSyntax, ExpectedSyntax, FlagsSyntax, FunctionSyntax,
+        HandleSyntax, RecordSyntax, TupleSyntax, TypedefSyntax, UnionSyntax, UseSyntax, UsedNames,
+        VariantSyntax,
     },
-    Abi, BuiltinType, Case, Constant, Definition, Document, Entry, HandleDatatype, Id, IntRepr,
-    InterfaceFunc, InterfaceFuncParam, Location, Module, ModuleDefinition, ModuleEntry,
-    ModuleImport, ModuleImportVariant, NamedType, RecordDatatype, RecordKind, RecordMember, Type,
-    TypeRef, Variant,
+    Abi, BuiltinType, Case, Constant, Function, HandleDatatype, Id, IntRepr, Location, Module,
+    ModuleId, NamedType, Param, RecordDatatype, RecordKind, RecordMember, Type, TypeRef, Variant,
 };
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
@@ -19,6 +17,8 @@ use thiserror::Error;
 pub enum ValidationError {
     #[error("Unknown name `{name}`")]
     UnknownName { name: String, location: Location },
+    #[error("module definition cycle detected")]
+    CyclicModule { location: Location },
     #[error("Redefinition of name `{name}`")]
     NameAlreadyExists {
         name: String,
@@ -71,7 +71,8 @@ impl ValidationError {
             | AnonymousRecord { location, .. }
             | UnionSizeMismatch { location, .. }
             | InvalidUnionField { location, .. }
-            | InvalidUnionTag { location, .. } => {
+            | InvalidUnionTag { location, .. }
+            | CyclicModule { location } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -127,25 +128,25 @@ impl IdentValidation {
     }
 }
 
-pub struct DocValidation {
-    scope: IdentValidation,
-    entries: HashMap<Id, Entry>,
-    constant_scopes: HashMap<Id, IdentValidation>,
+pub struct ModuleValidation<'a> {
+    module: Module,
+    type_ns: IdentValidation,
+    func_ns: IdentValidation,
+    constant_ns: HashMap<Id, IdentValidation>,
     bool_ty: TypeRef,
-}
-
-pub struct DocValidationScope<'a> {
-    doc: &'a mut DocValidation,
     text: &'a str,
     path: &'a Path,
 }
 
-impl DocValidation {
-    pub fn new() -> Self {
+impl<'a> ModuleValidation<'a> {
+    pub fn new(text: &'a str, path: &'a Path) -> Self {
+        let name = Id::new(path.file_stem().unwrap().to_str().unwrap());
+        let module_id = ModuleId(Rc::new(path.to_path_buf()));
         Self {
-            scope: IdentValidation::new(),
-            entries: HashMap::new(),
-            constant_scopes: HashMap::new(),
+            module: Module::new(name, module_id),
+            type_ns: IdentValidation::new(),
+            func_ns: IdentValidation::new(),
+            constant_ns: HashMap::new(),
             bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
                 tag_repr: IntRepr::U32,
                 cases: vec![
@@ -161,24 +162,16 @@ impl DocValidation {
                     },
                 ],
             }))),
-        }
-    }
-
-    pub fn scope<'a>(&'a mut self, text: &'a str, path: &'a Path) -> DocValidationScope<'a> {
-        DocValidationScope {
-            doc: self,
             text,
             path,
         }
     }
 
-    pub fn into_document(self, defs: Vec<Definition>) -> Document {
-        Document::new(defs, self.entries)
+    pub fn into_module(self) -> Module {
+        self.module
     }
-}
 
-impl DocValidationScope<'_> {
-    fn location(&self, span: wast::Span) -> Location {
+    pub fn location(&self, span: wast::Span) -> Location {
         // Wast Span gives 0-indexed lines and columns. Location is 1-indexed.
         let (line, column) = span.linecol_in(self.text);
         Location {
@@ -188,79 +181,129 @@ impl DocValidationScope<'_> {
         }
     }
 
-    fn introduce(&mut self, name: &wast::Id<'_>) -> Result<Id, ValidationError> {
-        let loc = self.location(name.span());
-        self.doc.scope.introduce(name.name(), loc)
-    }
-
-    fn get(&self, name: &wast::Id<'_>) -> Result<Id, ValidationError> {
-        let loc = self.location(name.span());
-        self.doc.scope.get(name.name(), loc)
+    pub fn validate_use(
+        &mut self,
+        use_: UseSyntax<'_>,
+        module: &Module,
+    ) -> Result<(), ValidationError> {
+        match use_.names {
+            UsedNames::All(span) => {
+                for ty in module.typenames() {
+                    let loc = self.location(span);
+                    self.type_ns.introduce(ty.name.as_str(), loc)?;
+                    self.module.push_type(ty.clone());
+                }
+            }
+            UsedNames::List(names) => {
+                for name in names {
+                    let loc = self.location(name.span());
+                    let id = self.type_ns.introduce(name.name(), loc)?;
+                    let ty = match module.typename(&id) {
+                        Some(ty) => ty,
+                        None => {
+                            return Err(ValidationError::UnknownName {
+                                name: name.name().to_string(),
+                                location: self.location(name.span()),
+                            }
+                            .into());
+                        }
+                    };
+                    self.module.push_type(ty);
+                }
+            }
+        }
+        Ok(())
     }
 
     pub fn validate_decl(
         &mut self,
         decl: &DeclSyntax,
         comments: &CommentSyntax,
-        definitions: &mut Vec<Definition>,
     ) -> Result<(), ValidationError> {
         match decl {
             DeclSyntax::Typename(decl) => {
-                let name = self.introduce(&decl.ident)?;
+                let loc = self.location(decl.ident.span());
+                let name = self.type_ns.introduce(decl.ident.name(), loc)?;
                 let docs = comments.docs();
                 let tref = self.validate_datatype(&decl.def, true, decl.ident.span())?;
 
-                let rc_datatype = Rc::new(NamedType {
+                self.module.push_type(Rc::new(NamedType {
                     name: name.clone(),
+                    module: self.module.module_id().clone(),
                     tref,
                     docs,
-                });
-                self.doc
-                    .entries
-                    .insert(name.clone(), Entry::Typename(Rc::downgrade(&rc_datatype)));
-                definitions.push(Definition::Typename(rc_datatype));
-            }
-
-            DeclSyntax::Module(syntax) => {
-                let name = self.introduce(&syntax.name)?;
-                let mut module_validator = ModuleValidation::new(self);
-                let decls = syntax
-                    .decls
-                    .iter()
-                    .map(|d| module_validator.validate_decl(&d))
-                    .collect::<Result<Vec<_>, _>>()?;
-
-                let rc_module = Rc::new(Module::new(
-                    name.clone(),
-                    decls,
-                    module_validator.entries,
-                    comments.docs(),
-                ));
-                self.doc
-                    .entries
-                    .insert(name, Entry::Module(Rc::downgrade(&rc_module)));
-                definitions.push(Definition::Module(rc_module));
+                }));
             }
 
             DeclSyntax::Const(syntax) => {
                 let ty = Id::new(syntax.item.ty.name());
                 let loc = self.location(syntax.item.name.span());
                 let scope = self
-                    .doc
-                    .constant_scopes
+                    .constant_ns
                     .entry(ty.clone())
                     .or_insert_with(IdentValidation::new);
                 let name = scope.introduce(syntax.item.name.name(), loc)?;
                 // TODO: validate `ty` is a integer datatype that `syntax.value`
                 // fits within.
-                definitions.push(Definition::Constant(Constant {
+                self.module.push_constant(Constant {
                     ty,
                     name,
                     value: syntax.item.value,
                     docs: syntax.comments.docs(),
-                }));
+                });
             }
         }
+        Ok(())
+    }
+
+    pub fn validate_function(
+        &mut self,
+        syntax: &FunctionSyntax,
+        comments: &CommentSyntax,
+    ) -> Result<(), ValidationError> {
+        let loc = self.location(syntax.export_loc);
+        let name = self.func_ns.introduce(syntax.export, loc)?;
+        let mut argnames = IdentValidation::new();
+        let params = syntax
+            .params
+            .iter()
+            .map(|f| {
+                Ok(Param {
+                    name: argnames
+                        .introduce(f.item.name.name(), self.location(f.item.name.span()))?,
+                    tref: self.validate_datatype(&f.item.type_, false, f.item.name.span())?,
+                    docs: f.comments.docs(),
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        let results = syntax
+            .results
+            .iter()
+            .map(|f| {
+                let tref = self.validate_datatype(&f.item.type_, false, f.item.name.span())?;
+                Ok(Param {
+                    name: argnames
+                        .introduce(f.item.name.name(), self.location(f.item.name.span()))?,
+                    tref,
+                    docs: f.comments.docs(),
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        let noreturn = syntax.noreturn;
+        let abi = Abi::Preview1;
+        abi.validate(&params, &results)
+            .map_err(|reason| ValidationError::Abi {
+                reason,
+                location: self.location(syntax.export_loc),
+            })?;
+        self.module.push_func(Rc::new(Function {
+            abi,
+            name: name.clone(),
+            params,
+            results,
+            noreturn,
+            docs: comments.docs(),
+        }));
         Ok(())
     }
 
@@ -272,22 +315,10 @@ impl DocValidationScope<'_> {
     ) -> Result<TypeRef, ValidationError> {
         match syntax {
             TypedefSyntax::Ident(syntax) => {
-                let i = self.get(syntax)?;
-                match self.doc.entries.get(&i) {
-                    Some(Entry::Typename(weak_ref)) => Ok(TypeRef::Name(
-                        weak_ref.upgrade().expect("weak backref to defined type"),
-                    )),
-                    Some(e) => Err(ValidationError::WrongKindName {
-                        name: i.as_str().to_string(),
-                        location: self.location(syntax.span()),
-                        expected: "datatype",
-                        got: e.kind(),
-                    }),
-                    None => Err(ValidationError::Recursive {
-                        name: i.as_str().to_string(),
-                        location: self.location(syntax.span()),
-                    }),
-                }
+                let loc = self.location(syntax.span());
+                let i = self.type_ns.get(syntax.name(), loc)?;
+                let ty = self.module.typename(&i).unwrap();
+                Ok(TypeRef::Name(ty))
             }
             TypedefSyntax::Enum { .. }
             | TypedefSyntax::Flags { .. }
@@ -326,7 +357,7 @@ impl DocValidationScope<'_> {
                 TypedefSyntax::String => {
                     Type::List(TypeRef::Value(Rc::new(Type::Builtin(BuiltinType::Char))))
                 }
-                TypedefSyntax::Bool => return Ok(self.doc.bool_ty.clone()),
+                TypedefSyntax::Bool => return Ok(self.bool_ty.clone()),
                 TypedefSyntax::Ident { .. } => unreachable!(),
             }))),
         }
@@ -430,7 +461,7 @@ impl DocValidationScope<'_> {
             members.push(RecordMember {
                 name,
                 docs,
-                tref: self.doc.bool_ty.clone(),
+                tref: self.bool_ty.clone(),
             });
         }
         Ok(RecordDatatype {
@@ -620,103 +651,6 @@ impl DocValidationScope<'_> {
                 repr: type_.clone(),
                 location: self.location(span),
             }),
-        }
-    }
-}
-
-struct ModuleValidation<'a> {
-    doc: &'a DocValidationScope<'a>,
-    scope: IdentValidation,
-    pub entries: HashMap<Id, ModuleEntry>,
-}
-
-impl<'a> ModuleValidation<'a> {
-    fn new(doc: &'a DocValidationScope<'a>) -> Self {
-        Self {
-            doc,
-            scope: IdentValidation::new(),
-            entries: HashMap::new(),
-        }
-    }
-
-    fn validate_decl(
-        &mut self,
-        decl: &Documented<ModuleDeclSyntax>,
-    ) -> Result<ModuleDefinition, ValidationError> {
-        match &decl.item {
-            ModuleDeclSyntax::Import(syntax) => {
-                let loc = self.doc.location(syntax.name_loc);
-                let name = self.scope.introduce(syntax.name, loc)?;
-                let variant = match syntax.type_ {
-                    ImportTypeSyntax::Memory => ModuleImportVariant::Memory,
-                };
-                let rc_import = Rc::new(ModuleImport {
-                    name: name.clone(),
-                    variant,
-                    docs: decl.comments.docs(),
-                });
-                self.entries
-                    .insert(name, ModuleEntry::Import(Rc::downgrade(&rc_import)));
-                Ok(ModuleDefinition::Import(rc_import))
-            }
-            ModuleDeclSyntax::Func(syntax) => {
-                let loc = self.doc.location(syntax.export_loc);
-                let name = self.scope.introduce(syntax.export, loc)?;
-                let mut argnames = IdentValidation::new();
-                let params = syntax
-                    .params
-                    .iter()
-                    .map(|f| {
-                        Ok(InterfaceFuncParam {
-                            name: argnames.introduce(
-                                f.item.name.name(),
-                                self.doc.location(f.item.name.span()),
-                            )?,
-                            tref: self.doc.validate_datatype(
-                                &f.item.type_,
-                                false,
-                                f.item.name.span(),
-                            )?,
-                            docs: f.comments.docs(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, _>>()?;
-                let results = syntax
-                    .results
-                    .iter()
-                    .map(|f| {
-                        let tref =
-                            self.doc
-                                .validate_datatype(&f.item.type_, false, f.item.name.span())?;
-                        Ok(InterfaceFuncParam {
-                            name: argnames.introduce(
-                                f.item.name.name(),
-                                self.doc.location(f.item.name.span()),
-                            )?,
-                            tref,
-                            docs: f.comments.docs(),
-                        })
-                    })
-                    .collect::<Result<Vec<_>, _>>()?;
-                let noreturn = syntax.noreturn;
-                let abi = Abi::Preview1;
-                abi.validate(&params, &results)
-                    .map_err(|reason| ValidationError::Abi {
-                        reason,
-                        location: self.doc.location(syntax.export_loc),
-                    })?;
-                let rc_func = Rc::new(InterfaceFunc {
-                    abi,
-                    name: name.clone(),
-                    params,
-                    results,
-                    noreturn,
-                    docs: decl.comments.docs(),
-                });
-                self.entries
-                    .insert(name, ModuleEntry::Func(Rc::downgrade(&rc_func)));
-                Ok(ModuleDefinition::Func(rc_func))
-            }
         }
     }
 }

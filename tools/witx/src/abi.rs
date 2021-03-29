@@ -11,8 +11,8 @@
 //! per-language) into this wasm API. This module is intended to assist with
 //! this definition.
 //!
-//! Contained within are two primary functions, [`InterfaceFunc::call_wasm`] and
-//! [`InterfaceFunc::call_interface`]. These functions implement the two ways to
+//! Contained within are two primary functions, [`Function::call_wasm`] and
+//! [`Function::call_interface`]. These functions implement the two ways to
 //! interact with an interface types function, namely calling the raw wasm
 //! version and calling the high-level version with interface types. These two
 //! functions are fed a structure that implements [`Bindgen`]. An instance of
@@ -20,9 +20,7 @@
 //! of how to convert to and from wasm types and interface types. Code
 //! generators will need to implement the various instructions to support APIs.
 
-use crate::{
-    BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, Type, TypeRef,
-};
+use crate::{BuiltinType, Function, Id, IntRepr, NamedType, Param, Type, TypeRef};
 
 /// Enumerates wasm types used by interface types when lowering/lifting.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -198,7 +196,7 @@ def_instruction! {
         /// called rather than a raw wasm function.
         CallInterface {
             module: &'a str,
-            func: &'a InterfaceFunc,
+            func: &'a Function,
         } : [func.params.len()] => [func.results.len()],
 
         /// Converts a native wasm `i32` to an interface type `s8`.
@@ -322,11 +320,7 @@ impl Abi {
     ///
     /// Returns an error string if they're not representable or returns `Ok` if
     /// they're indeed representable.
-    pub fn validate(
-        &self,
-        _params: &[InterfaceFuncParam],
-        results: &[InterfaceFuncParam],
-    ) -> Result<(), String> {
+    pub fn validate(&self, _params: &[Param], results: &[Param]) -> Result<(), String> {
         assert_eq!(*self, Abi::Preview1);
         match results.len() {
             0 => {}
@@ -444,7 +438,7 @@ pub trait Bindgen {
     fn finish_block(&mut self, operand: Option<Self::Operand>);
 }
 
-impl InterfaceFunc {
+impl Function {
     /// Get the WebAssembly type signature for this interface function
     ///
     /// The first entry returned is the list of parameters and the second entry
@@ -563,7 +557,7 @@ impl InterfaceFunc {
         .call_wasm(module, self);
     }
 
-    /// This is the dual of [`InterfaceFunc::call_wasm`], except that instead of
+    /// This is the dual of [`Function::call_wasm`], except that instead of
     /// calling a wasm signature it generates code to come from a wasm signature
     /// and call an interface types signature.
     pub fn call_interface(&self, module: &Id, bindgen: &mut impl Bindgen) {
@@ -586,7 +580,7 @@ struct Generator<'a, B: Bindgen> {
 }
 
 impl<B: Bindgen> Generator<'_, B> {
-    fn call_wasm(&mut self, module: &Id, func: &InterfaceFunc) {
+    fn call_wasm(&mut self, module: &Id, func: &Function) {
         // Translate all parameters which are interface values by lowering them
         // to their wasm types.
         for (nth, param) in func.params.iter().enumerate() {
@@ -619,7 +613,7 @@ impl<B: Bindgen> Generator<'_, B> {
         });
     }
 
-    fn call_interface(&mut self, module: &Id, func: &InterfaceFunc) {
+    fn call_interface(&mut self, module: &Id, func: &Function) {
         // Lift all wasm parameters into interface types first.
         //
         // Note that consuming arguments is somewhat janky right now by manually
