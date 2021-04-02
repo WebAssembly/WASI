@@ -1,8 +1,8 @@
 use crate::Abi;
 use std::collections::{HashMap, HashSet};
-use std::rc::{Rc, Weak};
+use std::rc::Rc;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Id(String);
 
 impl Id {
@@ -39,133 +39,121 @@ impl From<&str> for Id {
 }
 
 #[derive(Debug, Clone)]
-pub struct Document {
-    definitions: Vec<Definition>,
-    entries: HashMap<Id, Entry>,
+pub struct Module {
+    name: Id,
+    module_id: ModuleId,
+    types: Vec<Rc<NamedType>>,
+    type_map: HashMap<Id, Rc<NamedType>>,
+
+    resources: Vec<Rc<Resource>>,
+    resource_map: HashMap<Id, Rc<Resource>>,
+
+    funcs: Vec<Rc<Function>>,
+    func_map: HashMap<Id, Rc<Function>>,
+
+    constants: Vec<Constant>,
 }
 
-impl Document {
-    pub(crate) fn new(definitions: Vec<Definition>, entries: HashMap<Id, Entry>) -> Self {
-        Document {
-            definitions,
-            entries,
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ModuleId(pub(crate) Rc<std::path::PathBuf>);
+
+impl Module {
+    pub(crate) fn new(name: Id, module_id: ModuleId) -> Module {
+        Module {
+            name,
+            module_id,
+            types: Default::default(),
+            type_map: Default::default(),
+            resources: Default::default(),
+            resource_map: Default::default(),
+            funcs: Default::default(),
+            func_map: Default::default(),
+            constants: Default::default(),
         }
     }
+
+    pub fn name(&self) -> &Id {
+        &self.name
+    }
+
+    pub fn module_id(&self) -> &ModuleId {
+        &self.module_id
+    }
+
+    pub(crate) fn push_type(&mut self, ty: Rc<NamedType>) {
+        assert!(self.type_map.insert(ty.name.clone(), ty.clone()).is_none());
+        self.types.push(ty);
+    }
+
+    pub(crate) fn push_resource(&mut self, r: Rc<Resource>) {
+        assert!(self
+            .resource_map
+            .insert(r.name.clone(), r.clone())
+            .is_none());
+        self.resources.push(r);
+    }
+
+    pub(crate) fn push_func(&mut self, func: Rc<Function>) {
+        assert!(self
+            .func_map
+            .insert(func.name.clone(), func.clone())
+            .is_none());
+        self.funcs.push(func);
+    }
+
+    pub(crate) fn push_constant(&mut self, constant: Constant) {
+        self.constants.push(constant);
+    }
+
     pub fn typename(&self, name: &Id) -> Option<Rc<NamedType>> {
-        self.entries.get(name).and_then(|e| match e {
-            Entry::Typename(nt) => Some(nt.upgrade().expect("always possible to upgrade entry")),
-            _ => None,
-        })
+        self.type_map.get(name).cloned()
     }
-    pub fn typenames<'a>(&'a self) -> impl Iterator<Item = Rc<NamedType>> + 'a {
-        self.definitions.iter().filter_map(|d| match d {
-            Definition::Typename(nt) => Some(nt.clone()),
-            _ => None,
-        })
+
+    pub fn typenames<'a>(&'a self) -> impl Iterator<Item = &'a Rc<NamedType>> + 'a {
+        self.types.iter()
     }
+
+    pub fn resource(&self, name: &Id) -> Option<Rc<Resource>> {
+        self.resource_map.get(name).cloned()
+    }
+
+    pub fn resources<'a>(&'a self) -> impl Iterator<Item = &'a Rc<Resource>> + 'a {
+        self.resources.iter()
+    }
+
     /// All of the (unique) types used as "err" variant of results returned from
     /// functions.
     pub fn error_types<'a>(&'a self) -> impl Iterator<Item = TypeRef> + 'a {
         let errors: HashSet<TypeRef> = self
-            .modules()
-            .flat_map(|m| {
-                m.funcs()
-                    .filter_map(|f| {
-                        if f.results.len() == 1 {
-                            Some(f.results[0].tref.type_().clone())
-                        } else {
-                            None
-                        }
-                    })
-                    .filter_map(|t| match &*t {
-                        Type::Variant(v) => {
-                            let (_ok, err) = v.as_expected()?;
-                            Some(err?.clone())
-                        }
-                        _ => None,
-                    })
-                    .collect::<HashSet<TypeRef>>()
+            .funcs()
+            .filter_map(|f| {
+                if f.results.len() == 1 {
+                    Some(f.results[0].tref.type_().clone())
+                } else {
+                    None
+                }
             })
-            .collect();
+            .filter_map(|t| match &*t {
+                Type::Variant(v) => {
+                    let (_ok, err) = v.as_expected()?;
+                    Some(err?.clone())
+                }
+                _ => None,
+            })
+            .collect::<HashSet<TypeRef>>();
         errors.into_iter()
     }
-    pub fn module(&self, name: &Id) -> Option<Rc<Module>> {
-        self.entries.get(&name).and_then(|e| match e {
-            Entry::Module(m) => Some(m.upgrade().expect("always possible to upgrade entry")),
-            _ => None,
-        })
+
+    pub fn func(&self, name: &Id) -> Option<Rc<Function>> {
+        self.func_map.get(&name).cloned()
     }
-    pub fn modules<'a>(&'a self) -> impl Iterator<Item = Rc<Module>> + 'a {
-        self.definitions.iter().filter_map(|d| match d {
-            Definition::Module(m) => Some(m.clone()),
-            _ => None,
-        })
+
+    pub fn funcs<'a>(&'a self) -> impl Iterator<Item = Rc<Function>> + 'a {
+        self.funcs.iter().cloned()
     }
 
     pub fn constants<'a>(&'a self) -> impl Iterator<Item = &'a Constant> + 'a {
-        self.definitions.iter().filter_map(|d| match d {
-            Definition::Constant(c) => Some(c),
-            _ => None,
-        })
-    }
-}
-
-impl PartialEq for Document {
-    fn eq(&self, rhs: &Document) -> bool {
-        // For equality, we don't care about the ordering of definitions,
-        // so we only need to check that the entries map is equal
-        self.entries == rhs.entries
-    }
-}
-impl Eq for Document {}
-
-impl std::hash::Hash for Document {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        std::hash::Hash::hash(&self.definitions, state);
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum Definition {
-    Typename(Rc<NamedType>),
-    Module(Rc<Module>),
-    Constant(Constant),
-}
-
-#[derive(Debug, Clone)]
-pub enum Entry {
-    Typename(Weak<NamedType>),
-    Module(Weak<Module>),
-}
-
-impl Entry {
-    pub fn kind(&self) -> &'static str {
-        match self {
-            Entry::Typename { .. } => "typename",
-            Entry::Module { .. } => "module",
-        }
-    }
-}
-
-impl PartialEq for Entry {
-    fn eq(&self, rhs: &Entry) -> bool {
-        match (self, rhs) {
-            (Entry::Typename(t), Entry::Typename(t_rhs)) => {
-                t.upgrade()
-                    .expect("possible to upgrade entry when part of document")
-                    == t_rhs
-                        .upgrade()
-                        .expect("possible to upgrade entry when part of document")
-            }
-            (Entry::Module(m), Entry::Module(m_rhs)) => {
-                m.upgrade()
-                    .expect("possible to upgrade entry when part of document")
-                    == m_rhs
-                        .upgrade()
-                        .expect("possible to upgrade entry when part of document")
-            }
-            _ => false,
-        }
+        self.constants.iter()
     }
 }
 
@@ -196,11 +184,16 @@ impl TypeRef {
             TypeRef::Value(_) => false,
         }
     }
+
+    pub fn type_equal(&self, other: &TypeRef) -> bool {
+        self.type_().type_equal(other.type_())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NamedType {
     pub name: Id,
+    pub module: ModuleId,
     pub tref: TypeRef,
     pub docs: String,
 }
@@ -285,6 +278,43 @@ impl Type {
             | Type::Builtin(BuiltinType::F64)
             | Type::Pointer(_)
             | Type::ConstPointer(_) => true,
+        }
+    }
+
+    pub fn type_equal(&self, other: &Type) -> bool {
+        match self {
+            Type::Record(a) => match other {
+                Type::Record(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::Variant(a) => match other {
+                Type::Variant(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::Handle(a) => match other {
+                Type::Handle(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::List(a) => match other {
+                Type::List(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::Pointer(a) => match other {
+                Type::Pointer(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::ConstPointer(a) => match other {
+                Type::ConstPointer(b) => a.type_equal(b),
+                _ => false,
+            },
+            Type::Builtin(a) => match other {
+                Type::Builtin(b) => a == b,
+                _ => false,
+            },
+            Type::Buffer(a) => match other {
+                Type::Buffer(b) => a.type_equal(b),
+                _ => false,
+            },
         }
     }
 }
@@ -409,6 +439,25 @@ impl RecordDatatype {
             RecordKind::Bitflags(i) => Some(i),
             _ => None,
         }
+    }
+
+    pub fn type_equal(&self, other: &RecordDatatype) -> bool {
+        // Note that eventually we'll probably want to ignore ABI-style
+        // differences where the fields are reordered but have the same types.
+        // That's more of a subtyping-style check, however, and would require a
+        // bit more infrastructure so we just go for strict equality for now.
+        self.members.len() == other.members.len()
+            && self
+                .members
+                .iter()
+                .zip(&other.members)
+                .all(|(a, b)| a.type_equal(b))
+    }
+}
+
+impl RecordMember {
+    pub fn type_equal(&self, other: &RecordMember) -> bool {
+        self.name == other.name && self.tref.type_equal(&other.tref)
     }
 }
 
@@ -547,6 +596,18 @@ impl Variant {
     pub fn is_enum(&self) -> bool {
         self.cases.iter().all(|c| c.tref.is_none())
     }
+
+    pub fn type_equal(&self, other: &Variant) -> bool {
+        // See the comment in `RecordDatatype::type_equal` for why strict
+        // positional equality is required here
+        self.tag_repr == other.tag_repr
+            && self.cases.len() == other.cases.len()
+            && self
+                .cases
+                .iter()
+                .zip(&other.cases)
+                .all(|(a, b)| a.type_equal(b))
+    }
 }
 
 /// One of a number of possible types that a `Variant` can take.
@@ -561,132 +622,64 @@ pub struct Case {
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct HandleDatatype {}
+impl Case {
+    pub fn type_equal(&self, other: &Case) -> bool {
+        self.name == other.name
+            && match (&self.tref, &other.tref) {
+                (Some(a), Some(b)) => a.type_equal(b),
+                (None, None) => true,
+                _ => false,
+            }
+    }
+}
 
-#[derive(Debug, Clone)]
-pub struct Module {
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Resource {
+    /// The local name within the module this resource is defined within. This
+    /// may differ from the id of the resource itself.
     pub name: Id,
-    definitions: Vec<ModuleDefinition>,
-    entries: HashMap<Id, ModuleEntry>,
+    /// The unique id assigned to this resource.
+    pub resource_id: ResourceId,
+    /// Documentation in the defining module, if any.
     pub docs: String,
 }
 
-impl Module {
-    pub(crate) fn new(
-        name: Id,
-        definitions: Vec<ModuleDefinition>,
-        entries: HashMap<Id, ModuleEntry>,
-        docs: String,
-    ) -> Self {
-        Module {
-            name,
-            definitions,
-            entries,
-            docs,
-        }
-    }
-    pub fn import(&self, name: &Id) -> Option<Rc<ModuleImport>> {
-        self.entries.get(name).and_then(|e| match e {
-            ModuleEntry::Import(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
-            _ => None,
-        })
-    }
-    pub fn imports<'a>(&'a self) -> impl Iterator<Item = Rc<ModuleImport>> + 'a {
-        self.definitions.iter().filter_map(|d| match d {
-            ModuleDefinition::Import(d) => Some(d.clone()),
-            _ => None,
-        })
-    }
-    pub fn func(&self, name: &Id) -> Option<Rc<InterfaceFunc>> {
-        self.entries.get(name).and_then(|e| match e {
-            ModuleEntry::Func(d) => Some(d.upgrade().expect("always possible to upgrade entry")),
-            _ => None,
-        })
-    }
-    pub fn funcs<'a>(&'a self) -> impl Iterator<Item = Rc<InterfaceFunc>> + 'a {
-        self.definitions.iter().filter_map(|d| match d {
-            ModuleDefinition::Func(d) => Some(d.clone()),
-            _ => None,
-        })
-    }
-}
-
-impl PartialEq for Module {
-    fn eq(&self, rhs: &Module) -> bool {
-        // For equality, we don't care about the ordering of definitions,
-        // so we only need to check that the entries map is equal
-        self.name == rhs.name && self.entries == rhs.entries && self.docs == rhs.docs
-    }
-}
-impl Eq for Module {}
-
-impl std::hash::Hash for Module {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        std::hash::Hash::hash(&self.name, state);
-        std::hash::Hash::hash(&self.definitions, state);
-        std::hash::Hash::hash(&self.docs, state);
-    }
-}
-
+/// A unique id used to determine whether two handles are nominally referring
+/// to the same resource.
+///
+/// An id is composed of the definition location (a module id) and the original
+/// name within that module.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum ModuleDefinition {
-    Import(Rc<ModuleImport>),
-    Func(Rc<InterfaceFunc>),
-}
-
-#[derive(Debug, Clone)]
-pub enum ModuleEntry {
-    Import(Weak<ModuleImport>),
-    Func(Weak<InterfaceFunc>),
-}
-
-impl PartialEq for ModuleEntry {
-    fn eq(&self, rhs: &ModuleEntry) -> bool {
-        match (self, rhs) {
-            (ModuleEntry::Import(i), ModuleEntry::Import(i_rhs)) => {
-                i.upgrade()
-                    .expect("always possible to upgrade moduleentry when part of module")
-                    == i_rhs
-                        .upgrade()
-                        .expect("always possible to upgrade moduleentry when part of module")
-            }
-            (ModuleEntry::Func(i), ModuleEntry::Func(i_rhs)) => {
-                i.upgrade()
-                    .expect("always possible to upgrade moduleentry when part of module")
-                    == i_rhs
-                        .upgrade()
-                        .expect("always possible to upgrade moduleentry when part of module")
-            }
-            _ => false,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct ModuleImport {
+pub struct ResourceId {
     pub name: Id,
-    pub variant: ModuleImportVariant,
-    pub docs: String,
+    pub module_id: ModuleId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum ModuleImportVariant {
-    Memory,
+pub struct HandleDatatype {
+    /// The resource that this handle references, used for determining if two
+    /// handle types are nominally equal to one another.
+    pub resource_id: ResourceId,
+}
+
+impl HandleDatatype {
+    pub fn type_equal(&self, other: &HandleDatatype) -> bool {
+        self.resource_id == other.resource_id
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct InterfaceFunc {
+pub struct Function {
     pub abi: Abi,
     pub name: Id,
-    pub params: Vec<InterfaceFuncParam>,
-    pub results: Vec<InterfaceFuncParam>,
+    pub params: Vec<Param>,
+    pub results: Vec<Param>,
     pub noreturn: bool,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct InterfaceFuncParam {
+pub struct Param {
     pub name: Id,
     pub tref: TypeRef,
     pub docs: String,
@@ -708,4 +701,10 @@ pub struct Buffer {
 
     /// The type of items this buffer contains
     pub tref: TypeRef,
+}
+
+impl Buffer {
+    pub fn type_equal(&self, other: &Buffer) -> bool {
+        self.out == other.out && self.tref.type_equal(&other.tref)
+    }
 }

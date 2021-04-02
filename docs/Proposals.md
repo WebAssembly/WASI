@@ -6,7 +6,7 @@ adoption of this process and so don't fit exactly into the defined phases,
 however our intention is to align them going forward.
 
 [WASI]: https://github.com/WebAssembly/WASI
-[proposals page]: https://github.com/WebAssembly/proposals/blob/main/README.md
+[proposals page]: https://github.com/WebAssembly/proposals/blob/master/README.md
 
 ## Active proposals
 

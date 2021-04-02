@@ -11,8 +11,8 @@
 //! per-language) into this wasm API. This module is intended to assist with
 //! this definition.
 //!
-//! Contained within are two primary functions, [`InterfaceFunc::call_wasm`] and
-//! [`InterfaceFunc::call_interface`]. These functions implement the two ways to
+//! Contained within are two primary functions, [`Function::call_wasm`] and
+//! [`Function::call_interface`]. These functions implement the two ways to
 //! interact with an interface types function, namely calling the raw wasm
 //! version and calling the high-level version with interface types. These two
 //! functions are fed a structure that implements [`Bindgen`]. An instance of
@@ -21,8 +21,8 @@
 //! generators will need to implement the various instructions to support APIs.
 
 use crate::{
-    Buffer, BuiltinType, Id, IntRepr, InterfaceFunc, InterfaceFuncParam, NamedType, RecordDatatype,
-    Type, TypeRef, Variant,
+    Buffer, BuiltinType, Function, Id, IntRepr, NamedType, Param, RecordDatatype, Type, TypeRef,
+    Variant,
 };
 use std::mem;
 
@@ -572,7 +572,7 @@ def_instruction! {
         /// called rather than a raw wasm function.
         CallInterface {
             module: &'a str,
-            func: &'a InterfaceFunc,
+            func: &'a Function,
         } : [func.params.len()] => [func.results.len()],
 
         /// Returns `amt` values on the stack. This is always the last
@@ -636,11 +636,7 @@ impl Abi {
     ///
     /// Returns an error string if they're not representable or returns `Ok` if
     /// they're indeed representable.
-    pub fn validate(
-        &self,
-        params: &[InterfaceFuncParam],
-        results: &[InterfaceFuncParam],
-    ) -> Result<(), String> {
+    pub fn validate(&self, params: &[Param], results: &[Param]) -> Result<(), String> {
         for ty in params.iter() {
             self.validate_ty(ty.tref.type_(), true)?;
         }
@@ -840,7 +836,7 @@ pub trait Bindgen {
     fn finish_block(&mut self, operand: &mut Vec<Self::Operand>);
 }
 
-impl InterfaceFunc {
+impl Function {
     /// Get the WebAssembly type signature for this interface function
     ///
     /// The first entry returned is the list of parameters and the second entry
@@ -963,7 +959,7 @@ impl InterfaceFunc {
 /// Modes of calling a WebAssembly or host function.
 ///
 /// Each mode may have a slightly different codegen for some types, so
-/// [`InterfaceFunc::call`] takes this as a parameter to know in what context
+/// [`Function::call`] takes this as a parameter to know in what context
 /// the invocation is happening within.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum CallMode {
@@ -1042,7 +1038,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
         }
     }
 
-    fn call(&mut self, module: &Id, func: &InterfaceFunc) {
+    fn call(&mut self, module: &Id, func: &Function) {
         let sig = func.wasm_signature(self.mode);
 
         match self.mode {
@@ -1165,7 +1161,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
     ///
     /// Inserts instructions necesesary to lift those types into their
     /// interface types equivalent.
-    fn lift_all(&mut self, tys: &[InterfaceFuncParam]) {
+    fn lift_all(&mut self, tys: &[Param]) {
         let mut temp = Vec::new();
         let operands = tys
             .iter()
@@ -1196,7 +1192,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
     /// Assumes that the value for `tys` is already on the stack, and then
     /// converts all of those values into their wasm types by lowering each
     /// argument in-order.
-    fn lower_all(&mut self, tys: &[InterfaceFuncParam], mut nargs: Option<usize>) {
+    fn lower_all(&mut self, tys: &[Param], mut nargs: Option<usize>) {
         let operands = self
             .stack
             .drain(self.stack.len() - tys.len()..)
@@ -1534,7 +1530,7 @@ impl<'a, B: Bindgen> Generator<'a, B> {
         }
     }
 
-    fn prep_return_pointer(&mut self, sig: &WasmSignature, results: &[InterfaceFuncParam]) {
+    fn prep_return_pointer(&mut self, sig: &WasmSignature, results: &[Param]) {
         match self.abi {
             Abi::Preview1 => {
                 assert!(results.len() < 2);

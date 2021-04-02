@@ -273,8 +273,9 @@
   )
 )
 
+(resource $fd)
 ;;; A file descriptor handle.
-(typename $fd (handle))
+(typename $fd (handle $fd))
 
 ;;; A region of memory for scatter/gather reads.
 (typename $iovec

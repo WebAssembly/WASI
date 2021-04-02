@@ -1,0 +1,41 @@
+(assert_invalid
+  (witx (typename $x (handle $y)))
+  "Unknown name `y`")
+
+(assert_invalid
+  (witx
+    (typename $y u32)
+    (typename $x (handle $y)))
+  "Unknown name `y`")
+
+(assert_invalid
+  (witx
+    (resource $x)
+    (resource $x))
+  "Redefinition of name `x`")
+
+(witx
+  (resource $x)
+  (typename $x (handle $x)))
+
+(witx $a
+  (resource $x)
+  (typename $x (handle $x))
+  (typename $y (handle $x))
+)
+
+(assert_eq $a "x" $a "y")
+
+(witx $a
+  (resource $x)
+  (resource $y)
+  (typename $x (handle $x))
+  (typename $y (handle $y))
+)
+
+(assert_ne $a "x" $a "y")
+
+(witx $a (load "resources/multi.witx"))
+
+(assert_eq $a "x1" $a "x2")
+(assert_ne $a "y1" $a "y2")

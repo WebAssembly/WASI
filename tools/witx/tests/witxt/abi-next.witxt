@@ -76,7 +76,8 @@
 ;; handle argument
 (assert_abi
   (witx
-    (typename $y (handle))
+    (resource $y)
+    (typename $y (handle $y))
     (module $x (export "f" (func (param $p $y))))
   )
   (wasm (param i32))
@@ -514,7 +515,8 @@
 ;; handle result
 (assert_abi
   (witx
-    (typename $y (handle))
+    (resource $y)
+    (typename $y (handle $y))
     (module $x (export "f" (func (result $p $y))))
   )
   (wasm (result i32))

@@ -6,17 +6,15 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use "typenames.witx")
+(use * from $typenames)
 
 ;;; This API predated the convention of naming modules with a `wasi_unstable_`
 ;;; prefix and a version number. It is preserved here for compatibility, but
 ;;; we shouldn't follow this pattern in new APIs.
 (module $wasi_unstable
-  ;;; Linear memory to be accessed by WASI functions that need it.
-  (import "memory" (memory))
-
   ;;; Read command-line argument data.
-  ;;; The size of the array should match that returned by `args_sizes_get`
+  ;;; The size of the array should match that returned by `args_sizes_get`.
+  ;;; Each argument is expected to be `\0` terminated.
   (@interface func (export "args_get")
     (param $argv (@witx pointer (@witx pointer u8)))
     (param $argv_buf (@witx pointer u8))
@@ -31,6 +29,7 @@
 
   ;;; Read environment variable data.
   ;;; The sizes of the buffers should match that returned by `environ_sizes_get`.
+  ;;; Key/value pairs are expected to be joined with `=`s, and terminated with `\0`s.
   (@interface func (export "environ_get")
     (param $environ (@witx pointer (@witx pointer u8)))
     (param $environ_buf (@witx pointer u8))
