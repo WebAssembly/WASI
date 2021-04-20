@@ -99,7 +99,10 @@ mod test {
     fn one_use() {
         parse_witx_with(
             "/a",
-            &MockFs::new(&[("/a", "(use $x from $b)"), ("/b.witx", "(module $x (typename $x u8))")]),
+            &MockFs::new(&[
+                ("/a", "(use $x from $b)"),
+                ("/b.witx", "(module $x (typename $x u8))"),
+            ]),
         )
         .unwrap();
     }
@@ -110,7 +113,10 @@ mod test {
             "/a",
             &MockFs::new(&[
                 ("/a", "(use $b_float $c_int from $b)"),
-                ("/b.witx", "(use $c_int from $c)\n(module $x (typename $b_float f64))"),
+                (
+                    "/b.witx",
+                    "(use $c_int from $c)\n(module $x (typename $b_float f64))",
+                ),
                 ("/c.witx", "(module $x (typename $c_int u32))"),
             ]),
         )

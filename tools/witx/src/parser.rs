@@ -247,7 +247,8 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
                 while !p.is_empty() {
                     if parser.peek2::<kw::typename>()
                         || parser.peek2::<kw::resource>()
-                        || parser.peek2::<annotation::witx>() {
+                        || parser.peek2::<annotation::witx>()
+                    {
                         decls.push(Documented {
                             comments: parser.parse()?,
                             item: parser.parens(|p| p.parse())?,
