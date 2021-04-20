@@ -100,8 +100,10 @@
 ;; flags parameter
 (assert_abi
   (witx
-    (typename $a (flags $x $y))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (flags $x $y))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 i32.from_bitflags arg0 call.wasm return)
@@ -109,8 +111,10 @@
 )
 (assert_abi
   (witx
-    (typename $a (flags (@witx repr u64) $x $y))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (flags (@witx repr u64) $x $y))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i64))
   (declared_import get-arg0 i64.from_bitflags arg0 call.wasm return)
@@ -118,8 +122,10 @@
 )
 (assert_abi
   (witx
-    (typename $a (record (field $x bool)))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (record (field $x bool)))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 i32.from_bitflags arg0 call.wasm return)
@@ -128,8 +134,10 @@
 ;; struct parameter
 (assert_abi
   (witx
-    (typename $a (record (field $x u8)))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (record (field $x u8)))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 addr-of arg0 call.wasm return)
@@ -145,9 +153,11 @@
 ;; handle parameter
 (assert_abi
   (witx
-    (resource $a)
-    (typename $a (handle $a))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (resource $a)
+      (typename $a (handle $a))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 i32.from_borrowed_handle arg0 call.wasm return)
@@ -157,7 +167,8 @@
 ;; list parameter
 (assert_abi
   (witx
-    (module $x (@interface func (export "f") (param $p (list u8))))
+    (module $x
+      (@interface func (export "f") (param $p (list u8))))
   )
   (wasm (param i32 i32))
   (declared_import get-arg0 list.canon_lower arg0 call.wasm return)
@@ -172,8 +183,10 @@
 ;; variant parameter -- some not allowed at this time
 (assert_abi
   (witx
-    (typename $a (enum $b))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (enum $b))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import
@@ -194,8 +207,10 @@
 )
 (assert_abi
   (witx
-    (typename $a (union f32))
-    (module $x (@interface func (export "f") (param $p $a)))
+    (module $x
+      (typename $a (union f32))
+      (@interface func (export "f") (param $p $a))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 addr-of arg0 call.wasm return)
@@ -306,8 +321,10 @@
 ;; flags ret0 return
 (assert_abi
   (witx
-    (typename $a (flags $x $y))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (flags $x $y))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   (wasm (result i32))
   (declared_import call.wasm bitflags.from_i32 ret0 return)
@@ -315,8 +332,10 @@
 )
 (assert_abi
   (witx
-    (typename $a (flags (@witx repr u64) $x $y))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (flags (@witx repr u64) $x $y))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   (wasm (result i64))
   (declared_import call.wasm bitflags.from_i64 ret0 return)
@@ -326,9 +345,11 @@
 ;; handle ret0 return
 (assert_abi
   (witx
-    (resource $a)
-    (typename $a (handle $a))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (resource $a)
+      (typename $a (handle $a))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   (wasm (result i32))
   (declared_import call.wasm handle.owned_from_i32 ret0 return)
@@ -338,8 +359,10 @@
 ;; struct return -- not supported
 (assert_invalid
   (witx
-    (typename $a (record (field $x u8)))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (record (field $x u8)))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   "ABI error: invalid return type"
 )
@@ -355,30 +378,38 @@
 ;; variant return -- only some allowed
 (assert_invalid
   (witx
-    (typename $a (enum $b))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (enum $b))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   "ABI error: invalid return type"
 )
 (assert_invalid
   (witx
-    (typename $a (union s32 f32))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (union s32 f32))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   "ABI error: invalid return type"
 )
 (assert_invalid
   (witx
-    (typename $a (expected (error f32)))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $a (expected (error f32)))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   "ABI error: only named types are allowed in results"
 )
 (assert_invalid
   (witx
-    (typename $errno (enum $success $bad))
-    (typename $a (expected f32 (error $errno)))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $errno (enum $success $bad))
+      (typename $a (expected f32 (error $errno)))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   "ABI error: only named types are allowed in results"
 )
@@ -386,9 +417,11 @@
 ;; Result<(), $errno>
 (assert_abi
   (witx
-    (typename $errno (enum $success $bad))
-    (typename $a (expected (error $errno)))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $errno (enum $success $bad))
+      (typename $a (expected (error $errno)))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   (wasm (result i32))
 
@@ -438,10 +471,12 @@
 ;; Result<$ty, $errno>
 (assert_abi
   (witx
-    (typename $errno (enum $success $bad))
-    (typename $size u32)
-    (typename $a (expected $size (error $errno)))
-    (module $x (@interface func (export "f") (result $p $a)))
+    (module $x
+      (typename $errno (enum $success $bad))
+      (typename $size u32)
+      (typename $a (expected $size (error $errno)))
+      (@interface func (export "f") (result $p $a))
+    )
   )
   (wasm (param i32) (result i32))
 
@@ -496,11 +531,13 @@
 ;; Result<($a, $b), $errno>
 (assert_abi
   (witx
-    (typename $errno (enum $success $bad))
-    (typename $size u32)
-    (typename $other (record (field $a $size)))
-    (module $x (@interface func (export "f")
-      (result $p (expected (tuple $size $other) (error $errno)))))
+    (module $x
+      (typename $errno (enum $success $bad))
+      (typename $size u32)
+      (typename $other (record (field $a $size)))
+      (@interface func (export "f")
+        (result $p (expected (tuple $size $other) (error $errno))))
+    )
   )
   (wasm (param i32 i32) (result i32))
 

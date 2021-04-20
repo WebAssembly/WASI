@@ -1,2 +1,2 @@
 (use $a from $type_a)
-(typename $a u8)
+(module $x (typename $a u8))

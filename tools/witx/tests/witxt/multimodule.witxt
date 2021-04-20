@@ -2,11 +2,11 @@
 (witx $b (load "multimodule/type_b.witx"))
 (witx $c (load "multimodule/type_c.witx"))
 
-(witx $reference
+(witx $reference (module $x
   (typename $a u32)
   (typename $b (record (field $member_a $a)))
   (typename $c (record (field $first_a $a) (field $second_a $a)))
-)
+))
 
 (assert_eq $reference "a" $b "a")
 (assert_eq $reference "a" $c "a")

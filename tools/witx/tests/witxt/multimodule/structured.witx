@@ -1,2 +1,4 @@
-(typename $a u32)
-(typename $foo (tuple $a))
+(module $x
+  (typename $a u32)
+  (typename $foo (tuple $a))
+)

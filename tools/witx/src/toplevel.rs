@@ -99,7 +99,7 @@ mod test {
     fn one_use() {
         parse_witx_with(
             "/a",
-            &MockFs::new(&[("/a", "(use $x from $b)"), ("/b.witx", "(typename $x u8)")]),
+            &MockFs::new(&[("/a", "(use $x from $b)"), ("/b.witx", "(module $x (typename $x u8))")]),
         )
         .unwrap();
     }
@@ -110,8 +110,8 @@ mod test {
             "/a",
             &MockFs::new(&[
                 ("/a", "(use $b_float $c_int from $b)"),
-                ("/b.witx", "(use $c_int from $c)\n(typename $b_float f64)"),
-                ("/c.witx", "(typename $c_int u32)"),
+                ("/b.witx", "(use $c_int from $c)\n(module $x (typename $b_float f64))"),
+                ("/c.witx", "(module $x (typename $c_int u32))"),
             ]),
         )
         .expect("parse");
@@ -136,13 +136,13 @@ mod test {
                 ("/a", "(use $b_char from $b)\n(use $c_char from $c)"),
                 (
                     "/b.witx",
-                    "(use $d_char from $d) (typename $b_char $d_char)",
+                    "(use $d_char from $d) (module $x (typename $b_char $d_char))",
                 ),
                 (
                     "/c.witx",
-                    "(use $d_char from $d) (typename $c_char $d_char)",
+                    "(use $d_char from $d) (module $x (typename $c_char $d_char))",
                 ),
-                ("/d.witx", "(typename $d_char u8)"),
+                ("/d.witx", "(module $x (typename $d_char u8))"),
             ]),
         )
         .expect("parse");

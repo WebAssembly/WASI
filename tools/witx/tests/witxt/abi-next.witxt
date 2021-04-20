@@ -76,9 +76,11 @@
 ;; handle argument
 (assert_abi
   (witx
-    (resource $y)
-    (typename $y (handle $y))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (resource $y)
+      (typename $y (handle $y))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32))
   (declared_import get-arg0 i32.from_borrowed_handle arg0 call.wasm return)
@@ -88,8 +90,10 @@
 ;; record arguments
 (assert_abi
   (witx
-    (typename $y (record))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (record))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm)
   (declared_import get-arg0 record-lower arg0 call.wasm return)
@@ -98,8 +102,10 @@
 
 (assert_abi
   (witx
-    (typename $y (record (field $a u32)))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (record (field $a u32)))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32))
   (declared_import
@@ -117,11 +123,13 @@
 )
 (assert_abi
   (witx
-    (typename $y (record
-      (field $a u32)
-      (field $b s64)
-    ))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (record
+        (field $a u32)
+        (field $b s64)
+      ))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32 i64))
   (declared_import
@@ -142,14 +150,16 @@
 )
 (assert_abi
   (witx
-    (typename $empty (record))
-    (typename $tuple (tuple f64 u32))
-    (typename $y (record
-      (field $a u32)
-      (field $b $empty)
-      (field $c $tuple)
-    ))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $empty (record))
+      (typename $tuple (tuple f64 u32))
+      (typename $y (record
+        (field $a u32)
+        (field $b $empty)
+        (field $c $tuple)
+      ))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32 f64 i32))
   (declared_import
@@ -179,8 +189,10 @@
 ;; variant arguments
 (assert_abi
   (witx
-    (typename $y (enum $a $b))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (enum $a $b))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32))
   (declared_import
@@ -207,8 +219,10 @@
 
 (assert_abi
   (witx
-    (typename $y (union u32 f32))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (union u32 f32))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32 i32))
   (declared_import
@@ -244,8 +258,10 @@
 
 (assert_abi
   (witx
-    (typename $y (variant (case $none) (case $some f64)))
-    (module $x (export "f" (func (param $p $y))))
+    (module $x
+      (typename $y (variant (case $none) (case $some f64)))
+      (export "f" (func (param $p $y)))
+    )
   )
   (wasm (param i32 f64))
   (declared_import
@@ -314,20 +330,22 @@
 ;; flavorful parameters
 (assert_abi
   (witx
-    (typename $a (union (list u8) f32))
-    (typename $b (tuple f64 bool))
-    (typename $c (record
-      (field $a $a)
-      (field $b $b)
-    ))
+    (module $x
+      (typename $a (union (list u8) f32))
+      (typename $b (tuple f64 bool))
+      (typename $c (record
+        (field $a $a)
+        (field $b $b)
+      ))
 
-    (typename $d (tuple f32 f64))
-    (typename $e (variant
-      (case $a)
-      (case $b $d)
-      (case $c)
-    ))
-    (module $x (export "f" (func
+      (typename $d (tuple f32 f64))
+      (typename $e (variant
+        (case $a)
+        (case $b $d)
+        (case $c)
+      ))
+
+      (export "f" (func
       (param $p1 $c)
       (param $p2 s32)
       (param $p3 $e)
@@ -515,9 +533,11 @@
 ;; handle result
 (assert_abi
   (witx
-    (resource $y)
-    (typename $y (handle $y))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (resource $y)
+      (typename $y (handle $y))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm (result i32))
   (declared_import call.wasm handle.owned_from_i32 ret0 return)
@@ -527,8 +547,10 @@
 ;; record results
 (assert_abi
   (witx
-    (typename $y (record))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (typename $y (record))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm)
   (declared_import call.wasm record-lift return)
@@ -536,8 +558,10 @@
 )
 (assert_abi
   (witx
-    (typename $y (record (field $a s32)))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (typename $y (record (field $a s32)))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm (result i32))
   (declared_import call.wasm s32.from_i32 ret0 record-lift return)
@@ -549,8 +573,10 @@
 )
 (assert_abi
   (witx
-    (typename $y (record (field $a s32) (field $b u32)))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (typename $y (record (field $a s32) (field $b u32)))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm (param i32))
   (declared_import
@@ -574,8 +600,10 @@
 ;; variant results
 (assert_abi
   (witx
-    (typename $y (enum $a $b))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (typename $y (enum $a $b))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm (result i32))
   (declared_import
@@ -600,8 +628,10 @@
 
 (assert_abi
   (witx
-    (typename $y (variant (case $a f32) (case $b)))
-    (module $x (export "f" (func (result $p $y))))
+    (module $x
+      (typename $y (variant (case $a f32) (case $b)))
+      (export "f" (func (result $p $y)))
+    )
   )
   (wasm (param i32))
   (declared_import
@@ -752,8 +782,10 @@
 )
 (assert_abi
   (witx
-    (typename $a (record (field $x bool) (field $y (list u8))))
-    (module $x (export "f" (func (param $a (list $a)))))
+    (module $x
+      (typename $a (record (field $x bool) (field $y (list u8))))
+      (export "f" (func (param $a (list $a))))
+    )
   )
   (wasm (param i32 i32))
   (declared_import
@@ -804,8 +836,10 @@
 ;; bitflags
 (assert_abi
   (witx
-    (typename $a (flags $a $b))
-    (module $x (export "f" (func (param $a $a) (result $b $a))))
+    (module $x
+      (typename $a (flags $a $b))
+      (export "f" (func (param $a $a) (result $b $a)))
+    )
   )
   (wasm (param i32) (result i32))
   (declared_import
@@ -825,24 +859,28 @@
 )
 (assert_abi
   (witx
-    (typename $a (flags
-      $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7
-      $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15
-      $f16 $f17 $f18 $f19 $f20 $f21 $f22 $f23
-      $f24 $f25 $f26 $f27 $f28 $f29 $f30 $f31
-      $f32
-    ))
-    (module $x (export "f" (func (param $a $a) (result $b $a))))
+    (module $x
+      (typename $a (flags
+        $f0 $f1 $f2 $f3 $f4 $f5 $f6 $f7
+        $f8 $f9 $f10 $f11 $f12 $f13 $f14 $f15
+        $f16 $f17 $f18 $f19 $f20 $f21 $f22 $f23
+        $f24 $f25 $f26 $f27 $f28 $f29 $f30 $f31
+        $f32
+      ))
+      (export "f" (func (param $a $a) (result $b $a)))
+    )
   )
   (wasm (param i64) (result i64))
 )
 (assert_abi
   (witx
-    (typename $a (flags $a $b))
-    (module $x (export "f" (func
-      (param $a (list $a))
-      (result $b (list $a))
-    )))
+    (module $x
+      (typename $a (flags $a $b))
+      (export "f" (func
+        (param $a (list $a))
+        (result $b (list $a))
+      ))
+    )
   )
   (wasm (param i32 i32 i32))
   (declared_import

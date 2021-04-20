@@ -229,11 +229,7 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
 
         let mut comments = parser.parse()?;
         loop {
-            if parser.peek2::<kw::r#use>()
-                || parser.peek2::<annotation::witx>()
-                || parser.peek2::<kw::typename>()
-                || parser.peek2::<kw::resource>()
-            {
+            if parser.peek2::<kw::r#use>() {
                 decls.push(Documented {
                     comments,
                     item: parser.parens(|p| p.parse())?,
@@ -249,10 +245,19 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
                 p.parse::<kw::module>()?;
                 module_name = p.parse()?;
                 while !p.is_empty() {
-                    functions.push(Documented {
-                        comments: parser.parse()?,
-                        item: p.parens(|p| p.parse())?,
-                    });
+                    if parser.peek2::<kw::typename>()
+                        || parser.peek2::<kw::resource>()
+                        || parser.peek2::<annotation::witx>() {
+                        decls.push(Documented {
+                            comments: parser.parse()?,
+                            item: parser.parens(|p| p.parse())?,
+                        });
+                    } else {
+                        functions.push(Documented {
+                            comments: parser.parse()?,
+                            item: p.parens(|p| p.parse())?,
+                        });
+                    }
                 }
                 Ok(())
             })?;

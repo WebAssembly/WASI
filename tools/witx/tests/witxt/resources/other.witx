@@ -1,2 +1,4 @@
-(resource $x)
-(resource $y)
+(module $b
+  (resource $x)
+  (resource $y)
+)

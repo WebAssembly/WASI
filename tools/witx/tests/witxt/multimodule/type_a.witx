@@ -1,1 +1,1 @@
-(typename $a u32)
+(module $x (typename $a u32))
