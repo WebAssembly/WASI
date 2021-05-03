@@ -1,4 +1,4 @@
-(module $x
+(module $structured
   (typename $a u32)
   (typename $foo (tuple $a))
 )

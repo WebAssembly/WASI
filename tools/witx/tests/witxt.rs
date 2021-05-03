@@ -659,7 +659,14 @@ impl Witx<'_> {
 
         match &self.def {
             WitxDef::Inline(doc) => {
-                let mut validator = witx::ModuleValidation::new(contents, file);
+                if doc.module_name.is_none() {
+                    dbg!(file);
+                }
+                let module_name = doc
+                    .module_name
+                    .expect("inline modules should have a name")
+                    .name();
+                let mut validator = witx::ModuleValidation::new(contents, module_name, file);
                 for t in doc.decls.iter() {
                     match &t.item {
                         TopLevelSyntax::Decl(d) => validator

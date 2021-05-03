@@ -1,4 +1,4 @@
-(module $b
+(module $other
   (resource $x)
   (resource $y)
 )

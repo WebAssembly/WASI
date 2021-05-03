@@ -1,4 +1,6 @@
-(witx)
+(witx
+  (module $a)
+)
 
 (witx
   (module $a (typename $x u32))

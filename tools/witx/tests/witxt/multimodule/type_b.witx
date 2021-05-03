@@ -1,2 +1,2 @@
 (use $a from $type_a)
-(module $x (typename $b (record (field $member_a $a))))
+(module $type_b (typename $b (record (field $member_a $a))))

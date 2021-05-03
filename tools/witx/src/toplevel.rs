@@ -36,7 +36,6 @@ fn _parse(
     }
 
     let input = io.fgets(&canon_path)?;
-    let mut validator = ModuleValidation::new(&input, path);
 
     let adjust_err = |mut error: wast::Error| {
         error.set_path(&path);
@@ -45,6 +44,25 @@ fn _parse(
     };
     let buf = wast::parser::ParseBuffer::new(&input).map_err(adjust_err)?;
     let doc = wast::parser::parse::<TopLevelModule>(&buf).map_err(adjust_err)?;
+
+    let file_name = path.file_stem().unwrap().to_str().unwrap();
+    let name = match doc.module_name {
+        Some(name) => name.name(),
+        None => file_name,
+    };
+    let mut validator = ModuleValidation::new(&input, name, path);
+
+    if let Some(name) = doc.module_name {
+        if file_name != name.name() {
+            let location = validator.location(name.span());
+            return Err(ValidationError::ModuleNameMismatch {
+                location,
+                module_name: name.name().to_owned(),
+                file_name: file_name.to_owned(),
+            }
+            .into());
+        }
+    }
 
     let mut submodules = HashMap::new();
     for t in doc.decls {
@@ -101,7 +119,7 @@ mod test {
             "/a",
             &MockFs::new(&[
                 ("/a", "(use $x from $b)"),
-                ("/b.witx", "(module $x (typename $x u8))"),
+                ("/b.witx", "(module $b (typename $x u8))"),
             ]),
         )
         .unwrap();
@@ -115,9 +133,9 @@ mod test {
                 ("/a", "(use $b_float $c_int from $b)"),
                 (
                     "/b.witx",
-                    "(use $c_int from $c)\n(module $x (typename $b_float f64))",
+                    "(use $c_int from $c)\n(module $b (typename $b_float f64))",
                 ),
-                ("/c.witx", "(module $x (typename $c_int u32))"),
+                ("/c.witx", "(module $c (typename $c_int u32))"),
             ]),
         )
         .expect("parse");
@@ -142,13 +160,13 @@ mod test {
                 ("/a", "(use $b_char from $b)\n(use $c_char from $c)"),
                 (
                     "/b.witx",
-                    "(use $d_char from $d) (module $x (typename $b_char $d_char))",
+                    "(use $d_char from $d) (module $b (typename $b_char $d_char))",
                 ),
                 (
                     "/c.witx",
-                    "(use $d_char from $d) (module $x (typename $c_char $d_char))",
+                    "(use $d_char from $d) (module $c (typename $c_char $d_char))",
                 ),
-                ("/d.witx", "(module $x (typename $d_char u8))"),
+                ("/d.witx", "(module $d (typename $d_char u8))"),
             ]),
         )
         .expect("parse");

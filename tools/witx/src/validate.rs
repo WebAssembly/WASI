@@ -60,6 +60,12 @@ pub enum ValidationError {
     },
     #[error("Variant has zero cases")]
     ZeroCaseVariant { location: Location },
+    #[error("Module name `{module_name}` doesn't match file name `{file_name}`")]
+    ModuleNameMismatch {
+        location: Location,
+        module_name: String,
+        file_name: String,
+    },
 }
 
 impl ValidationError {
@@ -76,7 +82,8 @@ impl ValidationError {
             | ZeroCaseVariant { location }
             | InvalidUnionField { location, .. }
             | InvalidUnionTag { location, .. }
-            | CyclicModule { location } => {
+            | CyclicModule { location }
+            | ModuleNameMismatch { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -144,8 +151,8 @@ pub struct ModuleValidation<'a> {
 }
 
 impl<'a> ModuleValidation<'a> {
-    pub fn new(text: &'a str, path: &'a Path) -> Self {
-        let name = Id::new(path.file_stem().unwrap().to_str().unwrap());
+    pub fn new(text: &'a str, name: &'a str, path: &'a Path) -> Self {
+        let name = Id::new(name);
         let module_id = ModuleId(Rc::new(path.to_path_buf()));
         Self {
             module: Module::new(name, module_id),
