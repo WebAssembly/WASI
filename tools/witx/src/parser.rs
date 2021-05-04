@@ -227,25 +227,17 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
         let mut functions = Vec::new();
         let mut module_name = None;
 
-        let mut comments = parser.parse()?;
-        loop {
-            if parser.peek2::<kw::r#use>() {
-                decls.push(Documented {
-                    comments,
-                    item: parser.parens(|p| p.parse())?,
-                });
-                comments = parser.parse()?;
-            } else {
-                break;
-            }
-        }
-
         if parser.peek2::<kw::module>() {
             parser.parens(|p| {
                 p.parse::<kw::module>()?;
                 module_name = p.parse()?;
                 while !p.is_empty() {
-                    if parser.peek2::<kw::typename>()
+                    if parser.peek2::<kw::r#use>() {
+                        decls.push(Documented {
+                            comments: parser.parse()?,
+                            item: parser.parens(|p| p.parse())?,
+                        });
+                    } else if parser.peek2::<kw::typename>()
                         || parser.peek2::<kw::resource>()
                         || parser.peek2::<annotation::witx>()
                     {

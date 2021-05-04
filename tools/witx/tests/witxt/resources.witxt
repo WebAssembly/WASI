@@ -18,7 +18,7 @@
   (resource $x)
   (typename $x (handle $x))))
 
-(witx $a (module $b
+(witx (module $a
   (resource $x)
   (typename $x (handle $x))
   (typename $y (handle $x))
@@ -26,7 +26,7 @@
 
 (assert_eq $a "x" $a "y")
 
-(witx $a (module $b
+(witx (module $a
   (resource $x)
   (resource $y)
   (typename $x (handle $x))
@@ -35,7 +35,7 @@
 
 (assert_ne $a "x" $a "y")
 
-(witx $a (load "resources/multi.witx"))
+(witx (load "resources/multi.witx"))
 
-(assert_eq $a "x1" $a "x2")
-(assert_ne $a "y1" $a "y2")
+(assert_eq $multi "x1" $multi "x2")
+(assert_ne $multi "y1" $multi "y2")

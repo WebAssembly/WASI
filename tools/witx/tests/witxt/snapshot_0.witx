@@ -1,0 +1,1 @@
+(witx (load "../../../../phases/old/snapshot_0/witx/wasi_unstable.witx"))

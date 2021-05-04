@@ -1,2 +1,4 @@
-(use $a from $type_a)
-(module $type_b (typename $b (record (field $member_a $a))))
+(module $type_b
+  (use $a from $type_a)
+  (typename $b (record (field $member_a $a)))
+)

@@ -1,6 +1,6 @@
-(use ($x as $other_x) ($y as $other_y) from $other)
-
 (module $multi
+  (use ($x as $other_x) ($y as $other_y) from $other)
+
   ;; this resource named `y` shouldn't be the same as another resource named `y`
   ;; defined elsewhere.
   (resource $y)

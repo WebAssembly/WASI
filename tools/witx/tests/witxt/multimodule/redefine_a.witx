@@ -1,2 +1,4 @@
-(use $a from $type_a)
-(module $redefine_a (typename $a u8))
+(module $redefine_a
+  (use $a from $type_a)
+  (typename $a u8)
+)

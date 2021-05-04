@@ -110,35 +110,32 @@ mod test {
 
     #[test]
     fn empty() {
-        parse_witx_with("/a", &MockFs::new(&[("/a", ";; empty")])).expect("parse");
+        parse_witx_with("/a.witx", &MockFs::new(&[("/a.witx", ";; empty")])).expect("parse");
     }
 
     #[test]
     fn one_use() {
-        parse_witx_with(
-            "/a",
-            &MockFs::new(&[
-                ("/a", "(use $x from $b)"),
-                ("/b.witx", "(module $b (typename $x u8))"),
-            ]),
-        )
-        .unwrap();
+        let fs = &MockFs::new(&[
+            ("/a.witx", "(module $a (use $x from $b))"),
+            ("/b.witx", "(module $b (typename $x u8))"),
+        ]);
+        parse_witx_with("/b.witx", fs).unwrap();
+        parse_witx_with("/a.witx", fs).unwrap();
     }
 
     #[test]
     fn multi_use() {
-        let doc = parse_witx_with(
-            "/a",
-            &MockFs::new(&[
-                ("/a", "(use $b_float $c_int from $b)"),
-                (
-                    "/b.witx",
-                    "(use $c_int from $c)\n(module $b (typename $b_float f64))",
-                ),
-                ("/c.witx", "(module $c (typename $c_int u32))"),
-            ]),
-        )
-        .expect("parse");
+        let fs = &MockFs::new(&[
+            ("/a.witx", "(module $a (use $b_float $c_int from $b))"),
+            (
+                "/b.witx",
+                "(module $b (use $c_int from $c) (typename $b_float f64))",
+            ),
+            ("/c.witx", "(module $c (typename $c_int u32))"),
+        ]);
+        parse_witx_with("/c.witx", fs).expect("parse");
+        parse_witx_with("/b.witx", fs).expect("parse");
+        let doc = parse_witx_with("/a.witx", fs).expect("parse");
 
         let b_float = doc.typename(&Id::new("b_float")).unwrap();
         assert_eq!(**b_float.type_(), Type::Builtin(BuiltinType::F64));
@@ -154,22 +151,25 @@ mod test {
 
     #[test]
     fn diamond_dependency() {
-        let doc = parse_witx_with(
-            "/a",
-            &MockFs::new(&[
-                ("/a", "(use $b_char from $b)\n(use $c_char from $c)"),
-                (
-                    "/b.witx",
-                    "(use $d_char from $d) (module $b (typename $b_char $d_char))",
-                ),
-                (
-                    "/c.witx",
-                    "(use $d_char from $d) (module $c (typename $c_char $d_char))",
-                ),
-                ("/d.witx", "(module $d (typename $d_char u8))"),
-            ]),
-        )
-        .expect("parse");
+        let fs = &MockFs::new(&[
+            (
+                "/a.witx",
+                "(module $a\n(use $b_char from $b)\n(use $c_char from $c)\n)",
+            ),
+            (
+                "/b.witx",
+                "(module $b (use $d_char from $d) (typename $b_char $d_char))",
+            ),
+            (
+                "/c.witx",
+                "(module $c (use $d_char from $d) (typename $c_char $d_char))",
+            ),
+            ("/d.witx", "(module $d (typename $d_char u8))"),
+        ]);
+        parse_witx_with("/d.witx", fs).expect("parse");
+        parse_witx_with("/c.witx", fs).expect("parse");
+        parse_witx_with("/b.witx", fs).expect("parse");
+        let doc = parse_witx_with("/a.witx", fs).expect("parse");
 
         let b_char = doc.typename(&Id::new("b_char")).unwrap();
         assert_eq!(
@@ -181,9 +181,12 @@ mod test {
 
     #[test]
     fn use_not_found() {
-        match parse_witx_with("/a", &MockFs::new(&[("/a", "(use $x from $b)")]))
-            .err()
-            .unwrap()
+        match parse_witx_with(
+            "/a.witx",
+            &MockFs::new(&[("/a.witx", "(module $a (use $x from $b))")]),
+        )
+        .err()
+        .unwrap()
         {
             WitxError::Io(path, _error) => assert_eq!(path, PathBuf::from("/b.witx")),
             e => panic!("wrong error: {:?}", e),

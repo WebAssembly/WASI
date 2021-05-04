@@ -90,15 +90,15 @@
   "Union expected 2 variants, found 1"
 )
 
-(witx $d1
-  (module $a
+(witx
+  (module $d1
     (typename $tag (enum $a $b))
     (typename $u (union (@witx tag $tag) u8 u16))
   )
 )
 
-(witx $d2
-  (module $a
+(witx
+  (module $d2
     (typename $tag (enum $a $b))
     (typename $u (variant (@witx tag $tag) (case $b u16) (case $a u8)))
   )
@@ -109,8 +109,8 @@
 (assert_eq $d2 "u" $d1 "u")
 
 ;; Tag order doesnt matter for validation, but does for equality
-(witx $d3
-  (module $a
+(witx
+  (module $d3
     (typename $tag (enum $b $a))
     (typename $u (union (@witx tag $tag) u16 u8))
   )

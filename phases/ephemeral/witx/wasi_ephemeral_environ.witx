@@ -3,9 +3,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $errno $size from $typenames)
-
 (module $wasi_ephemeral_environ
+  (use $errno $size from $typenames)
+
   ;;; Read environment variable data.
   ;;; The sizes of the buffers should match that returned by `sizes_get`.
   ;;; Key/value pairs are expected to be joined with `=`s, and terminated with `\0`s.

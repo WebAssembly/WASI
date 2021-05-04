@@ -1,13 +1,9 @@
 ;; Ensure that all current witx definitions in this repository load, parse,
 ;; roundtrip, and are documentable.
 
-(witx (load "../../../../phases/old/snapshot_0/witx/wasi_unstable.witx"))
-(witx (load "../../../../phases/snapshot/witx/wasi_snapshot_preview1.witx"))
-
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_args.witx"))
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_clock.witx"))
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_environ.witx"))
-(witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_fd.witx"))
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_fd.witx"))
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_path.witx"))
 (witx (load "../../../../phases/ephemeral/witx/wasi_ephemeral_poll.witx"))

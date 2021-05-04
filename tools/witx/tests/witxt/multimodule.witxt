@@ -1,20 +1,20 @@
 ;; B uses A, and C uses A.
-(witx $b (load "multimodule/type_b.witx"))
-(witx $c (load "multimodule/type_c.witx"))
+(witx (load "multimodule/type_b.witx"))
+(witx (load "multimodule/type_c.witx"))
 
-(witx $reference (module $x
+(witx (module $reference
   (typename $a u32)
   (typename $b (record (field $member_a $a)))
   (typename $c (record (field $first_a $a) (field $second_a $a)))
 ))
 
-(assert_eq $reference "a" $b "a")
-(assert_eq $reference "a" $c "a")
-(assert_eq $reference "b" $b "b")
-(assert_eq $reference "c" $c "c")
+(assert_eq $reference "a" $type_b "a")
+(assert_eq $reference "a" $type_c "a")
+(assert_eq $reference "b" $type_b "b")
+(assert_eq $reference "c" $type_c "c")
 
 (assert_invalid
   (witx (load "multimodule/redefine_a.witx"))
   "Redefinition of name `a`")
 
-(witx $c (load "multimodule/use_of_structured.witx"))
+(witx (load "multimodule/use_of_structured.witx"))

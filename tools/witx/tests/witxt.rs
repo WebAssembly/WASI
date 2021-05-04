@@ -149,14 +149,12 @@ impl WitxtRunner<'_> {
         self.bump_ntests();
         match directive {
             WitxtDirective::Witx(witx) => {
-                let doc = witx.module(contents, test)?;
+                let doc = witx.module(contents, test, &mut self.modules)?;
                 self.assert_md(&doc)?;
-                if let Some(name) = witx.id {
-                    self.modules.insert(name.name().to_string(), doc);
-                }
+                self.modules.insert(doc.name().as_str().to_string(), doc);
             }
             WitxtDirective::AssertInvalid { witx, message, .. } => {
-                let err = match witx.module(contents, test) {
+                let err = match witx.module(contents, test, &mut self.modules) {
                     Ok(_) => bail!("witx was valid when it shouldn't be"),
                     Err(e) => format!("{:?}", anyhow::Error::from(e)),
                 };
@@ -191,7 +189,7 @@ impl WitxtRunner<'_> {
                 abis,
                 ..
             } => {
-                let module = witx.module(contents, test)?;
+                let module = witx.module(contents, test, &mut self.modules)?;
                 let func = module.funcs().next().ok_or_else(|| anyhow!("no funcs"))?;
                 for (mode, wasm_params, wasm_results) in wasm_signatures.iter() {
                     let sig = func.wasm_signature(*mode);
@@ -644,7 +642,6 @@ fn parse_wasmtype(p: Parser<'_>) -> parser::Result<WasmType> {
 
 struct Witx<'a> {
     span: wast::Span,
-    id: Option<wast::Id<'a>>,
     def: WitxDef<'a>,
 }
 
@@ -654,7 +651,12 @@ enum WitxDef<'a> {
 }
 
 impl Witx<'_> {
-    fn module(&self, contents: &str, file: &Path) -> Result<witx::Module> {
+    fn module(
+        &self,
+        contents: &str,
+        file: &Path,
+        modules: &mut HashMap<String, witx::Module>,
+    ) -> Result<witx::Module> {
         use witx::parser::TopLevelSyntax;
 
         match &self.def {
@@ -680,7 +682,9 @@ impl Witx<'_> {
                         .validate_function(&f.item, &f.comments)
                         .map_err(|e| anyhow::anyhow!("{}", e.report()))?;
                 }
-                Ok(validator.into_module())
+                let module = validator.into_module();
+                modules.insert(module_name.to_owned(), module.clone());
+                Ok(module)
             }
             WitxDef::Fs(path) => {
                 let parent = file.parent().unwrap();
@@ -694,7 +698,6 @@ impl Witx<'_> {
 impl<'a> Parse<'a> for Witx<'a> {
     fn parse(parser: Parser<'a>) -> parser::Result<Self> {
         let span = parser.parse::<kw::witx>()?.0;
-        let id = parser.parse()?;
 
         let def = if parser.peek2::<kw::load>() {
             parser.parens(|p| {
@@ -704,7 +707,7 @@ impl<'a> Parse<'a> for Witx<'a> {
         } else {
             WitxDef::Inline(parser.parse()?)
         };
-        Ok(Witx { id, span, def })
+        Ok(Witx { span, def })
     }
 }
 

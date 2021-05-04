@@ -5,9 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $errno from $typenames)
-
 (module $wasi_ephemeral_sched
+  (use $errno from $typenames)
+
   ;;; Temporarily yield execution of the calling thread.
   ;;; Note: This is similar to `yield` in POSIX.
   (@interface func (export "yield")

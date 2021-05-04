@@ -5,9 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $exitcode from $typenames)
-
 (module $wasi_ephemeral_proc
+  (use $exitcode from $typenames)
+
   ;;; Terminate the process normally. An exit code of `$exitcode::success`
   ;;; reports successful completion of the program. An exit code of
   ;;; `$exitcode::failure` or any other value less than 126 reports a
