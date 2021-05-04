@@ -53,7 +53,7 @@ fn _parse(
     let mut validator = ModuleValidation::new(&input, name, path);
 
     if let Some(name) = doc.module_name {
-        if file_name != name.name() {
+        if file_name != "-" && file_name != name.name() {
             let location = validator.location(name.span());
             return Err(ValidationError::ModuleNameMismatch {
                 location,
