@@ -248,43 +248,43 @@ def_instruction! {
         /// representation of `f64`.
         F64FromIf64 : [1] => [1],
 
-        /// Converts a native wasm `i32` to an interface type `s8`.
+        /// Converts a core wasm `i32` to an interface type `s8`.
         ///
         /// This will truncate the upper bits of the `i32`.
         S8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u8`.
+        /// Converts a core wasm `i32` to an interface type `u8`.
         ///
         /// This will truncate the upper bits of the `i32`.
         U8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `s16`.
+        /// Converts a core wasm `i32` to an interface type `s16`.
         ///
         /// This will truncate the upper bits of the `i32`.
         S16FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u16`.
+        /// Converts a core wasm `i32` to an interface type `u16`.
         ///
         /// This will truncate the upper bits of the `i32`.
         U16FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `s32`.
+        /// Converts a core wasm `i32` to an interface type `s32`.
         S32FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `u32`.
+        /// Converts a core wasm `i32` to an interface type `u32`.
         U32FromI32 : [1] => [1],
-        /// Converts a native wasm `i64` to an interface type `s64`.
+        /// Converts a core wasm `i64` to an interface type `s64`.
         S64FromI64 : [1] => [1],
-        /// Converts a native wasm `i64` to an interface type `u64`.
+        /// Converts a core wasm `i64` to an interface type `u64`.
         U64FromI64 : [1] => [1],
-        /// Converts a native wasm `i32` to an interface type `char`.
+        /// Converts a core wasm `i32` to an interface type `char`.
         ///
         /// It's safe to assume that the `i32` is indeed a valid unicode code point.
         CharFromI32 : [1] => [1],
-        /// Converts a native wasm `f32` to an interface type `f32`.
+        /// Converts a core wasm `f32` to an interface type `f32`.
         If32FromF32 : [1] => [1],
-        /// Converts a native wasm `f64` to an interface type `f64`.
+        /// Converts a core wasm `f64` to an interface type `f64`.
         If64FromF64 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific C `char`.
+        /// Converts a core wasm `i32` to a language-specific C `char`.
         ///
         /// This will truncate the upper bits of the `i32`.
         Char8FromI32 : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific `usize`.
+        /// Converts a core wasm `i32` to a language-specific `usize`.
         UsizeFromI32 : [1] => [1],
 
         // Handles
@@ -348,7 +348,7 @@ def_instruction! {
         /// question was defined.
         I32FromOwnedHandle { ty: &'a NamedType } : [1] => [1],
 
-        /// Converts a native wasm `i32` into an owned handle value.
+        /// Converts a core wasm `i32` into an owned handle value.
         ///
         /// This is the converse of `I32FromOwnedHandle` and is used in similar
         /// situations:
@@ -367,7 +367,7 @@ def_instruction! {
         /// just yet.
         HandleOwnedFromI32 { ty: &'a NamedType } : [1] => [1],
 
-        /// Converts a native wasm `i32` into a borrowedhandle value.
+        /// Converts a core wasm `i32` into a borrowedhandle value.
         ///
         /// This is the converse of `I32FromBorrowedHandle` and is used in similar
         /// situations:
@@ -520,13 +520,13 @@ def_instruction! {
             ty: &'a RecordDatatype,
             name: &'a NamedType,
         } : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific record-of-bools.
+        /// Converts a core wasm `i32` to a language-specific record-of-bools.
         BitflagsFromI32 {
             repr: IntRepr,
             ty: &'a RecordDatatype,
             name: &'a NamedType,
         } : [1] => [1],
-        /// Converts a native wasm `i64` to a language-specific record-of-bools.
+        /// Converts a core wasm `i64` to a language-specific record-of-bools.
         BitflagsFromI64 {
             repr: IntRepr,
             ty: &'a RecordDatatype,
@@ -619,9 +619,9 @@ def_instruction! {
         I32FromPointer : [1] => [1],
         /// Converts a language-specific pointer value to a wasm `i32`.
         I32FromConstPointer : [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific pointer.
+        /// Converts a core wasm `i32` to a language-specific pointer.
         PointerFromI32 { ty: &'a TypeRef }: [1] => [1],
-        /// Converts a native wasm `i32` to a language-specific pointer.
+        /// Converts a core wasm `i32` to a language-specific pointer.
         ConstPointerFromI32 { ty: &'a TypeRef } : [1] => [1],
 
         /// This is a special instruction specifically for the original ABI of
