@@ -14,7 +14,7 @@ This repository is for the WebAssembly System Interface (WASI) Subgroup of the
 
 [charter]: Charter.md
 [docs]: docs/README.md
-[meetings]: meetings/README.md
+[meetings]: https://github.com/WebAssembly/meetings/tree/master/wasi
 [phases]: phases/README.md
 [proposals]: docs/Proposals.md
 [WebAssembly Community Group]: https://www.w3.org/community/webassembly/
