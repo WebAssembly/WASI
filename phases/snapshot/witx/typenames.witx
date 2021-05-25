@@ -5,6 +5,8 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
+(module $typenames
+
 (typename $size u32)
 
 ;;; Non-negative file size or length of a region within a file.
@@ -747,3 +749,4 @@
   )
 )
 
+)

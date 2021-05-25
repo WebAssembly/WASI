@@ -6,12 +6,12 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use * from $typenames)
-
 ;;; This API predated the convention of naming modules with a `wasi_unstable_`
 ;;; prefix and a version number. It is preserved here for compatibility, but
 ;;; we shouldn't follow this pattern in new APIs.
 (module $wasi_unstable
+  (use * from $typenames)
+
   ;;; Read command-line argument data.
   ;;; The size of the array should match that returned by `args_sizes_get`.
   ;;; Each argument is expected to be `\0` terminated.

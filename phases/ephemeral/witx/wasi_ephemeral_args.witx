@@ -3,9 +3,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $errno $size from $typenames)
-
 (module $wasi_ephemeral_args
+  (use $errno $size from $typenames)
+
   ;;; Read command-line argument data.
   ;;; The size of the array should match that returned by `sizes_get`.
   ;;; Each argument is expected to be `\0` terminated.
