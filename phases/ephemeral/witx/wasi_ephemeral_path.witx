@@ -5,9 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use * from $typenames)
-
 (module $wasi_ephemeral_path
+  (use * from $typenames)
+
   ;;; Create a directory.
   ;;; Note: This is similar to `mkdirat` in POSIX.
   (@interface func (export "create_directory")

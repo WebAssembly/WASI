@@ -1,4 +1,5 @@
 use anyhow::Result;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -56,9 +57,10 @@ pub fn main() {
             check,
             output,
         } => {
+            let mut universe = HashMap::new();
             let modules = input
                 .iter()
-                .map(|i| load_witx(i, "input", verbose))
+                .map(|i| load_witx(i, &mut universe, "input", verbose))
                 .collect::<Vec<_>>();
             let docs = witx::document(&modules);
             if check {

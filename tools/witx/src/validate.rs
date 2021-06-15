@@ -1,11 +1,11 @@
 use crate::{
     io::{Filesystem, WitxIo},
     parser::{
-        CommentSyntax, DeclSyntax, EnumSyntax, ExpectedSyntax, FlagsSyntax, FunctionSyntax,
-        HandleSyntax, RecordSyntax, TupleSyntax, TypedefSyntax, UnionSyntax, UseSyntax, UsedNames,
-        VariantSyntax,
+        BufferSyntax, CommentSyntax, DeclSyntax, EnumSyntax, ExpectedSyntax, FlagsSyntax,
+        FunctionSyntax, HandleSyntax, OptionSyntax, RecordSyntax, TupleSyntax, TypedefSyntax,
+        UnionSyntax, UseSyntax, UsedNames, VariantSyntax,
     },
-    Abi, BuiltinType, Case, Constant, Function, HandleDatatype, Id, IntRepr, Location, Module,
+    Buffer, BuiltinType, Case, Constant, Function, HandleDatatype, Id, IntRepr, Location, Module,
     ModuleId, NamedType, Param, RecordDatatype, RecordKind, RecordMember, Resource, ResourceId,
     Type, TypeRef, Variant,
 };
@@ -58,6 +58,14 @@ pub enum ValidationError {
         reason: String,
         location: Location,
     },
+    #[error("Variant has zero cases")]
+    ZeroCaseVariant { location: Location },
+    #[error("Module name `{module_name}` doesn't match file name `{file_name}`")]
+    ModuleNameMismatch {
+        location: Location,
+        module_name: String,
+        file_name: String,
+    },
 }
 
 impl ValidationError {
@@ -71,9 +79,11 @@ impl ValidationError {
             | Abi { location, .. }
             | AnonymousRecord { location, .. }
             | UnionSizeMismatch { location, .. }
+            | ZeroCaseVariant { location }
             | InvalidUnionField { location, .. }
             | InvalidUnionTag { location, .. }
-            | CyclicModule { location } => {
+            | CyclicModule { location }
+            | ModuleNameMismatch { location, .. } => {
                 format!("{}\n{}", location.highlight_source_with(witxio), &self)
             }
             NameAlreadyExists {
@@ -141,8 +151,8 @@ pub struct ModuleValidation<'a> {
 }
 
 impl<'a> ModuleValidation<'a> {
-    pub fn new(text: &'a str, path: &'a Path) -> Self {
-        let name = Id::new(path.file_stem().unwrap().to_str().unwrap());
+    pub fn new(text: &'a str, name: &'a str, path: &'a Path) -> Self {
+        let name = Id::new(name);
         let module_id = ModuleId(Rc::new(path.to_path_buf()));
         Self {
             module: Module::new(name, module_id),
@@ -151,7 +161,7 @@ impl<'a> ModuleValidation<'a> {
             func_ns: IdentValidation::new(),
             constant_ns: HashMap::new(),
             bool_ty: TypeRef::Value(Rc::new(Type::Variant(Variant {
-                tag_repr: IntRepr::U32,
+                tag_repr: IntRepr::U8,
                 cases: vec![
                     Case {
                         name: Id::new("false"),
@@ -345,14 +355,15 @@ impl<'a> ModuleValidation<'a> {
             })
             .collect::<Result<Vec<_>, _>>()?;
         let noreturn = syntax.noreturn;
-        let abi = Abi::Preview1;
-        abi.validate(&params, &results)
+        syntax
+            .abi
+            .validate(&params, &results)
             .map_err(|reason| ValidationError::Abi {
                 reason,
                 location: self.location(syntax.export_loc),
             })?;
         self.module.push_func(Rc::new(Function {
-            abi,
+            abi: syntax.abi,
             name: name.clone(),
             params,
             results,
@@ -392,6 +403,9 @@ impl<'a> ModuleValidation<'a> {
                 TypedefSyntax::Expected(syntax) => {
                     Type::Variant(self.validate_expected(&syntax, span)?)
                 }
+                TypedefSyntax::Option(syntax) => {
+                    Type::Variant(self.validate_option(&syntax, span)?)
+                }
                 TypedefSyntax::Flags(syntax) => Type::Record(self.validate_flags(&syntax, span)?),
                 TypedefSyntax::Record(syntax) => Type::Record(self.validate_record(&syntax, span)?),
                 TypedefSyntax::Union(syntax) => Type::Variant(self.validate_union(&syntax, span)?),
@@ -408,6 +422,7 @@ impl<'a> ModuleValidation<'a> {
                 TypedefSyntax::ConstPointer(syntax) => {
                     Type::ConstPointer(self.validate_datatype(syntax, false, span)?)
                 }
+                TypedefSyntax::Buffer(syntax) => Type::Buffer(self.validate_buffer(syntax, span)?),
                 TypedefSyntax::Builtin(builtin) => Type::Builtin(*builtin),
                 TypedefSyntax::String => {
                     Type::List(TypeRef::Value(Rc::new(Type::Builtin(BuiltinType::Char))))
@@ -426,7 +441,7 @@ impl<'a> ModuleValidation<'a> {
         let mut enum_scope = IdentValidation::new();
         let tag_repr = match &syntax.repr {
             Some(repr) => self.validate_int_repr(repr, span)?,
-            None => IntRepr::U32,
+            None => Variant::infer_repr(syntax.members.len()),
         };
         let cases = syntax
             .members
@@ -483,7 +498,7 @@ impl<'a> ModuleValidation<'a> {
             None => None,
         };
         Ok(Variant {
-            tag_repr: IntRepr::U32,
+            tag_repr: IntRepr::U8,
             cases: vec![
                 Case {
                     name: Id::new("ok"),
@@ -499,14 +514,37 @@ impl<'a> ModuleValidation<'a> {
         })
     }
 
+    fn validate_option(
+        &self,
+        syntax: &OptionSyntax,
+        span: wast::Span,
+    ) -> Result<Variant, ValidationError> {
+        let tref = self.validate_datatype(&syntax.ty, false, span)?;
+        Ok(Variant {
+            tag_repr: IntRepr::U8,
+            cases: vec![
+                Case {
+                    name: Id::new("none"),
+                    tref: None,
+                    docs: String::new(),
+                },
+                Case {
+                    name: Id::new("some"),
+                    tref: Some(tref),
+                    docs: String::new(),
+                },
+            ],
+        })
+    }
+
     fn validate_flags(
         &self,
         syntax: &FlagsSyntax,
         span: wast::Span,
     ) -> Result<RecordDatatype, ValidationError> {
         let repr = match syntax.repr {
-            Some(ty) => self.validate_int_repr(&ty, span)?,
-            None => IntRepr::U32,
+            Some(ty) => Some(RecordKind::Bitflags(self.validate_int_repr(&ty, span)?)),
+            None => None,
         };
         let mut flags_scope = IdentValidation::new();
         let mut members = Vec::new();
@@ -520,7 +558,7 @@ impl<'a> ModuleValidation<'a> {
             });
         }
         Ok(RecordDatatype {
-            kind: RecordKind::Bitflags(repr),
+            kind: repr.unwrap_or_else(|| RecordKind::infer(&members)),
             members,
         })
     }
@@ -544,7 +582,7 @@ impl<'a> ModuleValidation<'a> {
             .collect::<Result<Vec<RecordMember>, _>>()?;
 
         Ok(RecordDatatype {
-            kind: RecordKind::Other,
+            kind: RecordKind::infer(&members),
             members,
         })
     }
@@ -581,7 +619,10 @@ impl<'a> ModuleValidation<'a> {
                 })
             })
             .collect::<Result<Vec<_>, _>>()?;
-        Ok(Variant { tag_repr, cases })
+        Ok(Variant {
+            tag_repr: tag_repr.unwrap_or_else(|| Variant::infer_repr(cases.len())),
+            cases,
+        })
     }
 
     fn validate_variant(
@@ -589,6 +630,11 @@ impl<'a> ModuleValidation<'a> {
         syntax: &VariantSyntax,
         span: wast::Span,
     ) -> Result<Variant, ValidationError> {
+        if syntax.cases.len() == 0 {
+            return Err(ValidationError::ZeroCaseVariant {
+                location: self.location(span),
+            });
+        }
         let (tag_repr, names) = self.union_tag_repr(&syntax.tag, span)?;
 
         if let Some(names) = &names {
@@ -643,17 +689,20 @@ impl<'a> ModuleValidation<'a> {
             cases.sort_by_key(|c| name_pos[&&c.name]);
         }
 
-        Ok(Variant { tag_repr, cases })
+        Ok(Variant {
+            tag_repr: tag_repr.unwrap_or_else(|| Variant::infer_repr(cases.len())),
+            cases,
+        })
     }
 
     fn union_tag_repr(
         &self,
         tag: &Option<Box<TypedefSyntax<'_>>>,
         span: wast::Span,
-    ) -> Result<(IntRepr, Option<Vec<Id>>), ValidationError> {
+    ) -> Result<(Option<IntRepr>, Option<Vec<Id>>), ValidationError> {
         let ty = match tag {
             Some(tag) => self.validate_datatype(tag, false, span)?,
-            None => return Ok((IntRepr::U32, None)),
+            None => return Ok((None, None)),
         };
         match &**ty.type_() {
             Type::Variant(e) => {
@@ -667,12 +716,12 @@ impl<'a> ModuleValidation<'a> {
                     }
                     names.push(c.name.clone());
                 }
-                return Ok((e.tag_repr, Some(names)));
+                return Ok((Some(e.tag_repr), Some(names)));
             }
-            Type::Builtin(BuiltinType::U8 { .. }) => return Ok((IntRepr::U8, None)),
-            Type::Builtin(BuiltinType::U16) => return Ok((IntRepr::U16, None)),
-            Type::Builtin(BuiltinType::U32 { .. }) => return Ok((IntRepr::U32, None)),
-            Type::Builtin(BuiltinType::U64) => return Ok((IntRepr::U64, None)),
+            Type::Builtin(BuiltinType::U8 { .. }) => return Ok((Some(IntRepr::U8), None)),
+            Type::Builtin(BuiltinType::U16) => return Ok((Some(IntRepr::U16), None)),
+            Type::Builtin(BuiltinType::U32 { .. }) => return Ok((Some(IntRepr::U32), None)),
+            Type::Builtin(BuiltinType::U64) => return Ok((Some(IntRepr::U64), None)),
             _ => {}
         }
 
@@ -694,6 +743,17 @@ impl<'a> ModuleValidation<'a> {
         let resource = self.module.resource(&name).unwrap();
         Ok(HandleDatatype {
             resource_id: resource.resource_id.clone(),
+        })
+    }
+
+    fn validate_buffer(
+        &self,
+        syntax: &BufferSyntax,
+        span: wast::Span,
+    ) -> Result<Buffer, ValidationError> {
+        Ok(Buffer {
+            out: syntax.out,
+            tref: self.validate_datatype(&syntax.ty, false, span)?,
         })
     }
 

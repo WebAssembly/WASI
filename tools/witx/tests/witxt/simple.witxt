@@ -1,12 +1,16 @@
-(witx)
+(witx
+  (module $a)
+)
 
 (witx
-  (typename $x u32)
+  (module $a (typename $x u32))
 )
 
 (assert_invalid
   (witx
-    (typename $x u32)
-    (typename $x u32)
+    (module $a
+      (typename $x u32)
+      (typename $x u32)
+    )
   )
   "Redefinition of name `x`")

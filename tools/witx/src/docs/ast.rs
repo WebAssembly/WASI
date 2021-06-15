@@ -38,8 +38,8 @@ pub(super) fn modules(node: MdNodeRef, all_modules: &[&Module]) {
             format!(
                 "{}\nSize: {}\n\nAlignment: {}\n",
                 &d.docs,
-                &d.mem_size(),
-                &d.mem_align()
+                &d.mem_size(false),
+                &d.mem_align(false)
             )
             .as_str(),
         ));
@@ -108,6 +108,7 @@ pub(super) fn modules(node: MdNodeRef, all_modules: &[&Module]) {
                 }
             }
             Type::List(t) | Type::ConstPointer(t) | Type::Pointer(t) => add_types(types, t),
+            Type::Buffer(b) => add_types(types, &b.tref),
             Type::Handle(_) | Type::Builtin(_) => {}
         }
     }
@@ -143,6 +144,7 @@ impl ToMarkdown for Type {
             Self::List(_) => {}
             Self::Pointer(_) => {}
             Self::ConstPointer(_) => {}
+            Self::Buffer(_) => {}
             Self::Builtin(_) => {}
         }
     }
@@ -153,7 +155,7 @@ impl ToMarkdown for RecordDatatype {
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Record members"));
 
-        for member_layout in &self.member_layout() {
+        for member_layout in &self.member_layout(false) {
             let member = member_layout.member;
             let offset = member_layout.offset;
             let name = member.name.as_str();
@@ -162,16 +164,16 @@ impl ToMarkdown for RecordDatatype {
             } else {
                 name.to_owned()
             };
-            let (div, offset_desc) = if self.bitflags_repr().is_some() {
-                (4, "Bit")
+            let offset_desc = if self.bitflags_repr().is_some() {
+                "Bit"
             } else {
-                (1, "Offset")
+                "Offset"
             };
             let n = node.new_child(MdNamedType::new(
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}\n{}: {}\n", &member.docs, offset_desc, offset / div).as_str(),
+                format!("{}\n{}: {}\n", &member.docs, offset_desc, offset).as_str(),
             ));
             member.tref.generate(n.clone());
         }
@@ -187,7 +189,7 @@ impl ToMarkdown for Variant {
             let heading = heading_from_node(&node, 1);
             node.new_child(MdSection::new(heading, "Variant Layout"));
 
-            let whole = self.mem_size_align();
+            let whole = self.mem_size_align(false);
             node.new_child(MdSection::new(
                 MdHeading::new_bullet(),
                 format!("size: {}", whole.size),
@@ -197,7 +199,7 @@ impl ToMarkdown for Variant {
                 format!("align: {}", whole.align),
             ));
 
-            let tag = self.tag_repr.mem_size_align();
+            let tag = self.tag_repr.mem_size_align(false);
             node.new_child(MdSection::new(
                 MdHeading::new_bullet(),
                 format!("tag_size: {}", tag.size),
@@ -361,6 +363,7 @@ impl TypeRef {
                         format!("Variant")
                     }
                 }
+                Type::Buffer(_) => format!("buffer"),
             },
         }
     }

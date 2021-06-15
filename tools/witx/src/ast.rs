@@ -171,6 +171,13 @@ impl TypeRef {
         }
     }
 
+    pub fn name(&self) -> Option<&NamedType> {
+        match self {
+            TypeRef::Name(n) => Some(n),
+            TypeRef::Value(_) => None,
+        }
+    }
+
     pub fn named(&self) -> bool {
         match self {
             TypeRef::Name(_) => true,
@@ -222,6 +229,8 @@ pub enum Type {
     /// A `witx`-specific type representing a raw const pointer into linear
     /// memory
     ConstPointer(TypeRef),
+    /// A buffer type representing a window in memory
+    Buffer(Buffer),
     /// A builtin base-case type.
     Builtin(BuiltinType),
 }
@@ -237,7 +246,38 @@ impl Type {
             List(_) => "list",
             Pointer(_) => "pointer",
             ConstPointer(_) => "constpointer",
+            Buffer(_) => "buffer",
             Builtin(_) => "builtin",
+        }
+    }
+
+    /// Returns whether the in-memory representation of this type will always be
+    /// valid regardless of the value of all the bits in memory.
+    ///
+    /// This is only true for numerical types, pointers, and records of these
+    /// values. This is used for canonical lifting/lowering of lists.
+    pub fn all_bits_valid(&self) -> bool {
+        match self {
+            Type::Record(r) => r.members.iter().all(|t| t.tref.type_().all_bits_valid()),
+
+            Type::Builtin(BuiltinType::Char)
+            | Type::Variant(_)
+            | Type::Handle(_)
+            | Type::Buffer(_)
+            | Type::List(_) => false,
+
+            Type::Builtin(BuiltinType::U8 { .. })
+            | Type::Builtin(BuiltinType::S8)
+            | Type::Builtin(BuiltinType::U16)
+            | Type::Builtin(BuiltinType::S16)
+            | Type::Builtin(BuiltinType::U32 { .. })
+            | Type::Builtin(BuiltinType::S32)
+            | Type::Builtin(BuiltinType::U64)
+            | Type::Builtin(BuiltinType::S64)
+            | Type::Builtin(BuiltinType::F32)
+            | Type::Builtin(BuiltinType::F64)
+            | Type::Pointer(_)
+            | Type::ConstPointer(_) => true,
         }
     }
 
@@ -269,6 +309,10 @@ impl Type {
             },
             Type::Builtin(a) => match other {
                 Type::Builtin(b) => a == b,
+                _ => false,
+            },
+            Type::Buffer(a) => match other {
+                Type::Buffer(b) => a.type_equal(b),
                 _ => false,
             },
         }
@@ -417,6 +461,43 @@ impl RecordMember {
     }
 }
 
+impl RecordKind {
+    pub fn infer(members: &[RecordMember]) -> RecordKind {
+        if members.len() == 0 {
+            return RecordKind::Other;
+        }
+
+        // Structs-of-bools are classified to get represented as bitflags.
+        if members.iter().all(|t| is_bool(&t.tref)) {
+            match members.len() {
+                n if n <= 8 => return RecordKind::Bitflags(IntRepr::U8),
+                n if n <= 16 => return RecordKind::Bitflags(IntRepr::U16),
+                n if n <= 32 => return RecordKind::Bitflags(IntRepr::U32),
+                n if n <= 64 => return RecordKind::Bitflags(IntRepr::U64),
+                _ => {}
+            }
+        }
+
+        // Members with consecutive integer names get represented as tuples.
+        if members
+            .iter()
+            .enumerate()
+            .all(|(i, m)| m.name.as_str().parse().ok() == Some(i))
+        {
+            return RecordKind::Tuple;
+        }
+
+        return RecordKind::Other;
+
+        fn is_bool(t: &TypeRef) -> bool {
+            match &**t.type_() {
+                Type::Variant(v) => v.is_bool(),
+                _ => false,
+            }
+        }
+    }
+}
+
 /// A type which represents how values can be one of a set of possible cases.
 ///
 /// This type maps to an `enum` in languages like Rust, but doesn't have an
@@ -438,6 +519,39 @@ pub struct Variant {
 }
 
 impl Variant {
+    pub fn infer_repr(cases: usize) -> IntRepr {
+        match cases {
+            n if n < u8::max_value() as usize => IntRepr::U8,
+            n if n < u16::max_value() as usize => IntRepr::U16,
+            n if n < u32::max_value() as usize => IntRepr::U32,
+            n if n < u64::max_value() as usize => IntRepr::U64,
+            _ => panic!("too many cases to fit in a repr"),
+        }
+    }
+
+    /// If this variant looks like an `option` shorthand, return the type
+    /// associated with option.
+    ///
+    /// Only matches variants fo the form:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "none")
+    ///     (case "some" ty))
+    /// ```
+    pub fn as_option(&self) -> Option<&TypeRef> {
+        if self.cases.len() != 2 {
+            return None;
+        }
+        if self.cases[0].name != "none" || self.cases[0].tref.is_some() {
+            return None;
+        }
+        if self.cases[1].name != "some" {
+            return None;
+        }
+        self.cases[1].tref.as_ref()
+    }
+
     /// If this variant looks like an `expected` shorthand, return the ok/err
     /// types associated with this result.
     ///
@@ -577,4 +691,20 @@ pub struct Constant {
     pub name: Id,
     pub value: u64,
     pub docs: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Buffer {
+    /// Whether or not this is an `out` buffer (`true`) or an `in` buffer
+    /// (`false`)
+    pub out: bool,
+
+    /// The type of items this buffer contains
+    pub tref: TypeRef,
+}
+
+impl Buffer {
+    pub fn type_equal(&self, other: &Buffer) -> bool {
+        self.out == other.out && self.tref.type_equal(&other.tref)
+    }
 }

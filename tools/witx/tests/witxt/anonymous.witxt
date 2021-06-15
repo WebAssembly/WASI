@@ -3,55 +3,55 @@
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (record (field $b u8))))
+    (module $x (typename $a (@witx pointer (record (field $b u8)))))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (union)))
+    (module $x (typename $a (@witx pointer (union))))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (enum $b)))
+    (module $x (typename $a (@witx pointer (enum $b))))
   )
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (@witx pointer (flags $b)))
+    (module $x (typename $a (@witx pointer (flags $b))))
   )
   "Anonymous structured types")
 
 (assert_invalid
-  (witx
+  (witx (module $x
     (resource $x)
     (typename $a (@witx pointer (handle $x)))
-  )
+  ))
   "Anonymous structured types")
 
 (assert_invalid
   (witx
-    (typename $a (record (field $b (record (field $c u8)))))
+    (module $x (typename $a (record (field $b (record (field $c u8))))))
   )
   "Anonymous structured types")
 
 (assert_invalid
-  (witx
+  (witx (module $x
     (typename $tag (enum $c))
     (typename $a (record (field $b (union))))
-  )
+  ))
   "Anonymous structured types")
 
 
 ;; pointers don't count for anonymous indirections
 (witx
-  (typename $a (@witx pointer u8)))
+  (module $x (typename $a (@witx pointer u8))))
 
 (witx
-  (typename $a (@witx pointer (@witx const_pointer u8))))
+  (module $x (typename $a (@witx pointer (@witx const_pointer u8)))))
 
 (witx
-  (typename $a (record (field $b (@witx pointer u8)))))
+  (module $x (typename $a (record (field $b (@witx pointer u8))))))

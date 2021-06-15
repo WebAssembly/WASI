@@ -5,9 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $errno $size from $typenames)
-
 (module $wasi_ephemeral_random
+  (use $errno $size from $typenames)
+
   ;;; Write high-quality random data into a buffer.
   ;;; This function blocks when the implementation is unable to immediately
   ;;; provide sufficient high-quality random data.

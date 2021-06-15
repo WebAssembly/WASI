@@ -5,9 +5,9 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $event $subscription $size $errno from $typenames)
-
 (module $wasi_ephemeral_poll
+  (use $event $subscription $size $errno from $typenames)
+
   ;;; Concurrently poll for the occurrence of a set of events.
   ;;;
   ;;; If `nsubscriptions` is 0, returns `errno::inval`.

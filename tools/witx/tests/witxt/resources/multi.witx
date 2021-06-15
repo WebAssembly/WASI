@@ -1,11 +1,13 @@
-(use ($x as $other_x) ($y as $other_y) from $other)
+(module $multi
+  (use ($x as $other_x) ($y as $other_y) from $other)
 
-;; this resource named `y` shouldn't be the same as another resource named `y`
-;; defined elsewhere.
-(resource $y)
+  ;; this resource named `y` shouldn't be the same as another resource named `y`
+  ;; defined elsewhere.
+  (resource $y)
 
-(typename $x1 (handle $other_x))
-(typename $x2 (handle $other_x))
+  (typename $x1 (handle $other_x))
+  (typename $x2 (handle $other_x))
 
-(typename $y1 (handle $other_y))
-(typename $y2 (handle $y))
+  (typename $y1 (handle $other_y))
+  (typename $y2 (handle $y))
+)

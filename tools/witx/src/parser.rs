@@ -1,4 +1,4 @@
-use crate::BuiltinType;
+use crate::{Abi, BuiltinType};
 use wast::parser::{Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
@@ -56,6 +56,9 @@ mod kw {
     wast::custom_keyword!(usize);
     wast::custom_keyword!(variant);
     wast::custom_keyword!(bool_ = "bool");
+    wast::custom_keyword!(option);
+    wast::custom_keyword!(in_buffer = "in-buffer");
+    wast::custom_keyword!(out_buffer = "out-buffer");
 }
 
 mod annotation {
@@ -224,32 +227,30 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
         let mut functions = Vec::new();
         let mut module_name = None;
 
-        let mut comments = parser.parse()?;
-        loop {
-            if parser.peek2::<kw::r#use>()
-                || parser.peek2::<annotation::witx>()
-                || parser.peek2::<kw::typename>()
-                || parser.peek2::<kw::resource>()
-            {
-                decls.push(Documented {
-                    comments,
-                    item: parser.parens(|p| p.parse())?,
-                });
-                comments = parser.parse()?;
-            } else {
-                break;
-            }
-        }
-
         if parser.peek2::<kw::module>() {
             parser.parens(|p| {
                 p.parse::<kw::module>()?;
                 module_name = p.parse()?;
                 while !p.is_empty() {
-                    functions.push(Documented {
-                        comments: parser.parse()?,
-                        item: p.parens(|p| p.parse())?,
-                    });
+                    if parser.peek2::<kw::r#use>() {
+                        decls.push(Documented {
+                            comments: parser.parse()?,
+                            item: parser.parens(|p| p.parse())?,
+                        });
+                    } else if parser.peek2::<kw::typename>()
+                        || parser.peek2::<kw::resource>()
+                        || parser.peek2::<annotation::witx>()
+                    {
+                        decls.push(Documented {
+                            comments: parser.parse()?,
+                            item: parser.parens(|p| p.parse())?,
+                        });
+                    } else {
+                        functions.push(Documented {
+                            comments: parser.parse()?,
+                            item: p.parens(|p| p.parse())?,
+                        });
+                    }
                 }
                 Ok(())
             })?;
@@ -385,6 +386,7 @@ pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
     Tuple(TupleSyntax<'a>),
     Expected(ExpectedSyntax<'a>),
+    Option(OptionSyntax<'a>),
     Flags(FlagsSyntax<'a>),
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
@@ -393,6 +395,7 @@ pub enum TypedefSyntax<'a> {
     List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
+    Buffer(BufferSyntax<'a>),
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
     String,
@@ -421,6 +424,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Tuple(parser.parse()?))
                 } else if l.peek::<kw::expected>() {
                     Ok(TypedefSyntax::Expected(parser.parse()?))
+                } else if l.peek::<kw::option>() {
+                    Ok(TypedefSyntax::Option(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
                 } else if l.peek::<kw::record>() {
@@ -431,6 +436,8 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                     Ok(TypedefSyntax::Variant(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
+                } else if l.peek::<kw::in_buffer>() || l.peek::<kw::out_buffer>() {
+                    Ok(TypedefSyntax::Buffer(parser.parse()?))
                 } else if l.peek::<kw::list>() {
                     parser.parse::<kw::list>()?;
                     Ok(TypedefSyntax::List(Box::new(parser.parse()?)))
@@ -536,6 +543,19 @@ impl<'a> Parse<'a> for ExpectedSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OptionSyntax<'a> {
+    pub ty: Box<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for OptionSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::option>()?;
+        let ty = Box::new(parser.parse()?);
+        Ok(OptionSyntax { ty })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConstSyntax<'a> {
     pub ty: wast::Id<'a>,
     pub name: wast::Id<'a>,
@@ -601,7 +621,6 @@ impl<'a> Parse<'a> for RecordSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::record>()?;
         let mut fields = Vec::new();
-        fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
@@ -701,6 +720,26 @@ impl<'a> Parse<'a> for CaseSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BufferSyntax<'a> {
+    pub out: bool,
+    pub ty: Box<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for BufferSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        let out = if parser.peek::<kw::in_buffer>() {
+            parser.parse::<kw::in_buffer>()?;
+            false
+        } else {
+            parser.parse::<kw::out_buffer>()?;
+            true
+        };
+        let ty = Box::new(parser.parse()?);
+        Ok(BufferSyntax { out, ty })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HandleSyntax<'a> {
     pub resource: wast::Id<'a>,
 }
@@ -715,6 +754,7 @@ impl<'a> Parse<'a> for HandleSyntax<'a> {
 
 #[derive(Debug, Clone)]
 pub struct FunctionSyntax<'a> {
+    pub abi: Abi,
     pub export: &'a str,
     pub export_loc: wast::Span,
     pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
@@ -722,16 +762,14 @@ pub struct FunctionSyntax<'a> {
     pub noreturn: bool,
 }
 
-impl<'a> Parse<'a> for FunctionSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<annotation::interface>()?;
-        parser.parse::<kw::func>()?;
-
-        let (export_loc, export) = parser.parens(|p| {
-            p.parse::<kw::export>()?;
-            Ok((p.cur_span(), p.parse()?))
-        })?;
-
+impl<'a> FunctionSyntax<'a> {
+    fn parse_func_params(
+        parser: Parser<'a>,
+    ) -> Result<(
+        Vec<Documented<'a, FieldSyntax<'a>>>,
+        Vec<Documented<'a, FieldSyntax<'a>>>,
+        bool,
+    )> {
         let mut params = Vec::new();
         let mut results = Vec::new();
         let mut noreturn = false;
@@ -756,14 +794,49 @@ impl<'a> Parse<'a> for FunctionSyntax<'a> {
                 }
             }
         }
+        Ok((params, results, noreturn))
+    }
+}
 
-        Ok(FunctionSyntax {
-            export,
-            export_loc,
-            params,
-            results,
-            noreturn,
-        })
+impl<'a> Parse<'a> for FunctionSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        if parser.parse::<Option<kw::export>>()?.is_some() {
+            let export_loc = parser.cur_span();
+            let export = parser.parse()?;
+
+            let (params, results, noreturn) = parser.parens(|p| {
+                p.parse::<kw::func>()?;
+                FunctionSyntax::parse_func_params(parser)
+            })?;
+
+            Ok(FunctionSyntax {
+                abi: Abi::Next,
+                export,
+                export_loc,
+                params,
+                results,
+                noreturn,
+            })
+        } else {
+            parser.parse::<annotation::interface>()?;
+            parser.parse::<kw::func>()?;
+
+            let (export_loc, export) = parser.parens(|p| {
+                p.parse::<kw::export>()?;
+                Ok((p.cur_span(), p.parse()?))
+            })?;
+
+            let (params, results, noreturn) = FunctionSyntax::parse_func_params(parser)?;
+
+            Ok(FunctionSyntax {
+                abi: Abi::Preview1,
+                export,
+                export_loc,
+                params,
+                results,
+                noreturn,
+            })
+        }
     }
 }
 

@@ -5,6 +5,8 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
+(module $typenames
+
 ;;; An array size.
 ;;;
 ;;; Note: This is similar to `size_t` in POSIX.
@@ -706,4 +708,6 @@
     ;;; When type is `preopentype::dir`:
     $prestat_dir
   )
+)
+
 )

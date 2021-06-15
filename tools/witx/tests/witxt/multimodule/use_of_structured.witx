@@ -1,1 +1,3 @@
-(use $foo from $structured)
+(module $use_of_structured
+  (use $foo from $structured)
+)
