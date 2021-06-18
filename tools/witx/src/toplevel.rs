@@ -70,6 +70,7 @@ fn parse_file(
             }
             TopLevelSyntax::Use(u) => {
                 eprintln!("found a use statement, parsing file at {:?}", &u);
+                let root = path.parent().unwrap_or(root);
                 parse_file(u.as_ref(), io, root, validator, definitions, parsed)?;
             }
         }
