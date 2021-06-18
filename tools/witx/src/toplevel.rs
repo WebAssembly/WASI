@@ -139,6 +139,33 @@ mod test {
     }
 
     #[test]
+    fn multi_use_with_layered_dirs() {
+        let doc = parse_witx_with(
+            &[Path::new("/root.witx")],
+            &MockFs::new(&[
+                ("/root.witx", "(use \"subdir/child.witx\")"),
+                (
+                    "/subdir/child.witx",
+                    "(use \"sibling.witx\")\n(typename $b_float f64)",
+                ),
+                ("/subdir/sibling.witx", "(typename $c_int u32)"),
+            ]),
+        )
+        .expect("parse");
+
+        let b_float = doc.typename(&Id::new("b_float")).unwrap();
+        assert_eq!(**b_float.type_(), Type::Builtin(BuiltinType::F64));
+
+        let c_int = doc.typename(&Id::new("c_int")).unwrap();
+        assert_eq!(
+            **c_int.type_(),
+            Type::Builtin(BuiltinType::U32 {
+                lang_ptr_size: false
+            })
+        );
+    }
+
+    #[test]
     fn use_not_found() {
         match parse_witx_with(&[Path::new("/a")], &MockFs::new(&[("/a", "(use \"b\")")]))
             .err()
