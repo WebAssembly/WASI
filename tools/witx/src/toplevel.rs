@@ -43,11 +43,14 @@ fn parse_file(
     definitions: &mut Vec<Definition>,
     parsed: &mut HashSet<PathBuf>,
 ) -> Result<(), WitxError> {
+    eprintln!("parsing file at path='{:?}' root='{:?}'", &path, &root);
     let path = io.canonicalize(&root.join(path))?;
+    eprintln!("canonical-path='{:?}'", &path);
     if !parsed.insert(path.clone()) {
         return Ok(());
     }
     let input = io.fgets(&path)?;
+    eprintln!(""); // this one is just for space
 
     let adjust_err = |mut error: wast::Error| {
         error.set_path(&path);
@@ -66,6 +69,7 @@ fn parse_file(
                     .map_err(WitxError::Validation)?;
             }
             TopLevelSyntax::Use(u) => {
+                eprintln!("found a use statement, parsing file at {:?}", &u);
                 parse_file(u.as_ref(), io, root, validator, definitions, parsed)?;
             }
         }
