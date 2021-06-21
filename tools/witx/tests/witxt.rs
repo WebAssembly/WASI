@@ -530,23 +530,19 @@ impl Witx<'_> {
                 let mut validator = witx::ModuleValidation::new(contents, file);
                 for t in doc.decls.iter() {
                     match &t.item {
-                        TopLevelSyntax::Decl(d) => validator
-                            .validate_decl(&d, &t.comments)
-                            .map_err(|e| anyhow::anyhow!("{}", e.report()))?,
+                        TopLevelSyntax::Decl(d) => validator.validate_decl(&d, &t.comments)?,
                         TopLevelSyntax::Use(_) => unimplemented!(),
                     }
                 }
                 for f in doc.functions.iter() {
-                    validator
-                        .validate_function(&f.item, &f.comments)
-                        .map_err(|e| anyhow::anyhow!("{}", e.report()))?;
+                    validator.validate_function(&f.item, &f.comments)?;
                 }
                 Ok(validator.into_module())
             }
             WitxDef::Fs(path) => {
                 let parent = file.parent().unwrap();
                 let path = parent.join(path);
-                Ok(witx::load(&path).map_err(|e| anyhow::anyhow!("{}", e.report()))?)
+                Ok(witx::load(&path)?)
             }
         }
     }

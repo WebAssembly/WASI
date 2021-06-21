@@ -34,13 +34,11 @@ mod kw {
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(record);
-    wast::custom_keyword!(r#as = "as");
     wast::custom_keyword!(r#const = "const");
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#union = "union");
     wast::custom_keyword!(r#use = "use");
     wast::custom_keyword!(repr);
-    wast::custom_keyword!(resource);
     wast::custom_keyword!(s16);
     wast::custom_keyword!(s32);
     wast::custom_keyword!(s64);
@@ -229,7 +227,6 @@ impl<'a> Parse<'a> for TopLevelModule<'a> {
             if parser.peek2::<kw::r#use>()
                 || parser.peek2::<annotation::witx>()
                 || parser.peek2::<kw::typename>()
-                || parser.peek2::<kw::resource>()
             {
                 decls.push(Documented {
                     comments,
@@ -282,7 +279,6 @@ impl<'a> Parse<'a> for TopLevelSyntax<'a> {
 #[derive(Debug, Clone)]
 pub enum DeclSyntax<'a> {
     Typename(TypenameSyntax<'a>),
-    Resource(ResourceSyntax<'a>),
     Const(Documented<'a, ConstSyntax<'a>>),
 }
 
@@ -293,8 +289,6 @@ impl<'a> Parse<'a> for DeclSyntax<'a> {
             Ok(DeclSyntax::Typename(parser.parse()?))
         } else if l.peek::<annotation::witx>() {
             Ok(DeclSyntax::Const(parser.parse()?))
-        } else if l.peek::<kw::resource>() {
-            Ok(DeclSyntax::Resource(parser.parse()?))
         } else {
             Err(l.error())
         }
@@ -319,7 +313,7 @@ impl<'a> Parse<'a> for UseSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum UsedNames<'a> {
-    List(Vec<UseName<'a>>),
+    List(Vec<wast::Id<'a>>),
     All(wast::Span),
 }
 
@@ -336,32 +330,6 @@ impl<'a> Parse<'a> for UsedNames<'a> {
             names.push(parser.parse()?);
         }
         Ok(UsedNames::List(names))
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UseName<'a> {
-    pub other_name: wast::Id<'a>,
-    pub our_name: wast::Id<'a>,
-}
-
-impl<'a> Parse<'a> for UseName<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        let (other_name, our_name) = if parser.peek::<wast::Id>() {
-            let name = parser.parse()?;
-            (name, name)
-        } else {
-            parser.parens(|p| {
-                let other_name = p.parse()?;
-                p.parse::<kw::r#as>()?;
-                let our_name = p.parse()?;
-                Ok((other_name, our_name))
-            })?
-        };
-        Ok(UseName {
-            other_name,
-            our_name,
-        })
     }
 }
 
@@ -389,7 +357,7 @@ pub enum TypedefSyntax<'a> {
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
     Variant(VariantSyntax<'a>),
-    Handle(HandleSyntax<'a>),
+    Handle(HandleSyntax),
     List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
@@ -554,19 +522,6 @@ impl<'a> Parse<'a> for ConstSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ResourceSyntax<'a> {
-    pub ident: wast::Id<'a>,
-}
-
-impl<'a> Parse<'a> for ResourceSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::resource>()?;
-        let ident = parser.parse()?;
-        Ok(ResourceSyntax { ident })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
     pub repr: Option<BuiltinType>,
     pub flags: Vec<Documented<'a, wast::Id<'a>>>,
@@ -701,15 +656,12 @@ impl<'a> Parse<'a> for CaseSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HandleSyntax<'a> {
-    pub resource: wast::Id<'a>,
-}
+pub struct HandleSyntax {}
 
-impl<'a> Parse<'a> for HandleSyntax<'a> {
+impl<'a> Parse<'a> for HandleSyntax {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::handle>()?;
-        let resource = parser.parse()?;
-        Ok(HandleSyntax { resource })
+        Ok(HandleSyntax {})
     }
 }
 

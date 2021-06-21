@@ -165,4 +165,19 @@ mod test {
             e => panic!("wrong error: {:?}", e),
         }
     }
+
+    #[test]
+    fn use_invalid() {
+        match parse_witx_with("/a", &MockFs::new(&[("/a", "(use bbbbbbb)")]))
+            .err()
+            .unwrap()
+        {
+            WitxError::Parse(e) => {
+                let err = e.to_string();
+                assert!(err.contains("expected an identifier"), "bad error: {}", err);
+                assert!(err.contains("/a:1:6"));
+            }
+            e => panic!("wrong error: {:?}", e),
+        }
+    }
 }
