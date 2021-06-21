@@ -10,6 +10,12 @@ mod io;
 mod layout;
 /// Witx syntax parsing from SExprs
 pub mod parser;
+/// Calculate required polyfill between interfaces
+pub mod polyfill;
+/// Render ast to text
+mod render;
+/// Representational equality of types
+mod representation;
 /// Resolve toplevel `use` declarations across files
 mod toplevel;
 /// Validate declarations into ast
@@ -17,23 +23,25 @@ mod validate;
 
 pub use abi::*;
 pub use ast::*;
-pub use docs::document;
+pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
 pub use layout::{Layout, RecordMemberLayout, SizeAlign};
-pub use validate::{ModuleValidation, ValidationError};
+pub use render::SExpr;
+pub use representation::{RepEquality, Representable};
+pub use validate::{DocValidation, ValidationError};
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
 
 /// Load a witx document from the filesystem
-pub fn load(path: impl AsRef<Path>) -> Result<Module, WitxError> {
-    toplevel::parse_witx(path)
+pub fn load<P: AsRef<Path>>(paths: &[P]) -> Result<Document, WitxError> {
+    toplevel::parse_witx(paths)
 }
 
 /// Parse a witx document from a str. `(use ...)` directives are not permitted.
-pub fn parse(source: &str) -> Result<Module, WitxError> {
+pub fn parse(source: &str) -> Result<Document, WitxError> {
     let mockfs = MockFs::new(&[("-", source)]);
-    toplevel::parse_witx_with("-", &mockfs)
+    toplevel::parse_witx_with(&[Path::new("-")], &mockfs)
 }
 
 /// Location in the source text

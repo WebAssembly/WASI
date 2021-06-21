@@ -28,19 +28,16 @@ mod kw {
     wast::custom_keyword!(error);
     wast::custom_keyword!(expected);
     wast::custom_keyword!(flags);
-    wast::custom_keyword!(from);
     wast::custom_keyword!(handle);
     wast::custom_keyword!(list);
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
     wast::custom_keyword!(record);
-    wast::custom_keyword!(r#as = "as");
     wast::custom_keyword!(r#const = "const");
     wast::custom_keyword!(r#enum = "enum");
     wast::custom_keyword!(r#union = "union");
     wast::custom_keyword!(r#use = "use");
     wast::custom_keyword!(repr);
-    wast::custom_keyword!(resource);
     wast::custom_keyword!(s16);
     wast::custom_keyword!(s32);
     wast::custom_keyword!(s64);
@@ -202,166 +199,67 @@ pub struct Documented<'a, T> {
 
 impl<'a, T: Parse<'a>> Parse<'a> for Documented<'a, T> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
+        let _r1 = parser.register_annotation("witx");
+        let _r1 = parser.register_annotation("interface");
         let comments = parser.parse()?;
         let item = parser.parse()?;
         Ok(Documented { comments, item })
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct TopLevelModule<'a> {
-    pub decls: Vec<Documented<'a, TopLevelSyntax<'a>>>,
-    pub module_name: Option<wast::Id<'a>>,
-    pub functions: Vec<Documented<'a, FunctionSyntax<'a>>>,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TopLevelDocument<'a> {
+    pub items: Vec<Documented<'a, TopLevelSyntax<'a>>>,
 }
 
-impl<'a> Parse<'a> for TopLevelModule<'a> {
+impl<'a> Parse<'a> for TopLevelDocument<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        let _r1 = parser.register_annotation("witx");
-        let _r2 = parser.register_annotation("interface");
-
-        let mut decls = Vec::new();
-        let mut functions = Vec::new();
-        let mut module_name = None;
-
-        let mut comments = parser.parse()?;
-        loop {
-            if parser.peek2::<kw::r#use>()
-                || parser.peek2::<annotation::witx>()
-                || parser.peek2::<kw::typename>()
-                || parser.peek2::<kw::resource>()
-            {
-                decls.push(Documented {
-                    comments,
-                    item: parser.parens(|p| p.parse())?,
-                });
-                comments = parser.parse()?;
-            } else {
-                break;
-            }
+        let mut items = Vec::new();
+        while !parser.is_empty() {
+            items.push(parser.parse()?);
         }
-
-        if parser.peek2::<kw::module>() {
-            parser.parens(|p| {
-                p.parse::<kw::module>()?;
-                module_name = p.parse()?;
-                while !p.is_empty() {
-                    functions.push(Documented {
-                        comments: parser.parse()?,
-                        item: p.parens(|p| p.parse())?,
-                    });
-                }
-                Ok(())
-            })?;
-        }
-
-        Ok(TopLevelModule {
-            decls,
-            module_name,
-            functions,
-        })
+        Ok(TopLevelDocument { items })
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TopLevelSyntax<'a> {
     Decl(DeclSyntax<'a>),
-    Use(UseSyntax<'a>),
+    Use(&'a str),
 }
 
 impl<'a> Parse<'a> for TopLevelSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        if parser.peek::<kw::r#use>() {
-            Ok(TopLevelSyntax::Use(parser.parse()?))
-        } else {
-            Ok(TopLevelSyntax::Decl(parser.parse()?))
-        }
+        parser.parens(|p| {
+            if p.peek::<kw::r#use>() {
+                p.parse::<kw::r#use>()?;
+                Ok(TopLevelSyntax::Use(p.parse()?))
+            } else {
+                Ok(TopLevelSyntax::Decl(p.parse()?))
+            }
+        })
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DeclSyntax<'a> {
     Typename(TypenameSyntax<'a>),
-    Resource(ResourceSyntax<'a>),
+    Module(ModuleSyntax<'a>),
     Const(Documented<'a, ConstSyntax<'a>>),
 }
 
 impl<'a> Parse<'a> for DeclSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         let mut l = parser.lookahead1();
-        if l.peek::<kw::typename>() {
+        if l.peek::<kw::module>() {
+            Ok(DeclSyntax::Module(parser.parse()?))
+        } else if l.peek::<kw::typename>() {
             Ok(DeclSyntax::Typename(parser.parse()?))
         } else if l.peek::<annotation::witx>() {
             Ok(DeclSyntax::Const(parser.parse()?))
-        } else if l.peek::<kw::resource>() {
-            Ok(DeclSyntax::Resource(parser.parse()?))
         } else {
             Err(l.error())
         }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UseSyntax<'a> {
-    pub names: UsedNames<'a>,
-    pub from: wast::Id<'a>,
-}
-
-impl<'a> Parse<'a> for UseSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::r#use>()?;
-        let names = parser.parse()?;
-        parser.parse::<kw::from>()?;
-        let from = parser.parse()?;
-        Ok(UseSyntax { names, from })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum UsedNames<'a> {
-    List(Vec<UseName<'a>>),
-    All(wast::Span),
-}
-
-impl<'a> Parse<'a> for UsedNames<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        wast::custom_reserved!(star = "*");
-        if parser.peek::<star>() {
-            let t = parser.parse::<star>()?;
-            return Ok(UsedNames::All(t.0));
-        }
-        let mut names = Vec::new();
-        names.push(parser.parse()?);
-        while !parser.peek::<kw::from>() {
-            names.push(parser.parse()?);
-        }
-        Ok(UsedNames::List(names))
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UseName<'a> {
-    pub other_name: wast::Id<'a>,
-    pub our_name: wast::Id<'a>,
-}
-
-impl<'a> Parse<'a> for UseName<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        let (other_name, our_name) = if parser.peek::<wast::Id>() {
-            let name = parser.parse()?;
-            (name, name)
-        } else {
-            parser.parens(|p| {
-                let other_name = p.parse()?;
-                p.parse::<kw::r#as>()?;
-                let our_name = p.parse()?;
-                Ok((other_name, our_name))
-            })?
-        };
-        Ok(UseName {
-            other_name,
-            our_name,
-        })
     }
 }
 
@@ -389,7 +287,7 @@ pub enum TypedefSyntax<'a> {
     Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
     Variant(VariantSyntax<'a>),
-    Handle(HandleSyntax<'a>),
+    Handle(HandleSyntax),
     List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
@@ -554,19 +452,6 @@ impl<'a> Parse<'a> for ConstSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ResourceSyntax<'a> {
-    pub ident: wast::Id<'a>,
-}
-
-impl<'a> Parse<'a> for ResourceSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::resource>()?;
-        let ident = parser.parse()?;
-        Ok(ResourceSyntax { ident })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
     pub repr: Option<BuiltinType>,
     pub flags: Vec<Documented<'a, wast::Id<'a>>>,
@@ -701,20 +586,96 @@ impl<'a> Parse<'a> for CaseSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HandleSyntax<'a> {
-    pub resource: wast::Id<'a>,
-}
+pub struct HandleSyntax {}
 
-impl<'a> Parse<'a> for HandleSyntax<'a> {
+impl<'a> Parse<'a> for HandleSyntax {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::handle>()?;
-        let resource = parser.parse()?;
-        Ok(HandleSyntax { resource })
+        Ok(HandleSyntax {})
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ModuleSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub decls: Vec<Documented<'a, ModuleDeclSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for ModuleSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::module>()?;
+        let name = parser.parse()?;
+        let mut decls = Vec::new();
+        while !parser.is_empty() {
+            decls.push(parser.parse()?);
+        }
+        Ok(ModuleSyntax { name, decls })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ModuleDeclSyntax<'a> {
+    Import(ModuleImportSyntax<'a>),
+    Func(InterfaceFuncSyntax<'a>),
+}
+
+impl<'a> Parse<'a> for ModuleDeclSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parens(|p| {
+            let mut l = p.lookahead1();
+            if l.peek::<kw::import>() {
+                Ok(ModuleDeclSyntax::Import(p.parse()?))
+            } else if l.peek::<annotation::interface>() {
+                Ok(ModuleDeclSyntax::Func(p.parse()?))
+            } else {
+                Err(l.error())
+            }
+        })
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct FunctionSyntax<'a> {
+pub struct ModuleImportSyntax<'a> {
+    pub name: &'a str,
+    pub name_loc: wast::Span,
+    pub type_: ImportTypeSyntax,
+}
+
+impl<'a> Parse<'a> for ModuleImportSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::import>()?;
+        let name_loc = parser.cur_span();
+        Ok(ModuleImportSyntax {
+            name: parser.parse()?,
+            name_loc,
+            type_: parser.parens(|p| p.parse())?,
+        })
+    }
+}
+
+impl PartialEq for ModuleImportSyntax<'_> {
+    fn eq(&self, other: &ModuleImportSyntax<'_>) -> bool {
+        // skip the `name_loc` field
+        self.name == other.name && self.type_ == other.type_
+    }
+}
+
+impl Eq for ModuleImportSyntax<'_> {}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ImportTypeSyntax {
+    Memory,
+}
+
+impl Parse<'_> for ImportTypeSyntax {
+    fn parse(parser: Parser<'_>) -> Result<Self> {
+        parser.parse::<kw::memory>()?;
+        Ok(ImportTypeSyntax::Memory)
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct InterfaceFuncSyntax<'a> {
     pub export: &'a str,
     pub export_loc: wast::Span,
     pub params: Vec<Documented<'a, FieldSyntax<'a>>>,
@@ -722,7 +683,7 @@ pub struct FunctionSyntax<'a> {
     pub noreturn: bool,
 }
 
-impl<'a> Parse<'a> for FunctionSyntax<'a> {
+impl<'a> Parse<'a> for InterfaceFuncSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<annotation::interface>()?;
         parser.parse::<kw::func>()?;
@@ -737,27 +698,27 @@ impl<'a> Parse<'a> for FunctionSyntax<'a> {
         let mut noreturn = false;
 
         while !parser.is_empty() {
-            let func_field = parser.parse::<Documented<FunctionField>>()?;
+            let func_field = parser.parse::<Documented<InterfaceFuncField>>()?;
             match func_field.item {
-                FunctionField::Param(item) => {
+                InterfaceFuncField::Param(item) => {
                     params.push(Documented {
                         comments: func_field.comments,
                         item,
                     });
                 }
-                FunctionField::Result(item) => {
+                InterfaceFuncField::Result(item) => {
                     results.push(Documented {
                         comments: func_field.comments,
                         item,
                     });
                 }
-                FunctionField::Noreturn => {
+                InterfaceFuncField::Noreturn => {
                     noreturn = true;
                 }
             }
         }
 
-        Ok(FunctionSyntax {
+        Ok(InterfaceFuncSyntax {
             export,
             export_loc,
             params,
@@ -767,25 +728,24 @@ impl<'a> Parse<'a> for FunctionSyntax<'a> {
     }
 }
 
-enum FunctionField<'a> {
+enum InterfaceFuncField<'a> {
     Param(FieldSyntax<'a>),
     Result(FieldSyntax<'a>),
     Noreturn,
 }
-
-impl<'a> Parse<'a> for FunctionField<'a> {
+impl<'a> Parse<'a> for InterfaceFuncField<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parens(|p| {
             let mut l = p.lookahead1();
             if l.peek::<kw::param>() {
                 parser.parse::<kw::param>()?;
-                Ok(FunctionField::Param(FieldSyntax {
+                Ok(InterfaceFuncField::Param(FieldSyntax {
                     name: parser.parse()?,
                     type_: parser.parse()?,
                 }))
             } else if l.peek::<kw::result>() {
                 parser.parse::<kw::result>()?;
-                Ok(FunctionField::Result(FieldSyntax {
+                Ok(InterfaceFuncField::Result(FieldSyntax {
                     name: parser.parse()?,
                     type_: parser.parse()?,
                 }))
@@ -794,7 +754,7 @@ impl<'a> Parse<'a> for FunctionField<'a> {
                 let mut l = parser.lookahead1();
                 if l.peek::<kw::noreturn>() {
                     parser.parse::<kw::noreturn>()?;
-                    Ok(FunctionField::Noreturn)
+                    Ok(InterfaceFuncField::Noreturn)
                 } else {
                     Err(l.error())
                 }
@@ -804,3 +764,15 @@ impl<'a> Parse<'a> for FunctionField<'a> {
         })
     }
 }
+
+impl PartialEq for InterfaceFuncSyntax<'_> {
+    fn eq(&self, other: &InterfaceFuncSyntax<'_>) -> bool {
+        // skip the `export_loc` field
+        self.export == other.export
+            && self.params == other.params
+            && self.results == other.results
+            && self.noreturn == other.noreturn
+    }
+}
+
+impl Eq for InterfaceFuncSyntax<'_> {}

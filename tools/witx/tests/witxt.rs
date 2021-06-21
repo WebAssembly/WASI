@@ -14,7 +14,7 @@ use std::path::{Path, PathBuf};
 use std::str;
 use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 use wast::parser::{self, Parse, ParseBuffer, Parser};
-use witx::{Instruction, WasmType};
+use witx::{Documentation, Instruction, Representable, WasmType};
 
 fn main() {
     let tests = find_tests();
@@ -43,7 +43,7 @@ fn main() {
         .filter_map(|(test, contents)| {
             WitxtRunner {
                 ntests: &ntests,
-                modules: HashMap::new(),
+                documents: HashMap::new(),
             }
             .run(test, contents)
             .err()
@@ -91,7 +91,7 @@ fn find_tests() -> Vec<PathBuf> {
 
 struct WitxtRunner<'a> {
     ntests: &'a AtomicUsize,
-    modules: HashMap<String, witx::Module>,
+    documents: HashMap<String, witx::Document>,
 }
 
 impl WitxtRunner<'_> {
@@ -149,14 +149,16 @@ impl WitxtRunner<'_> {
         self.bump_ntests();
         match directive {
             WitxtDirective::Witx(witx) => {
-                let doc = witx.module(contents, test)?;
+                let doc = witx.document(contents, test)?;
+                self.assert_roundtrip(&doc)
+                    .context("failed to round-trip the document")?;
                 self.assert_md(&doc)?;
                 if let Some(name) = witx.id {
-                    self.modules.insert(name.name().to_string(), doc);
+                    self.documents.insert(name.name().to_string(), doc);
                 }
             }
             WitxtDirective::AssertInvalid { witx, message, .. } => {
-                let err = match witx.module(contents, test) {
+                let err = match witx.document(contents, test) {
                     Ok(_) => bail!("witx was valid when it shouldn't be"),
                     Err(e) => format!("{:?}", anyhow::Error::from(e)),
                 };
@@ -164,15 +166,15 @@ impl WitxtRunner<'_> {
                     bail!("expected error {:?}\nfound error {}", message, err);
                 }
             }
-            WitxtDirective::AssertEq { eq, t1, t2, .. } => {
+            WitxtDirective::AssertRepresentable { repr, t1, t2, .. } => {
                 let (t1m, t1t) = t1;
                 let (t2m, t2t) = t2;
                 let t1d = self
-                    .modules
+                    .documents
                     .get(t1m.name())
                     .ok_or_else(|| anyhow!("no document named {:?}", t1m.name()))?;
                 let t2d = self
-                    .modules
+                    .documents
                     .get(t2m.name())
                     .ok_or_else(|| anyhow!("no document named {:?}", t2m.name()))?;
                 let t1 = t1d
@@ -181,8 +183,13 @@ impl WitxtRunner<'_> {
                 let t2 = t2d
                     .typename(&witx::Id::new(t2t))
                     .ok_or_else(|| anyhow!("no type named {:?}", t2t))?;
-                if t1.tref.type_equal(&t2.tref) != eq {
-                    bail!("failed comparing {:?} and {:?}", t1, t2);
+                match (repr, t1.type_().representable(&t2.type_())) {
+                    (RepEquality::Eq, witx::RepEquality::Eq)
+                    | (RepEquality::Superset, witx::RepEquality::Superset)
+                    | (RepEquality::NotEq, witx::RepEquality::NotEq) => {}
+                    (a, b) => {
+                        bail!("expected {:?} representation, got {:?}", a, b);
+                    }
                 }
             }
             WitxtDirective::AssertAbi {
@@ -192,8 +199,9 @@ impl WitxtRunner<'_> {
                 wasm_signature: (wasm_params, wasm_results),
                 ..
             } => {
-                let m = witx.module(contents, test)?;
-                let func = m.funcs().next().ok_or_else(|| anyhow!("no funcs"))?;
+                let doc = witx.document(contents, test)?;
+                let module = doc.modules().next().ok_or_else(|| anyhow!("no modules"))?;
+                let func = module.funcs().next().ok_or_else(|| anyhow!("no funcs"))?;
 
                 let (params, results) = func.wasm_signature();
                 if params != wasm_params {
@@ -208,19 +216,61 @@ impl WitxtRunner<'_> {
                     err: None,
                     contents,
                 };
-                func.call_wasm(m.name(), &mut check);
+                func.call_wasm(&module.name, &mut check);
                 check.check()?;
                 check.abi = interface.instrs.iter();
-                func.call_interface(m.name(), &mut check);
+                func.call_interface(&module.name, &mut check);
                 check.check()?;
             }
         }
         Ok(())
     }
 
-    fn assert_md(&self, m: &witx::Module) -> Result<()> {
+    fn assert_roundtrip(&self, doc: &witx::Document) -> Result<()> {
         self.bump_ntests();
-        witx::document(Some(m));
+        let back_to_sexprs = format!("{}", doc);
+        let doc2 = witx::parse(&back_to_sexprs)?;
+        if *doc == doc2 {
+            return Ok(());
+        }
+
+        // Try to get a more specific error message that isn't thousands of
+        // lines long of debug representations.
+        for type_ in doc.typenames() {
+            let type2 = match doc2.typename(&type_.name) {
+                Some(t) => t,
+                None => bail!("doc2 missing datatype"),
+            };
+            if type_ != type2 {
+                bail!("types are not equal\n{:?}\n   !=\n{:?}", type_, type2);
+            }
+        }
+        for mod_ in doc.modules() {
+            let mod2 = match doc2.module(&mod_.name) {
+                Some(m) => m,
+                None => bail!("doc2 missing module"),
+            };
+            for import in mod_.imports() {
+                let import2 = match mod2.import(&import.name) {
+                    Some(i) => i,
+                    None => bail!("mod2 missing import"),
+                };
+                assert_eq!(import, import2);
+            }
+            for func in mod_.funcs() {
+                let func2 = match mod2.func(&func.name) {
+                    Some(f) => f,
+                    None => bail!("mod2 missing func"),
+                };
+                assert_eq!(func, func2);
+            }
+        }
+        bail!("{:?} != {:?}", doc, doc2)
+    }
+
+    fn assert_md(&self, doc: &witx::Document) -> Result<()> {
+        self.bump_ntests();
+        doc.to_md();
         Ok(())
     }
 
@@ -354,11 +404,13 @@ impl witx::Bindgen for AbiBindgen<'_> {
 
 mod kw {
     wast::custom_keyword!(assert_invalid);
-    wast::custom_keyword!(assert_eq);
-    wast::custom_keyword!(assert_ne);
+    wast::custom_keyword!(assert_representable);
     wast::custom_keyword!(assert_abi);
     wast::custom_keyword!(witx);
+    wast::custom_keyword!(eq);
+    wast::custom_keyword!(noteq);
     wast::custom_keyword!(load);
+    wast::custom_keyword!(superset);
     wast::custom_keyword!(call_wasm);
     wast::custom_keyword!(call_interface);
     wast::custom_keyword!(param);
@@ -376,8 +428,6 @@ struct Witxt<'a> {
 
 impl<'a> Parse<'a> for Witxt<'a> {
     fn parse(parser: Parser<'a>) -> parser::Result<Self> {
-        let _r1 = parser.register_annotation("interface");
-        let _r2 = parser.register_annotation("witx");
         let mut directives = Vec::new();
         while !parser.is_empty() {
             directives.push(parser.parens(|p| p.parse())?);
@@ -393,9 +443,9 @@ enum WitxtDirective<'a> {
         witx: Witx<'a>,
         message: &'a str,
     },
-    AssertEq {
+    AssertRepresentable {
         span: wast::Span,
-        eq: bool,
+        repr: RepEquality,
         t1: (wast::Id<'a>, &'a str),
         t2: (wast::Id<'a>, &'a str),
     },
@@ -414,7 +464,7 @@ impl WitxtDirective<'_> {
             WitxtDirective::Witx(w) => w.span,
             WitxtDirective::AssertInvalid { span, .. }
             | WitxtDirective::AssertAbi { span, .. }
-            | WitxtDirective::AssertEq { span, .. } => *span,
+            | WitxtDirective::AssertRepresentable { span, .. } => *span,
         }
     }
 }
@@ -431,19 +481,11 @@ impl<'a> Parse<'a> for WitxtDirective<'a> {
                 witx: parser.parens(|p| p.parse())?,
                 message: parser.parse()?,
             })
-        } else if l.peek::<kw::assert_eq>() {
-            let span = parser.parse::<kw::assert_eq>()?.0;
-            Ok(WitxtDirective::AssertEq {
+        } else if l.peek::<kw::assert_representable>() {
+            let span = parser.parse::<kw::assert_representable>()?.0;
+            Ok(WitxtDirective::AssertRepresentable {
                 span,
-                eq: true,
-                t1: (parser.parse()?, parser.parse()?),
-                t2: (parser.parse()?, parser.parse()?),
-            })
-        } else if l.peek::<kw::assert_ne>() {
-            let span = parser.parse::<kw::assert_ne>()?.0;
-            Ok(WitxtDirective::AssertEq {
-                span,
-                eq: false,
+                repr: parser.parse()?,
                 t1: (parser.parse()?, parser.parse()?),
                 t2: (parser.parse()?, parser.parse()?),
             })
@@ -517,36 +559,28 @@ struct Witx<'a> {
 }
 
 enum WitxDef<'a> {
-    Fs(&'a str),
-    Inline(witx::parser::TopLevelModule<'a>),
+    Fs(Vec<&'a str>),
+    Inline(Vec<witx::parser::Documented<'a, witx::parser::DeclSyntax<'a>>>),
 }
 
 impl Witx<'_> {
-    fn module(&self, contents: &str, file: &Path) -> Result<witx::Module> {
-        use witx::parser::TopLevelSyntax;
-
+    fn document(&self, contents: &str, file: &Path) -> Result<witx::Document> {
         match &self.def {
-            WitxDef::Inline(doc) => {
-                let mut validator = witx::ModuleValidation::new(contents, file);
-                for t in doc.decls.iter() {
-                    match &t.item {
-                        TopLevelSyntax::Decl(d) => validator
-                            .validate_decl(&d, &t.comments)
-                            .map_err(|e| anyhow::anyhow!("{}", e.report()))?,
-                        TopLevelSyntax::Use(_) => unimplemented!(),
-                    }
-                }
-                for f in doc.functions.iter() {
+            WitxDef::Inline(decls) => {
+                let mut validator = witx::DocValidation::new();
+                let mut definitions = Vec::new();
+                for decl in decls {
                     validator
-                        .validate_function(&f.item, &f.comments)
-                        .map_err(|e| anyhow::anyhow!("{}", e.report()))?;
+                        .scope(contents, file)
+                        .validate_decl(&decl.item, &decl.comments, &mut definitions)
+                        .map_err(witx::WitxError::Validation)?;
                 }
-                Ok(validator.into_module())
+                Ok(validator.into_document(definitions))
             }
-            WitxDef::Fs(path) => {
+            WitxDef::Fs(paths) => {
                 let parent = file.parent().unwrap();
-                let path = parent.join(path);
-                Ok(witx::load(&path).map_err(|e| anyhow::anyhow!("{}", e.report()))?)
+                let paths = paths.iter().map(|p| parent.join(p)).collect::<Vec<_>>();
+                Ok(witx::load(&paths)?)
             }
         }
     }
@@ -560,12 +594,45 @@ impl<'a> Parse<'a> for Witx<'a> {
         let def = if parser.peek2::<kw::load>() {
             parser.parens(|p| {
                 p.parse::<kw::load>()?;
-                Ok(WitxDef::Fs(p.parse()?))
+                let mut paths = Vec::new();
+                while !p.is_empty() {
+                    paths.push(p.parse()?);
+                }
+                Ok(WitxDef::Fs(paths))
             })?
         } else {
-            WitxDef::Inline(parser.parse()?)
+            let mut decls = Vec::new();
+            while !parser.is_empty() {
+                decls.push(parser.parens(|p| p.parse())?);
+            }
+            WitxDef::Inline(decls)
         };
         Ok(Witx { id, span, def })
+    }
+}
+
+#[derive(Debug)]
+enum RepEquality {
+    Eq,
+    NotEq,
+    Superset,
+}
+
+impl<'a> Parse<'a> for RepEquality {
+    fn parse(parser: Parser<'a>) -> parser::Result<Self> {
+        let mut l = parser.lookahead1();
+        if l.peek::<kw::eq>() {
+            parser.parse::<kw::eq>()?;
+            Ok(RepEquality::Eq)
+        } else if l.peek::<kw::noteq>() {
+            parser.parse::<kw::noteq>()?;
+            Ok(RepEquality::NotEq)
+        } else if l.peek::<kw::superset>() {
+            parser.parse::<kw::superset>()?;
+            Ok(RepEquality::Superset)
+        } else {
+            Err(l.error())
+        }
     }
 }
 

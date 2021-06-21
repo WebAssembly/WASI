@@ -5,7 +5,7 @@
 ;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
 ;; for an explanation of what that means.
 
-(use $errno from $typenames)
+(use "typenames.witx")
 
 (module $wasi_ephemeral_sched
   ;;; Temporarily yield execution of the calling thread.

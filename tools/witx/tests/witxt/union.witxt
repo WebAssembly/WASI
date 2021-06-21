@@ -85,13 +85,13 @@
 )
 
 ;; These two unions should be represented the same:
-(assert_eq $d1 "u" $d2 "u")
-(assert_eq $d2 "u" $d1 "u")
+(assert_representable eq $d1 "u" $d2 "u")
+(assert_representable eq $d2 "u" $d1 "u")
 
-;; Tag order doesnt matter for validation, but does for equality
+;; Tag order doesnt matter for validation, but does for rep equality
 (witx $d3
   (typename $tag (enum $b $a))
   (typename $u (union (@witx tag $tag) u16 u8))
 )
 
-(assert_ne $d3 "u" $d1 "u")
+(assert_representable noteq $d3 "u" $d1 "u")
