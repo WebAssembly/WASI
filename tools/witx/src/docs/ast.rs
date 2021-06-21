@@ -1,115 +1,67 @@
-use super::md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, ToMarkdown};
-use crate::{ast::*, layout::Layout};
-use std::collections::{btree_map::Entry, BTreeMap, HashMap};
+use super::{
+    md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, ToMarkdown},
+    Documentation,
+};
+use crate::{
+    ast::*,
+    layout::Layout,
+    polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
+    RepEquality,
+};
+use std::collections::HashMap;
 
 fn heading_from_node(node: &MdNodeRef, levels_down: usize) -> MdHeading {
     MdHeading::new_header(node.borrow().ancestors().len() + levels_down)
 }
 
-pub(super) fn modules(node: MdNodeRef, all_modules: &[&Module]) {
-    // Generate a set, transitively, of all types/constants used by these modules.
-    let mut all_types = BTreeMap::new();
-    let mut constants_by_name = HashMap::new();
-    for module in all_modules {
-        for ty in module.typenames() {
-            all_types.insert((&ty.name, &ty.module), &**ty);
-            add_types(&mut all_types, &ty.tref);
+impl ToMarkdown for Document {
+    fn generate(&self, node: MdNodeRef) {
+        let heading = heading_from_node(&node, 1);
+        let types = node.new_child(MdSection::new(heading, "Types"));
+
+        let mut constants_by_name = HashMap::new();
+        for c in self.constants() {
+            constants_by_name.entry(&c.ty).or_insert(Vec::new()).push(c);
         }
 
-        for c in module.constants() {
-            constants_by_name
-                .entry((&c.ty, module.module_id()))
-                .or_insert(Vec::new())
-                .push(c);
-        }
-    }
-
-    // Then render the information for all of the types...
-
-    let heading = heading_from_node(&node, 1);
-    let types = node.new_child(MdSection::new(heading, "Types"));
-
-    for (key, d) in all_types {
-        let name = d.name.as_str();
-        let child = types.new_child(MdNamedType::new(
-            heading.new_level_down(),
-            name,
-            name,
-            format!(
-                "{}\nSize: {}\n\nAlignment: {}\n",
-                &d.docs,
-                &d.mem_size(),
-                &d.mem_align()
-            )
-            .as_str(),
-        ));
-        if let Some(constants) = constants_by_name.remove(&key) {
-            let heading = heading_from_node(&child, 1);
-            child.new_child(MdSection::new(heading, "Constants"));
-            for constant in constants {
-                child.new_child(MdNamedType::new(
-                    MdHeading::new_bullet(),
-                    format!("{}.{}", name, constant.name.as_str()).as_str(),
-                    constant.name.as_str(),
-                    &constant.docs,
-                ));
-            }
-        }
-        d.generate(child.clone());
-    }
-
-    let modules = node.new_child(MdSection::new(heading, "Modules"));
-    for d in all_modules {
-        let heading = heading.new_level_down();
-        let mut content = MdSection::new(heading, d.name().as_str());
-        content.id = Some(d.name().as_str().to_owned());
-        let child = modules.new_child(content);
-
-        // d.generate(child.clone());
-        let heading = heading.new_level_down();
-        let funcs = child
-            .clone()
-            .new_child(MdSection::new(heading, "Functions"));
-        for func in d.funcs() {
-            let name = func.name.as_str();
-            let child = funcs.new_child(MdFunc::new(
+        for d in self.typenames() {
+            let name = d.name.as_str();
+            let child = types.new_child(MdNamedType::new(
                 heading.new_level_down(),
                 name,
                 name,
-                &func.docs,
+                format!(
+                    "{}\nSize: {}\n\nAlignment: {}\n",
+                    &d.docs,
+                    &d.mem_size(),
+                    &d.mem_align()
+                )
+                .as_str(),
             ));
-            func.generate(child.clone());
+            if let Some(constants) = constants_by_name.remove(&d.name) {
+                let heading = heading_from_node(&child, 1);
+                child.new_child(MdSection::new(heading, "Constants"));
+                for constant in constants {
+                    child.new_child(MdNamedType::new(
+                        MdHeading::new_bullet(),
+                        format!("{}.{}", name, constant.name.as_str()).as_str(),
+                        constant.name.as_str(),
+                        &constant.docs,
+                    ));
+                }
+            }
+            d.generate(child.clone());
         }
-    }
 
-    fn add_types<'a>(types: &mut BTreeMap<(&'a Id, &'a ModuleId), &'a NamedType>, ty: &'a TypeRef) {
-        let ty = match ty {
-            TypeRef::Name(name) => {
-                match types.entry((&name.name, &name.module)) {
-                    Entry::Occupied(_) => return,
-                    Entry::Vacant(v) => {
-                        v.insert(name);
-                    }
-                }
-                return add_types(types, &name.tref);
-            }
-            TypeRef::Value(ty) => ty,
-        };
-
-        match &**ty {
-            Type::Record(r) => {
-                for member in r.members.iter() {
-                    add_types(types, &member.tref);
-                }
-            }
-            Type::Variant(v) => {
-                for ty in v.cases.iter().filter_map(|c| c.tref.as_ref()) {
-                    add_types(types, ty);
-                }
-            }
-            Type::List(t) | Type::ConstPointer(t) | Type::Pointer(t) => add_types(types, t),
-            Type::Handle(_) | Type::Builtin(_) => {}
+        let modules = node.new_child(MdSection::new(heading, "Modules"));
+        for d in self.modules() {
+            let mut content = MdSection::new(heading.new_level_down(), d.name.as_str());
+            content.id = Some(d.name.as_str().to_owned());
+            let child = modules.new_child(content);
+            d.generate(child.clone());
         }
+
+        assert!(constants_by_name.is_empty());
     }
 }
 
@@ -235,7 +187,40 @@ impl ToMarkdown for HandleDatatype {
     }
 }
 
-impl ToMarkdown for Function {
+impl ToMarkdown for Module {
+    fn generate(&self, node: MdNodeRef) {
+        let heading = heading_from_node(&node, 1);
+        let imports = node.new_child(MdSection::new(heading, "Imports"));
+        for import in self.imports() {
+            let child = imports.new_child(MdSection::new(heading.new_level_down(), ""));
+            import.generate(child.clone());
+        }
+
+        let funcs = node.new_child(MdSection::new(heading, "Functions"));
+        for func in self.funcs() {
+            let name = func.name.as_str();
+            let child = funcs.new_child(MdFunc::new(
+                heading.new_level_down(),
+                name,
+                name,
+                &func.docs,
+            ));
+            func.generate(child.clone());
+        }
+    }
+}
+
+impl ToMarkdown for ModuleImport {
+    fn generate(&self, node: MdNodeRef) {
+        match self.variant {
+            ModuleImportVariant::Memory => {
+                node.content_ref_mut::<MdSection>().title = "Memory".to_owned();
+            }
+        }
+    }
+}
+
+impl ToMarkdown for InterfaceFunc {
     fn generate(&self, node: MdNodeRef) {
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Params"));
@@ -282,7 +267,7 @@ impl ToMarkdown for Function {
     }
 }
 
-impl ToMarkdown for Param {
+impl ToMarkdown for InterfaceFuncParam {
     fn generate(&self, node: MdNodeRef) {
         self.tref.generate(node.clone());
         node.content_ref_mut::<MdNamedType>().docs = self.docs.clone();
@@ -362,6 +347,157 @@ impl TypeRef {
                     }
                 }
             },
+        }
+    }
+}
+
+// TODO
+// Generate Markdown tree for the polyfill
+impl Documentation for Polyfill {
+    fn to_md(&self) -> String {
+        let module_docs = self
+            .modules
+            .iter()
+            .map(|m| m.to_md())
+            .collect::<Vec<String>>()
+            .join("\n");
+        let type_docs = self
+            .type_polyfills()
+            .iter()
+            .filter_map(|t| {
+                if t.repeq() == RepEquality::Eq {
+                    None
+                } else {
+                    Some(t.to_md())
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+        format!(
+            "# Modules\n{}\n# Type Conversions\n{}\n",
+            module_docs, type_docs
+        )
+    }
+}
+
+impl Documentation for ModulePolyfill {
+    fn to_md(&self) -> String {
+        format!(
+            "## `{}` in terms of `{}`\n{}",
+            self.new.name.as_str(),
+            self.old.name.as_str(),
+            self.funcs
+                .iter()
+                .map(|f| f.to_md())
+                .collect::<Vec<String>>()
+                .join("\n"),
+        )
+    }
+}
+
+impl Documentation for FuncPolyfill {
+    fn to_md(&self) -> String {
+        if self.full_compat() {
+            format!("* `{}`: full compatibility", self.new.name.as_str())
+        } else {
+            let name = if self.new.name != self.old.name {
+                format!(
+                    "* `{}` => `{}`",
+                    self.old.name.as_str(),
+                    self.new.name.as_str()
+                )
+            } else {
+                format!("* `{}`", self.new.name.as_str())
+            };
+            let mut contents = Vec::new();
+            for p in self.mapped_params.iter() {
+                contents.push(if !p.full_compat() {
+                    format!("param {}", p.to_md())
+                } else {
+                    format!("param `{}`: compatible", p.new.name.as_str())
+                })
+            }
+            for u in self.unknown_params.iter() {
+                contents.push(format!(
+                    "{} param `{}`: no corresponding result!",
+                    u.which(),
+                    u.param().name.as_str()
+                ))
+            }
+            for r in self.mapped_results.iter() {
+                contents.push(if !r.full_compat() {
+                    format!("result {}", r.to_md())
+                } else {
+                    format!("result `{}`: compatible", r.new.name.as_str())
+                })
+            }
+            for u in self.unknown_results.iter() {
+                contents.push(format!(
+                    "{} result `{}`: no corresponding result!",
+                    u.which(),
+                    u.param().name.as_str()
+                ))
+            }
+            let contents = if contents.is_empty() {
+                String::new()
+            } else {
+                format!(":\n    - {}", contents.join("\n    - "))
+            };
+            format!("{}{}", name, contents)
+        }
+    }
+}
+
+impl Documentation for ParamPolyfill {
+    fn to_md(&self) -> String {
+        let name = if self.new.name != self.old.name {
+            format!(
+                "`{}` => `{}`",
+                self.old.name.as_str(),
+                self.new.name.as_str()
+            )
+        } else {
+            format!("`{}`", self.new.name.as_str())
+        };
+        let repr = match self.repeq() {
+            RepEquality::Eq => "compatible types".to_string(),
+            RepEquality::Superset => format!(
+                "`{}` is superset-compatible with `{}`",
+                self.old.tref.type_name(),
+                self.new.tref.type_name()
+            ),
+            RepEquality::NotEq => format!(
+                "`{}` is incompatible with new `{}`",
+                self.old.tref.type_name(),
+                self.new.tref.type_name()
+            ),
+        };
+        format!("{}: {}", name, repr)
+    }
+}
+
+impl Documentation for TypePolyfill {
+    fn to_md(&self) -> String {
+        fn repeq_name(r: RepEquality) -> &'static str {
+            match r {
+                RepEquality::Eq => ": compatible",
+                RepEquality::Superset => ": superset",
+                RepEquality::NotEq => "",
+            }
+        }
+        match self {
+            TypePolyfill::OldToNew(o, n) => format!(
+                "* old `{}` => new `{}`{}",
+                o.type_name(),
+                n.type_name(),
+                repeq_name(self.repeq())
+            ),
+            TypePolyfill::NewToOld(n, o) => format!(
+                "* new `{}` => old `{}`{}",
+                n.type_name(),
+                o.type_name(),
+                repeq_name(self.repeq())
+            ),
         }
     }
 }

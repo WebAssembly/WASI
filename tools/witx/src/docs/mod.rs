@@ -1,12 +1,17 @@
 mod ast;
 mod md;
 
-use crate::Module;
-use md::{MdNodeRef, MdRoot};
+use crate::ast::Document;
+use md::{MdNodeRef, MdRoot, ToMarkdown};
 use std::{
     collections::{hash_map, HashSet},
     iter::FromIterator,
 };
+
+/// Enables generating Markdown formatted content.
+pub trait Documentation {
+    fn to_md(&self) -> String;
+}
 
 /// Helper function which given input `text` and a `HashSet` of existing links converts
 /// any slice of the form '`{link}`' into either
@@ -54,33 +59,29 @@ fn parse_links<S: AsRef<str>>(text: S, existing_links: &HashSet<String>) -> Stri
     parsed_text
 }
 
-pub fn document<'a>(modules: impl IntoIterator<Item = &'a Module>) -> String {
-    let modules = modules.into_iter().collect::<Vec<_>>();
-    _document(&modules)
-}
-
-fn _document(modules: &[&Module]) -> String {
-    let root = MdNodeRef::new(MdRoot::default());
-    ast::modules(root.clone(), &modules);
-
-    // Get all children of the `root` element.
-    let children = root.borrow().children();
-    // Gather all existing links in the document into a set.
-    let existing_links: HashSet<String, hash_map::RandomState> = HashSet::from_iter(
-        children
-            .iter()
-            .filter_map(|x| x.any_ref().id().map(String::from)),
-    );
-    // Traverse each docs section of each child, and parse links
-    // logging a warning in case the generated is invalid.
-    for child in children {
-        let docs_with_links = child
-            .any_ref()
-            .docs()
-            .map(|docs| parse_links(docs, &existing_links));
-        if let Some(docs) = docs_with_links {
-            child.any_ref_mut().set_docs(&docs);
+impl Documentation for Document {
+    fn to_md(&self) -> String {
+        let root = MdNodeRef::new(MdRoot::default());
+        self.generate(root.clone());
+        // Get all children of the `root` element.
+        let children = root.borrow().children();
+        // Gather all existing links in the document into a set.
+        let existing_links: HashSet<String, hash_map::RandomState> = HashSet::from_iter(
+            children
+                .iter()
+                .filter_map(|x| x.any_ref().id().map(String::from)),
+        );
+        // Traverse each docs section of each child, and parse links
+        // logging a warning in case the generated is invalid.
+        for child in children {
+            let docs_with_links = child
+                .any_ref()
+                .docs()
+                .map(|docs| parse_links(docs, &existing_links));
+            if let Some(docs) = docs_with_links {
+                child.any_ref_mut().set_docs(&docs);
+            }
         }
+        format!("{}", root)
     }
-    format!("{}", root)
 }
