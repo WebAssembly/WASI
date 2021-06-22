@@ -1,6 +1,6 @@
 [package]
 name = "witx-cli"
-version = "0.9.0"
+version = "0.9.1"
 description = "CLI for operating on witx file format"
 homepage = "https://github.com/WebAssembly/WASI"
 repository = "https://github.com/WebAssembly/WASI"
@@ -15,7 +15,7 @@ name = "witx"
 path = "src/main.rs"
 
 [dependencies]
-witx = { path = "../", version = "0.9.0" }
+witx = { path = "../", version = "0.9.1" }
 anyhow = "1"
 log = "0.4"
 thiserror = "1.0"
