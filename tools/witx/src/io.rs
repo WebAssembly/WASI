@@ -52,7 +52,7 @@ impl WitxIo for Filesystem {
 }
 
 pub struct MockFs {
-    map: HashMap<String, String>,
+    map: HashMap<PathBuf, String>,
 }
 
 impl MockFs {
@@ -60,7 +60,7 @@ impl MockFs {
         MockFs {
             map: strings
                 .iter()
-                .map(|(k, v)| (k.to_string(), v.to_string()))
+                .map(|(k, v)| (PathBuf::from(k), v.to_string()))
                 .collect(),
         }
     }
@@ -68,7 +68,7 @@ impl MockFs {
 
 impl WitxIo for MockFs {
     fn fgets(&self, path: &Path) -> Result<String, WitxError> {
-        if let Some(entry) = self.map.get(path.to_str().unwrap()) {
+        if let Some(entry) = self.map.get(path) {
             Ok(entry.to_string())
         } else {
             Err(WitxError::Io(
@@ -78,7 +78,7 @@ impl WitxIo for MockFs {
         }
     }
     fn fget_line(&self, path: &Path, line: usize) -> Result<String, WitxError> {
-        if let Some(entry) = self.map.get(path.to_str().unwrap()) {
+        if let Some(entry) = self.map.get(path) {
             entry
                 .lines()
                 .skip(line - 1)
