@@ -150,6 +150,10 @@ mod test {
                     "(use \"sibling.witx\")\n(typename $b_float f64)",
                 ),
                 ("/subdir/sibling.witx", "(typename $c_int u32)"),
+                // This definition looks just like subdir/sibling.witx but
+                // defines c_int differently - this test shows it does Not get
+                // included by subdir/child.witx's use.
+                ("/sibling.witx", "(typename $c_int u64)"),
             ]),
         )
         .expect("parse");
