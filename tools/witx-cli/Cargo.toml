@@ -15,7 +15,7 @@ name = "witx"
 path = "src/main.rs"
 
 [dependencies]
-witx = { path = "../", version = "0.9.1" }
+witx = { path = "../witx", version = "0.9.1" }
 anyhow = "1"
 log = "0.4"
 thiserror = "1.0"
