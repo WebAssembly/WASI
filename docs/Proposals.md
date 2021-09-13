@@ -40,12 +40,15 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |
+| [HTTP][wasi-http]                                                              | Piotr Sikora                           |
+| [Parallel][wasi-parallel]                                                      | Andrew Brown                           |
 
 ### Phase 0 - Pre-Proposal (CG)
 
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
-| [proxy-wasm][wasi-proxy-wasm]                                                  | Piotr Sikora                           |
+| [Data][wasi-data]                                                              | Bailey Hayes                           |
+| [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |
 
 ### Contributing new proposals
 
@@ -54,6 +57,7 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-classic-command]: https://github.com/WebAssembly/wasi-classic-command
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
+[wasi-data]: https://github.com/singlestore-labs/wasi-data/blob/main/proposals/wasi-data/Explainer.md
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
@@ -61,4 +65,6 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-handle-index]: https://github.com/WebAssembly/wasi-handle-index
+[wasi-http]: https://github.com/WebAssembly/wasi-http
+[wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
