@@ -9,7 +9,10 @@ Development of each API happens in its own repo, which you can access
 from the [proposals list](Proposals.md).
 
 This repo is for general discussion, as well as documenting how we work
-and high-level goals.
+and high-level goals. If you would like to create a new proposal, get started
+with our [proposal template].
+
+[proposal template]: https://github.com/WebAssembly/wasi-proposal-template
 
 ## High Level Goals
 
