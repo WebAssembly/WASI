@@ -4,17 +4,24 @@
 
 ![WASI](WASI.png)
 
+## Find the APIs
+
 The WebAssembly System Interface is composed of many different APIs.
+
 Development of each API happens in its own repo, which you can access
 from the [proposals list](Proposals.md).
 
 This repo is for general discussion, as well as documenting how we work
-and high-level goals. If you would like to create a new proposal, get started
-with our [proposal template].
+and high-level goals.
+
+## Propose a new API
+
+If you would like to create a new proposal, get started with our
+[proposal template].
 
 [proposal template]: https://github.com/WebAssembly/wasi-proposal-template
 
-## High Level Goals
+## WASI High Level Goals
 
 (In the spirit of [WebAssembly's High-Level Goals]
 (https://github.com/WebAssembly/design/blob/master/HighLevelGoals.md).)
@@ -40,7 +47,7 @@ with our [proposal template].
 
 [Capability-based]: https://en.wikipedia.org/wiki/Capability-based_security
 
-## Design Principles
+## WASI Design Principles
 
 ### Capability-based security
 
