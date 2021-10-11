@@ -4,12 +4,12 @@
 
 ![WASI](WASI.png)
 
-## Find the APIs
-
 The WebAssembly System Interface is not a monolithic standard system interface,
 but is instead a modular collection of standardized APIs. None of the APIs are
 required to be implemented to have a compliant runtime. Instead, host
 environments can choose which APIs make sense for their use cases.
+
+## Find the APIs
 
 Development of each API happens in its own repo, which you can access
 from the [proposals list](Proposals.md).
