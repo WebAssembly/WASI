@@ -1,93 +1,67 @@
 # WASI proposals
 
-This page is under construction. The intent is to follow the CG's
-[proposals page], but adapted for [WASI]. Some of the proposals predate our
-adoption of this process and so don't fit exactly into the defined phases,
-however our intention is to align them going forward.
+WASI APIs are developed as proposals. These proposals go through 5 phases of development (following the [WebAssembly CG's Phase Process]).
 
-[WASI]: https://github.com/WebAssembly/WASI
-[proposals page]: https://github.com/WebAssembly/proposals/blob/master/README.md
+You can learn more about contributing new proposals (and other ways to contribute) in our [Contributing] guide.
 
-## Active proposals
+[WebAssembly CG's Phase Process]: https://github.com/WebAssembly/meetings/blob/main/process/phases.md
+[Contributing]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md
 
-Proposals follow [this process document](https://github.com/WebAssembly/WASI/blob/main/docs/Process.md).
+## Active Proposals
+
+### Phase 5 - The Feature is Standardized (WG)
+
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 
 ### Phase 4 - Standardize the Feature (WG)
 
-| Proposal                                                                       | Champion                               |
-| ------------------------------------------------------------------------------ | -------------------------------------- |
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 
 ### Phase 3 - Implementation Phase (CG + WG)
 
-| Proposal                                                                       | Champion                               |
-| ------------------------------------------------------------------------------ | -------------------------------------- |
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
-| Proposal                                                                       | Champion                               |
-| ------------------------------------------------------------------------------ | -------------------------------------- |
-| [I/O][wasi-io]                                                                 | Dan Gohman                             |
-| [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |
-| ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |
-| [Clocks][wasi-clocks]                                                          | Dan Gohman                             |
-| [Random][wasi-random]                                                          | Dan Gohman                             |
-| [Handle Index][wasi-handle-index]                                                   | Dan Gohman                             |
-| [Poll][wasi-poll]                                                                   | Dan Gohman                             |
-| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| [I/O][wasi-io]                                                                 | Dan Gohman                             |          |
+| [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |          |
+| ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |          |
+| [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
+| [Random][wasi-random]                                                          | Dan Gohman                             |          |
+| [Handle Index][wasi-handle-index]                                              | Dan Gohman                             |          |
+| [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
+| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
-| Proposal                                                                       | Champion                               |
-| ------------------------------------------------------------------------------ | -------------------------------------- |
-| [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |
-| [HTTP][wasi-http]                                                              | Piotr Sikora                           |
-| [Parallel][wasi-parallel]                                                      | Andrew Brown                           |
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
+| [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
+| [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
-| Proposal                                                                       | Champion                               |
-| ------------------------------------------------------------------------------ | -------------------------------------- |
-| [Data][wasi-data]                                                              | Bailey Hayes                           |
-| [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |
+| Proposal                                                                       | Champion                               | Versions |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| [Data][wasi-data]                                                              | Bailey Hayes                           |          |
+| [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
 | [Networking][wasi-networking]                                                  | Dave Bakker                            |
 
-### Contributing new proposals
+## Versioning
 
-Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blob/master/Contributing.md) for the most up-to-date information on contributing proposals to standard.
+Once a proposal reaches Phase 3, we expect the champions to start creating releases, following the conventions of semantic versioning (semver). Releases for active proposals are linked in the chart above.
 
-# WASI Standardization Process
+Proposals remain in the 0.x semver range until they reach Phase 5 and are fully standardized. At that point, a 1.0 release should be made available.
 
-WASI follows the [WebAssembly CG Phases process], with the following adaptations:
+For some APIs, it makes sense to add new features after the API itself has reached Phase 5. These feature additions should go through the same standardization process. Once they have reached Phase 5, the minor version number of the release should be incremented.
 
- - Entry into Stage 2 requires [witx] specifications.
-
- - Starting in Stage 2, proposals may follow WASI's [ephemeral/snapshot/old] process
-   to provide a balance between the need for stability so that toolchains and engines
-   can sync up, and the need for evolution.
-
- - The Phase 4's entry requirements for "Two or more Web VMs implement the feature",
-   "At least one toolchain implements the feature", and "The formalization and the
-   reference interpreter are usually updated (though these two can be done as part
-   of step 3 at the Working Group chair's discretion)." are waived.
-
-   In their place, as an additional entry requirement into Phase 2, champion(s) must
-   include a set of entry criteria into Phase 4 in their proposal, which the Subgroup
-   will vote on as part of Phase 2 approval.
-
-   Phase 4 criteria will vary depending on the API and its expected use cases,
-   but may include things like multiple independent production implementations,
-   implementations on multiple host platforms, polyfill implementations, and
-   bindings in toolchains and libraries. Note that, portability requirements may
-   vary between proposals, as not all features will necessarily make sense in all
-   host environments.
-
- - The specific process in Phases 4 and 5 will be determined when we have a
-   proposal ready for them.
-
- - Requirements around the reference interpreter don't apply.
-
- - WASI proposals don't require formal notation. Formal notation may be used in the
-   documentation of a feature, but it isn't expected to be practical for all APIs.
+Some APIs may require backwards-incompatible changes over time. In these cases, we allow proposals to increment the major version number _only if_ the old API can be implmented in terms of the new API. As part of the new version, champions are expected to provide a tool that enables this backwards-compatibility. If that is not possible, then a new API proposal with a new name should be started. The original API can then be deprecated over time if it makes sense to do so.
 
 [WebAssembly CG Phases process]: https://github.com/WebAssembly/meetings/blob/master/process/phases.md
 [witx]: https://github.com/WebAssembly/WASI/blob/master/docs/witx.md
