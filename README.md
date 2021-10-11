@@ -20,9 +20,7 @@ and high-level goals.
 ## Propose a new API
 
 If you would like to create a new proposal, get started with our
-[proposal template].
-
-[proposal template]: https://github.com/WebAssembly/wasi-proposal-template
+[Contributing guide](Contributing.md).
 
 ## WASI High Level Goals
 
