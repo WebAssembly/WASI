@@ -10,6 +10,10 @@ Thank you to the W3C Privacy CG for the [inspiration](https://github.com/privacy
 
 A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) API.
 
+### Current Phase
+
+[Fill in the current phase, e.g. Phase 1]
+
 ### Champions
 
 - [Champion 1]
@@ -18,20 +22,21 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Phase 4 Advancement Criteria
 
-[For your proposal to enter Phase 2, you will need to define your advancement criteria for entering Phase 4.]
+TODO before entering Phase 2.
 
 ## Table of Contents [if the explainer is longer than one printed page]
 
 - Introduction
 - Goals [or Motivating Use Cases, or Scenarios]
 - Non-goals
+- API walk-through
 - Detailed design discussion
   - [Tricky design choice #1]
   - [Tricky design choice 2]
 - Considered alternatives
   - [Alternative 1]
   - [Alternative 2]
-- Stakeholder Feedback
+- Stakeholder Interest & Feedback
 - References & acknowledgements
 
 ### Introduction
@@ -46,9 +51,19 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 [If there are "adjacent" goals which may appear to be in scope but aren't, enumerate them here. This section may be fleshed out as your design progresses and you encounter necessary technical and other trade-offs.]
 
-### Detailed design discussion
+### API walk-through
 
-[Short summary of the approach.]
+[Walk through of how someone would use this API.]
+
+#### [Use case 1]
+
+[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+
+#### [Use case 2]
+
+[etc.]
+
+### Detailed design discussion
 
 [This section should mostly refer to the .witx.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
 
@@ -68,7 +83,7 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Considered alternatives
 
-[This should include as many alternatives as you can, from high level architectural decisions down to alternative naming choices.]
+[This section is not required if you already covered considered alternatives in the design discussion above.]
 
 #### [Alternative 1]
 
@@ -78,9 +93,11 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 [etc.]
 
-### Stakeholder Feedback
+### Stakeholder Interest & Feedback
 
-[Summarize feedback from implementers, linking to issues or other posts as necessary].
+TODO before entering Phase 3.
+
+[This should include a list of implementers who have expressed interest in implementing the proposal]
 
 ### References & acknowledgements
 
