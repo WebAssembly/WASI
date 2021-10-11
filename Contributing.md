@@ -1,4 +1,4 @@
-# Contributing to WebAssembly
+# Contributing to WASI
 
 Interested in participating? Please follow
 [the same contributing guidelines as the design repository][].
