@@ -30,7 +30,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [I/O][wasi-io]                                                                 | Dan Gohman                             |          |
 | [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |          |
-| ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |          |
+| ["Classic" Command-Line][wasi-classic-command] (Legacy, to be deprecated in Q4 2022)| Dan Gohman                             |          |
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
 | [Random][wasi-random]                                                          | Dan Gohman                             |          |
 | [Handle Index][wasi-handle-index]                                              | Dan Gohman                             |          |
