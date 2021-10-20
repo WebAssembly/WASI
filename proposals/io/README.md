@@ -26,18 +26,20 @@ TODO before entering Phase 2.
 
 ## Table of Contents [if the explainer is longer than one printed page]
 
-- Introduction
-- Goals [or Motivating Use Cases, or Scenarios]
-- Non-goals
-- API walk-through
-- Detailed design discussion
-  - [Tricky design choice #1]
-  - [Tricky design choice 2]
-- Considered alternatives
-  - [Alternative 1]
-  - [Alternative 2]
-- Stakeholder Interest & Feedback
-- References & acknowledgements
+- [Introduction](#introduction)
+- [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
+- [Non-goals](#non-goals)
+- [API walk-through](#api-walk-through)
+  - [Use case 1](#use-case-1)
+  - [Use case 2](#use-case-2)
+- [Detailed design discussion](#detailed-design-discussion)
+  - [[Tricky design choice 1]](#tricky-design-choice-1)
+  - [[Tricky design choice 2]](#tricky-design-choice-2)
+- [Considered alternatives](#considered-alternatives)
+  - [[Alternative 1]](#alternative-1)
+  - [[Alternative 2]](#alternative-2)
+- [Stakeholder Interest & Feedback](#stakeholder-interest--feedback)
+- [References & acknowledgements](#references--acknowledgements)
 
 ### Introduction
 
