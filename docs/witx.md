@@ -22,8 +22,8 @@ the goals here are to remain aligned with interface types and other relevant
 WebAssembly standards and proposals wherever practical, and to be an input 
 into the design process of interface types.
 
-[module linking]: https://github.com/WebAssembly/module-linking/blob/master/proposals/module-linking/Explainer.md
-[interface types]: https://github.com/WebAssembly/interface-types/blob/master/proposals/interface-types/Explainer.md
+[module linking]: https://github.com/WebAssembly/module-linking/blob/main/design/proposals/module-linking/Explainer.md
+[interface types]: https://github.com/WebAssembly/interface-types/blob/main/proposals/interface-types/Explainer.md
 [gc types]: https://github.com/WebAssembly/gc
 [wat format]: https://webassembly.github.io/spec/core/bikeshed/index.html#text-format%E2%91%A0
 [S-expressions]: https://en.wikipedia.org/wiki/S-expression
