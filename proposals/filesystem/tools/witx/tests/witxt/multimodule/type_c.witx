@@ -1,2 +1,0 @@
-(use "type_a.witx")
-(typename $c (record (field $first_a $a) (field $second_a $a)))
