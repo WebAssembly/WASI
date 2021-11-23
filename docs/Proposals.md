@@ -57,7 +57,7 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-classic-command]: https://github.com/WebAssembly/wasi-classic-command
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
-[wasi-data]: https://github.com/singlestore-labs/wasi-data/blob/main/proposals/wasi-data/Explainer.md
+[wasi-data]: https://github.com/singlestore-labs/wasi-data
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
