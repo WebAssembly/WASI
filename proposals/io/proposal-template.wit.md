@@ -1,14 +1,14 @@
 # [Proposal Template] API
 
-[This document contains the actual specification. It should be written in the WAI interface definition format. You can find more documentation on the WAI syntax (coming soon!).]
+[This document contains the actual specification. It should be written in the WIT interface definition format. You can find more documentation on the WIT syntax (coming soon!).]
 
-[Note that all comments inside of WAI code blocks will be included in the developer facing documentation for language bindings generated using this WAI file. If there is additional information that needs to be communicated to implementers of the API, then these should be captured in text directly below the code block.]
+[Note that all comments inside of WIT code blocks will be included in the developer facing documentation for language bindings generated using this WIT file. If there is additional information that needs to be communicated to implementers of the API, then these should be captured in text directly below the code block.]
 
 [If you want to include examples of the API in use, these should be in the README and linked to from this file.]
 
 ## api_type_one
 
-```wai
+```wit
 /// Short description
 ///
 /// Explanation for developers using the API.
@@ -22,7 +22,7 @@ More rigorous specification details for the implementer go here, if needed.
 
 ## api_function_one
 
-```wai
+```wit
 /// Short description
 ///
 /// Explanation for developers using the API.
