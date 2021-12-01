@@ -2011,7 +2011,7 @@ The path at which to create the directory.
 
 #### <a href="#path_filestat_get" name="path_filestat_get"></a> `path_filestat_get(fd: fd, flags: lookupflags, path: string) -> Result<filestat, errno>`
 Return the attributes of a file or directory.
-Note: This is similar to `stat` in POSIX.
+Note: This is similar to `fstatat` in POSIX.
 
 ##### Params
 - <a href="#path_filestat_get.fd" name="path_filestat_get.fd"></a> `fd`: [`fd`](#fd)
