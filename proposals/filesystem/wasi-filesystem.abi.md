@@ -179,7 +179,7 @@ Size: 64, Alignment: 8
 
   Last file status change timestamp.
 
-## <a href="#lookupflags" name="lookupflags"></a> `lookupflags`: record
+## <a href="#atflags" name="atflags"></a> `atflags`: record
 
   Flags determining the method of how paths are resolved.
 
@@ -187,7 +187,7 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="lookupflags.symlink_follow" name="lookupflags.symlink_follow"></a> [`symlink_follow`](#lookupflags.symlink_follow): `bool`
+- <a href="atflags.symlink_follow" name="atflags.symlink_follow"></a> [`symlink_follow`](#atflags.symlink_follow): `bool`
 
   As long as the resolved path corresponds to a symbolic link, it is expanded.
 Bit: 0
@@ -937,7 +937,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_stat_at.self" name="descriptor_stat_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_stat_at.lookupflags" name="descriptor_stat_at.lookupflags"></a> `lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_stat_at.atflags" name="descriptor_stat_at.atflags"></a> `atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_stat_at.path" name="descriptor_stat_at.path"></a> `path`: `string`
 ##### Results
 
@@ -955,7 +955,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_set_times_at.self" name="descriptor_set_times_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_set_times_at.lookupflags" name="descriptor_set_times_at.lookupflags"></a> `lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_set_times_at.atflags" name="descriptor_set_times_at.atflags"></a> `atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_set_times_at.path" name="descriptor_set_times_at.path"></a> `path`: `string`
 - <a href="#descriptor_set_times_at.atim" name="descriptor_set_times_at.atim"></a> `atim`: [`new_timestamp`](#new_timestamp)
 - <a href="#descriptor_set_times_at.mtim" name="descriptor_set_times_at.mtim"></a> `mtim`: [`new_timestamp`](#new_timestamp)
@@ -973,7 +973,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_link_at.self" name="descriptor_link_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_link_at.old_lookupflags" name="descriptor_link_at.old_lookupflags"></a> `old_lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_link_at.old_atflags" name="descriptor_link_at.old_atflags"></a> `old_atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_link_at.old_path" name="descriptor_link_at.old_path"></a> `old_path`: `string`
 - <a href="#descriptor_link_at.new_descriptor" name="descriptor_link_at.new_descriptor"></a> `new_descriptor`: handle<descriptor>
 - <a href="#descriptor_link_at.new_path" name="descriptor_link_at.new_path"></a> `new_path`: `string`
@@ -1000,7 +1000,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_open_at.self" name="descriptor_open_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_open_at.lookupflags" name="descriptor_open_at.lookupflags"></a> `lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_open_at.atflags" name="descriptor_open_at.atflags"></a> `atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_open_at.path" name="descriptor_open_at.path"></a> `path`: `string`
 - <a href="#descriptor_open_at.oflags" name="descriptor_open_at.oflags"></a> `oflags`: [`oflags`](#oflags)
 - <a href="#descriptor_open_at.fdflags" name="descriptor_open_at.fdflags"></a> `fdflags`: [`flags`](#flags)
@@ -1098,7 +1098,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_change_file_permissions_at.self" name="descriptor_change_file_permissions_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_change_file_permissions_at.lookupflags" name="descriptor_change_file_permissions_at.lookupflags"></a> `lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_change_file_permissions_at.atflags" name="descriptor_change_file_permissions_at.atflags"></a> `atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_change_file_permissions_at.path" name="descriptor_change_file_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_file_permissions_at.mode" name="descriptor_change_file_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
@@ -1112,7 +1112,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_change_directory_permissions_at.self" name="descriptor_change_directory_permissions_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_change_directory_permissions_at.lookupflags" name="descriptor_change_directory_permissions_at.lookupflags"></a> `lookupflags`: [`lookupflags`](#lookupflags)
+- <a href="#descriptor_change_directory_permissions_at.atflags" name="descriptor_change_directory_permissions_at.atflags"></a> `atflags`: [`atflags`](#atflags)
 - <a href="#descriptor_change_directory_permissions_at.path" name="descriptor_change_directory_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_directory_permissions_at.mode" name="descriptor_change_directory_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
