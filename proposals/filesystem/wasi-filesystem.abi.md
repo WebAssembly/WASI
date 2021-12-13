@@ -200,30 +200,25 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="oflags.nofollow" name="oflags.nofollow"></a> [`nofollow`](#oflags.nofollow): `bool`
-
-  Fail if path names an existing symbolic link.
-Bit: 0
-
 - <a href="oflags.creat" name="oflags.creat"></a> [`creat`](#oflags.creat): `bool`
 
   Create file if it does not exist.
-Bit: 1
+Bit: 0
 
 - <a href="oflags.directory" name="oflags.directory"></a> [`directory`](#oflags.directory): `bool`
 
   Fail if not a directory.
-Bit: 2
+Bit: 1
 
 - <a href="oflags.excl" name="oflags.excl"></a> [`excl`](#oflags.excl): `bool`
 
   Fail if file already exists.
-Bit: 3
+Bit: 2
 
 - <a href="oflags.trunc" name="oflags.trunc"></a> [`trunc`](#oflags.trunc): `bool`
 
   Truncate file to size 0.
-Bit: 4
+Bit: 3
 
 ## <a href="#mode" name="mode"></a> `mode`: record
 

@@ -145,8 +145,6 @@ flags atflags {
 ```wit
 /// Open flags used by `open_at`.
 flags oflags {
-    /// Fail if path names an existing symbolic link.
-    nofollow,
     /// Create file if it does not exist.
     creat,
     /// Fail if not a directory.
