@@ -681,9 +681,6 @@ link_at: function(
 /// guaranteed to be less than 2**31.
 ///
 /// Note: This is similar to `openat` in POSIX.
-///
-/// TODO: Re-evaluate `direflags` here.
-/// TODO: Add a permissions mode.
 open_at: function(
     /// Flags determining the method of how the path is resolved.
     lookupflags: lookupflags,
