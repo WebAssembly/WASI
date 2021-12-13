@@ -67,7 +67,7 @@ TODO before entering Phase 2.
 
 ### Detailed design discussion
 
-[This section should mostly refer to the .wai.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
+[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
 
 #### [Tricky design choice #1]
 

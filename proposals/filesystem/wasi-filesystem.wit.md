@@ -15,25 +15,25 @@ Some of the content and ideas here are derived from
 [CloudABI](https://github.com/NuxiNL/cloudabi).
 
 ## `size`
-```wai
+```wit
 /// Size of a range of bytes in memory.
 type size = u32
 ```
 
 ## `filesize`
-```wai
+```wit
 /// Non-negative file size or length of a region within a file.
 type filesize = u64
 ```
 
 ## `filedelta`
-```wai
+```wit
 /// Relative offset within a file.
 type filedelta = s64
 ```
 
 ## `timestamp`
-```wai
+```wit
 /// Timestamp in nanoseconds.
 ///
 /// TODO: wasi-clocks is moving to seconds+nanoseconds.
@@ -41,7 +41,7 @@ type timestamp = u64
 ```
 
 ## `info`
-```wai
+```wit
 /// Information associated with a descriptor.
 ///
 /// Note: This was called `fdstat` in earlier versions of WASI.
@@ -54,7 +54,7 @@ record info {
 ```
 
 ## `type`
-```wai
+```wit
 /// The type of a filesystem object referenced by a descriptor.
 ///
 /// Note: This was called `filetype` in earlier versions of WASI.
@@ -80,7 +80,7 @@ enum "type" {
 ```
 
 ## `flags`
-```wai
+```wit
 /// Descriptor flags.
 ///
 /// Note: This was called `fdflags` in earlier versions of WASI.
@@ -107,7 +107,7 @@ flags "flags" {
 ```
 
 ## `stat`
-```wai
+```wit
 /// File attributes.
 /// 
 /// Note: This was called `filestat` in earlier versions of WASI.
@@ -133,7 +133,7 @@ record stat {
 ```
 
 ## `lookupflags`
-```wai
+```wit
 /// Flags determining the method of how paths are resolved.
 flags lookupflags {
     /// As long as the resolved path corresponds to a symbolic link, it is expanded.
@@ -142,7 +142,7 @@ flags lookupflags {
 ```
 
 ## `oflags`
-```wai
+```wit
 /// Open flags used by `open_at`.
 flags oflags {
     /// Fail if path names an existing symbolic link.
@@ -159,7 +159,7 @@ flags oflags {
 ```
 
 ## `mode`
-```wai
+```wit
 /// Permissions mode used by `open_at`, `change_permissions_at`, and similar.
 flags mode {
     /// True if the resource is considered readable by the containing
@@ -175,13 +175,13 @@ flags mode {
 ```
 
 ## `linkcount`
-```wai
+```wit
 /// Number of hard links to an inode.
 type linkcount = u64
 ```
 
 ## `device`
-```wai
+```wit
 /// Identifier for a device containing a file system. Can be used in combination
 /// with `inode` to uniquely identify a file or directory in the filesystem.
 type device = u64
@@ -189,12 +189,12 @@ type device = u64
 
 ## `inode`
 /// Filesystem object serial number that is unique within its file system.
-```wai
+```wit
 type inode = u64
 ```
 
 ## `new_timestamp`
-```wai
+```wit
 /// When setting a timestamp, this gives the value to set it to.
 variant new_timestamp {
     /// Leave the timestamp set to its previous value.
@@ -208,7 +208,7 @@ variant new_timestamp {
 ```
 
 ## `dirent`
-```wai
+```wit
 /// A directory entry. 
 record dirent {
     /// The serial number of the file referred to by this directory entry.
@@ -221,7 +221,7 @@ record dirent {
 ```
 
 ## `errno`
-```wai
+```wit
 /// Error codes returned by functions.
 /// Not all of these error codes are returned by the functions provided by this
 /// API; some are used in higher-level library layers, and others are provided
@@ -383,7 +383,7 @@ enum errno {
 ```
 
 ## `advice`
-```wai
+```wit
 /// File or memory access pattern advisory information.
 enum advice {
     /// The application has no advice to give on its behavior with respect to the specified data.
@@ -402,7 +402,7 @@ enum advice {
 ```
 
 ## `seek_from`
-```wai
+```wit
 /// The position relative to which to set the offset of the descriptor.
 variant seek_from {
     /// Seek relative to start-of-file.
@@ -415,7 +415,7 @@ variant seek_from {
 ```
 
 ## `descriptor`
-```wai
+```wit
 /// A descriptor is a reference to a filesystem object, which may be a file,
 /// directory, named pipe, special file, or other object on which filesystem
 /// calls may be made.
@@ -423,7 +423,7 @@ resource descriptor {
 ```
 
 ## `fadvise`
-```wai
+```wit
 /// Provide file advisory information on a descriptor.
 ///
 /// This is similar to `posix_fadvise` in POSIX.
@@ -438,7 +438,7 @@ fadvise: function(
 ```
 
 ## `fallocate`
-```wai
+```wit
 /// Force the allocation of space in a file.
 ///
 /// Note: This is similar to `posix_fallocate` in POSIX.
@@ -451,7 +451,7 @@ fallocate: function(
 ```
 
 ## `fdatasync`
-```wai
+```wit
 /// Synchronize the data of a file to disk.
 ///
 /// Note: This is similar to `fdatasync` in POSIX.
@@ -459,7 +459,7 @@ datasync: function() -> expected<_, errno>
 ```
 
 ## `info`
-```wai
+```wit
 /// Get information associated with a descriptor.
 ///
 /// Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well
@@ -470,7 +470,7 @@ info: function() -> expected<info, errno>
 ```
 
 ## `set_size`
-```wai
+```wit
 /// Adjust the size of an open file. If this increases the file's size, the
 /// extra bytes are filled with zeros.
 ///
@@ -479,7 +479,7 @@ set_size: function(size: filesize) -> expected<_, errno>
 ```
 
 ## `set_times`
-```wai
+```wit
 /// Adjust the timestamps of an open file or directory.
 ///
 /// Note: This is similar to `futimens` in POSIX.
@@ -494,7 +494,7 @@ set_times: function(
 ```
 
 ## `pread`
-```wai
+```wit
 /// Read from a descriptor, without using and updating the descriptor's offset.
 ///
 /// Note: This is similar to `pread` in POSIX.
@@ -507,7 +507,7 @@ pread: function(
 ```
 
 ## `pwrite`
-```wai
+```wit
 /// Write to a descriptor, without using and updating the descriptor's offset.
 ///
 /// Note: This is similar to `pwrite` in POSIX.
@@ -520,7 +520,7 @@ pwrite: function(
 ```
 
 ## `read`
-```wai
+```wit
 /// Read from a descriptor.
 ///
 /// The meaning of `read` on a directory is unspecified.
@@ -533,7 +533,7 @@ read: function(
 ```
 
 ## `readdir`
-```wai
+```wit
 /// Read directory entries from a directory.
 ///
 /// When successful, the contents of the output buffer consist of a sequence of
@@ -560,7 +560,7 @@ readdir: function(
 ```
 
 ## `seek`
-```wai
+```wit
 /// Move the offset of a descriptor.
 ///
 /// The meaning of `seek` on a directory is unspecified.
@@ -576,7 +576,7 @@ seek: function(
 ```
 
 ## `sync`
-```wai
+```wit
 /// Synchronize the data and metadata of a file to disk.
 ///
 /// Note: This is similar to `fsync` in POSIX.
@@ -584,7 +584,7 @@ sync: function() -> expected<_, errno>
 ```
 
 ## `tell`
-```wai
+```wit
 /// Return the current offset of a descriptor.
 ///
 /// Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
@@ -595,7 +595,7 @@ tell: function() -> (
 ```
 
 ## `write`
-```wai
+```wit
 /// Write to a descriptor.
 ///
 /// Note: This is similar to `write` in POSIX.
@@ -606,7 +606,7 @@ write: function(
 ```
 
 ## `create_directory_at`
-```wai
+```wit
 /// Create a directory.
 ///
 /// Note: This is similar to `mkdirat` in POSIX.
@@ -617,7 +617,7 @@ create_directory_at: function(
 ```
 
 ## `stat_at`
-```wai
+```wit
 /// Return the attributes of a file or directory.
 ///
 /// Note: This is similar to `fstatat` in POSIX.
@@ -635,7 +635,7 @@ stat_at: function(
 ```
 
 ## `set_times_at`
-```wai
+```wit
 /// Adjust the timestamps of a file or directory.
 ///
 /// Note: This is similar to `utimensat` in POSIX.
@@ -654,7 +654,7 @@ set_times_at: function(
 ```
 
 ## `link_at`
-```wai
+```wit
 /// Create a hard link.
 ///
 /// Note: This is similar to `linkat` in POSIX.
@@ -671,7 +671,7 @@ link_at: function(
 ```
 
 ## `open_at`
-```wai
+```wit
 /// Open a file or directory.
 ///
 /// The returned descriptor is not guaranteed to be the lowest-numbered
@@ -702,7 +702,7 @@ open_at: function(
 ```
 
 ## `readlink_at`
-```wai
+```wit
 /// Read the contents of a symbolic link.
 ///
 /// Note: This is similar to `readlinkat` in POSIX.
@@ -718,7 +718,7 @@ readlink_at: function(
 ```
 
 ## `remove_directory_at`
-```wai
+```wit
 /// Remove a directory.
 ///
 /// Return `errno::notempty` if the directory is not empty.
@@ -731,7 +731,7 @@ remove_directory_at: function(
 ```
 
 ## `rename_at`
-```wai
+```wit
 /// Rename a filesystem object.
 ///
 /// Note: This is similar to `renameat` in POSIX.
@@ -746,7 +746,7 @@ rename_at: function(
 ```
 
 ## `symlink_at`
-```wai
+```wit
 /// Create a symbolic link.
 ///
 /// Note: This is similar to `symlinkat` in POSIX.
@@ -759,7 +759,7 @@ symlink_at: function(
 ```
 
 ## `unlink_file_at`
-```wai
+```wit
 /// Unlink a filesystem object that is not a directory.
 ///
 /// Return `errno::isdir` if the path refers to a directory.
@@ -777,7 +777,7 @@ unlink_file_at: function(
 /// filesystem-specific.
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
-```wai
+```wit
 change_file_permissions_at: function(
     /// Flags determining the method of how the path is resolved.
     lookupflags: lookupflags,
@@ -799,7 +799,7 @@ change_file_permissions_at: function(
 /// `execute` is not valid for directories.
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
-```wai
+```wit
 change_directory_permissions_at: function(
     /// Flags determining the method of how the path is resolved.
     lookupflags: lookupflags,
@@ -810,6 +810,6 @@ change_directory_permissions_at: function(
 ) -> expected<_, errno>
 ```
 
-```wai
+```wit
 }
 ```
