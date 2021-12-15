@@ -200,7 +200,7 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="oflags.creat" name="oflags.creat"></a> [`creat`](#oflags.creat): `bool`
+- <a href="oflags.create" name="oflags.create"></a> [`create`](#oflags.create): `bool`
 
   Create file if it does not exist.
 Bit: 0
@@ -640,15 +640,15 @@ Size: 1, Alignment: 1
 
   The application expects to access the specified data in a random order.
 
-- <a href="advice.willneed" name="advice.willneed"></a> [`willneed`](#advice.willneed)
+- <a href="advice.will_need" name="advice.will_need"></a> [`will-need`](#advice.will_need)
 
   The application expects to access the specified data in the near future.
 
-- <a href="advice.dontneed" name="advice.dontneed"></a> [`dontneed`](#advice.dontneed)
+- <a href="advice.dont_need" name="advice.dont_need"></a> [`dont-need`](#advice.dont_need)
 
   The application expects that it will not access the specified data in the near future.
 
-- <a href="advice.noreuse" name="advice.noreuse"></a> [`noreuse`](#advice.noreuse)
+- <a href="advice.no_reuse" name="advice.no_reuse"></a> [`no-reuse`](#advice.no_reuse)
 
   The application expects to access the specified data once and then not reuse it thereafter.
 
@@ -989,9 +989,6 @@ Size: 16, Alignment: 8
   guaranteed to be less than 2**31.
   
   Note: This is similar to `openat` in POSIX.
-  
-  TODO: Re-evaluate `direflags` here.
-  TODO: Add a permissions mode.
 ##### Params
 
 - <a href="#descriptor_open_at.self" name="descriptor_open_at.self"></a> `self`: handle<descriptor>
@@ -1015,10 +1012,9 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_readlink_at.self" name="descriptor_readlink_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_readlink_at.path" name="descriptor_readlink_at.path"></a> `path`: `string`
-- <a href="#descriptor_readlink_at.buf" name="descriptor_readlink_at.buf"></a> `buf`: push-buffer<`u8`>
 ##### Results
 
-- <a href="#descriptor_readlink_at." name="descriptor_readlink_at."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- <a href="#descriptor_readlink_at." name="descriptor_readlink_at."></a> ``: expected<`string`, [`errno`](#errno)>
 
 ----
 
