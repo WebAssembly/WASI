@@ -146,7 +146,7 @@ flags atflags {
 /// Open flags used by `open_at`.
 flags oflags {
     /// Create file if it does not exist.
-    creat,
+    create,
     /// Fail if not a directory.
     directory,
     /// Fail if file already exists.
