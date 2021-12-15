@@ -391,11 +391,11 @@ enum advice {
     /// The application expects to access the specified data in a random order.
     random,
     /// The application expects to access the specified data in the near future.
-    willneed,
+    will-need,
     /// The application expects that it will not access the specified data in the near future.
-    dontneed,
+    dont-need,
     /// The application expects to access the specified data once and then not reuse it thereafter.
-    noreuse,
+    no-reuse,
 }
 ```
 
