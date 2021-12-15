@@ -704,11 +704,9 @@ open_at: function(
 readlink_at: function(
     /// The relative path of the symbolic link from which to read.
     path: string,
-    /// The buffer to which to write the contents of the symbolic link.
-    buf: push-buffer<u8>,
 ) -> (
-    /// The number of bytes placed in the buffer.
-    expected<size, errno>
+    /// The contents of the symbolic link.
+    expected<string, errno>
 )
 ```
 
