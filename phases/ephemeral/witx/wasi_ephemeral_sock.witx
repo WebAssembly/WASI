@@ -23,7 +23,7 @@
     ;;; The buffer where IP addresses will be stored
     (param $buf (@witx pointer u8))
     (param $buf_len $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Returns the remote address to which the socket is connected to.
@@ -38,7 +38,7 @@
     ;;; The buffer where IP addresses will be stored
     (param $buf (@witx pointer u8))
     (param $buf_len $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Open a socket
@@ -58,9 +58,8 @@
     (param $af $address_family)
     ;;; Socket type, either datagram or stream
     (param $socktype $sock_type)
-    (result $error $errno)
     ;;; The opened socket
-    (result $fd $fd)
+    (result $error (expected $fd (error $errno)))
   )
 
   ;;; Close a socket (this is an alias for `fd_close`)
@@ -68,7 +67,7 @@
   (@interface func (export "close")
     ;;; Socket descriptor
     (param $fd $fd)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Enable/disable address reuse on a socket
@@ -78,7 +77,7 @@
     (param $fd $fd)
     ;;; 1 to enable, 0 to disable
     (param $reuse u8)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Retrieve status of address reuse on a socket
@@ -86,8 +85,7 @@
   (@interface func (export "get_reuse_addr")
     ;;; Socket descriptor
     (param $fd $fd)
-    (result $error $errno)
-    (result $reuse u8)
+    (result $error (expected $reuse (error $errno)))
   )
 
   ;;; Enable port reuse on a socket
@@ -97,7 +95,7 @@
     (param $fd $fd)
     ;;; 1 to enable, 0 to disable
     (param $reuse u8)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Retrieve status of port reuse on a socket
@@ -105,8 +103,7 @@
   (@interface func (export "get_reuse_port")
     ;;; Socket descriptor
     (param $fd $fd)
-    (result $error $errno)
-    (result $reuse u8)
+    (result $error (expected $reuse (error $errno)))
   )
 
   ;;; Set size of receive buffer
@@ -116,7 +113,7 @@
     (param $fd $fd)
     ;;; Buffer size
     (param $size $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Retrieve the size of the receive buffer
@@ -124,8 +121,7 @@
   (@interface func (export "get_recv_buf_size")
     ;;; Socket descriptor
     (param $fd $fd)
-    (result $error $errno)
-    (result $size $size)
+    (result $error (expected $size (error $errno)))
   )
 
   ;;; Set size of send buffer
@@ -135,7 +131,7 @@
     (param $fd $fd)
     ;;; Buffer size
     (param $size $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Retrieve the size of the send buffer
@@ -143,8 +139,7 @@
   (@interface func (export "get_send_buf_size")
     ;;; Socket descriptor
     (param $fd $fd)
-    (result $error $errno)
-    (result $size $size)
+    (result $error (expected $size (error $errno)))
   )
 
   ;;; Bind a socket
@@ -154,7 +149,7 @@
     (param $fd $fd)
     ;;; Address to bind the socket to
     (param $addr (@witx pointer $addr))
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Listen for connections on a socket
@@ -164,7 +159,7 @@
     (param $fd $fd)
     ;;; Maximum size of the queue for pending connections
     (param $backlog $size)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Accept a connection on a socket
@@ -172,8 +167,7 @@
   (@interface func (export "accept")
     ;;; File descriptor of the socket to be bind
     (param $fd $fd)
-    (result $error $errno)
-    (result $childfd $fd)
+    (result $error (expected $fd (error $errno)))
   )
 
   ;;; Initiate a connection on a socket to the specified address
@@ -183,7 +177,7 @@
     (param $fd $fd)
     ;;; Address of the socket to connect to
     (param $addr (@witx pointer $addr))
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 
   ;;; Receive a message from a socket.

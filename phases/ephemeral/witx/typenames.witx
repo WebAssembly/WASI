@@ -689,9 +689,12 @@
   )
 )
 
+;;; is reused
+(typename $reuse u8)
+
 ;;; Socket type
 (typename $sock_type
-  (enum u8
+  (enum (@witx tag u8)
     ;;; The file descriptor or file refers to a datagram socket.
     $socket_dgram
     ;;; The file descriptor or file refers to a byte-stream socket.
@@ -704,7 +707,7 @@
 
 ;;; Address type
 (typename $addr_type
-  (enum u8
+  (enum (@witx tag u8)
     ;;; IPv4 address
     $ip4
     ;;; IPv6 address
@@ -714,7 +717,7 @@
 
 ;;; An IPv4 address is a 32-bit number that uniquely identifies a network interface on a machine.
 (typename $addr_ip4
-  (struct
+  (record
     (field $n0 u8)
     (field $n1 u8)
     (field $h0 u8)
@@ -724,7 +727,7 @@
 
 ;;; An IPv4 address with a port number
 (typename $addr_ip4_port
-  (struct
+  (record
     (field $addr $addr_ip4)
     (field $port $ip_port)
   )
@@ -732,7 +735,7 @@
 
 ;;; An IPv6 address is a 128-bit number that uniquely identifies a network interface on a machine.
 (typename $addr_ip6
-  (struct
+  (record
     (field $n0 u16)
     (field $n1 u16)
     (field $n2 u16)
@@ -746,7 +749,7 @@
 
 ;;; An IPv6 address with a port number
 (typename $addr_ip6_port
-  (struct
+  (record
     (field $addr $addr_ip6)
     (field $port $ip_port)
   )
@@ -754,15 +757,15 @@
 
 ;;; Union of all possible addresses type
 (typename $addr
-  (union $addr_type
-    (field $ip4 $addr_ip4_port)
-    (field $ip6 $addr_ip6_port)
+  (union (@witx tag $addr_type)
+    $addr_ip4_port
+    $addr_ip6_port
   )
 )
 
 ;;; Address family
 (typename $address_family
-  (enum u8
+  (enum (@witx tag u8)
     ;;; IP v4
     $inet4
     ;;; IP v6

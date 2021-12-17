@@ -445,11 +445,6 @@ If [`rights::fd_write`](#rights.fd_write) is set, includes the right to invoke [
 
 Bit: 27
 
-- <a href="#rights.sock_shutdown" name="rights.sock_shutdown"></a> `sock_shutdown`: `bool`
-The right to invoke [`sock_shutdown`](#sock_shutdown).
-
-Bit: 28
-
 ## <a href="#fd" name="fd"></a> `fd`: `Handle`
 A file descriptor handle.
 
@@ -2011,7 +2006,7 @@ The path at which to create the directory.
 
 #### <a href="#path_filestat_get" name="path_filestat_get"></a> `path_filestat_get(fd: fd, flags: lookupflags, path: string) -> Result<filestat, errno>`
 Return the attributes of a file or directory.
-Note: This is similar to `fstatat` in POSIX.
+Note: This is similar to `stat` in POSIX.
 
 ##### Params
 - <a href="#path_filestat_get.fd" name="path_filestat_get.fd"></a> `fd`: [`fd`](#fd)
