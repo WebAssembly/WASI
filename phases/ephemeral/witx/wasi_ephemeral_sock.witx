@@ -194,28 +194,9 @@
     (param $buf (@witx pointer u8))
     (param $buf_len $size)
     ;;; Message flags.
-    (param $flags $riflags)
-    (result $error $errno)
-    (result $bufused $size)
-  )
-
-  ;;; Receive a message from a socket.
-  ;;;
-  ;;; The address buffer must be at least the size of addr_t.
-  ;;;
-  ;;; Note: This is similar to `recvfrom` in POSIX.
-  (@interface func (export "recv_from")
-    (param $fd $fd)
-    ;;; The buffer where data will be stored
-    (param $buf (@witx pointer u8))
-    (param $buf_len $size)
-    ;;; The address of origin for the message
-    (param $addr_buf (@witx pointer u8))
-    (param $addr_buf_len $size)
-    ;;; Message flags.
-    (param $flags $riflags)
-    (result $error $errno)
-    (result $bufused $size)
+    (param $ri_flags $riflags)
+    ;;; Number of bytes stored in ri_data and message flags.
+    (result $error (expected (tuple $size $roflags) (error $errno)))
   )
 
   ;;; Send a message on a socket.
@@ -226,26 +207,9 @@
     (param $buf (@witx pointer u8))
     (param $buf_len $size)
     ;;; Message flags.
-    (param $flags $siflags)
-    (result $error $errno)
+    (param $si_flags $siflags)
     ;;; Number of bytes transmitted.
-    (result $bufused $size)
-  )
-
-  ;;; Send a message on a socket.
-  ;;; Note: This is similar to `sendto` in POSIX.
-  (@interface func (export "send_to")
-    (param $fd $fd)
-    ;;; The buffer where data will be stored
-    (param $buf (@witx pointer u8))
-    (param $buf_len $size)
-    ;;; Address of the socket to send message to
-    (param $addr (@witx pointer $addr))
-    ;;; Message flags.
-    (param $flags $siflags)
-    (result $error $errno)
-    ;;; Number of bytes transmitted.
-    (result $bufused $size)
+    (result $error (expected $size (error $errno)))
   )
 
   ;;; Shut down socket send and receive channels.
@@ -254,6 +218,6 @@
     (param $fd $fd)
     ;;; Which channels on the socket to shut down.
     (param $how $sdflags)
-    (result $error $errno)
+    (result $error (expected (error $errno)))
   )
 )

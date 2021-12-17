@@ -7,6 +7,17 @@ pub struct SizeAlign {
     pub align: usize,
 }
 
+impl SizeAlign {
+    fn zero() -> SizeAlign {
+        SizeAlign { size: 0, align: 0 }
+    }
+    fn append_field(&mut self, other: &SizeAlign) {
+        self.align = self.align.max(other.align);
+        self.size = align_to(self.size, other.align);
+        self.size += other.size;
+    }
+}
+
 pub trait Layout {
     fn mem_size_align(&self) -> SizeAlign;
     fn mem_size(&self) -> usize {
@@ -53,14 +64,14 @@ impl Layout for NamedType {
 impl Type {
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
         match &self {
-            Type::Enum(e) => e.repr.mem_size_align(),
-            Type::Int(i) => i.repr.mem_size_align(),
-            Type::Flags(f) => f.repr.mem_size_align(),
-            Type::Struct(s) => s.layout(cache),
-            Type::Union(u) => u.layout(cache),
+            Type::Record(s) => match s.bitflags_repr() {
+                Some(repr) => repr.mem_size_align(),
+                None => s.layout(cache),
+            },
+            Type::Variant(s) => s.mem_size_align(),
             Type::Handle(h) => h.mem_size_align(),
-            Type::Array { .. } => BuiltinType::String.mem_size_align(),
-            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::U32.mem_size_align(),
+            Type::List { .. } => SizeAlign { size: 8, align: 4 }, // Pointer and Length
+            Type::Pointer { .. } | Type::ConstPointer { .. } => BuiltinType::S32.mem_size_align(),
             Type::Builtin(b) => b.mem_size_align(),
         }
     }
@@ -75,55 +86,80 @@ impl Layout for Type {
 
 impl Layout for IntRepr {
     fn mem_size_align(&self) -> SizeAlign {
-        match self {
-            IntRepr::U8 => BuiltinType::U8.mem_size_align(),
-            IntRepr::U16 => BuiltinType::U16.mem_size_align(),
-            IntRepr::U32 => BuiltinType::U32.mem_size_align(),
-            IntRepr::U64 => BuiltinType::U64.mem_size_align(),
-        }
+        self.to_builtin().mem_size_align()
     }
 }
 
-pub struct StructMemberLayout<'a> {
-    pub member: &'a StructMember,
+pub struct RecordMemberLayout<'a> {
+    pub member: &'a RecordMember,
     pub offset: usize,
 }
 
-impl StructDatatype {
-    pub fn member_layout(&self) -> Vec<StructMemberLayout> {
-        self.member_layout_(&mut HashMap::new())
+impl RecordDatatype {
+    pub fn member_layout(&self) -> Vec<RecordMemberLayout> {
+        self.member_layout_(&mut HashMap::new()).1
     }
 
-    fn member_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> Vec<StructMemberLayout> {
+    fn member_layout_(
+        &self,
+        cache: &mut HashMap<TypeRef, SizeAlign>,
+    ) -> (SizeAlign, Vec<RecordMemberLayout>) {
         let mut members = Vec::new();
-        let mut offset = 0;
+        let mut sa = SizeAlign::zero();
         for m in self.members.iter() {
-            let sa = m.tref.layout(cache);
-            offset = align_to(offset, sa.align);
-            members.push(StructMemberLayout { member: m, offset });
-            offset += sa.size;
+            let member = m.tref.layout(cache);
+            sa.append_field(&member);
+            members.push(RecordMemberLayout {
+                member: m,
+                offset: sa.size - member.size,
+            });
         }
-        members
+        sa.size = align_to(sa.size, sa.align);
+        (sa, members)
     }
 
     fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        let members = self.member_layout_(cache);
-        let align = members
-            .iter()
-            .map(|m| m.member.tref.layout(cache).align)
-            .max()
-            .expect("nonzero struct members");
-        let last = members.last().expect("nonzero struct members");
-        let size = last.offset + last.member.tref.layout(cache).size;
-        let size = align_to(size, align);
-        SizeAlign { size, align }
+        self.member_layout_(cache).0
     }
 }
 
-impl Layout for StructDatatype {
+impl Layout for RecordDatatype {
     fn mem_size_align(&self) -> SizeAlign {
-        let mut cache = HashMap::new();
-        self.layout(&mut cache)
+        match self.bitflags_repr() {
+            Some(repr) => repr.mem_size_align(),
+            None => {
+                let mut cache = HashMap::new();
+                self.layout(&mut cache)
+            }
+        }
+    }
+}
+
+impl Layout for Variant {
+    fn mem_size_align(&self) -> SizeAlign {
+        let mut max = SizeAlign { size: 0, align: 0 };
+        for case in self.cases.iter() {
+            let mut size = self.tag_repr.mem_size_align();
+            if let Some(payload) = &case.tref {
+                size.append_field(&payload.mem_size_align());
+            }
+            size.size = align_to(size.size, size.align);
+            max.size = max.size.max(size.size);
+            max.align = max.align.max(size.align);
+        }
+        max
+    }
+}
+
+impl Variant {
+    pub fn payload_offset(&self) -> usize {
+        let mut offset = self.tag_repr.mem_size_align().size;
+        for case in self.cases.iter() {
+            if let Some(payload) = &case.tref {
+                offset = offset.max(align_to(offset, payload.mem_size_align().align));
+            }
+        }
+        offset
     }
 }
 
@@ -161,76 +197,18 @@ mod test {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct UnionLayout {
-    pub tag_size: usize,
-    pub tag_align: usize,
-    pub contents_offset: usize,
-    pub contents_size: usize,
-    pub contents_align: usize,
-}
-
-impl Layout for UnionLayout {
-    fn mem_size_align(&self) -> SizeAlign {
-        let align = std::cmp::max(self.tag_align, self.contents_align);
-        let size = align_to(self.contents_offset + self.contents_size, align);
-        SizeAlign { size, align }
-    }
-}
-
-impl UnionDatatype {
-    pub fn union_layout(&self) -> UnionLayout {
-        let mut cache = HashMap::new();
-        self.union_layout_(&mut cache)
-    }
-    fn union_layout_(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> UnionLayout {
-        let tag = self.tag.layout(cache);
-
-        let variant_sas = self
-            .variants
-            .iter()
-            .filter_map(|v| v.tref.as_ref().map(|t| t.layout(cache)))
-            .collect::<Vec<SizeAlign>>();
-
-        let contents_size = variant_sas.iter().map(|sa| sa.size).max().unwrap_or(0);
-        let contents_align = variant_sas.iter().map(|sa| sa.align).max().unwrap_or(1);
-
-        UnionLayout {
-            tag_size: tag.size,
-            tag_align: tag.align,
-            contents_offset: align_to(tag.size, contents_align),
-            contents_size,
-            contents_align,
-        }
-    }
-
-    fn layout(&self, cache: &mut HashMap<TypeRef, SizeAlign>) -> SizeAlign {
-        self.union_layout_(cache).mem_size_align()
-    }
-}
-
-impl Layout for UnionDatatype {
-    fn mem_size_align(&self) -> SizeAlign {
-        let mut cache = HashMap::new();
-        self.layout(&mut cache)
-    }
-}
-
 impl Layout for HandleDatatype {
     fn mem_size_align(&self) -> SizeAlign {
-        BuiltinType::U32.mem_size_align()
+        BuiltinType::S32.mem_size_align()
     }
 }
 
 impl Layout for BuiltinType {
     fn mem_size_align(&self) -> SizeAlign {
         match self {
-            BuiltinType::String => SizeAlign { size: 8, align: 4 }, // Pointer and Length
-            BuiltinType::U8 | BuiltinType::S8 | BuiltinType::Char8 => {
-                SizeAlign { size: 1, align: 1 }
-            }
+            BuiltinType::U8 { .. } | BuiltinType::S8 => SizeAlign { size: 1, align: 1 },
             BuiltinType::U16 | BuiltinType::S16 => SizeAlign { size: 2, align: 2 },
-            BuiltinType::USize | BuiltinType::U32 | BuiltinType::S32 | BuiltinType::F32 => {
+            BuiltinType::Char | BuiltinType::U32 { .. } | BuiltinType::S32 | BuiltinType::F32 => {
                 SizeAlign { size: 4, align: 4 }
             }
             BuiltinType::U64 | BuiltinType::S64 | BuiltinType::F64 => {

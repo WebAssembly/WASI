@@ -1,5 +1,4 @@
 use crate::BuiltinType;
-use wast::lexer::Comment;
 use wast::parser::{Parse, Parser, Peek, Result};
 
 ///! Parser turns s-expressions into unvalidated syntax constructs.
@@ -18,34 +17,42 @@ use wast::parser::{Parse, Parser, Peek, Result};
 mod kw {
     pub use wast::kw::{export, func, import, memory, module, param, result};
 
-    wast::custom_keyword!(array);
+    wast::custom_keyword!(case);
     wast::custom_keyword!(char8);
+    wast::custom_keyword!(char);
     wast::custom_keyword!(const_pointer);
     wast::custom_keyword!(f32);
     wast::custom_keyword!(f64);
     wast::custom_keyword!(field);
     wast::custom_keyword!(empty);
+    wast::custom_keyword!(error);
+    wast::custom_keyword!(expected);
     wast::custom_keyword!(flags);
     wast::custom_keyword!(handle);
-    wast::custom_keyword!(int);
+    wast::custom_keyword!(list);
     wast::custom_keyword!(noreturn);
     wast::custom_keyword!(pointer);
+    wast::custom_keyword!(record);
     wast::custom_keyword!(r#const = "const");
     wast::custom_keyword!(r#enum = "enum");
-    wast::custom_keyword!(r#struct = "struct");
     wast::custom_keyword!(r#union = "union");
     wast::custom_keyword!(r#use = "use");
+    wast::custom_keyword!(repr);
     wast::custom_keyword!(s16);
     wast::custom_keyword!(s32);
     wast::custom_keyword!(s64);
     wast::custom_keyword!(s8);
     wast::custom_keyword!(string);
+    wast::custom_keyword!(tag);
+    wast::custom_keyword!(tuple);
     wast::custom_keyword!(typename);
     wast::custom_keyword!(u16);
     wast::custom_keyword!(u32);
     wast::custom_keyword!(u64);
     wast::custom_keyword!(u8);
     wast::custom_keyword!(usize);
+    wast::custom_keyword!(variant);
+    wast::custom_keyword!(bool_ = "bool");
 }
 
 mod annotation {
@@ -56,21 +63,20 @@ mod annotation {
 impl Parse<'_> for BuiltinType {
     fn parse(parser: Parser<'_>) -> Result<Self> {
         let mut l = parser.lookahead1();
-        if l.peek::<kw::string>() {
-            parser.parse::<kw::string>()?;
-            Ok(BuiltinType::String)
-        } else if l.peek::<kw::char8>() {
-            parser.parse::<kw::char8>()?;
-            Ok(BuiltinType::Char8)
+        if l.peek::<kw::char>() {
+            parser.parse::<kw::char>()?;
+            Ok(BuiltinType::Char)
         } else if l.peek::<kw::u8>() {
             parser.parse::<kw::u8>()?;
-            Ok(BuiltinType::U8)
+            Ok(BuiltinType::U8 { lang_c_char: false })
         } else if l.peek::<kw::u16>() {
             parser.parse::<kw::u16>()?;
             Ok(BuiltinType::U16)
         } else if l.peek::<kw::u32>() {
             parser.parse::<kw::u32>()?;
-            Ok(BuiltinType::U32)
+            Ok(BuiltinType::U32 {
+                lang_ptr_size: false,
+            })
         } else if l.peek::<kw::u64>() {
             parser.parse::<kw::u64>()?;
             Ok(BuiltinType::U64)
@@ -100,8 +106,7 @@ impl Parse<'_> for BuiltinType {
 
 impl wast::parser::Peek for BuiltinType {
     fn peek(cursor: wast::parser::Cursor<'_>) -> bool {
-        <kw::string as Peek>::peek(cursor)
-            || <kw::char8 as Peek>::peek(cursor)
+        <kw::char as Peek>::peek(cursor)
             || <kw::u8 as Peek>::peek(cursor)
             || <kw::u16 as Peek>::peek(cursor)
             || <kw::u32 as Peek>::peek(cursor)
@@ -113,10 +118,12 @@ impl wast::parser::Peek for BuiltinType {
             || <kw::f32 as Peek>::peek(cursor)
             || <kw::f64 as Peek>::peek(cursor)
     }
+
     fn display() -> &'static str {
         "builtin type"
     }
 }
+
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct CommentSyntax<'a> {
     pub comments: Vec<&'a str>,
@@ -132,9 +139,10 @@ impl<'a> Parse<'a> for CommentSyntax<'a> {
                     None => break,
                 };
                 cursor = c;
-                comments.push(match comment {
-                    Comment::Block(s) => &s[2..s.len() - 2],
-                    Comment::Line(s) => &s[2..],
+                comments.push(if comment.starts_with(";;") {
+                    &comment[2..]
+                } else {
+                    &comment[2..comment.len() - 2]
                 });
             }
             Ok((comments, cursor))
@@ -237,6 +245,7 @@ impl<'a> Parse<'a> for TopLevelSyntax<'a> {
 pub enum DeclSyntax<'a> {
     Typename(TypenameSyntax<'a>),
     Module(ModuleSyntax<'a>),
+    Const(Documented<'a, ConstSyntax<'a>>),
 }
 
 impl<'a> Parse<'a> for DeclSyntax<'a> {
@@ -246,6 +255,8 @@ impl<'a> Parse<'a> for DeclSyntax<'a> {
             Ok(DeclSyntax::Module(parser.parse()?))
         } else if l.peek::<kw::typename>() {
             Ok(DeclSyntax::Typename(parser.parse()?))
+        } else if l.peek::<annotation::witx>() {
+            Ok(DeclSyntax::Const(parser.parse()?))
         } else {
             Err(l.error())
         }
@@ -270,16 +281,20 @@ impl<'a> Parse<'a> for TypenameSyntax<'a> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TypedefSyntax<'a> {
     Enum(EnumSyntax<'a>),
-    Int(IntSyntax<'a>),
+    Tuple(TupleSyntax<'a>),
+    Expected(ExpectedSyntax<'a>),
     Flags(FlagsSyntax<'a>),
-    Struct(StructSyntax<'a>),
+    Record(RecordSyntax<'a>),
     Union(UnionSyntax<'a>),
-    Handle(HandleSyntax<'a>),
-    Array(Box<TypedefSyntax<'a>>),
+    Variant(VariantSyntax<'a>),
+    Handle(HandleSyntax),
+    List(Box<TypedefSyntax<'a>>),
     Pointer(Box<TypedefSyntax<'a>>),
     ConstPointer(Box<TypedefSyntax<'a>>),
     Builtin(BuiltinType),
     Ident(wast::Id<'a>),
+    String,
+    Bool,
 }
 
 impl<'a> Parse<'a> for TypedefSyntax<'a> {
@@ -289,24 +304,34 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
             Ok(TypedefSyntax::Ident(parser.parse()?))
         } else if l.peek::<BuiltinType>() {
             Ok(TypedefSyntax::Builtin(parser.parse()?))
+        } else if l.peek::<kw::string>() {
+            parser.parse::<kw::string>()?;
+            Ok(TypedefSyntax::String)
+        } else if l.peek::<kw::bool_>() {
+            parser.parse::<kw::bool_>()?;
+            Ok(TypedefSyntax::Bool)
         } else if l.peek::<wast::LParen>() {
             parser.parens(|parser| {
                 let mut l = parser.lookahead1();
                 if l.peek::<kw::r#enum>() {
                     Ok(TypedefSyntax::Enum(parser.parse()?))
-                } else if l.peek::<kw::int>() {
-                    Ok(TypedefSyntax::Int(parser.parse()?))
+                } else if l.peek::<kw::tuple>() {
+                    Ok(TypedefSyntax::Tuple(parser.parse()?))
+                } else if l.peek::<kw::expected>() {
+                    Ok(TypedefSyntax::Expected(parser.parse()?))
                 } else if l.peek::<kw::flags>() {
                     Ok(TypedefSyntax::Flags(parser.parse()?))
-                } else if l.peek::<kw::r#struct>() {
-                    Ok(TypedefSyntax::Struct(parser.parse()?))
+                } else if l.peek::<kw::record>() {
+                    Ok(TypedefSyntax::Record(parser.parse()?))
                 } else if l.peek::<kw::r#union>() {
                     Ok(TypedefSyntax::Union(parser.parse()?))
+                } else if l.peek::<kw::variant>() {
+                    Ok(TypedefSyntax::Variant(parser.parse()?))
                 } else if l.peek::<kw::handle>() {
                     Ok(TypedefSyntax::Handle(parser.parse()?))
-                } else if l.peek::<kw::array>() {
-                    parser.parse::<kw::array>()?;
-                    Ok(TypedefSyntax::Array(Box::new(parser.parse()?)))
+                } else if l.peek::<kw::list>() {
+                    parser.parse::<kw::list>()?;
+                    Ok(TypedefSyntax::List(Box::new(parser.parse()?)))
                 } else if l.peek::<annotation::witx>() {
                     parser.parse::<annotation::witx>()?;
                     let mut l = parser.lookahead1();
@@ -318,7 +343,14 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
                         Ok(TypedefSyntax::Pointer(Box::new(parser.parse()?)))
                     } else if l.peek::<kw::usize>() {
                         parser.parse::<kw::usize>()?;
-                        Ok(TypedefSyntax::Builtin(BuiltinType::USize))
+                        Ok(TypedefSyntax::Builtin(BuiltinType::U32 {
+                            lang_ptr_size: true,
+                        }))
+                    } else if l.peek::<kw::char8>() {
+                        parser.parse::<kw::char8>()?;
+                        Ok(TypedefSyntax::Builtin(BuiltinType::U8 {
+                            lang_c_char: true,
+                        }))
                     } else {
                         Err(l.error())
                     }
@@ -334,14 +366,22 @@ impl<'a> Parse<'a> for TypedefSyntax<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EnumSyntax<'a> {
-    pub repr: BuiltinType,
+    pub repr: Option<BuiltinType>,
     pub members: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for EnumSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#enum>()?;
-        let repr = parser.parse()?;
+        let repr = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse()
+            })?)
+        } else {
+            None
+        };
         let mut members = Vec::new();
         members.push(parser.parse()?);
         while !parser.is_empty() {
@@ -352,51 +392,83 @@ impl<'a> Parse<'a> for EnumSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct IntSyntax<'a> {
-    pub repr: BuiltinType,
-    pub consts: Vec<Documented<'a, ConstSyntax<'a>>>,
+pub struct TupleSyntax<'a> {
+    pub types: Vec<TypedefSyntax<'a>>,
 }
 
-impl<'a> Parse<'a> for IntSyntax<'a> {
+impl<'a> Parse<'a> for TupleSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::int>()?;
-        let repr = parser.parse()?;
-        let mut consts = Vec::new();
-        consts.push(parser.parse()?);
+        parser.parse::<kw::tuple>()?;
+        let mut types = Vec::new();
         while !parser.is_empty() {
-            consts.push(parser.parse()?);
+            types.push(parser.parse()?);
         }
-        Ok(IntSyntax { repr, consts })
+        Ok(TupleSyntax { types })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExpectedSyntax<'a> {
+    pub ok: Option<Box<TypedefSyntax<'a>>>,
+    pub err: Option<Box<TypedefSyntax<'a>>>,
+}
+
+impl<'a> Parse<'a> for ExpectedSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::expected>()?;
+        let ok = if !parser.is_empty() && !parser.peek2::<kw::error>() {
+            Some(Box::new(parser.parse()?))
+        } else {
+            None
+        };
+        let err = parser.parens(|p| {
+            p.parse::<kw::error>()?;
+            Ok(if p.is_empty() {
+                None
+            } else {
+                Some(Box::new(p.parse()?))
+            })
+        })?;
+        Ok(ExpectedSyntax { ok, err })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConstSyntax<'a> {
+    pub ty: wast::Id<'a>,
     pub name: wast::Id<'a>,
     pub value: u64,
 }
 
 impl<'a> Parse<'a> for ConstSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parens(|p| {
-            p.parse::<kw::r#const>()?;
-            let name = p.parse()?;
-            let value = p.parse()?;
-            Ok(ConstSyntax { name, value })
-        })
+        parser.parse::<annotation::witx>()?;
+        parser.parse::<kw::r#const>()?;
+        let ty = parser.parse()?;
+        let name = parser.parse()?;
+        let value = parser.parse()?;
+        Ok(ConstSyntax { ty, name, value })
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FlagsSyntax<'a> {
-    pub repr: BuiltinType,
+    pub repr: Option<BuiltinType>,
     pub flags: Vec<Documented<'a, wast::Id<'a>>>,
 }
 
 impl<'a> Parse<'a> for FlagsSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::flags>()?;
-        let repr = parser.parse()?;
+        let repr = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::repr>()?;
+                p.parse()
+            })?)
+        } else {
+            None
+        };
         let mut flags = Vec::new();
         while !parser.is_empty() {
             flags.push(parser.parse()?);
@@ -406,19 +478,19 @@ impl<'a> Parse<'a> for FlagsSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct StructSyntax<'a> {
+pub struct RecordSyntax<'a> {
     pub fields: Vec<Documented<'a, FieldSyntax<'a>>>,
 }
 
-impl<'a> Parse<'a> for StructSyntax<'a> {
+impl<'a> Parse<'a> for RecordSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parse::<kw::r#struct>()?;
+        parser.parse::<kw::record>()?;
         let mut fields = Vec::new();
         fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
-        Ok(StructSyntax { fields })
+        Ok(RecordSyntax { fields })
     }
 }
 
@@ -440,43 +512,24 @@ impl<'a> Parse<'a> for FieldSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum VariantSyntax<'a> {
-    Field(FieldSyntax<'a>),
-    Empty(wast::Id<'a>),
-}
-
-impl<'a> Parse<'a> for VariantSyntax<'a> {
-    fn parse(parser: Parser<'a>) -> Result<Self> {
-        parser.parens(|p| {
-            let mut l = p.lookahead1();
-            if l.peek::<kw::field>() {
-                parser.parse::<kw::field>()?;
-                let name = p.parse()?;
-                let type_ = p.parse()?;
-                Ok(VariantSyntax::Field(FieldSyntax { name, type_ }))
-            } else if l.peek::<kw::empty>() {
-                parser.parse::<kw::empty>()?;
-                let name = p.parse()?;
-                Ok(VariantSyntax::Empty(name))
-            } else {
-                Err(l.error())
-            }
-        })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct UnionSyntax<'a> {
-    pub tag: wast::Id<'a>,
-    pub fields: Vec<Documented<'a, VariantSyntax<'a>>>,
+    pub tag: Option<Box<TypedefSyntax<'a>>>,
+    pub fields: Vec<Documented<'a, TypedefSyntax<'a>>>,
 }
 
 impl<'a> Parse<'a> for UnionSyntax<'a> {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::r#union>()?;
-        let tag = parser.parse()?;
+        let tag = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse().map(Box::new)
+            })?)
+        } else {
+            None
+        };
         let mut fields = Vec::new();
-        fields.push(parser.parse()?);
         while !parser.is_empty() {
             fields.push(parser.parse()?);
         }
@@ -485,18 +538,60 @@ impl<'a> Parse<'a> for UnionSyntax<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HandleSyntax<'a> {
-    pub supertypes: Vec<wast::Id<'a>>,
+pub struct VariantSyntax<'a> {
+    pub tag: Option<Box<TypedefSyntax<'a>>>,
+    pub cases: Vec<Documented<'a, CaseSyntax<'a>>>,
 }
 
-impl<'a> Parse<'a> for HandleSyntax<'a> {
+impl<'a> Parse<'a> for VariantSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::variant>()?;
+        let tag = if parser.peek2::<annotation::witx>() {
+            Some(parser.parens(|p| {
+                p.parse::<annotation::witx>()?;
+                p.parse::<kw::tag>()?;
+                p.parse().map(Box::new)
+            })?)
+        } else {
+            None
+        };
+        let mut cases = Vec::new();
+        while !parser.is_empty() {
+            let comments = parser.parse()?;
+            let item = parser.parens(|p| p.parse())?;
+            cases.push(Documented { comments, item });
+        }
+        Ok(VariantSyntax { tag, cases })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CaseSyntax<'a> {
+    pub name: wast::Id<'a>,
+    pub ty: Option<TypedefSyntax<'a>>,
+}
+
+impl<'a> Parse<'a> for CaseSyntax<'a> {
+    fn parse(parser: Parser<'a>) -> Result<Self> {
+        parser.parse::<kw::case>()?;
+        Ok(CaseSyntax {
+            name: parser.parse()?,
+            ty: if parser.is_empty() {
+                None
+            } else {
+                Some(parser.parse()?)
+            },
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HandleSyntax {}
+
+impl<'a> Parse<'a> for HandleSyntax {
     fn parse(parser: Parser<'a>) -> Result<Self> {
         parser.parse::<kw::handle>()?;
-        let mut supertypes = Vec::new();
-        while !parser.is_empty() {
-            supertypes.push(parser.parse()?);
-        }
-        Ok(HandleSyntax { supertypes })
+        Ok(HandleSyntax {})
     }
 }
 

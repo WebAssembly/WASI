@@ -1,17 +1,14 @@
 use super::{
-    md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, MdType, ToMarkdown},
+    md::{MdFunc, MdHeading, MdNamedType, MdNodeRef, MdSection, ToMarkdown},
     Documentation,
 };
 use crate::{
-    ast::{
-        BuiltinType, Document, EnumDatatype, FlagsDatatype, HandleDatatype, IntDatatype, IntRepr,
-        InterfaceFunc, InterfaceFuncParam, Module, ModuleImport, ModuleImportVariant, NamedType,
-        StructDatatype, Type, TypeRef, UnionDatatype,
-    },
+    ast::*,
     layout::Layout,
     polyfill::{FuncPolyfill, ModulePolyfill, ParamPolyfill, Polyfill, TypePolyfill},
     RepEquality,
 };
+use std::collections::HashMap;
 
 fn heading_from_node(node: &MdNodeRef, levels_down: usize) -> MdHeading {
     MdHeading::new_header(node.borrow().ancestors().len() + levels_down)
@@ -21,6 +18,12 @@ impl ToMarkdown for Document {
     fn generate(&self, node: MdNodeRef) {
         let heading = heading_from_node(&node, 1);
         let types = node.new_child(MdSection::new(heading, "Types"));
+
+        let mut constants_by_name = HashMap::new();
+        for c in self.constants() {
+            constants_by_name.entry(&c.ty).or_insert(Vec::new()).push(c);
+        }
+
         for d in self.typenames() {
             let name = d.name.as_str();
             let child = types.new_child(MdNamedType::new(
@@ -35,6 +38,18 @@ impl ToMarkdown for Document {
                 )
                 .as_str(),
             ));
+            if let Some(constants) = constants_by_name.remove(&d.name) {
+                let heading = heading_from_node(&child, 1);
+                child.new_child(MdSection::new(heading, "Constants"));
+                for constant in constants {
+                    child.new_child(MdNamedType::new(
+                        MdHeading::new_bullet(),
+                        format!("{}.{}", name, constant.name.as_str()).as_str(),
+                        constant.name.as_str(),
+                        &constant.docs,
+                    ));
+                }
+            }
             d.generate(child.clone());
         }
 
@@ -45,17 +60,21 @@ impl ToMarkdown for Document {
             let child = modules.new_child(content);
             d.generate(child.clone());
         }
+
+        assert!(constants_by_name.is_empty());
     }
 }
 
 impl ToMarkdown for TypeRef {
     fn generate(&self, node: MdNodeRef) {
         match self {
-            TypeRef::Value(v) => v.generate(node.clone()),
+            TypeRef::Value(v) => {
+                v.generate(node.clone());
+                node.content_ref_mut::<MdNamedType>().ty = Some(format!("`{}`", self.type_name()));
+            }
             TypeRef::Name(n) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Alias {
-                    r#type: n.name.as_str().to_owned(),
-                })
+                node.content_ref_mut::<MdNamedType>().ty =
+                    Some(format!("[`{0}`](#{0})", n.name.as_str().to_owned()));
             }
         }
     }
@@ -70,115 +89,21 @@ impl ToMarkdown for NamedType {
 impl ToMarkdown for Type {
     fn generate(&self, node: MdNodeRef) {
         match self {
-            Self::Enum(a) => a.generate(node.clone()),
-            Self::Int(a) => a.generate(node.clone()),
-            Self::Flags(a) => a.generate(node.clone()),
-            Self::Struct(a) => a.generate(node.clone()),
-            Self::Union(a) => a.generate(node.clone()),
+            Self::Record(a) => a.generate(node.clone()),
+            Self::Variant(a) => a.generate(node.clone()),
             Self::Handle(a) => a.generate(node.clone()),
-            Self::Array(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Array {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::Pointer(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Pointer {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::ConstPointer(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::ConstPointer {
-                    r#type: a.type_name().to_owned(),
-                })
-            }
-            Self::Builtin(a) => {
-                node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Builtin {
-                    repr: a.type_name().to_owned(),
-                })
-            }
+            Self::List(_) => {}
+            Self::Pointer(_) => {}
+            Self::ConstPointer(_) => {}
+            Self::Builtin(_) => {}
         }
     }
 }
 
-impl ToMarkdown for EnumDatatype {
+impl ToMarkdown for RecordDatatype {
     fn generate(&self, node: MdNodeRef) {
         let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Variants"));
-
-        for variant in &self.variants {
-            let name = variant.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                id.as_str(),
-                name,
-                &variant.docs,
-            ));
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Enum {
-            repr: self.repr.type_name().to_owned(),
-        });
-    }
-}
-
-impl ToMarkdown for IntDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Consts"));
-
-        for r#const in &self.consts {
-            let name = r#const.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            let tt = MdNamedType::new(MdHeading::new_bullet(), id.as_str(), name, &r#const.docs);
-            // TODO handle r#const.value
-            node.new_child(tt);
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Int {
-            repr: self.repr.type_name().to_owned(),
-        });
-    }
-}
-
-impl ToMarkdown for FlagsDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Flags"));
-
-        for flag in &self.flags {
-            let name = flag.name.as_str();
-            let id = if let Some(id) = node.any_ref().id() {
-                format!("{}.{}", id, name)
-            } else {
-                name.to_owned()
-            };
-            node.new_child(MdNamedType::new(
-                MdHeading::new_bullet(),
-                id.as_str(),
-                name,
-                &flag.docs,
-            ));
-        }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Flags {
-            repr: self.repr.type_name().to_owned(),
-        });
-    }
-}
-
-impl ToMarkdown for StructDatatype {
-    fn generate(&self, node: MdNodeRef) {
-        let heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(heading, "Struct members"));
+        node.new_child(MdSection::new(heading, "Record members"));
 
         for member_layout in &self.member_layout() {
             let member = member_layout.member;
@@ -189,52 +114,53 @@ impl ToMarkdown for StructDatatype {
             } else {
                 name.to_owned()
             };
+            let (div, offset_desc) = if self.bitflags_repr().is_some() {
+                (4, "Bit")
+            } else {
+                (1, "Offset")
+            };
             let n = node.new_child(MdNamedType::new(
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                format!("{}\nOffset: {}\n", &member.docs, &offset).as_str(),
+                format!("{}\n{}: {}\n", &member.docs, offset_desc, offset / div).as_str(),
             ));
             member.tref.generate(n.clone());
         }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Struct);
     }
 }
 
-impl ToMarkdown for UnionDatatype {
+impl ToMarkdown for Variant {
     fn generate(&self, node: MdNodeRef) {
-        // Sizes & Alignments
-        let sizes_heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(sizes_heading, "Union Layout"));
-        let union_layout = &self.union_layout();
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("tag_size: {}", union_layout.tag_size).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("tag_align: {}", union_layout.tag_align).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_offset: {}", union_layout.contents_offset).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_size: {}", union_layout.contents_size).as_str(),
-        ));
-        node.new_child(MdSection::new(
-            MdHeading::new_bullet(),
-            format!("contents_align: {}", union_layout.contents_align).as_str(),
-        ));
+        if self.is_bool() {
+            return;
+        }
+        if self.cases.iter().any(|c| c.tref.is_some()) {
+            let heading = heading_from_node(&node, 1);
+            node.new_child(MdSection::new(heading, "Variant Layout"));
 
-        // Variants
-        let variants_heading = heading_from_node(&node, 1);
-        node.new_child(MdSection::new(variants_heading, "Union variants"));
+            let whole = self.mem_size_align();
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("size: {}", whole.size),
+            ));
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("align: {}", whole.align),
+            ));
 
-        for variant in &self.variants {
-            let name = variant.name.as_str();
+            let tag = self.tag_repr.mem_size_align();
+            node.new_child(MdSection::new(
+                MdHeading::new_bullet(),
+                format!("tag_size: {}", tag.size),
+            ));
+        }
+
+        let heading = heading_from_node(&node, 1);
+        node.new_child(MdSection::new(heading, "Variant cases"));
+
+        for case in self.cases.iter() {
+            let name = case.name.as_str();
             let id = if let Some(id) = node.any_ref().id() {
                 format!("{}.{}", id, name)
             } else {
@@ -244,16 +170,12 @@ impl ToMarkdown for UnionDatatype {
                 MdHeading::new_bullet(),
                 id.as_str(),
                 name,
-                &variant.docs,
+                &case.docs,
             ));
-            if let Some(ref tref) = variant.tref {
-                tref.generate(n.clone());
-            } else {
-                n.content_ref_mut::<MdNamedType>().r#type = None;
+            if let Some(ty) = &case.tref {
+                ty.generate(n.clone());
             }
         }
-
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Union);
     }
 }
 
@@ -262,7 +184,6 @@ impl ToMarkdown for HandleDatatype {
         // TODO this needs more work
         let heading = heading_from_node(&node, 1);
         node.new_child(MdSection::new(heading, "Supertypes"));
-        node.content_ref_mut::<MdNamedType>().r#type = Some(MdType::Handle);
     }
 }
 
@@ -356,12 +277,15 @@ impl ToMarkdown for InterfaceFuncParam {
 impl BuiltinType {
     pub fn type_name(&self) -> &'static str {
         match self {
-            BuiltinType::String => "string",
-            BuiltinType::Char8 => "char8",
-            BuiltinType::USize => "usize",
-            BuiltinType::U8 => "u8",
+            BuiltinType::Char => "char",
+            BuiltinType::U8 { .. } => "u8",
             BuiltinType::U16 => "u16",
-            BuiltinType::U32 => "u32",
+            BuiltinType::U32 {
+                lang_ptr_size: false,
+            } => "u32",
+            BuiltinType::U32 {
+                lang_ptr_size: true,
+            } => "usize",
             BuiltinType::U64 => "u64",
             BuiltinType::S8 => "s8",
             BuiltinType::S16 => "s16",
@@ -377,31 +301,52 @@ impl TypeRef {
     pub fn type_name(&self) -> String {
         match self {
             TypeRef::Name(n) => n.name.as_str().to_string(),
-            TypeRef::Value(ref v) => match &**v {
-                Type::Array(a) => format!("Array<{}>", a.type_name()),
+            TypeRef::Value(v) => match &**v {
+                Type::List(a) => match &**a.type_() {
+                    Type::Builtin(BuiltinType::Char) => "string".to_string(),
+                    _ => format!("List<{}>", a.type_name()),
+                },
                 Type::Pointer(p) => format!("Pointer<{}>", p.type_name()),
                 Type::ConstPointer(p) => format!("ConstPointer<{}>", p.type_name()),
                 Type::Builtin(b) => b.type_name().to_string(),
-                Type::Enum { .. }
-                | Type::Int { .. }
-                | Type::Flags { .. }
-                | Type::Struct { .. }
-                | Type::Union { .. }
-                | Type::Handle { .. } => {
-                    unimplemented!("type_name of anonymous compound datatypes")
+                Type::Record(RecordDatatype {
+                    kind: RecordKind::Tuple,
+                    members,
+                }) => {
+                    let mut ret = "(".to_string();
+                    for (i, member) in members.iter().enumerate() {
+                        if i > 0 {
+                            ret.push_str(", ");
+                        }
+                        ret.push_str(&member.tref.type_name());
+                    }
+                    ret.push_str(")");
+                    ret
+                }
+                Type::Record { .. } => {
+                    format!("Record")
+                }
+                Type::Handle { .. } => {
+                    format!("Handle")
+                }
+                Type::Variant(v) => {
+                    if let Some((ok, err)) = v.as_expected() {
+                        let ok = match ok {
+                            Some(ty) => ty.type_name(),
+                            None => "()".to_string(),
+                        };
+                        let err = match err {
+                            Some(ty) => ty.type_name(),
+                            None => "()".to_string(),
+                        };
+                        format!("Result<{}, {}>", ok, err)
+                    } else if v.is_bool() {
+                        format!("bool")
+                    } else {
+                        format!("Variant")
+                    }
                 }
             },
-        }
-    }
-}
-
-impl IntRepr {
-    fn type_name(&self) -> &'static str {
-        match self {
-            IntRepr::U8 => "u8",
-            IntRepr::U16 => "u16",
-            IntRepr::U32 => "u32",
-            IntRepr::U64 => "u64",
         }
     }
 }

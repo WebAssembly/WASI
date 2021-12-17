@@ -163,7 +163,7 @@ impl fmt::Display for MdNodeRef {
     }
 }
 
-/// Struct representing the Markdown tree's root.
+/// Record representing the Markdown tree's root.
 ///
 /// Doesn't render to anything.
 #[derive(Debug, Default)]
@@ -237,7 +237,7 @@ impl fmt::Display for MdHeading {
     }
 }
 
-/// Struct representing a Markdown section without any `docs`, consisting
+/// Record representing a Markdown section without any `docs`, consisting
 /// of only a `header` (e.g., "###"), maybe some referencable `id` (i.e.,
 /// a Markdown link), and some `title`.
 ///
@@ -298,7 +298,7 @@ impl fmt::Display for MdSection {
     }
 }
 
-/// Struct representing a Markdown section representing any `NamedType` element
+/// Record representing a Markdown section representing any `NamedType` element
 /// of the AST.
 /// Consists of:
 /// * `header`, e.g., "###", or "-" for Enum variants, etc.,
@@ -322,7 +322,7 @@ pub(super) struct MdNamedType {
     pub id: String,
     pub name: String,
     pub docs: String,
-    pub r#type: Option<MdType>,
+    pub ty: Option<String>,
 }
 
 impl MdNamedType {
@@ -332,51 +332,8 @@ impl MdNamedType {
             id: id.as_ref().to_owned(),
             name: name.as_ref().to_owned(),
             docs: docs.as_ref().to_owned(),
-            r#type: None,
+            ty: None,
         }
-    }
-}
-
-/// Helper struct encapsulating the `TypeRef` value.
-// TODO `MdType` should probably store `TypeRef` and recursively
-// unwind itself into final `String` representation rather than
-// being outright flattened.
-#[derive(Debug)]
-pub(super) enum MdType {
-    Enum { repr: String },
-    Int { repr: String },
-    Flags { repr: String },
-    Struct,
-    Union,
-    Array { r#type: String },
-    Pointer { r#type: String },
-    ConstPointer { r#type: String },
-    Builtin { repr: String },
-    Handle,
-    Alias { r#type: String },
-}
-
-impl fmt::Display for MdType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Enum { repr } => f.write_fmt(format_args!(": Enum(`{}`)", repr))?,
-            Self::Int { repr } => f.write_fmt(format_args!(": Int(`{}`)", repr))?,
-            Self::Flags { repr } => f.write_fmt(format_args!(": Flags(`{}`)", repr))?,
-            Self::Struct => f.write_fmt(format_args!(": Struct"))?,
-            Self::Union => f.write_fmt(format_args!(": Union"))?,
-            Self::Array { r#type } => f.write_fmt(format_args!(": `Array<{}>`", r#type))?,
-            Self::Pointer { r#type } => f.write_fmt(format_args!(": `Pointer<{}>`", r#type))?,
-            Self::ConstPointer { r#type } => {
-                f.write_fmt(format_args!(": `ConstPointer<{}>`", r#type))?
-            }
-            Self::Builtin { repr } => f.write_fmt(format_args!(": `{}`", repr))?,
-            Self::Handle => {}
-            Self::Alias { r#type } => {
-                f.write_fmt(format_args!(": [`{tt}`](#{tt})", tt = r#type))?
-            }
-        };
-
-        Ok(())
     }
 }
 
@@ -411,15 +368,15 @@ impl fmt::Display for MdNamedType {
             name = self.name,
         ))?;
 
-        if let Some(tt) = &self.r#type {
-            f.write_fmt(format_args!("{}", tt))?;
+        if let Some(tt) = &self.ty {
+            f.write_fmt(format_args!(": {}", tt))?;
         }
 
         writeln!(f, "\n{}", self.docs)
     }
 }
 
-/// Struct representing a Markdown section representing any `InterfaceFunc` element
+/// Record representing a Markdown section representing any `InterfaceFunc` element
 /// of the AST.
 /// Consists of:
 /// * `header`, e.g., "###",

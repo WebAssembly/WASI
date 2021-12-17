@@ -10,7 +10,7 @@ however our intention is to align them going forward.
 
 ## Active proposals
 
-Proposals follow [this process document](https://github.com/WebAssembly/WASI/blob/master/docs/Process.md).
+Proposals follow [this process document](https://github.com/WebAssembly/WASI/blob/main/docs/Process.md).
 
 ### Phase 4 - Standardize the Feature (WG)
 
@@ -28,32 +28,43 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [I/O][wasi-io]                                                                 | Dan Gohman                             |
 | [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |
-| [Command-Line][wasi-command-line]                                              | Dan Gohman                             |
+| ["Classic" Command-Line][wasi-classic-command]                                 | Dan Gohman                             |
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |
 | [Random][wasi-random]                                                          | Dan Gohman                             |
-| [Misc][wasi-misc]                                                              | Dan Gohman                             |
+| [Handle Index][wasi-handle-index]                                                   | Dan Gohman                             |
+| [Poll][wasi-poll]                                                                   | Dan Gohman                             |
+| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |
 
 ### Phase 1 - Feature Proposal (CG)
 
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |
+| [HTTP][wasi-http]                                                              | Piotr Sikora                           |
+| [Parallel][wasi-parallel]                                                      | Andrew Brown                           |
 
 ### Phase 0 - Pre-Proposal (CG)
 
 | Proposal                                                                       | Champion                               |
 | ------------------------------------------------------------------------------ | -------------------------------------- |
-| [proxy-wasm][wasi-proxy-wasm]                                                  | Piotr Sikora                           |
+| [Data][wasi-data]                                                              | Bailey Hayes                           |
+| [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |
 
 ### Contributing new proposals
 
 Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blob/master/Contributing.md) for the most up-to-date information on contributing proposals to standard.
 
-[wasi-io]: https://github.com/WebAssembly/WASI/phases
-[filesystem]: https://github.com/WebAssembly/WASI/phases
-[wasi-command-line]: https://github.com/WebAssembly/WASI/phases
-[clocks]: https://github.com/WebAssembly/WASI/phases
-[random]: https://github.com/WebAssembly/WASI/phases
-[misc]: https://github.com/WebAssembly/WASI/phases
-[wasi-crypto]: https://github.com/WebAssembly/WASI-crypto
-[wasi-proxy-wasm]: https://github.com/WebAssembly/WASI
+[wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
+[wasi-classic-command]: https://github.com/WebAssembly/wasi-classic-command
+[wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
+[wasi-data]: https://github.com/singlestore-labs/wasi-data
+[wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
+[wasi-io]: https://github.com/WebAssembly/wasi-io
+[wasi-misc]: https://github.com/WebAssembly/wasi-misc
+[wasi-nn]: https://github.com/WebAssembly/wasi-nn
+[wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
+[wasi-random]: https://github.com/WebAssembly/wasi-random
+[wasi-handle-index]: https://github.com/WebAssembly/wasi-handle-index
+[wasi-http]: https://github.com/WebAssembly/wasi-http
+[wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
+[wasi-poll]: https://github.com/WebAssembly/wasi-poll

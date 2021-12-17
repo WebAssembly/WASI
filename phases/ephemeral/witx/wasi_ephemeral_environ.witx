@@ -11,18 +11,17 @@
 
   ;;; Read environment variable data.
   ;;; The sizes of the buffers should match that returned by `sizes_get`.
+  ;;; Key/value pairs are expected to be joined with `=`s, and terminated with `\0`s.
   (@interface func (export "get")
-    (param $environ (@witx pointer (@witx pointer char8)))
-    (param $environ_buf (@witx pointer char8))
-    (result $error $errno)
+    (param $environ (@witx pointer (@witx pointer (@witx char8))))
+    (param $environ_buf (@witx pointer (@witx char8)))
+    (result $error (expected (error $errno)))
   )
 
   ;;; Return environment variable data sizes.
   (@interface func (export "sizes_get")
-    (result $error $errno)
-    ;;; The number of environment variable arguments.
-    (result $environc $size)
-    ;;; The size of the environment variable data.
-    (result $environ_buf_size $size)
+    ;;; Returns the number of environment variable arguments and the size of the
+    ;;; environment variable data.
+    (result $error (expected (tuple $size $size) (error $errno)))
   )
 )

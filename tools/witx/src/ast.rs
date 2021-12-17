@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+use crate::Abi;
 use std::collections::{HashMap, HashSet};
 use std::rc::{Rc, Weak};
 
@@ -63,13 +63,27 @@ impl Document {
             _ => None,
         })
     }
-    /// All of the (unique) types used as the first result value of a function.
+    /// All of the (unique) types used as "err" variant of results returned from
+    /// functions.
     pub fn error_types<'a>(&'a self) -> impl Iterator<Item = TypeRef> + 'a {
         let errors: HashSet<TypeRef> = self
             .modules()
             .flat_map(|m| {
                 m.funcs()
-                    .filter_map(|f| f.results.get(0).as_ref().map(|r| r.tref.clone()))
+                    .filter_map(|f| {
+                        if f.results.len() == 1 {
+                            Some(f.results[0].tref.type_().clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .filter_map(|t| match &*t {
+                        Type::Variant(v) => {
+                            let (_ok, err) = v.as_expected()?;
+                            Some(err?.clone())
+                        }
+                        _ => None,
+                    })
                     .collect::<HashSet<TypeRef>>()
             })
             .collect();
@@ -84,6 +98,13 @@ impl Document {
     pub fn modules<'a>(&'a self) -> impl Iterator<Item = Rc<Module>> + 'a {
         self.definitions.iter().filter_map(|d| match d {
             Definition::Module(m) => Some(m.clone()),
+            _ => None,
+        })
+    }
+
+    pub fn constants<'a>(&'a self) -> impl Iterator<Item = &'a Constant> + 'a {
+        self.definitions.iter().filter_map(|d| match d {
+            Definition::Constant(c) => Some(c),
             _ => None,
         })
     }
@@ -108,6 +129,7 @@ impl std::hash::Hash for Document {
 pub enum Definition {
     Typename(Rc<NamedType>),
     Module(Rc<Module>),
+    Constant(Constant),
 }
 
 #[derive(Debug, Clone)]
@@ -154,10 +176,17 @@ pub enum TypeRef {
 }
 
 impl TypeRef {
-    pub fn type_(&self) -> Rc<Type> {
+    pub fn type_(&self) -> &Rc<Type> {
         match self {
             TypeRef::Name(named) => named.type_(),
-            TypeRef::Value(ref v) => v.clone(),
+            TypeRef::Value(v) => v,
+        }
+    }
+
+    pub fn named(&self) -> bool {
+        match self {
+            TypeRef::Name(_) => true,
+            TypeRef::Value(_) => false,
         }
     }
 }
@@ -170,36 +199,49 @@ pub struct NamedType {
 }
 
 impl NamedType {
-    pub fn type_(&self) -> Rc<Type> {
+    pub fn type_(&self) -> &Rc<Type> {
         self.tref.type_()
     }
 }
 
+/// Structure of all possible interface types.
+///
+/// Note that this is intended to match the interface types proposal itself.
+/// Currently this is relatively close to that with just a few `*.witx`
+/// extensions for now.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
-    Enum(EnumDatatype),
-    Int(IntDatatype),
-    Flags(FlagsDatatype),
-    Struct(StructDatatype),
-    Union(UnionDatatype),
+    /// A structure with named field.
+    Record(RecordDatatype),
+    /// An enumeration where a value is one of a number of variants.
+    Variant(Variant),
+    /// A "handle" which is an un-forgeable reference. Today this is an `i32`
+    /// where a module can't forge and use integers it was not already given
+    /// access to.
     Handle(HandleDatatype),
-    Array(TypeRef),
+    /// A list of a type, stored in linear memory.
+    ///
+    /// Note that lists of `char` are specialized to indicate strings.
+    List(TypeRef),
+    /// A `witx`-specific type representing a raw mutable pointer into linear
+    /// memory
     Pointer(TypeRef),
+    /// A `witx`-specific type representing a raw const pointer into linear
+    /// memory
     ConstPointer(TypeRef),
+    /// A builtin base-case type.
     Builtin(BuiltinType),
 }
 
 impl Type {
+    /// Returns a human-readable string to describe this type.
     pub fn kind(&self) -> &'static str {
         use Type::*;
         match self {
-            Enum(_) => "enum",
-            Int(_) => "int",
-            Flags(_) => "flags",
-            Struct(_) => "struct",
-            Union(_) => "union",
+            Record(_) => "record",
+            Variant(_) => "variant",
             Handle(_) => "handle",
-            Array(_) => "array",
+            List(_) => "list",
             Pointer(_) => "pointer",
             ConstPointer(_) => "constpointer",
             Builtin(_) => "builtin",
@@ -209,18 +251,49 @@ impl Type {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BuiltinType {
-    String,
-    Char8,
-    USize,
-    U8,
+    /// This is a 32-bit unicode scalar value, not a code point.
+    ///
+    /// Same as the Rust language's `char` type.
+    Char,
+    /// An 8-bit unsigned integer.
+    U8 {
+        /// Indicates whether this type is intended to represent the `char`
+        /// type in the C language. The C `char` type is often unsigned, but
+        /// it's language-specific. At an interface-types level this is an
+        /// unsigned byte but binding generators may wish to bind this as the
+        /// language-specific representation for a C character instead.
+        ///
+        /// This is also currently used exclusively in conjunction with `@witx
+        /// pointer` to hint that it's pointing to unicode string data as well.
+        lang_c_char: bool,
+    },
+    /// A 16-bit unsigned integer.
     U16,
-    U32,
+    /// A 32-bit unsigned integer.
+    U32 {
+        /// Indicates that this 32-bit value should actually be considered a
+        /// pointer-like value in language bindings. At the interface types
+        /// layer this is always a 32-bit unsigned value, but binding
+        /// generators may wish to instead bind this as the equivalent of C's
+        /// `size_t` for convenience with other APIs.
+        ///
+        /// This allows witx authors to communicate the intent that the
+        /// argument or return-value is pointer-like.
+        lang_ptr_size: bool,
+    },
+    /// A 64-bit unsigned integer.
     U64,
+    /// An 8-bit signed integer
     S8,
+    /// A 16-bit signed integer
     S16,
+    /// A 32-bit signed integer
     S32,
+    /// A 64-bit signed integer
     S64,
+    /// A 32-bit floating point value.
     F32,
+    /// A 64-bit floating point value.
     F64,
 }
 
@@ -232,72 +305,154 @@ pub enum IntRepr {
     U64,
 }
 
+impl IntRepr {
+    pub fn to_builtin(&self) -> BuiltinType {
+        match self {
+            IntRepr::U8 => BuiltinType::U8 { lang_c_char: false },
+            IntRepr::U16 => BuiltinType::U16,
+            IntRepr::U32 => BuiltinType::U32 {
+                lang_ptr_size: false,
+            },
+            IntRepr::U64 => BuiltinType::U64,
+        }
+    }
+}
+
+/// A struct-like value with named fields.
+///
+/// Records map to `struct`s in most languages where this is a type with a
+/// number of named fields that all have their own particular type. Field order
+/// dictates layout in memory.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct EnumDatatype {
-    pub repr: IntRepr,
-    pub variants: Vec<EnumVariant>,
+pub struct RecordDatatype {
+    /// A hint as to what this record might be.
+    ///
+    /// Note that in the future this will only be a hint, not a control of the
+    /// actual representation itself. At this time though the record layout of
+    /// bitflags is different from other types.
+    pub kind: RecordKind,
+
+    /// A list of named fields for this record.
+    pub members: Vec<RecordMember>,
+}
+
+/// Different kinds of records used for hinting various language-specific types.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum RecordKind {
+    /// A tuple where the name of all fields are consecutive integers starting
+    /// at "0".
+    Tuple,
+    /// A record where all fields are `bool`s. Currently represented as an
+    /// integer with bits set or not set.
+    Bitflags(IntRepr),
+    /// All other structures.
+    Other,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct EnumVariant {
-    pub name: Id,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct IntDatatype {
-    pub repr: IntRepr,
-    pub consts: Vec<IntConst>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct IntConst {
-    pub name: Id,
-    pub value: u64,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FlagsDatatype {
-    pub repr: IntRepr,
-    pub flags: Vec<FlagsMember>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct FlagsMember {
-    pub name: Id,
-    pub docs: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct StructDatatype {
-    pub members: Vec<StructMember>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct StructMember {
+pub struct RecordMember {
     pub name: Id,
     pub tref: TypeRef,
     pub docs: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UnionDatatype {
-    pub tag: Rc<NamedType>,
-    pub variants: Vec<UnionVariant>,
+impl RecordDatatype {
+    pub fn is_tuple(&self) -> bool {
+        match self.kind {
+            RecordKind::Tuple => true,
+            _ => false,
+        }
+    }
+
+    pub fn bitflags_repr(&self) -> Option<IntRepr> {
+        match self.kind {
+            RecordKind::Bitflags(i) => Some(i),
+            _ => None,
+        }
+    }
 }
 
+/// A type which represents how values can be one of a set of possible cases.
+///
+/// This type maps to an `enum` in languages like Rust, but doesn't have an
+/// equivalent in languages like JS or C. The closest analog in C is a tagged
+/// union, but a `Variant` is always consistent whereas a tagged union in C
+/// could be mis-tagged or such.
+///
+/// Variants are used to represent one of a possible set of types. For example
+/// an enum-like variant, a result that is either success or failure, or even a
+/// simple `bool`. Variants are primarily used heavily with various kinds of
+/// shorthands in the `*.witx` format to represent idioms in languages.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UnionVariant {
+pub struct Variant {
+    /// The bit representation of the width of this variant's tag when the
+    /// variant is stored in memory.
+    pub tag_repr: IntRepr,
+    /// The possible cases that values of this variant type can take.
+    pub cases: Vec<Case>,
+}
+
+impl Variant {
+    /// If this variant looks like an `expected` shorthand, return the ok/err
+    /// types associated with this result.
+    ///
+    /// Only matches variants fo the form:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "ok" ok?)
+    ///     (case "err" err?))
+    /// ```
+    pub fn as_expected(&self) -> Option<(Option<&TypeRef>, Option<&TypeRef>)> {
+        if self.cases.len() != 2 {
+            return None;
+        }
+        if self.cases[0].name != "ok" {
+            return None;
+        }
+        if self.cases[1].name != "err" {
+            return None;
+        }
+        Some((self.cases[0].tref.as_ref(), self.cases[1].tref.as_ref()))
+    }
+
+    /// Returns whether this variant type is "bool-like" meaning that it matches
+    /// this type:
+    ///
+    /// ```text
+    /// (variant
+    ///     (case "false")
+    ///     (case "true"))
+    /// ```
+    pub fn is_bool(&self) -> bool {
+        self.cases.len() == 2
+            && self.cases[0].name == "false"
+            && self.cases[1].name == "true"
+            && self.cases[0].tref.is_none()
+            && self.cases[1].tref.is_none()
+    }
+
+    /// Returns whether this variant type is "enum-like" meaning that all of its
+    /// cases have no payload associated with them.
+    pub fn is_enum(&self) -> bool {
+        self.cases.iter().all(|c| c.tref.is_none())
+    }
+}
+
+/// One of a number of possible types that a `Variant` can take.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Case {
+    /// The name of this case and how to identify it.
     pub name: Id,
+    /// An optional payload type for this case and data that can be associated
+    /// with it.
     pub tref: Option<TypeRef>,
+    /// Documentation for this case.
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct HandleDatatype {
-    pub supertypes: Vec<TypeRef>,
-}
+pub struct HandleDatatype {}
 
 #[derive(Debug, Clone)]
 pub struct Module {
@@ -412,6 +567,7 @@ pub enum ModuleImportVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceFunc {
+    pub abi: Abi,
     pub name: Id,
     pub params: Vec<InterfaceFuncParam>,
     pub results: Vec<InterfaceFuncParam>,
@@ -423,12 +579,13 @@ pub struct InterfaceFunc {
 pub struct InterfaceFuncParam {
     pub name: Id,
     pub tref: TypeRef,
-    pub position: InterfaceFuncParamPosition,
     pub docs: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum InterfaceFuncParamPosition {
-    Param(usize),
-    Result(usize),
+pub struct Constant {
+    pub ty: Id,
+    pub name: Id,
+    pub value: u64,
+    pub docs: String,
 }

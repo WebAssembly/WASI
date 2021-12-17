@@ -80,7 +80,7 @@ so.
 WASI also aims to include domain-specific APIs, such as
 database, blockchain, or specialized APIs for embedded
 systems. Another key building block for WASI is [optional
-imports](https://github.com/WebAssembly/WASI/blob/master/design/optional-imports.md),
+imports](https://github.com/WebAssembly/WASI/blob/main/design/optional-imports.md),
 which give applications the ability to dynamically test for the
 availability of APIs.
 
@@ -226,10 +226,10 @@ we're not actually depending on them yet, however we are carefully
 aligning with them so that we'll be ready when they are.
 
 As another example, WASI's
-[witx](https://github.com/WebAssembly/WASI/blob/master/docs/witx.md)
+[witx](https://github.com/WebAssembly/WASI/blob/main/docs/witx.md)
 file format is designed to be a
-straightforward superset of the [module type
-proposal](https://github.com/WebAssembly/module-types/blob/master/proposals/module-types/Overview.md)'s
+straightforward superset of the [module linking
+proposal](https://github.com/WebAssembly/module-linking/blob/master/proposals/module-linking/Explainer.md)'s
 .wit format and the [annotations
 proposal](https://github.com/WebAssembly/annotations/)'s annotation
 syntax.
@@ -243,8 +243,8 @@ transparently. This can be used to adapt or attenuate the functionality
 of a WASI API without changing the code using it.
 
 In WASI, we envision interposition will primarily be configured
-through the mechanisms in the module types' [link-time virtualization
-](https://github.com/WebAssembly/module-types/blob/module-imports/proposals/module-types/Explainer.md#link-time-virtualization).
+through the mechanisms in the module linking' [link-time virtualization
+](https://github.com/WebAssembly/module-linking/blob/master/proposals/module-linking/Explainer.md#link-time-virtualization).
 Imports are resolved when a module is instantiated, which may happen
 during the runtime of a larger logical application, so we can support
 interposition of WASI APIs without defining them in terms of explicit

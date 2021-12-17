@@ -32,7 +32,7 @@ fn _parse_witx_with(paths: &[&Path], io: &dyn WitxIo) -> Result<Document, WitxEr
             &mut parsed,
         )?;
     }
-    Ok(Document::new(definitions, validator.entries))
+    Ok(validator.into_document(definitions))
 }
 
 fn parse_file(
@@ -60,13 +60,13 @@ fn parse_file(
     for t in doc.items {
         match t.item {
             TopLevelSyntax::Decl(d) => {
-                let def = validator
+                validator
                     .scope(&input, &path)
-                    .validate_decl(&d, &t.comments)
+                    .validate_decl(&d, &t.comments, definitions)
                     .map_err(WitxError::Validation)?;
-                definitions.push(def);
             }
             TopLevelSyntax::Use(u) => {
+                let root = path.parent().unwrap_or(root);
                 parse_file(u.as_ref(), io, root, validator, definitions, parsed)?;
             }
         }
@@ -108,10 +108,15 @@ mod test {
         .expect("parse");
 
         let b_float = doc.typename(&Id::new("b_float")).unwrap();
-        assert_eq!(*b_float.type_(), Type::Builtin(BuiltinType::F64));
+        assert_eq!(**b_float.type_(), Type::Builtin(BuiltinType::F64));
 
         let c_int = doc.typename(&Id::new("c_int")).unwrap();
-        assert_eq!(*c_int.type_(), Type::Builtin(BuiltinType::U32));
+        assert_eq!(
+            **c_int.type_(),
+            Type::Builtin(BuiltinType::U32 {
+                lang_ptr_size: false
+            })
+        );
     }
 
     #[test]
@@ -128,7 +133,41 @@ mod test {
         .expect("parse");
 
         let d_char = doc.typename(&Id::new("d_char")).unwrap();
-        assert_eq!(*d_char.type_(), Type::Builtin(BuiltinType::U8));
+        assert_eq!(
+            **d_char.type_(),
+            Type::Builtin(BuiltinType::U8 { lang_c_char: false })
+        );
+    }
+
+    #[test]
+    fn multi_use_with_layered_dirs() {
+        let doc = parse_witx_with(
+            &[Path::new("/root.witx")],
+            &MockFs::new(&[
+                ("/root.witx", "(use \"subdir/child.witx\")"),
+                (
+                    "/subdir/child.witx",
+                    "(use \"sibling.witx\")\n(typename $b_float f64)",
+                ),
+                ("/subdir/sibling.witx", "(typename $c_int u32)"),
+                // This definition looks just like subdir/sibling.witx but
+                // defines c_int differently - this test shows it does Not get
+                // included by subdir/child.witx's use.
+                ("/sibling.witx", "(typename $c_int u64)"),
+            ]),
+        )
+        .expect("parse");
+
+        let b_float = doc.typename(&Id::new("b_float")).unwrap();
+        assert_eq!(**b_float.type_(), Type::Builtin(BuiltinType::F64));
+
+        let c_int = doc.typename(&Id::new("c_int")).unwrap();
+        assert_eq!(
+            **c_int.type_(),
+            Type::Builtin(BuiltinType::U32 {
+                lang_ptr_size: false
+            })
+        );
     }
 
     #[test]

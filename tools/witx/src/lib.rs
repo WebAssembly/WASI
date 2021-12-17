@@ -1,7 +1,7 @@
+/// Map witx types to core (wasm standard) types
+mod abi;
 /// Types describing a validated witx document
 mod ast;
-/// Map witx types to core (wasm standard) types
-mod coretypes;
 /// Render documentation
 mod docs;
 /// Interface for filesystem or mock IO
@@ -9,7 +9,7 @@ mod io;
 /// Calculate memory layout of types
 mod layout;
 /// Witx syntax parsing from SExprs
-mod parser;
+pub mod parser;
 /// Paths to witx documents for various proposal phases
 pub mod phases;
 /// Calculate required polyfill between interfaces
@@ -23,21 +23,14 @@ mod toplevel;
 /// Validate declarations into ast
 mod validate;
 
-pub use ast::{
-    BuiltinType, Definition, Document, Entry, EnumDatatype, EnumVariant, FlagsDatatype,
-    FlagsMember, HandleDatatype, Id, IntConst, IntDatatype, IntRepr, InterfaceFunc,
-    InterfaceFuncParam, InterfaceFuncParamPosition, Module, ModuleDefinition, ModuleEntry,
-    ModuleImport, ModuleImportVariant, NamedType, StructDatatype, StructMember, Type, TypeRef,
-    UnionDatatype, UnionVariant,
-};
-pub use coretypes::{AtomType, CoreFuncType, CoreParamSignifies, CoreParamType, TypePassedBy};
+pub use abi::*;
+pub use ast::*;
 pub use docs::Documentation;
 pub use io::{Filesystem, MockFs, WitxIo};
-pub use layout::{Layout, SizeAlign, StructMemberLayout, UnionLayout};
-pub use parser::DeclSyntax;
+pub use layout::{Layout, RecordMemberLayout, SizeAlign};
 pub use render::SExpr;
 pub use representation::{RepEquality, Representable};
-pub use validate::ValidationError;
+pub use validate::{DocValidation, ValidationError};
 
 use std::path::{Path, PathBuf};
 use thiserror::Error;
