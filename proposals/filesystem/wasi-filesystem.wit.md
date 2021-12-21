@@ -63,17 +63,17 @@ enum "type" {
     /// any of the other types specified.
     unknown,
     /// The descriptor refers to a block device inode.
-    block_device,
+    block-device,
     /// The descriptor refers to a character device inode.
-    character_device,
+    character-device,
     /// The descriptor refers to a directory inode.
     directory,
     /// The descriptor refers to a named pipe.
     fifo,
     /// The file refers to a symbolic link inode.
-    symbolic_link,
+    symbolic-link,
     /// The descriptor refers to a regular file inode.
-    regular_file,
+    regular-file,
     /// The descriptor refers to a socket.
     socket,
 }
@@ -83,7 +83,7 @@ enum "type" {
 ```wit
 /// Descriptor flags.
 ///
-/// Note: This was called `fdflags` in earlier versions of WASI.
+/// Note: This was called `fd-flags` in earlier versions of WASI.
 flags "flags" {
     /// Read mode: Data can be read.
     read,
@@ -132,19 +132,19 @@ record stat {
 }
 ```
 
-## `atflags`
+## `at-flags`
 ```wit
 /// Flags determining the method of how paths are resolved.
-flags atflags {
+flags at-flags {
     /// As long as the resolved path corresponds to a symbolic link, it is expanded.
-    symlink_follow,
+    symlink-follow,
 }
 ```
 
-## `oflags`
+## `o-flags`
 ```wit
-/// Open flags used by `open_at`.
-flags oflags {
+/// Open flags used by `open-at`.
+flags o-flags {
     /// Create file if it does not exist.
     create,
     /// Fail if not a directory.
@@ -158,7 +158,7 @@ flags oflags {
 
 ## `mode`
 ```wit
-/// Permissions mode used by `open_at`, `change_permissions_at`, and similar.
+/// Permissions mode used by `open-at`, `change-permissions-at`, and similar.
 flags mode {
     /// True if the resource is considered readable by the containing
     /// filesystem.
@@ -191,12 +191,12 @@ type device = u64
 type inode = u64
 ```
 
-## `new_timestamp`
+## `new-timestamp`
 ```wit
 /// When setting a timestamp, this gives the value to set it to.
-variant new_timestamp {
+variant new-timestamp {
     /// Leave the timestamp set to its previous value.
-    no_change,
+    no-change,
     /// Set the timestamp to the current time of the system clock associated
     /// with the filesystem.
     now,
@@ -397,10 +397,10 @@ enum advice {
 }
 ```
 
-## `seek_from`
+## `seek-from`
 ```wit
 /// The position relative to which to set the offset of the descriptor.
-variant seek_from {
+variant seek-from {
     /// Seek relative to start-of-file.
     set(filesize),
     /// Seek relative to current position.
@@ -465,27 +465,27 @@ datasync: function() -> expected<_, errno>
 info: function() -> expected<info, errno>
 ```
 
-## `set_size`
+## `set-size`
 ```wit
 /// Adjust the size of an open file. If this increases the file's size, the
 /// extra bytes are filled with zeros.
 ///
 /// Note: This was called `fd_filestat_set_size` in earlier versions of WASI.
-set_size: function(size: filesize) -> expected<_, errno>
+set-size: function(size: filesize) -> expected<_, errno>
 ```
 
-## `set_times`
+## `set-times`
 ```wit
 /// Adjust the timestamps of an open file or directory.
 ///
 /// Note: This is similar to `futimens` in POSIX.
 ///
 /// Note: This was called `fd_filestat_set_times` in earlier versions of WASI.
-set_times: function(
+set-times: function(
     /// The desired values of the data access timestamp.
-    atim: new_timestamp,
+    atim: new-timestamp,
     /// The desired values of the data modification timestamp.
-    mtim: new_timestamp,
+    mtim: new-timestamp,
 ) -> expected<_, errno>
 ```
 
@@ -564,7 +564,7 @@ readdir: function(
 /// Note: This is similar to `lseek` in POSIX.
 seek: function(
     /// The method to compute the new offset.
-    "from": seek_from,
+    "from": seek-from,
 ) -> (
     /// The new offset of the descriptor, relative to the start of the file.
     expected<filesize, errno>
@@ -601,27 +601,27 @@ write: function(
 ) -> expected<size, errno>
 ```
 
-## `create_directory_at`
+## `create-directory-at`
 ```wit
 /// Create a directory.
 ///
 /// Note: This is similar to `mkdirat` in POSIX.
-create_directory_at: function(
+create-directory-at: function(
     /// The relative path at which to create the directory.
     path: string,
 ) -> expected<_, errno>
 ```
 
-## `stat_at`
+## `stat-at`
 ```wit
 /// Return the attributes of a file or directory.
 ///
 /// Note: This is similar to `fstatat` in POSIX.
 ///
 /// Note: This was called `fd_filestat_get` in earlier versions of WASI.
-stat_at: function(
+stat-at: function(
     /// Flags determining the method of how the path is resolved.
-    atflags: atflags,
+    at-flags: at-flags,
     /// The relative path of the file or directory to inspect.
     path: string,
 ) -> (
@@ -630,43 +630,43 @@ stat_at: function(
 )
 ```
 
-## `set_times_at`
+## `set-times-at`
 ```wit
 /// Adjust the timestamps of a file or directory.
 ///
 /// Note: This is similar to `utimensat` in POSIX.
 ///
 /// Note: This was called `path_filestat_set_times` in earlier versions of WASI.
-set_times_at: function(
+set-times-at: function(
     /// Flags determining the method of how the path is resolved.
-    atflags: atflags,
+    at-flags: at-flags,
     /// The relative path of the file or directory to operate on.
     path: string,
     /// The desired values of the data access timestamp.
-    atim: new_timestamp,
+    atim: new-timestamp,
     /// The desired values of the data modification timestamp.
-    mtim: new_timestamp,
+    mtim: new-timestamp,
 ) -> expected<_, errno>
 ```
 
-## `link_at`
+## `link-at`
 ```wit
 /// Create a hard link.
 ///
 /// Note: This is similar to `linkat` in POSIX.
-link_at: function(
+link-at: function(
     /// Flags determining the method of how the path is resolved.
-    old_atflags: atflags,
+    old-at-flags: at-flags,
     /// The relative source path from which to link.
-    old_path: string,
-    /// The base directory for `new_path`.
-    new_descriptor: handle descriptor,
+    old-path: string,
+    /// The base directory for `new-path`.
+    new-descriptor: handle descriptor,
     /// The relative destination path at which to create the hard link.
-    new_path: string,
+    new-path: string,
 ) -> expected<_, errno>
 ```
 
-## `open_at`
+## `open-at`
 ```wit
 /// Open a file or directory.
 ///
@@ -677,15 +677,15 @@ link_at: function(
 /// guaranteed to be less than 2**31.
 ///
 /// Note: This is similar to `openat` in POSIX.
-open_at: function(
+open-at: function(
     /// Flags determining the method of how the path is resolved.
-    atflags: atflags,
+    at-flags: at-flags,
     /// The relative path of the object to open.
     path: string,
     /// The method by which to open the file.
-    oflags: oflags,
+    o-flags: o-flags,
     /// Flags to use for the resulting descriptor.
-    fdflags: "flags",
+    fd-flags: "flags",
     /// Permissions to use when creating a new file.
     mode: mode
 ) -> (
@@ -694,12 +694,12 @@ open_at: function(
 )
 ```
 
-## `readlink_at`
+## `readlink-at`
 ```wit
 /// Read the contents of a symbolic link.
 ///
 /// Note: This is similar to `readlinkat` in POSIX.
-readlink_at: function(
+readlink-at: function(
     /// The relative path of the symbolic link from which to read.
     path: string,
 ) -> (
@@ -708,60 +708,60 @@ readlink_at: function(
 )
 ```
 
-## `remove_directory_at`
+## `remove-directory-at`
 ```wit
 /// Remove a directory.
 ///
 /// Return `errno::notempty` if the directory is not empty.
 ///
 /// Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
-remove_directory_at: function(
+remove-directory-at: function(
     /// The relative path to a directory to remove.
     path: string,
 ) -> expected<_, errno>
 ```
 
-## `rename_at`
+## `rename-at`
 ```wit
 /// Rename a filesystem object.
 ///
 /// Note: This is similar to `renameat` in POSIX.
-rename_at: function(
+rename-at: function(
     /// The relative source path of the file or directory to rename.
-    old_path: string,
-    /// The base directory for `new_path`.
-    new_descriptor: handle descriptor,
+    old-path: string,
+    /// The base directory for `new-path`.
+    new-descriptor: handle descriptor,
     /// The relative destination path to which to rename the file or directory.
-    new_path: string,
+    new-path: string,
 ) -> expected<_, errno>
 ```
 
-## `symlink_at`
+## `symlink-at`
 ```wit
 /// Create a symbolic link.
 ///
 /// Note: This is similar to `symlinkat` in POSIX.
-symlink_at: function(
+symlink-at: function(
     /// The contents of the symbolic link.
-    old_path: string,
+    old-path: string,
     /// The relative destination path at which to create the symbolic link.
-    new_path: string,
+    new-path: string,
 ) -> expected<_, errno>
 ```
 
-## `unlink_file_at`
+## `unlink-file-at`
 ```wit
 /// Unlink a filesystem object that is not a directory.
 ///
 /// Return `errno::isdir` if the path refers to a directory.
 /// Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
-unlink_file_at: function(
+unlink-file-at: function(
     /// The relative path to a file to unlink.
     path: string,
 ) -> expected<_, errno>
 ```
 
-## `change_file_permissions_at`
+## `change-file-permissions-at`
 /// Change the permissions of a filesystem object that is not a directory.
 ///
 /// Note that the ultimate meanings of these permissions is
@@ -769,9 +769,9 @@ unlink_file_at: function(
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
 ```wit
-change_file_permissions_at: function(
+change-file-permissions-at: function(
     /// Flags determining the method of how the path is resolved.
-    atflags: atflags,
+    at-flags: at-flags,
     /// The relative path to operate on.
     path: string,
     /// The new permissions for the filesystem object.
@@ -779,7 +779,7 @@ change_file_permissions_at: function(
 ) -> expected<_, errno>
 ```
 
-## `change_dir_permissions_at`
+## `change-dir-permissions-at`
 /// Change the permissions of a directory.
 ///
 /// Note that the ultimate meanings of these permissions is
@@ -791,9 +791,9 @@ change_file_permissions_at: function(
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
 ```wit
-change_directory_permissions_at: function(
+change-directory-permissions-at: function(
     /// Flags determining the method of how the path is resolved.
-    atflags: atflags,
+    at-flags: at-flags,
     /// The relative path to operate on.
     path: string,
     /// The new permissions for the directory.

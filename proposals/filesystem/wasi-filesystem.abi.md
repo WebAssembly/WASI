@@ -59,11 +59,11 @@ Size: 1, Alignment: 1
   The type of the descriptor or file is unknown or is different from
   any of the other types specified.
 
-- <a href="type.block_device" name="type.block_device"></a> [`block_device`](#type.block_device)
+- <a href="type.block_device" name="type.block_device"></a> [`block-device`](#type.block_device)
 
   The descriptor refers to a block device inode.
 
-- <a href="type.character_device" name="type.character_device"></a> [`character_device`](#type.character_device)
+- <a href="type.character_device" name="type.character_device"></a> [`character-device`](#type.character_device)
 
   The descriptor refers to a character device inode.
 
@@ -75,11 +75,11 @@ Size: 1, Alignment: 1
 
   The descriptor refers to a named pipe.
 
-- <a href="type.symbolic_link" name="type.symbolic_link"></a> [`symbolic_link`](#type.symbolic_link)
+- <a href="type.symbolic_link" name="type.symbolic_link"></a> [`symbolic-link`](#type.symbolic_link)
 
   The file refers to a symbolic link inode.
 
-- <a href="type.regular_file" name="type.regular_file"></a> [`regular_file`](#type.regular_file)
+- <a href="type.regular_file" name="type.regular_file"></a> [`regular-file`](#type.regular_file)
 
   The descriptor refers to a regular file inode.
 
@@ -91,7 +91,7 @@ Size: 1, Alignment: 1
 
   Descriptor flags.
   
-  Note: This was called `fdflags` in earlier versions of WASI.
+  Note: This was called `fd-flags` in earlier versions of WASI.
 
 Size: 1, Alignment: 1
 
@@ -179,7 +179,7 @@ Size: 64, Alignment: 8
 
   Last file status change timestamp.
 
-## <a href="#atflags" name="atflags"></a> `atflags`: record
+## <a href="#at_flags" name="at_flags"></a> `at-flags`: record
 
   Flags determining the method of how paths are resolved.
 
@@ -187,42 +187,42 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="atflags.symlink_follow" name="atflags.symlink_follow"></a> [`symlink_follow`](#atflags.symlink_follow): `bool`
+- <a href="at_flags.symlink_follow" name="at_flags.symlink_follow"></a> [`symlink-follow`](#at_flags.symlink_follow): `bool`
 
   As long as the resolved path corresponds to a symbolic link, it is expanded.
 Bit: 0
 
-## <a href="#oflags" name="oflags"></a> `oflags`: record
+## <a href="#o_flags" name="o_flags"></a> `o-flags`: record
 
-  Open flags used by `open_at`.
+  Open flags used by `open-at`.
 
 Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="oflags.create" name="oflags.create"></a> [`create`](#oflags.create): `bool`
+- <a href="o_flags.create" name="o_flags.create"></a> [`create`](#o_flags.create): `bool`
 
   Create file if it does not exist.
 Bit: 0
 
-- <a href="oflags.directory" name="oflags.directory"></a> [`directory`](#oflags.directory): `bool`
+- <a href="o_flags.directory" name="o_flags.directory"></a> [`directory`](#o_flags.directory): `bool`
 
   Fail if not a directory.
 Bit: 1
 
-- <a href="oflags.excl" name="oflags.excl"></a> [`excl`](#oflags.excl): `bool`
+- <a href="o_flags.excl" name="o_flags.excl"></a> [`excl`](#o_flags.excl): `bool`
 
   Fail if file already exists.
 Bit: 2
 
-- <a href="oflags.trunc" name="oflags.trunc"></a> [`trunc`](#oflags.trunc): `bool`
+- <a href="o_flags.trunc" name="o_flags.trunc"></a> [`trunc`](#o_flags.trunc): `bool`
 
   Truncate file to size 0.
 Bit: 3
 
 ## <a href="#mode" name="mode"></a> `mode`: record
 
-  Permissions mode used by `open_at`, `change_permissions_at`, and similar.
+  Permissions mode used by `open-at`, `change-permissions-at`, and similar.
 
 Size: 1, Alignment: 1
 
@@ -264,7 +264,7 @@ Size: 8, Alignment: 8
 
 Size: 8, Alignment: 8
 
-## <a href="#new_timestamp" name="new_timestamp"></a> `new_timestamp`: variant
+## <a href="#new_timestamp" name="new_timestamp"></a> `new-timestamp`: variant
 
   When setting a timestamp, this gives the value to set it to.
 
@@ -272,7 +272,7 @@ Size: 16, Alignment: 8
 
 ### Variant Cases
 
-- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no_change`](#new_timestamp.no_change)
+- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change)
 
   Leave the timestamp set to its previous value.
 
@@ -648,7 +648,7 @@ Size: 1, Alignment: 1
 
   The application expects to access the specified data once and then not reuse it thereafter.
 
-## <a href="#seek_from" name="seek_from"></a> `seek_from`: variant
+## <a href="#seek_from" name="seek_from"></a> `seek-from`: variant
 
   The position relative to which to set the offset of the descriptor.
 
@@ -736,7 +736,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_set_size" name="descriptor_set_size"></a> `descriptor::set_size` 
+#### <a href="#descriptor_set_size" name="descriptor_set_size"></a> `descriptor::set-size` 
 
   Adjust the size of an open file. If this increases the file's size, the
   extra bytes are filled with zeros.
@@ -752,7 +752,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_set_times" name="descriptor_set_times"></a> `descriptor::set_times` 
+#### <a href="#descriptor_set_times" name="descriptor_set_times"></a> `descriptor::set-times` 
 
   Adjust the timestamps of an open file or directory.
   
@@ -762,8 +762,8 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_set_times.self" name="descriptor_set_times.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_set_times.atim" name="descriptor_set_times.atim"></a> `atim`: [`new_timestamp`](#new_timestamp)
-- <a href="#descriptor_set_times.mtim" name="descriptor_set_times.mtim"></a> `mtim`: [`new_timestamp`](#new_timestamp)
+- <a href="#descriptor_set_times.atim" name="descriptor_set_times.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
+- <a href="#descriptor_set_times.mtim" name="descriptor_set_times.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
 ##### Results
 
 - <a href="#descriptor_set_times." name="descriptor_set_times."></a> ``: expected<_, [`errno`](#errno)>
@@ -853,7 +853,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_seek.self" name="descriptor_seek.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_seek.from" name="descriptor_seek.from"></a> `from`: [`seek_from`](#seek_from)
+- <a href="#descriptor_seek.from" name="descriptor_seek.from"></a> `from`: [`seek-from`](#seek_from)
 ##### Results
 
 - <a href="#descriptor_seek." name="descriptor_seek."></a> ``: expected<[`filesize`](#filesize), [`errno`](#errno)>
@@ -903,7 +903,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_create_directory_at" name="descriptor_create_directory_at"></a> `descriptor::create_directory_at` 
+#### <a href="#descriptor_create_directory_at" name="descriptor_create_directory_at"></a> `descriptor::create-directory-at` 
 
   Create a directory.
   
@@ -918,7 +918,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_stat_at" name="descriptor_stat_at"></a> `descriptor::stat_at` 
+#### <a href="#descriptor_stat_at" name="descriptor_stat_at"></a> `descriptor::stat-at` 
 
   Return the attributes of a file or directory.
   
@@ -928,7 +928,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_stat_at.self" name="descriptor_stat_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_stat_at.atflags" name="descriptor_stat_at.atflags"></a> `atflags`: [`atflags`](#atflags)
+- <a href="#descriptor_stat_at.at_flags" name="descriptor_stat_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_stat_at.path" name="descriptor_stat_at.path"></a> `path`: `string`
 ##### Results
 
@@ -936,7 +936,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_set_times_at" name="descriptor_set_times_at"></a> `descriptor::set_times_at` 
+#### <a href="#descriptor_set_times_at" name="descriptor_set_times_at"></a> `descriptor::set-times-at` 
 
   Adjust the timestamps of a file or directory.
   
@@ -946,17 +946,17 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_set_times_at.self" name="descriptor_set_times_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_set_times_at.atflags" name="descriptor_set_times_at.atflags"></a> `atflags`: [`atflags`](#atflags)
+- <a href="#descriptor_set_times_at.at_flags" name="descriptor_set_times_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_set_times_at.path" name="descriptor_set_times_at.path"></a> `path`: `string`
-- <a href="#descriptor_set_times_at.atim" name="descriptor_set_times_at.atim"></a> `atim`: [`new_timestamp`](#new_timestamp)
-- <a href="#descriptor_set_times_at.mtim" name="descriptor_set_times_at.mtim"></a> `mtim`: [`new_timestamp`](#new_timestamp)
+- <a href="#descriptor_set_times_at.atim" name="descriptor_set_times_at.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
+- <a href="#descriptor_set_times_at.mtim" name="descriptor_set_times_at.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
 ##### Results
 
 - <a href="#descriptor_set_times_at." name="descriptor_set_times_at."></a> ``: expected<_, [`errno`](#errno)>
 
 ----
 
-#### <a href="#descriptor_link_at" name="descriptor_link_at"></a> `descriptor::link_at` 
+#### <a href="#descriptor_link_at" name="descriptor_link_at"></a> `descriptor::link-at` 
 
   Create a hard link.
   
@@ -964,17 +964,17 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_link_at.self" name="descriptor_link_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_link_at.old_atflags" name="descriptor_link_at.old_atflags"></a> `old_atflags`: [`atflags`](#atflags)
-- <a href="#descriptor_link_at.old_path" name="descriptor_link_at.old_path"></a> `old_path`: `string`
-- <a href="#descriptor_link_at.new_descriptor" name="descriptor_link_at.new_descriptor"></a> `new_descriptor`: handle<descriptor>
-- <a href="#descriptor_link_at.new_path" name="descriptor_link_at.new_path"></a> `new_path`: `string`
+- <a href="#descriptor_link_at.old_at_flags" name="descriptor_link_at.old_at_flags"></a> `old-at-flags`: [`at-flags`](#at_flags)
+- <a href="#descriptor_link_at.old_path" name="descriptor_link_at.old_path"></a> `old-path`: `string`
+- <a href="#descriptor_link_at.new_descriptor" name="descriptor_link_at.new_descriptor"></a> `new-descriptor`: handle<descriptor>
+- <a href="#descriptor_link_at.new_path" name="descriptor_link_at.new_path"></a> `new-path`: `string`
 ##### Results
 
 - <a href="#descriptor_link_at." name="descriptor_link_at."></a> ``: expected<_, [`errno`](#errno)>
 
 ----
 
-#### <a href="#descriptor_open_at" name="descriptor_open_at"></a> `descriptor::open_at` 
+#### <a href="#descriptor_open_at" name="descriptor_open_at"></a> `descriptor::open-at` 
 
   Open a file or directory.
   
@@ -988,10 +988,10 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_open_at.self" name="descriptor_open_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_open_at.atflags" name="descriptor_open_at.atflags"></a> `atflags`: [`atflags`](#atflags)
+- <a href="#descriptor_open_at.at_flags" name="descriptor_open_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_open_at.path" name="descriptor_open_at.path"></a> `path`: `string`
-- <a href="#descriptor_open_at.oflags" name="descriptor_open_at.oflags"></a> `oflags`: [`oflags`](#oflags)
-- <a href="#descriptor_open_at.fdflags" name="descriptor_open_at.fdflags"></a> `fdflags`: [`flags`](#flags)
+- <a href="#descriptor_open_at.o_flags" name="descriptor_open_at.o_flags"></a> `o-flags`: [`o-flags`](#o_flags)
+- <a href="#descriptor_open_at.fd_flags" name="descriptor_open_at.fd_flags"></a> `fd-flags`: [`flags`](#flags)
 - <a href="#descriptor_open_at.mode" name="descriptor_open_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
 
@@ -999,7 +999,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_readlink_at" name="descriptor_readlink_at"></a> `descriptor::readlink_at` 
+#### <a href="#descriptor_readlink_at" name="descriptor_readlink_at"></a> `descriptor::readlink-at` 
 
   Read the contents of a symbolic link.
   
@@ -1014,7 +1014,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_remove_directory_at" name="descriptor_remove_directory_at"></a> `descriptor::remove_directory_at` 
+#### <a href="#descriptor_remove_directory_at" name="descriptor_remove_directory_at"></a> `descriptor::remove-directory-at` 
 
   Remove a directory.
   
@@ -1031,7 +1031,7 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_rename_at" name="descriptor_rename_at"></a> `descriptor::rename_at` 
+#### <a href="#descriptor_rename_at" name="descriptor_rename_at"></a> `descriptor::rename-at` 
 
   Rename a filesystem object.
   
@@ -1039,16 +1039,16 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_rename_at.self" name="descriptor_rename_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_rename_at.old_path" name="descriptor_rename_at.old_path"></a> `old_path`: `string`
-- <a href="#descriptor_rename_at.new_descriptor" name="descriptor_rename_at.new_descriptor"></a> `new_descriptor`: handle<descriptor>
-- <a href="#descriptor_rename_at.new_path" name="descriptor_rename_at.new_path"></a> `new_path`: `string`
+- <a href="#descriptor_rename_at.old_path" name="descriptor_rename_at.old_path"></a> `old-path`: `string`
+- <a href="#descriptor_rename_at.new_descriptor" name="descriptor_rename_at.new_descriptor"></a> `new-descriptor`: handle<descriptor>
+- <a href="#descriptor_rename_at.new_path" name="descriptor_rename_at.new_path"></a> `new-path`: `string`
 ##### Results
 
 - <a href="#descriptor_rename_at." name="descriptor_rename_at."></a> ``: expected<_, [`errno`](#errno)>
 
 ----
 
-#### <a href="#descriptor_symlink_at" name="descriptor_symlink_at"></a> `descriptor::symlink_at` 
+#### <a href="#descriptor_symlink_at" name="descriptor_symlink_at"></a> `descriptor::symlink-at` 
 
   Create a symbolic link.
   
@@ -1056,15 +1056,15 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_symlink_at.self" name="descriptor_symlink_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_symlink_at.old_path" name="descriptor_symlink_at.old_path"></a> `old_path`: `string`
-- <a href="#descriptor_symlink_at.new_path" name="descriptor_symlink_at.new_path"></a> `new_path`: `string`
+- <a href="#descriptor_symlink_at.old_path" name="descriptor_symlink_at.old_path"></a> `old-path`: `string`
+- <a href="#descriptor_symlink_at.new_path" name="descriptor_symlink_at.new_path"></a> `new-path`: `string`
 ##### Results
 
 - <a href="#descriptor_symlink_at." name="descriptor_symlink_at."></a> ``: expected<_, [`errno`](#errno)>
 
 ----
 
-#### <a href="#descriptor_unlink_file_at" name="descriptor_unlink_file_at"></a> `descriptor::unlink_file_at` 
+#### <a href="#descriptor_unlink_file_at" name="descriptor_unlink_file_at"></a> `descriptor::unlink-file-at` 
 
   Unlink a filesystem object that is not a directory.
   
@@ -1080,12 +1080,12 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_change_file_permissions_at" name="descriptor_change_file_permissions_at"></a> `descriptor::change_file_permissions_at` 
+#### <a href="#descriptor_change_file_permissions_at" name="descriptor_change_file_permissions_at"></a> `descriptor::change-file-permissions-at` 
 
 ##### Params
 
 - <a href="#descriptor_change_file_permissions_at.self" name="descriptor_change_file_permissions_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_change_file_permissions_at.atflags" name="descriptor_change_file_permissions_at.atflags"></a> `atflags`: [`atflags`](#atflags)
+- <a href="#descriptor_change_file_permissions_at.at_flags" name="descriptor_change_file_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_change_file_permissions_at.path" name="descriptor_change_file_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_file_permissions_at.mode" name="descriptor_change_file_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
@@ -1094,12 +1094,12 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_change_directory_permissions_at" name="descriptor_change_directory_permissions_at"></a> `descriptor::change_directory_permissions_at` 
+#### <a href="#descriptor_change_directory_permissions_at" name="descriptor_change_directory_permissions_at"></a> `descriptor::change-directory-permissions-at` 
 
 ##### Params
 
 - <a href="#descriptor_change_directory_permissions_at.self" name="descriptor_change_directory_permissions_at.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_change_directory_permissions_at.atflags" name="descriptor_change_directory_permissions_at.atflags"></a> `atflags`: [`atflags`](#atflags)
+- <a href="#descriptor_change_directory_permissions_at.at_flags" name="descriptor_change_directory_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_change_directory_permissions_at.path" name="descriptor_change_directory_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_directory_permissions_at.mode" name="descriptor_change_directory_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
