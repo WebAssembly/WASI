@@ -375,8 +375,6 @@ enum errno {
     txtbsy,
     /// Cross-device link.
     xdev,
-    /// Extension: Capabilities insufficient.
-    notcapable,
 }
 ```
 

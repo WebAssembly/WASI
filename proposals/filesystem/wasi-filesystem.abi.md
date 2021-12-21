@@ -616,10 +616,6 @@ Size: 1, Alignment: 1
 
   Cross-device link.
 
-- <a href="errno.notcapable" name="errno.notcapable"></a> [`notcapable`](#errno.notcapable)
-
-  Extension: Capabilities insufficient.
-
 ## <a href="#advice" name="advice"></a> `advice`: variant
 
   File or memory access pattern advisory information.
