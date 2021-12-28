@@ -49,6 +49,7 @@ Proposals follow [this process document](https://github.com/WebAssembly/WASI/blo
 | ------------------------------------------------------------------------------ | -------------------------------------- |
 | [Data][wasi-data]                                                              | Bailey Hayes                           |
 | [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |
+| [Networking][wasi-networking]                                                  | Dave Bakker                            |
 
 ### Contributing new proposals
 
@@ -68,3 +69,4 @@ Please see [Contributing to WebAssembly](https://github.com/WebAssembly/WASI/blo
 [wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
+[wasi-networking]: https://github.com/badeend/WASI-Networking
