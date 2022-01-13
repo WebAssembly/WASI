@@ -270,6 +270,8 @@
     $poll_fd_readwrite
     ;;; The right to invoke `sock_shutdown`.
     $sock_shutdown
+    ;;; The right to invoke `sock_accept`.
+    $sock_accept
   )
 )
 

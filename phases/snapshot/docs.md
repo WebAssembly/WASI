@@ -450,6 +450,11 @@ The right to invoke [`sock_shutdown`](#sock_shutdown).
 
 Bit: 28
 
+- <a href="#rights.sock_accept" name="rights.sock_accept"></a> `sock_accept`: `bool`
+The right to invoke [`sock_accept`](#sock_accept).
+
+Bit: 29
+
 ## <a href="#fd" name="fd"></a> `fd`: `Handle`
 A file descriptor handle.
 
@@ -2412,6 +2417,33 @@ The buffer to fill with random data.
 - <a href="#random_get.error.ok" name="random_get.error.ok"></a> `ok`
 
 - <a href="#random_get.error.err" name="random_get.error.err"></a> `err`: [`errno`](#errno)
+
+
+---
+
+#### <a href="#sock_accept" name="sock_accept"></a> `sock_accept(fd: fd, flags: fdflags) -> Result<fd, errno>`
+Accept a new incoming connection.
+Note: This is similar to `accept` in POSIX.
+
+##### Params
+- <a href="#sock_accept.fd" name="sock_accept.fd"></a> `fd`: [`fd`](#fd)
+The listening socket.
+
+- <a href="#sock_accept.flags" name="sock_accept.flags"></a> `flags`: [`fdflags`](#fdflags)
+The desired values of the file descriptor flags.
+
+##### Results
+- <a href="#sock_accept.error" name="sock_accept.error"></a> `error`: `Result<fd, errno>`
+New socket connection
+
+###### Variant Layout
+- size: 8
+- align: 4
+- tag_size: 4
+###### Variant cases
+- <a href="#sock_accept.error.ok" name="sock_accept.error.ok"></a> `ok`: [`fd`](#fd)
+
+- <a href="#sock_accept.error.err" name="sock_accept.error.err"></a> `err`: [`errno`](#errno)
 
 
 ---
