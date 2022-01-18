@@ -473,6 +473,17 @@
     (result $error (expected (error $errno)))
   )
 
+  ;;; Accept a new incoming connection.
+  ;;; Note: This is similar to `accept` in POSIX.
+  (@interface func (export "sock_accept")
+    ;;; The listening socket.
+    (param $fd $fd)
+    ;;; The desired values of the file descriptor flags.
+    (param $flags $fdflags)
+    ;;; New socket connection
+    (result $error (expected $fd (error $errno)))
+  )
+
   ;;; Receive a message from a socket.
   ;;; Note: This is similar to `recv` in POSIX, though it also supports reading
   ;;; the data into multiple buffers in the manner of `readv`.
