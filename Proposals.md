@@ -47,11 +47,13 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 ### Phase 0 - Pre-Proposal (CG)
 
+**Note:** The pre-proposal phase is simply meant as a way to share ideas. This means that there may be overlap between pre-proposals. It also means that the WASI subgroup has not yet decided that the pre-proposal is in scope for WASI.
+
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [Data][wasi-data]                                                              | Bailey Hayes                           |          |
-| [proxy-wasm][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
-| [Networking][wasi-networking]                                                  | Dave Bakker                            |
+| [singlestore-labs/wasi-data][wasi-data]                                                              | Bailey Hayes                           |          |
+| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
+| [badeend/WASI-Networking][wasi-networking]                                                  | Dave Bakker                            |
 
 ## Versioning
 
