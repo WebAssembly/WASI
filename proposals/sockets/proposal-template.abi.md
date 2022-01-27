@@ -1,6 +1,6 @@
 # Types
 
-## <a href="#api_type_one" name="api_type_one"></a> `api_type_one`: record
+## <a href="#api_type_one" name="api_type_one"></a> `api-type-one`: record
 
   Short description
   
@@ -10,22 +10,22 @@ Size: 16, Alignment: 8
 
 ### Record Fields
 
-- <a href="api_type_one.property_1" name="api_type_one.property_1"></a> [`property_1`](#api_type_one.property_1): `u64`
+- <a href="api_type_one.property1" name="api_type_one.property1"></a> [`property1`](#api_type_one.property1): `u64`
 
 
-- <a href="api_type_one.property_2" name="api_type_one.property_2"></a> [`property_2`](#api_type_one.property_2): `string`
+- <a href="api_type_one.property2" name="api_type_one.property2"></a> [`property2`](#api_type_one.property2): `string`
 
 
 # Functions
 
 ----
 
-#### <a href="#api_function_one" name="api_function_one"></a> `api_function_one` 
+#### <a href="#api_function_one" name="api_function_one"></a> `api-function-one` 
 
   Short description
   
   Explanation for developers using the API.
 ##### Results
 
-- <a href="#api_function_one." name="api_function_one."></a> ``: [`api_type_one`](#api_type_one)
+- <a href="#api_function_one." name="api_function_one."></a> ``: [`api-type-one`](#api_type_one)
 

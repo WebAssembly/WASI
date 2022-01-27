@@ -12,9 +12,9 @@
 /// Short description
 ///
 /// Explanation for developers using the API.
-record api_type_one {
-    property_1: u64,
-    property_2: string,
+record api-type-one {
+    property1: u64,
+    property2: string,
 }
 ```
 
@@ -26,7 +26,7 @@ More rigorous specification details for the implementer go here, if needed.
 /// Short description
 ///
 /// Explanation for developers using the API.
-api_function_one: function() -> api_type_one
+api-function-one: function() -> api-type-one
 ```
 
 If needed, this would explain what a compliant implementation MUST do, such as never returning an earlier result from a later call.
