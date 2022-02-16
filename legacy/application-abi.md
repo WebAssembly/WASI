@@ -19,7 +19,7 @@ There are two kinds of modules:
 
    Command instances may assume that they will be called from the environment
    at most once. Command instances may assume that none of their exports are
-   accessed outside the duraction of that call.
+   accessed outside the duration of that call.
 
  - All other modules are *reactors*. A reactor may export a function named
    `_initialize`, with no arguments and no return values.
