@@ -12,13 +12,11 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-[Fill in the current phase, e.g. Phase 1]
+Phase 1
 
 ### Champions
 
-- [Champion 1]
-- [Champion 2]
-- [etc.]
+- Dave Bakker (@badeend)
 
 ### Phase 4 Advancement Criteria
 
