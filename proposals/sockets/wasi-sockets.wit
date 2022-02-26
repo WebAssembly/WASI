@@ -1,18 +1,6 @@
 
 /// TO DISCUSS: Don't want this here.
-record unit {}
-
-/// TO DISCUSS: Don't want this here.
 type usize = u32
-
-/// TO DISCUSS: Don't want this here.
-record iovec {
-	start: usize,
-	length: usize,
-}
-
-/// TO DISCUSS: Don't want this here.
-type iovecs = list<iovec>
 
 /// TO DISCUSS: Don't want this here.
 resource input-byte-stream {}
@@ -145,7 +133,7 @@ resource network {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 	/// - https://man7.org/linux/man-pages/man2/socket.2.html
 	/// 
-	create-udp-socket: function() -> expected<handle socket, socket-error>
+	create-udp-socket: function(address-family: ip-address-family) -> expected<handle socket, socket-error>
 
 	/// TO DISCUSS: Want to return a more specific type of socket.
 	/// 
@@ -203,7 +191,7 @@ resource network {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
 	/// - https://man7.org/linux/man-pages/man3/getaddrinfo.3.html
 	/// 
-	resolve-addresses: function(name: string, options: ip-resolve-addresses-options) -> expected<list<ip-address>, socket-error>
+	resolve-addresses: async function(name: string, options: ip-resolve-addresses-options) -> expected<list<ip-address>, socket-error>
 }
 
 /// TO DISCUSS: Subtyping. `udp-socket` is a `socket`.
@@ -227,7 +215,7 @@ resource udp-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: function(local-address: ip-socket-address) -> expected<unit, socket-error>
+	bind: async function(local-address: ip-socket-address) -> expected<_, socket-error>
 
 	/// Get the current bound address.
 	/// 
@@ -250,10 +238,10 @@ resource udp-socket {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
 	/// - https://man7.org/linux/man-pages/man2/recv.2.html
-	receive: function(iovs: iovecs) -> expected<udp-receive-result, socket-error>
+	receive: async function(iovs: push-buffer<u8>) -> expected<udp-receive-result, socket-error>
 
 	/// receive a message just like `receive`, but don't remove the message from the queue.
-	peek: function(iovs: iovecs) -> expected<udp-receive-result, socket-error>
+	peek: async function(iovs: push-buffer<u8>) -> expected<udp-receive-result, socket-error>
 
 	/// send a message to a specific destination address.
 	/// 
@@ -268,7 +256,7 @@ resource udp-socket {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html
 	/// - https://man7.org/linux/man-pages/man2/send.2.html
-	send: function(iovs: iovecs, options: udp-send-options) -> expected<usize, socket-error>
+	send: async function(iovs: pull-buffer<u8>, options: udp-send-options) -> expected<usize, socket-error>
 
 	/// Set the destination address.
 	/// 
@@ -289,7 +277,7 @@ resource udp-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: function(remote-address: ip-socket-address) -> expected<unit, socket-error>
+	connect: async function(remote-address: ip-socket-address) -> expected<_, socket-error>
 
 	/// Get the address set with `connect`.
 	/// 
@@ -323,7 +311,7 @@ resource tcp-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: function(local-address: ip-socket-address) -> expected<unit, socket-error>
+	bind: async function(local-address: ip-socket-address) -> expected<_, socket-error>
 
 	/// Get the current bound address.
 	/// 
@@ -342,7 +330,7 @@ resource tcp-socket {
 	///  References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: function(remote-address: ip-socket-address) -> expected<unit, socket-error>
+	connect: async function(remote-address: ip-socket-address) -> expected<_, socket-error>
 
 	/// Start listening for new connections.
 	/// 
@@ -352,12 +340,12 @@ resource tcp-socket {
 	///  References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
 	/// - https://man7.org/linux/man-pages/man2/listen.2.html
-	listen: function(backlog-size-hint: option<usize>) -> expected<unit, socket-error>
+	listen: async function(backlog-size-hint: option<usize>) -> expected<_, socket-error>
 
 	/// Fails when the socket is not in the Connection state.
 	/// 
 	/// Read data from the stream just like `InputByteStream::read`, but don't remove the data from the queue.
-	peek: function(iovs: iovecs) -> expected<usize, socket-error>
+	peek: async function(iovs: push-buffer<u8>) -> expected<usize, socket-error>
 
 	/// Fails when the socket is not in the Connection state.
 	/// 
@@ -390,7 +378,7 @@ resource tcp-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html
 	/// - https://man7.org/linux/man-pages/man2/shutdown.2.html
-	shutdown: function(shutdown-type: tcp-shutdown-type) -> expected<unit, socket-error>
+	shutdown: async function(shutdown-type: tcp-shutdown-type) -> expected<_, socket-error>
 
 	/// TO DISCUSS: Want to return a more specific type of socket.
 	/// 
@@ -404,6 +392,6 @@ resource tcp-socket {
 	/// References:
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html
 	/// - https://man7.org/linux/man-pages/man2/accept.2.html
-	accept: function() -> expected<handle socket, socket-error>
+	accept: async function() -> expected<handle socket, socket-error>
 }
 
