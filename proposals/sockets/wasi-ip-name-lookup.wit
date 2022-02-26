@@ -1,0 +1,53 @@
+use { error, ip-address, ip-address-family } from common-types
+use { network } from wasi-network
+
+record resolve-addresses-options {
+	address-family: option<ip-address-family>,
+	include-unavailable: bool,
+}
+
+/// Resolve an internet host name to a list of IP addresses.
+/// 
+/// Parameters:
+/// - `name`: The name to look up. IP addresses are not allowed. Unicode domain names are automatically converted
+///     to ASCII using IDNA encoding.
+/// - `address-family`: If provided, limit the results to addresses of this specific address family.
+/// - `include-unavailable`: When set to true, this function will also return addresses of which the runtime
+///   thinks (or knows) can't be connected to at the moment. For example, this will return IPv6 addresses on
+///   systems without an active IPv6 interface. Notes:
+///     - Even when no public IPv6 interfaces are present or active, names like "localhost" can still resolve to an IPv6 address.
+///     - Whatever is "available" or "unavailable" is volatile and can change everytime a network cable is unplugged.
+/// 
+/// Results:
+/// - When successful, there is always at least one result.
+/// - The results are returned in the order the runtime thinks the application should try to connect to first.
+/// - Never returns IPv4-mapped IPv6 addresses.
+/// 
+/// Returns EAI_FAIL when `name` is:
+/// - empty
+/// - an IP address
+/// - a syntactically invalid domain name in another way
+/// 
+/// 
+/// Comparison with getaddrinfo:
+/// 
+/// `getaddrinfo` is very generic and multipurpose by design. This WASI module is *not*.
+/// This module focuses strictly on translating internet domain names to ip addresses.
+/// That eliminates many of the other "hats" getaddrinfo has, like:
+/// - Mapping service names to port numbers ("https" -> 443)
+/// - Mapping service names/ports to socket types ("https" -> SOCK_STREAM)
+/// - Network interface name translation
+/// - IP address deserialization
+/// - IP address string canonicalization
+/// - Constants lookup for INADDR_ANY, INADDR_LOOPBACK, IN6ADDR_ANY_INIT and IN6ADDR_LOOPBACK_INIT
+/// 
+/// Almost all of these functionalities can be shimmed in the libc implementation. The exception is network
+/// interface name translation. That requires a future `if_nametoindex`-like syscall.
+/// 
+/// This function has a different signature and semantics than `getaddrinfo`. The dissimilar name is chosen to reflect this.
+/// 
+/// References:
+/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
+/// - https://man7.org/linux/man-pages/man3/getaddrinfo.3.html
+/// 
+resolve-addresses: async function(name: string, options: resolve-addresses-options) -> expected<list<ip-address>, error>

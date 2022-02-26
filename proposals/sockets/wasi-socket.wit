@@ -1,0 +1,13 @@
+
+use { error } from common-types
+
+enum socket-kind {
+	/// TODO: https://github.com/WebAssembly/interface-types/issues/145
+	unknown,
+	tcp,
+	udp,
+}
+
+resource socket {}
+
+kind: function(any-socket: handle socket) -> expected<socket-kind, error>
