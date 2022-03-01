@@ -23,7 +23,7 @@ Once you feel ready, you can add a vote to the [WASI meeting agenda] to move to 
 
 At this point, the WASI SG chair will create a new repo for the proposal in the WebAssembly GitHub org. This will follow the conventions of the [proposal template]. If you have any questions about how to fill in the spec template, you can reach out to the WASI SG chair.
 
-As part of moving to the next phase, the champions need to define the acceptance criteria for Phase 4. This is because WASI includes APIs that cover a diversity of different domains and use cases, so the .
+As part of moving to the next phase, the champions need to define the acceptance criteria for Phase 4. This is because WASI includes APIs that cover a diversity of different domains and use cases, so the acceptance criteria can be very different between different proposals.
 
 Some examples of potential criteria:
 
