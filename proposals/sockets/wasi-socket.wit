@@ -10,4 +10,9 @@ enum socket-kind {
 
 resource socket {}
 
+
+/// Get the type of the socket.
+/// 
+/// When this function does not return an error, the argument is guaranteed to be a socket.
+/// Note: `socket-kind::unknown` is not an error.
 kind: function(any-socket: handle socket) -> expected<socket-kind, error>

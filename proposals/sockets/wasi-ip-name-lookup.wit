@@ -8,6 +8,8 @@ record resolve-addresses-options {
 
 /// Resolve an internet host name to a list of IP addresses.
 /// 
+/// See the proposal README.md for a comparison with getaddrinfo.
+/// 
 /// Parameters:
 /// - `name`: The name to look up. IP addresses are not allowed. Unicode domain names are automatically converted
 ///     to ASCII using IDNA encoding.
@@ -27,24 +29,6 @@ record resolve-addresses-options {
 /// - empty
 /// - an IP address
 /// - a syntactically invalid domain name in another way
-/// 
-/// 
-/// Comparison with getaddrinfo:
-/// 
-/// `getaddrinfo` is very generic and multipurpose by design. This WASI module is *not*.
-/// This module focuses strictly on translating internet domain names to ip addresses.
-/// That eliminates many of the other "hats" getaddrinfo has, like:
-/// - Mapping service names to port numbers ("https" -> 443)
-/// - Mapping service names/ports to socket types ("https" -> SOCK_STREAM)
-/// - Network interface name translation
-/// - IP address deserialization
-/// - IP address string canonicalization
-/// - Constants lookup for INADDR_ANY, INADDR_LOOPBACK, IN6ADDR_ANY_INIT and IN6ADDR_LOOPBACK_INIT
-/// 
-/// Almost all of these functionalities can be shimmed in the libc implementation. The exception is network
-/// interface name translation. That requires a future `if_nametoindex`-like syscall.
-/// 
-/// This function has a different signature and semantics than `getaddrinfo`. The dissimilar name is chosen to reflect this.
 /// 
 /// References:
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
