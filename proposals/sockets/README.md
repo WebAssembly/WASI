@@ -1,4 +1,4 @@
-# [WASI Sockets]
+# WASI Sockets
 
 A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) API.
 
@@ -16,10 +16,10 @@ Phase 1
 - Implementations available for at least Windows, Linux & MacOS.
 - A testsuite that passes on the platforms and implementations mentioned above.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
-- [Goals](#goals-or-motivating-use-cases-or-scenarios)
+- [Goals](#goals)
 - [Non-goals](#non-goals)
 - [API walk-through](#api-walk-through)
   - [Use case 1](#use-case-1)
@@ -66,7 +66,7 @@ This proposal introduces 4 new WASI modules:
 
 #### Use case: Wasm module per connection
 
-Due to the low startup cost of Wasm modules, its feasible for server software with Wasm integration to spawn a Wasm module for each inbound connection. Each module instance is passed only the accepted client socket. This way, all connection handlers are completely isolated from each other. This resembles PHP's "shared nothing" architecture.
+Thanks to the low startup cost of Wasm modules, its feasible for server software with Wasm integration to spawn a Wasm module for each inbound connection. Each module instance is passed only the accepted client socket. This way, all connection handlers are completely isolated from each other. This resembles PHP's "shared nothing" architecture.
 
 #### [Use case 2]
 
