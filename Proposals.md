@@ -44,6 +44,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
+| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -53,7 +54,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [singlestore-labs/wasi-data][wasi-data]                                                              | Bailey Hayes                           |          |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
-| [badeend/WASI-Networking][wasi-networking]                                                  | Dave Bakker                            |
 
 ## Versioning
 
@@ -83,4 +83,4 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
-[wasi-networking]: https://github.com/badeend/WASI-Networking
+[wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
