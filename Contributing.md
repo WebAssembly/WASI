@@ -40,9 +40,9 @@ With all this in place, you can add a vote to [WASI meeting agenda] to move to t
 
 At this point, you should be prototyping the API to make sure it works in practice, and you should develop a test suite which can be used by other implementations to validate their spec compliance.
 
-Once the implmentation has stabilized, it's again time to add a vote to [WASI meeting agenda] to move to the next stage.
+Once the implementation has stabilized, it's again time to add a vote to [WASI meeting agenda] to move to the next stage.
 
-### Phase 3: Validate the design through multiple implmentations
+### Phase 3: Validate the design through multiple implementations
 
 At this point, you'll need to get more implementers involved. How many implementations you need depends on the Phase 4 acceptance criteria that you set in Phase 2.
 

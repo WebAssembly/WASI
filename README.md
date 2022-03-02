@@ -43,7 +43,7 @@ If you would like to create a new proposal, get started with our
 
 1. Define a set of portable, modular, runtime-independent, and
    WebAssembly-native APIs which can be used by WebAssembly code to interact
-   with the outside world. These APIs preserve essential sandboxed nature of
+   with the outside world. These APIs preserve the essential sandboxed nature of
    WebAssembly through a [Capability-based] API design.
 2. Specify and implement incrementally. Start with a Minimum Viable Product
    (MVP), then adding additional features, prioritized by feedback and
