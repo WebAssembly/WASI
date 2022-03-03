@@ -38,8 +38,7 @@ If you would like to create a new proposal, get started with our
 
 ## WASI High Level Goals
 
-(In the spirit of [WebAssembly's High-Level Goals]
-(https://github.com/WebAssembly/design/blob/master/HighLevelGoals.md).)
+(In the spirit of [WebAssembly's High-Level Goals](https://github.com/WebAssembly/design/blob/main/HighLevelGoals.md).)
 
 1. Define a set of portable, modular, runtime-independent, and
    WebAssembly-native APIs which can be used by WebAssembly code to interact
@@ -129,8 +128,7 @@ transparently. This can be used to adapt or attenuate the functionality
 of a WASI API without changing the code using it.
 
 In WASI, we envision interposition will primarily be configured
-through the mechanisms in the module linking' [link-time virtualization
-](https://github.com/WebAssembly/module-linking/blob/master/proposals/module-linking/Explainer.md#link-time-virtualization).
+through the mechanisms in the module linking' [link-time virtualization](https://github.com/WebAssembly/module-linking/blob/main/design/proposals/module-linking/Explainer.md#link-time-virtualization).
 Imports are resolved when a module is instantiated, which may happen
 during the runtime of a larger logical application, so we can support
 interposition of WASI APIs without defining them in terms of explicit
