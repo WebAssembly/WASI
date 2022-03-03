@@ -38,8 +38,7 @@ If you would like to create a new proposal, get started with our
 
 ## WASI High Level Goals
 
-(In the spirit of [WebAssembly's High-Level Goals]
-(https://github.com/WebAssembly/design/blob/master/HighLevelGoals.md).)
+(In the spirit of [WebAssembly's High-Level Goals](https://github.com/WebAssembly/design/blob/main/HighLevelGoals.md).)
 
 1. Define a set of portable, modular, runtime-independent, and
    WebAssembly-native APIs which can be used by WebAssembly code to interact
