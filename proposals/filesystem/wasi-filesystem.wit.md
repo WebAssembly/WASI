@@ -47,9 +47,9 @@ type timestamp = u64
 /// Note: This was called `fdstat` in earlier versions of WASI.
 record info {
     /// The type of filesystem object referenced by a descriptor.
-    "type": "type",
+    %type: %type,
     /// Flags associated with a descriptor.
-    "flags": "flags",
+    %flags: %flags,
 }
 ```
 
@@ -58,7 +58,7 @@ record info {
 /// The type of a filesystem object referenced by a descriptor.
 ///
 /// Note: This was called `filetype` in earlier versions of WASI.
-enum "type" {
+enum %type {
     /// The type of the descriptor or file is unknown or is different from
     /// any of the other types specified.
     unknown,
@@ -84,7 +84,7 @@ enum "type" {
 /// Descriptor flags.
 ///
 /// Note: This was called `fd-flags` in earlier versions of WASI.
-flags "flags" {
+flags %flags {
     /// Read mode: Data can be read.
     read,
     /// Write mode: Data can be written to.
@@ -117,7 +117,7 @@ record stat {
     /// File serial number.
     ino: inode,
     /// File type.
-    "type": "type",
+    %type: %type,
     /// Number of hard links to the file.
     nlink: linkcount,
     /// For regular files, the file size in bytes. For symbolic links, the length
@@ -214,7 +214,7 @@ record dirent {
     /// The length of the name of the directory entry.
     namelen: size,
     /// The type of the file referred to by this directory entry.
-    "type": "type",
+    %type: %type,
 }
 ```
 
@@ -564,7 +564,7 @@ readdir: function(
 /// Note: This is similar to `lseek` in POSIX.
 seek: function(
     /// The method to compute the new offset.
-    "from": seek-from,
+    %from: seek-from,
 ) -> (
     /// The new offset of the descriptor, relative to the start of the file.
     expected<filesize, errno>
@@ -685,7 +685,7 @@ open-at: function(
     /// The method by which to open the file.
     o-flags: o-flags,
     /// Flags to use for the resulting descriptor.
-    fd-flags: "flags",
+    fd-flags: %flags,
     /// Permissions to use when creating a new file.
     mode: mode
 ) -> (
