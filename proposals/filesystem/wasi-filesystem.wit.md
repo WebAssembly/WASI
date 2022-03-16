@@ -536,7 +536,7 @@ read: function(
 /// directory entries. Each directory entry consists of a `dirent` object,
 /// followed by `dirent::d_namlen` bytes holding the name of the directory
 /// entry.
-//
+///
 /// This function fills the output buffer as much as possible, potentially
 /// truncating the last directory entry. This allows the caller to grow its
 /// read buffer size in case it's too small to fit a single large directory
