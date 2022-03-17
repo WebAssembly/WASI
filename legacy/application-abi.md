@@ -17,6 +17,14 @@ There are two kinds of modules:
  - A *command* exports a function named `_start`, with no arguments and no return
    values.
 
+   `_start` is the default export which is called when the user doesn't select a
+   specific function to call. Commands may also export additional functions,
+   (similar to "multi-call" executables), which may be explicitly selected by the
+   user to run instead.
+
+   Except as noted below, commands shall not export any mutable globals, tables,
+   or linear memories.
+
    Command instances may assume that they will be called from the environment
    at most once. Command instances may assume that none of their exports are
    accessed outside the duration of that call.
