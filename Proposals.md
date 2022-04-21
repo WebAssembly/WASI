@@ -45,6 +45,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
+| [URL][wasi-url]                                                                | George Kulakowski                      |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -84,3 +85,4 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
+[wasi-url]: https://github.com/WebAssembly/wasi-url
