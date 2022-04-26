@@ -45,7 +45,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
-| [URL][wasi-url]                                                                | George Kulakowski                      |          |
+| [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
