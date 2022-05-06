@@ -31,17 +31,17 @@ resource monotonic-clock {
 ```
 
 ## `now`
+```wit
 /// Read the current value of the clock.
 ///
 /// As this the clock is monotonic, calling this function repeatedly will produce
 /// a sequence of non-decreasing values.
-```wit
 now: function() -> instant
 ```
 
 ## `resolution`
-/// Query the resolution of the clock.
 ```wit
+/// Query the resolution of the clock.
 resolution: function() -> instant
 ```
 
@@ -62,6 +62,7 @@ resource wall-clock {
 ```
 
 ## `now`
+```wit
 /// Read the current value of the clock.
 ///
 /// As this the clock is not monotonic, calling this function repeatedly will
@@ -75,15 +76,14 @@ resource wall-clock {
 ///
 /// [POSIX's Seconds Since the Epoch]: https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16
 /// [Unix Time]: https://en.wikipedia.org/wiki/Unix_time
-```wit
 now: function() -> datetime
 ```
 
 ## `resolution`
+```wit
 /// Query the resolution of the clock.
 ///
 /// The nanoseconds field of the output is always less than 1000000000.
-```wit
 resolution: function() -> datetime
 ```
 
