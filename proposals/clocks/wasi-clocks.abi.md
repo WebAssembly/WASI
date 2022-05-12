@@ -51,6 +51,20 @@ Size: 16, Alignment: 8
 
 ----
 
+#### <a href="#monotonic_clock_new_timer" name="monotonic_clock_new_timer"></a> `monotonic-clock::new-timer` 
+
+  This creates a new `monotonic-timer` with the given starting time. It will
+  count down from this time until it reaches zero.
+##### Params
+
+- <a href="#monotonic_clock_new_timer.self" name="monotonic_clock_new_timer.self"></a> `self`: handle<monotonic-clock>
+- <a href="#monotonic_clock_new_timer.initial" name="monotonic_clock_new_timer.initial"></a> `initial`: [`instant`](#instant)
+##### Results
+
+- <a href="#monotonic_clock_new_timer." name="monotonic_clock_new_timer."></a> ``: handle<monotonic-timer>
+
+----
+
 #### <a href="#wall_clock_now" name="wall_clock_now"></a> `wall-clock::now` 
 
   Read the current value of the clock.
@@ -86,4 +100,16 @@ Size: 16, Alignment: 8
 ##### Results
 
 - <a href="#wall_clock_resolution." name="wall_clock_resolution."></a> ``: [`datetime`](#datetime)
+
+----
+
+#### <a href="#monotonic_timer_current" name="monotonic_timer_current"></a> `monotonic-timer::current` 
+
+  Returns the amount of time left before this timer reaches zero.
+##### Params
+
+- <a href="#monotonic_timer_current.self" name="monotonic_timer_current.self"></a> `self`: handle<monotonic-timer>
+##### Results
+
+- <a href="#monotonic_timer_current." name="monotonic_timer_current."></a> ``: [`instant`](#instant)
 

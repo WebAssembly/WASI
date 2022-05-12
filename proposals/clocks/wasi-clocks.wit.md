@@ -45,6 +45,13 @@ now: function() -> instant
 resolution: function() -> instant
 ```
 
+## `new-timer`
+```wit
+/// This creates a new `monotonic-timer` with the given starting time. It will
+/// count down from this time until it reaches zero.
+new-timer: function(initial: instant) -> handle monotonic-timer
+```
+
 ```wit
 }
 ```
@@ -85,6 +92,23 @@ now: function() -> datetime
 ///
 /// The nanoseconds field of the output is always less than 1000000000.
 resolution: function() -> datetime
+```
+
+```wit
+}
+```
+
+## `monotonic-timer`
+```wit
+/// This is a timer that counts down from a given starting time down to zero
+/// on a monotonic clock.
+resource monotonic-timer {
+```
+
+## `current`
+```wit
+/// Returns the amount of time left before this timer reaches zero.
+current: function() -> instant
 ```
 
 ```wit
