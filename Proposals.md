@@ -43,6 +43,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
+| [Native threads][wasi-native-threads]                                          | Alexandru Ene                          |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
@@ -53,7 +54,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [singlestore-labs/wasi-data][wasi-data]                                                              | Bailey Hayes                           |          |
+| [singlestore-labs/wasi-data][wasi-data]                                        | Bailey Hayes                           |          |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
 
 ## Versioning
@@ -77,6 +78,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
+[wasi-native-threads]: https://github.com/WebAssembly/wasi-native-threads
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
