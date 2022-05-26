@@ -42,8 +42,11 @@ WASI Random is a WASI API for obtaining random data.
 
 ### Goals
 
-The primary goal of WASI Random is to allow users to use WASI programs to
-obtain high-quality low-level random data.
+The primary goals of WASI Random are:
+ - To allow users to use WASI programs to obtain high-quality low-level
+   random data.
+ - To allow source languages to enable DoS protection in their hash-maps
+   in host environments that support it.
 
 ### Non-goals
 
@@ -87,11 +90,11 @@ used for debugging, and not production use.
 
 #### [Use case 1]
 
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+TODO: Describe a use case using `getrandom`.
 
 #### [Use case 2]
 
-[etc.]
+TODO: Describe a use case using `insecure-random`.
 
 ### Detailed design discussion
 
@@ -110,14 +113,6 @@ collected sufficient entropy to initialize their CSPRNGs. In these cases,
 this API is designed with the belief that it's better for implementations
 to respond to the problem, rather than to pass the responsibility on to
 applications.
-
-### Should there be a separate "insecure" random API?
-
-It's a good question. I haven't ruled it out, but I'd like to learn more
-about use cases where it would be meaningfully better than just using the
-regular random API for everything. In particular, I'm interested in not
-just the application, but also the settings in which the application would
-be used where this would be relevant.
 
 ### What should happen on host platforms with weak or broken randomness APIs?
 
@@ -155,6 +150,11 @@ security. However, many host platforms' CSPRNG APIs do not currently document
 their bits of security, and it doesn't seem desirable to require wasm engines to
 run their own CSPRNG on a platform which alreay has one, so for now, the API
 does not specify a specific number.
+
+### Why is insecure-random a fixed-length value import?
+
+This limits the amount of data that can be obtained through it. Since it's
+insecure, it's not intended to be used as an alternative to `getrandom`.
 
 ### Considered alternatives
 
