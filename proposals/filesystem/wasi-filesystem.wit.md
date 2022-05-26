@@ -186,8 +186,8 @@ type device = u64
 ```
 
 ## `inode`
-/// Filesystem object serial number that is unique within its file system.
 ```wit
+/// Filesystem object serial number that is unique within its file system.
 type inode = u64
 ```
 
@@ -762,13 +762,13 @@ unlink-file-at: function(
 ```
 
 ## `change-file-permissions-at`
+```wit
 /// Change the permissions of a filesystem object that is not a directory.
 ///
 /// Note that the ultimate meanings of these permissions is
 /// filesystem-specific.
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
-```wit
 change-file-permissions-at: function(
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
@@ -780,6 +780,7 @@ change-file-permissions-at: function(
 ```
 
 ## `change-dir-permissions-at`
+```wit
 /// Change the permissions of a directory.
 ///
 /// Note that the ultimate meanings of these permissions is
@@ -790,7 +791,6 @@ change-file-permissions-at: function(
 /// `execute` is not valid for directories.
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
-```wit
 change-directory-permissions-at: function(
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
