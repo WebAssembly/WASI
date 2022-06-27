@@ -36,20 +36,20 @@ resource monotonic-clock {
 ///
 /// As this the clock is monotonic, calling this function repeatedly will produce
 /// a sequence of non-decreasing values.
-now: function() -> instant
+now: func() -> instant
 ```
 
 ## `resolution`
 ```wit
 /// Query the resolution of the clock.
-resolution: function() -> instant
+resolution: func() -> instant
 ```
 
 ## `new-timer`
 ```wit
 /// This creates a new `monotonic-timer` with the given starting time. It will
 /// count down from this time until it reaches zero.
-new-timer: function(initial: instant) -> handle monotonic-timer
+new-timer: func(initial: instant) -> handle monotonic-timer
 ```
 
 ```wit
@@ -83,7 +83,7 @@ resource wall-clock {
 ///
 /// [POSIX's Seconds Since the Epoch]: https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16
 /// [Unix Time]: https://en.wikipedia.org/wiki/Unix_time
-now: function() -> datetime
+now: func() -> datetime
 ```
 
 ## `resolution`
@@ -91,7 +91,7 @@ now: function() -> datetime
 /// Query the resolution of the clock.
 ///
 /// The nanoseconds field of the output is always less than 1000000000.
-resolution: function() -> datetime
+resolution: func() -> datetime
 ```
 
 ```wit
@@ -108,7 +108,7 @@ resource monotonic-timer {
 ## `current`
 ```wit
 /// Returns the amount of time left before this timer reaches zero.
-current: function() -> instant
+current: func() -> instant
 ```
 
 ```wit

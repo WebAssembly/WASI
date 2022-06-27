@@ -33,9 +33,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_clock_now.self" name="monotonic_clock_now.self"></a> `self`: handle<monotonic-clock>
-##### Results
+##### Result
 
-- <a href="#monotonic_clock_now." name="monotonic_clock_now."></a> ``: [`instant`](#instant)
+- [`instant`](#instant)
 
 ----
 
@@ -45,9 +45,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_clock_resolution.self" name="monotonic_clock_resolution.self"></a> `self`: handle<monotonic-clock>
-##### Results
+##### Result
 
-- <a href="#monotonic_clock_resolution." name="monotonic_clock_resolution."></a> ``: [`instant`](#instant)
+- [`instant`](#instant)
 
 ----
 
@@ -59,9 +59,9 @@ Size: 16, Alignment: 8
 
 - <a href="#monotonic_clock_new_timer.self" name="monotonic_clock_new_timer.self"></a> `self`: handle<monotonic-clock>
 - <a href="#monotonic_clock_new_timer.initial" name="monotonic_clock_new_timer.initial"></a> `initial`: [`instant`](#instant)
-##### Results
+##### Result
 
-- <a href="#monotonic_clock_new_timer." name="monotonic_clock_new_timer."></a> ``: handle<monotonic-timer>
+- handle<monotonic-timer>
 
 ----
 
@@ -83,9 +83,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#wall_clock_now.self" name="wall_clock_now.self"></a> `self`: handle<wall-clock>
-##### Results
+##### Result
 
-- <a href="#wall_clock_now." name="wall_clock_now."></a> ``: [`datetime`](#datetime)
+- [`datetime`](#datetime)
 
 ----
 
@@ -97,9 +97,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#wall_clock_resolution.self" name="wall_clock_resolution.self"></a> `self`: handle<wall-clock>
-##### Results
+##### Result
 
-- <a href="#wall_clock_resolution." name="wall_clock_resolution."></a> ``: [`datetime`](#datetime)
+- [`datetime`](#datetime)
 
 ----
 
@@ -109,7 +109,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_timer_current.self" name="monotonic_timer_current.self"></a> `self`: handle<monotonic-timer>
-##### Results
+##### Result
 
-- <a href="#monotonic_timer_current." name="monotonic_timer_current."></a> ``: [`instant`](#instant)
+- [`instant`](#instant)
 
