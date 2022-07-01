@@ -14,7 +14,7 @@ Windows.
 ///
 /// Deterministic environments must omit this function, rather than
 /// implementing it with deterministic data.
-getrandom: function(len: u32) -> list<u8>
+getrandom: func(len: u32) -> list<u8>
 ```
 
 ## `insecure-random`
