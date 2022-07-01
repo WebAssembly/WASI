@@ -993,7 +993,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_open_at.at_flags" name="descriptor_open_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_open_at.path" name="descriptor_open_at.path"></a> `path`: `string`
 - <a href="#descriptor_open_at.o_flags" name="descriptor_open_at.o_flags"></a> `o-flags`: [`o-flags`](#o_flags)
-- <a href="#descriptor_open_at.fd_flags" name="descriptor_open_at.fd_flags"></a> `fd-flags`: [`flags`](#flags)
+- <a href="#descriptor_open_at.flags" name="descriptor_open_at.flags"></a> `flags`: [`flags`](#flags)
 - <a href="#descriptor_open_at.mode" name="descriptor_open_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Result
 

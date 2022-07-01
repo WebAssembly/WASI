@@ -667,7 +667,7 @@ open-at: func(
     /// The method by which to open the file.
     o-flags: o-flags,
     /// Flags to use for the resulting descriptor.
-    fd-flags: %flags,
+    %flags: %flags,
     /// Permissions to use when creating a new file.
     mode: mode
 ) -> expected<descriptor, errno>
