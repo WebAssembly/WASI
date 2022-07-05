@@ -44,7 +44,7 @@ Size: 2, Alignment: 1
 
   Flags associated with a descriptor.
 
-## <a href="#type" name="type"></a> `type`: variant
+## <a href="#type" name="type"></a> `type`: enum
 
   The type of a filesystem object referenced by a descriptor.
   
@@ -52,7 +52,7 @@ Size: 2, Alignment: 1
 
 Size: 1, Alignment: 1
 
-### Variant Cases
+### Enum Cases
 
 - <a href="type.unknown" name="type.unknown"></a> [`unknown`](#type.unknown)
 
@@ -87,7 +87,7 @@ Size: 1, Alignment: 1
 
   The descriptor refers to a socket.
 
-## <a href="#flags" name="flags"></a> `flags`: record
+## <a href="#flags" name="flags"></a> `flags`: flags
 
   Descriptor flags.
   
@@ -95,41 +95,41 @@ Size: 1, Alignment: 1
 
 Size: 1, Alignment: 1
 
-### Record Fields
+### Flags Fields
 
-- <a href="flags.read" name="flags.read"></a> [`read`](#flags.read): `bool`
+- <a href="flags.read" name="flags.read"></a> [`read`](#flags.read)
 
   Read mode: Data can be read.
 Bit: 0
 
-- <a href="flags.write" name="flags.write"></a> [`write`](#flags.write): `bool`
+- <a href="flags.write" name="flags.write"></a> [`write`](#flags.write)
 
   Write mode: Data can be written to.
 Bit: 1
 
-- <a href="flags.append" name="flags.append"></a> [`append`](#flags.append): `bool`
+- <a href="flags.append" name="flags.append"></a> [`append`](#flags.append)
 
   Append mode: Data written to the file is always appended to the file's
   end.
 Bit: 2
 
-- <a href="flags.dsync" name="flags.dsync"></a> [`dsync`](#flags.dsync): `bool`
+- <a href="flags.dsync" name="flags.dsync"></a> [`dsync`](#flags.dsync)
 
   Write according to synchronized I/O data integrity completion. Only the
   data stored in the file is synchronized.
 Bit: 3
 
-- <a href="flags.nonblock" name="flags.nonblock"></a> [`nonblock`](#flags.nonblock): `bool`
+- <a href="flags.nonblock" name="flags.nonblock"></a> [`nonblock`](#flags.nonblock)
 
   Non-blocking mode.
 Bit: 4
 
-- <a href="flags.rsync" name="flags.rsync"></a> [`rsync`](#flags.rsync): `bool`
+- <a href="flags.rsync" name="flags.rsync"></a> [`rsync`](#flags.rsync)
 
   Synchronized read I/O operations.
 Bit: 5
 
-- <a href="flags.sync" name="flags.sync"></a> [`sync`](#flags.sync): `bool`
+- <a href="flags.sync" name="flags.sync"></a> [`sync`](#flags.sync)
 
   Write according to synchronized I/O file integrity completion. In
   addition to synchronizing the data stored in the file, the
@@ -179,68 +179,68 @@ Size: 64, Alignment: 8
 
   Last file status change timestamp.
 
-## <a href="#at_flags" name="at_flags"></a> `at-flags`: record
+## <a href="#at_flags" name="at_flags"></a> `at-flags`: flags
 
   Flags determining the method of how paths are resolved.
 
 Size: 1, Alignment: 1
 
-### Record Fields
+### Flags Fields
 
-- <a href="at_flags.symlink_follow" name="at_flags.symlink_follow"></a> [`symlink-follow`](#at_flags.symlink_follow): `bool`
+- <a href="at_flags.symlink_follow" name="at_flags.symlink_follow"></a> [`symlink-follow`](#at_flags.symlink_follow)
 
   As long as the resolved path corresponds to a symbolic link, it is expanded.
 Bit: 0
 
-## <a href="#o_flags" name="o_flags"></a> `o-flags`: record
+## <a href="#o_flags" name="o_flags"></a> `o-flags`: flags
 
   Open flags used by `open-at`.
 
 Size: 1, Alignment: 1
 
-### Record Fields
+### Flags Fields
 
-- <a href="o_flags.create" name="o_flags.create"></a> [`create`](#o_flags.create): `bool`
+- <a href="o_flags.create" name="o_flags.create"></a> [`create`](#o_flags.create)
 
   Create file if it does not exist.
 Bit: 0
 
-- <a href="o_flags.directory" name="o_flags.directory"></a> [`directory`](#o_flags.directory): `bool`
+- <a href="o_flags.directory" name="o_flags.directory"></a> [`directory`](#o_flags.directory)
 
   Fail if not a directory.
 Bit: 1
 
-- <a href="o_flags.excl" name="o_flags.excl"></a> [`excl`](#o_flags.excl): `bool`
+- <a href="o_flags.excl" name="o_flags.excl"></a> [`excl`](#o_flags.excl)
 
   Fail if file already exists.
 Bit: 2
 
-- <a href="o_flags.trunc" name="o_flags.trunc"></a> [`trunc`](#o_flags.trunc): `bool`
+- <a href="o_flags.trunc" name="o_flags.trunc"></a> [`trunc`](#o_flags.trunc)
 
   Truncate file to size 0.
 Bit: 3
 
-## <a href="#mode" name="mode"></a> `mode`: record
+## <a href="#mode" name="mode"></a> `mode`: flags
 
   Permissions mode used by `open-at`, `change-permissions-at`, and similar.
 
 Size: 1, Alignment: 1
 
-### Record Fields
+### Flags Fields
 
-- <a href="mode.readable" name="mode.readable"></a> [`readable`](#mode.readable): `bool`
+- <a href="mode.readable" name="mode.readable"></a> [`readable`](#mode.readable)
 
   True if the resource is considered readable by the containing
   filesystem.
 Bit: 0
 
-- <a href="mode.writeable" name="mode.writeable"></a> [`writeable`](#mode.writeable): `bool`
+- <a href="mode.writeable" name="mode.writeable"></a> [`writeable`](#mode.writeable)
 
   True if the resource is considered writeable by the containing
   filesystem.
 Bit: 1
 
-- <a href="mode.executable" name="mode.executable"></a> [`executable`](#mode.executable): `bool`
+- <a href="mode.executable" name="mode.executable"></a> [`executable`](#mode.executable)
 
   True if the resource is considered executable by the containing
   filesystem. This does not apply to directories.
@@ -261,6 +261,7 @@ Size: 8, Alignment: 8
 
 ## <a href="#inode" name="inode"></a> `inode`: `u64`
 
+  Filesystem object serial number that is unique within its file system.
 
 Size: 8, Alignment: 8
 
@@ -272,11 +273,11 @@ Size: 16, Alignment: 8
 
 ### Variant Cases
 
-- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change)
+- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change): `unit`
 
   Leave the timestamp set to its previous value.
 
-- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now)
+- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now): `unit`
 
   Set the timestamp to the current time of the system clock associated
   with the filesystem.
@@ -305,7 +306,7 @@ Size: 16, Alignment: 8
 
   The type of the file referred to by this directory entry.
 
-## <a href="#errno" name="errno"></a> `errno`: variant
+## <a href="#errno" name="errno"></a> `errno`: enum
 
   Error codes returned by functions.
   Not all of these error codes are returned by the functions provided by this
@@ -314,7 +315,7 @@ Size: 16, Alignment: 8
 
 Size: 1, Alignment: 1
 
-### Variant Cases
+### Enum Cases
 
 - <a href="errno.success" name="errno.success"></a> [`success`](#errno.success)
 
@@ -616,13 +617,13 @@ Size: 1, Alignment: 1
 
   Cross-device link.
 
-## <a href="#advice" name="advice"></a> `advice`: variant
+## <a href="#advice" name="advice"></a> `advice`: enum
 
   File or memory access pattern advisory information.
 
 Size: 1, Alignment: 1
 
-### Variant Cases
+### Enum Cases
 
 - <a href="advice.normal" name="advice.normal"></a> [`normal`](#advice.normal)
 
@@ -683,9 +684,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_fadvise.offset" name="descriptor_fadvise.offset"></a> `offset`: `u64`
 - <a href="#descriptor_fadvise.len" name="descriptor_fadvise.len"></a> `len`: `u64`
 - <a href="#descriptor_fadvise.advice" name="descriptor_fadvise.advice"></a> `advice`: [`advice`](#advice)
-##### Results
+##### Result
 
-- <a href="#descriptor_fadvise." name="descriptor_fadvise."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -699,9 +700,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_fallocate.self" name="descriptor_fallocate.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_fallocate.offset" name="descriptor_fallocate.offset"></a> `offset`: [`filesize`](#filesize)
 - <a href="#descriptor_fallocate.len" name="descriptor_fallocate.len"></a> `len`: [`filesize`](#filesize)
-##### Results
+##### Result
 
-- <a href="#descriptor_fallocate." name="descriptor_fallocate."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -713,9 +714,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_datasync.self" name="descriptor_datasync.self"></a> `self`: handle<descriptor>
-##### Results
+##### Result
 
-- <a href="#descriptor_datasync." name="descriptor_datasync."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -730,9 +731,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_info.self" name="descriptor_info.self"></a> `self`: handle<descriptor>
-##### Results
+##### Result
 
-- <a href="#descriptor_info." name="descriptor_info."></a> ``: expected<[`info`](#info), [`errno`](#errno)>
+- expected<[`info`](#info), [`errno`](#errno)>
 
 ----
 
@@ -746,9 +747,9 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_set_size.self" name="descriptor_set_size.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_set_size.size" name="descriptor_set_size.size"></a> `size`: [`filesize`](#filesize)
-##### Results
+##### Result
 
-- <a href="#descriptor_set_size." name="descriptor_set_size."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -764,9 +765,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_set_times.self" name="descriptor_set_times.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_set_times.atim" name="descriptor_set_times.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
 - <a href="#descriptor_set_times.mtim" name="descriptor_set_times.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
-##### Results
+##### Result
 
-- <a href="#descriptor_set_times." name="descriptor_set_times."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -778,11 +779,10 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_pread.self" name="descriptor_pread.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_pread.buf" name="descriptor_pread.buf"></a> `buf`: push-buffer<`u8`>
 - <a href="#descriptor_pread.offset" name="descriptor_pread.offset"></a> `offset`: [`filesize`](#filesize)
-##### Results
+##### Result
 
-- <a href="#descriptor_pread." name="descriptor_pread."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- stream<`u8`, [`errno`](#errno)>
 
 ----
 
@@ -794,11 +794,11 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_pwrite.self" name="descriptor_pwrite.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_pwrite.buf" name="descriptor_pwrite.buf"></a> `buf`: pull-buffer<`u8`>
+- <a href="#descriptor_pwrite.buf" name="descriptor_pwrite.buf"></a> `buf`: stream<`u8`, `unit`>
 - <a href="#descriptor_pwrite.offset" name="descriptor_pwrite.offset"></a> `offset`: [`filesize`](#filesize)
-##### Results
+##### Result
 
-- <a href="#descriptor_pwrite." name="descriptor_pwrite."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- future<expected<`unit`, [`errno`](#errno)>>
 
 ----
 
@@ -812,10 +812,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_read.self" name="descriptor_read.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_read.buf" name="descriptor_read.buf"></a> `buf`: push-buffer<`u8`>
-##### Results
+##### Result
 
-- <a href="#descriptor_read." name="descriptor_read."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- stream<`u8`, [`errno`](#errno)>
 
 ----
 
@@ -835,11 +834,10 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_readdir.self" name="descriptor_readdir.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_readdir.buf" name="descriptor_readdir.buf"></a> `buf`: push-buffer<`u8`>
 - <a href="#descriptor_readdir.rewind" name="descriptor_readdir.rewind"></a> `rewind`: `bool`
-##### Results
+##### Result
 
-- <a href="#descriptor_readdir." name="descriptor_readdir."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- stream<`u8`, [`errno`](#errno)>
 
 ----
 
@@ -849,14 +847,16 @@ Size: 16, Alignment: 8
   
   The meaning of `seek` on a directory is unspecified.
   
+  Returns new offset of the descriptor, relative to the start of the file.
+  
   Note: This is similar to `lseek` in POSIX.
 ##### Params
 
 - <a href="#descriptor_seek.self" name="descriptor_seek.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_seek.from" name="descriptor_seek.from"></a> `from`: [`seek-from`](#seek_from)
-##### Results
+##### Result
 
-- <a href="#descriptor_seek." name="descriptor_seek."></a> ``: expected<[`filesize`](#filesize), [`errno`](#errno)>
+- expected<[`filesize`](#filesize), [`errno`](#errno)>
 
 ----
 
@@ -868,9 +868,9 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_sync.self" name="descriptor_sync.self"></a> `self`: handle<descriptor>
-##### Results
+##### Result
 
-- <a href="#descriptor_sync." name="descriptor_sync."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -878,13 +878,15 @@ Size: 16, Alignment: 8
 
   Return the current offset of a descriptor.
   
+  Returns the current offset of the descriptor, relative to the start of the file.
+  
   Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
 ##### Params
 
 - <a href="#descriptor_tell.self" name="descriptor_tell.self"></a> `self`: handle<descriptor>
-##### Results
+##### Result
 
-- <a href="#descriptor_tell." name="descriptor_tell."></a> ``: expected<[`filesize`](#filesize), [`errno`](#errno)>
+- expected<[`filesize`](#filesize), [`errno`](#errno)>
 
 ----
 
@@ -896,10 +898,10 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_write.self" name="descriptor_write.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_write.buf" name="descriptor_write.buf"></a> `buf`: pull-buffer<`u8`>
-##### Results
+- <a href="#descriptor_write.buf" name="descriptor_write.buf"></a> `buf`: stream<`u8`, `unit`>
+##### Result
 
-- <a href="#descriptor_write." name="descriptor_write."></a> ``: expected<[`size`](#size), [`errno`](#errno)>
+- future<expected<`unit`, [`errno`](#errno)>>
 
 ----
 
@@ -912,9 +914,9 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_create_directory_at.self" name="descriptor_create_directory_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_create_directory_at.path" name="descriptor_create_directory_at.path"></a> `path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_create_directory_at." name="descriptor_create_directory_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -930,9 +932,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_stat_at.self" name="descriptor_stat_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_stat_at.at_flags" name="descriptor_stat_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_stat_at.path" name="descriptor_stat_at.path"></a> `path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_stat_at." name="descriptor_stat_at."></a> ``: expected<[`stat`](#stat), [`errno`](#errno)>
+- expected<[`stat`](#stat), [`errno`](#errno)>
 
 ----
 
@@ -950,9 +952,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_set_times_at.path" name="descriptor_set_times_at.path"></a> `path`: `string`
 - <a href="#descriptor_set_times_at.atim" name="descriptor_set_times_at.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
 - <a href="#descriptor_set_times_at.mtim" name="descriptor_set_times_at.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
-##### Results
+##### Result
 
-- <a href="#descriptor_set_times_at." name="descriptor_set_times_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -968,9 +970,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_link_at.old_path" name="descriptor_link_at.old_path"></a> `old-path`: `string`
 - <a href="#descriptor_link_at.new_descriptor" name="descriptor_link_at.new_descriptor"></a> `new-descriptor`: handle<descriptor>
 - <a href="#descriptor_link_at.new_path" name="descriptor_link_at.new_path"></a> `new-path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_link_at." name="descriptor_link_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -993,9 +995,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_open_at.o_flags" name="descriptor_open_at.o_flags"></a> `o-flags`: [`o-flags`](#o_flags)
 - <a href="#descriptor_open_at.fd_flags" name="descriptor_open_at.fd_flags"></a> `fd-flags`: [`flags`](#flags)
 - <a href="#descriptor_open_at.mode" name="descriptor_open_at.mode"></a> `mode`: [`mode`](#mode)
-##### Results
+##### Result
 
-- <a href="#descriptor_open_at." name="descriptor_open_at."></a> ``: expected<handle<descriptor>, [`errno`](#errno)>
+- expected<handle<descriptor>, [`errno`](#errno)>
 
 ----
 
@@ -1008,9 +1010,9 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_readlink_at.self" name="descriptor_readlink_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_readlink_at.path" name="descriptor_readlink_at.path"></a> `path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_readlink_at." name="descriptor_readlink_at."></a> ``: expected<`string`, [`errno`](#errno)>
+- expected<`string`, [`errno`](#errno)>
 
 ----
 
@@ -1025,9 +1027,9 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_remove_directory_at.self" name="descriptor_remove_directory_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_remove_directory_at.path" name="descriptor_remove_directory_at.path"></a> `path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_remove_directory_at." name="descriptor_remove_directory_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -1042,9 +1044,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_rename_at.old_path" name="descriptor_rename_at.old_path"></a> `old-path`: `string`
 - <a href="#descriptor_rename_at.new_descriptor" name="descriptor_rename_at.new_descriptor"></a> `new-descriptor`: handle<descriptor>
 - <a href="#descriptor_rename_at.new_path" name="descriptor_rename_at.new_path"></a> `new-path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_rename_at." name="descriptor_rename_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -1058,9 +1060,9 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_symlink_at.self" name="descriptor_symlink_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_symlink_at.old_path" name="descriptor_symlink_at.old_path"></a> `old-path`: `string`
 - <a href="#descriptor_symlink_at.new_path" name="descriptor_symlink_at.new_path"></a> `new-path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_symlink_at." name="descriptor_symlink_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
@@ -1074,35 +1076,51 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_unlink_file_at.self" name="descriptor_unlink_file_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_unlink_file_at.path" name="descriptor_unlink_file_at.path"></a> `path`: `string`
-##### Results
+##### Result
 
-- <a href="#descriptor_unlink_file_at." name="descriptor_unlink_file_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
 #### <a href="#descriptor_change_file_permissions_at" name="descriptor_change_file_permissions_at"></a> `descriptor::change-file-permissions-at` 
 
+  Change the permissions of a filesystem object that is not a directory.
+  
+  Note that the ultimate meanings of these permissions is
+  filesystem-specific.
+  
+  Note: This is similar to `fchmodat` in POSIX.
 ##### Params
 
 - <a href="#descriptor_change_file_permissions_at.self" name="descriptor_change_file_permissions_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_change_file_permissions_at.at_flags" name="descriptor_change_file_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_change_file_permissions_at.path" name="descriptor_change_file_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_file_permissions_at.mode" name="descriptor_change_file_permissions_at.mode"></a> `mode`: [`mode`](#mode)
-##### Results
+##### Result
 
-- <a href="#descriptor_change_file_permissions_at." name="descriptor_change_file_permissions_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
 ----
 
 #### <a href="#descriptor_change_directory_permissions_at" name="descriptor_change_directory_permissions_at"></a> `descriptor::change-directory-permissions-at` 
 
+  Change the permissions of a directory.
+  
+  Note that the ultimate meanings of these permissions is
+  filesystem-specific.
+  
+  Unlike in POSIX, the `executable` flag is not reinterpreted as a "search"
+  flag. `read` on a directory implies readability and searchability, and
+  `execute` is not valid for directories.
+  
+  Note: This is similar to `fchmodat` in POSIX.
 ##### Params
 
 - <a href="#descriptor_change_directory_permissions_at.self" name="descriptor_change_directory_permissions_at.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_change_directory_permissions_at.at_flags" name="descriptor_change_directory_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_change_directory_permissions_at.path" name="descriptor_change_directory_permissions_at.path"></a> `path`: `string`
 - <a href="#descriptor_change_directory_permissions_at.mode" name="descriptor_change_directory_permissions_at.mode"></a> `mode`: [`mode`](#mode)
-##### Results
+##### Result
 
-- <a href="#descriptor_change_directory_permissions_at." name="descriptor_change_directory_permissions_at."></a> ``: expected<_, [`errno`](#errno)>
+- expected<`unit`, [`errno`](#errno)>
 
