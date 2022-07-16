@@ -28,7 +28,7 @@ record receive-result {
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 /// - https://man7.org/linux/man-pages/man2/socket.2.html
 /// 
-create-udp-socket: function(network: handle network, address-family: ip-address-family) -> expected<handle socket, error>
+create-udp-socket: func(network: handle network, address-family: ip-address-family) -> expected<handle socket, error>
 
 /// Bind the socket to a specific IP address and port.
 ///
@@ -48,7 +48,7 @@ create-udp-socket: function(network: handle network, address-family: ip-address-
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 /// - https://man7.org/linux/man-pages/man2/bind.2.html
-bind: async function(udp-socket: handle socket, local-address: ip-socket-address) -> expected<_, error>
+bind: async func(udp-socket: handle socket, local-address: ip-socket-address) -> expected<unit, error>
 
 /// Get the current bound address.
 /// 
@@ -57,7 +57,7 @@ bind: async function(udp-socket: handle socket, local-address: ip-socket-address
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
 /// - https://man7.org/linux/man-pages/man2/getsockname.2.html
-local-address: function(udp-socket: handle socket) -> expected<ip-socket-address, error>
+local-address: func(udp-socket: handle socket) -> expected<ip-socket-address, error>
 
 /// receive a message.
 /// 
@@ -71,10 +71,10 @@ local-address: function(udp-socket: handle socket) -> expected<ip-socket-address
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
 /// - https://man7.org/linux/man-pages/man2/recv.2.html
-receive: async function(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
+receive: async func(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
 
 /// receive a message just like `receive`, but don't remove the message from the queue.
-peek: async function(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
+peek: async func(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
 
 /// send a message to a specific destination address.
 /// 
@@ -89,7 +89,7 @@ peek: async function(udp-socket: handle socket, iovs: push-buffer<u8>) -> expect
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html
 /// - https://man7.org/linux/man-pages/man2/send.2.html
-send: async function(udp-socket: handle socket, iovs: pull-buffer<u8>, remote-address: ip-socket-address) -> expected<usize, error>
+send: async func(udp-socket: handle socket, iovs: pull-buffer<u8>, remote-address: ip-socket-address) -> expected<usize, error>
 
 /// Set the destination address.
 /// 
@@ -110,11 +110,11 @@ send: async function(udp-socket: handle socket, iovs: pull-buffer<u8>, remote-ad
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 /// - https://man7.org/linux/man-pages/man2/connect.2.html
-connect: async function(udp-socket: handle socket, remote-address: ip-socket-address) -> expected<_, error>
+connect: async func(udp-socket: handle socket, remote-address: ip-socket-address) -> expected<unit, error>
 
 /// Get the address set with `connect`.
 /// 
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
 /// - https://man7.org/linux/man-pages/man2/getpeername.2.html
-remote-address: function(udp-socket: handle socket) -> expected<ip-socket-address, error>
+remote-address: func(udp-socket: handle socket) -> expected<ip-socket-address, error>

@@ -15,4 +15,4 @@ resource socket {}
 /// 
 /// When this function does not return an error, the argument is guaranteed to be a socket.
 /// Note: `socket-kind::unknown` is not an error.
-kind: function(any-socket: handle socket) -> expected<socket-kind, error>
+kind: func(any-socket: handle socket) -> expected<socket-kind, error>

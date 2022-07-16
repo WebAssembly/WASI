@@ -22,13 +22,13 @@ enum shutdown-type {
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 /// - https://man7.org/linux/man-pages/man2/socket.2.html
 /// 
-create-tcp-socket: function(network: handle network, address-family: ip-address-family) -> expected<handle socket, error>
+create-tcp-socket: func(network: handle network, address-family: ip-address-family) -> expected<handle socket, error>
 
 /// TO DISCUSS
-as-input-byte-stream: function(tcp-socket: handle socket) -> handle input-byte-stream
+as-input-byte-stream: func(tcp-socket: handle socket) -> handle input-byte-stream
 
 /// TO DISCUSS
-as-output-byte-stream: function(tcp-socket: handle socket) -> handle output-byte-stream
+as-output-byte-stream: func(tcp-socket: handle socket) -> handle output-byte-stream
 
 /// Bind the socket to a specific IP address and port.
 ///
@@ -44,7 +44,7 @@ as-output-byte-stream: function(tcp-socket: handle socket) -> handle output-byte
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 /// - https://man7.org/linux/man-pages/man2/bind.2.html
-bind: async function(tcp-socket: handle socket, local-address: ip-socket-address) -> expected<_, error>
+bind: async func(tcp-socket: handle socket, local-address: ip-socket-address) -> expected<unit, error>
 
 /// Get the current bound address.
 /// 
@@ -53,7 +53,7 @@ bind: async function(tcp-socket: handle socket, local-address: ip-socket-address
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
 /// - https://man7.org/linux/man-pages/man2/getsockname.2.html
-local-address: function(tcp-socket: handle socket) -> expected<ip-socket-address, error>
+local-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, error>
 
 ///	Connect to a remote endpoint.
 /// 
@@ -63,7 +63,7 @@ local-address: function(tcp-socket: handle socket) -> expected<ip-socket-address
 ///  References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 /// - https://man7.org/linux/man-pages/man2/connect.2.html
-connect: async function(tcp-socket: handle socket, remote-address: ip-socket-address) -> expected<_, error>
+connect: async func(tcp-socket: handle socket, remote-address: ip-socket-address) -> expected<unit, error>
 
 /// Start listening for new connections.
 /// 
@@ -73,19 +73,19 @@ connect: async function(tcp-socket: handle socket, remote-address: ip-socket-add
 ///  References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
 /// - https://man7.org/linux/man-pages/man2/listen.2.html
-listen: async function(tcp-socket: handle socket, backlog-size-hint: option<usize>) -> expected<_, error>
+listen: async func(tcp-socket: handle socket, backlog-size-hint: option<usize>) -> expected<unit, error>
 
 /// Fails when the socket is not in the Connection state.
 /// 
 /// Read data from the stream just like `InputByteStream::read`, but don't remove the data from the queue.
-peek: async function(tcp-socket: handle socket, iovs: push-buffer<u8>) -> expected<usize, error>
+peek: async func(tcp-socket: handle socket, iovs: push-buffer<u8>) -> expected<usize, error>
 
 /// Fails when the socket is not in the Connection state.
 /// 
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
 /// - https://man7.org/linux/man-pages/man2/getpeername.2.html
-remote-address: function(tcp-socket: handle socket) -> expected<ip-socket-address, error>
+remote-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, error>
 
 /// Gracefully shut down the connection.
 /// 
@@ -111,7 +111,7 @@ remote-address: function(tcp-socket: handle socket) -> expected<ip-socket-addres
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html
 /// - https://man7.org/linux/man-pages/man2/shutdown.2.html
-shutdown: async function(tcp-socket: handle socket, shutdown-type: shutdown-type) -> expected<_, error>
+shutdown: async func(tcp-socket: handle socket, shutdown-type: shutdown-type) -> expected<unit, error>
 
 /// Unlike POSIX, this function does not returns the remote address.
 /// If you want to know this information, invoke `remote-address` on the newly created socket.
@@ -123,4 +123,4 @@ shutdown: async function(tcp-socket: handle socket, shutdown-type: shutdown-type
 /// References:
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html
 /// - https://man7.org/linux/man-pages/man2/accept.2.html
-accept: async function(tcp-socket: handle socket) -> expected<handle socket, error>
+accept: async func(tcp-socket: handle socket) -> expected<handle socket, error>
