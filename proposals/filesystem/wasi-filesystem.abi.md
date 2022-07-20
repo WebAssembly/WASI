@@ -724,7 +724,7 @@ Size: 16, Alignment: 8
 
   Get information associated with a descriptor.
   
-  Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well
+  Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX, as well
   as additional fields.
   
   Note: This was called `fdstat_get` in earlier versions of WASI.
