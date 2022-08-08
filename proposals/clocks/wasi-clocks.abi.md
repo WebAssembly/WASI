@@ -113,3 +113,15 @@ Size: 16, Alignment: 8
 
 - [`instant`](#instant)
 
+----
+
+#### <a href="#monotonic_timer_expiration" name="monotonic_timer_expiration"></a> `monotonic-timer::expiration` 
+
+  Returns a future that completes when the timer reaches zero.
+##### Params
+
+- <a href="#monotonic_timer_expiration.self" name="monotonic_timer_expiration.self"></a> `self`: handle<monotonic-timer>
+##### Result
+
+- future<`unit`>
+
