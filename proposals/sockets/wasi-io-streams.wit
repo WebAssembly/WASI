@@ -1,7 +1,0 @@
-
-/// Stubs of https://github.com/WebAssembly/wasi-io/
-/// 
-/// TO DISCUSS
-
-resource input-byte-stream {}
-resource output-byte-stream {}

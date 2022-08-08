@@ -4,11 +4,8 @@ use { network } from wasi-network
 use { socket } from wasi-socket
 
 
-record receive-result {
-	bytes-received: usize,
-	
-	/// Similar to the `MSG_TRUNC` flag in POSIX.
-	truncated: bool,
+record datagram {
+	data: list<u8>, // Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.
 	remote-address: ip-socket-address,
 
 	/// Possible future additions:
@@ -71,25 +68,18 @@ local-address: func(udp-socket: handle socket) -> expected<ip-socket-address, er
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
 /// - https://man7.org/linux/man-pages/man2/recv.2.html
-receive: async func(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
-
-/// receive a message just like `receive`, but don't remove the message from the queue.
-peek: async func(udp-socket: handle socket, iovs: push-buffer<u8>) -> expected<receive-result, error>
+receive: async func(udp-socket: handle socket) -> expected<datagram, error>
 
 /// send a message to a specific destination address.
 /// 
 /// The remote address option is required. To send a message to the "connected" peer,
 /// call `remote-address` to get their address.
 /// 
-/// Returns the number of bytes sent.
-/// 
-/// TODO: Does the returned number of bytes sent ever differ from the supplied buffer size for UDP sockets?
-/// 
 /// References
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html
 /// - https://man7.org/linux/man-pages/man2/send.2.html
-send: async func(udp-socket: handle socket, iovs: pull-buffer<u8>, remote-address: ip-socket-address) -> expected<usize, error>
+send: async func(udp-socket: handle socket, datagram: datagram) -> expected<unit, error>
 
 /// Set the destination address.
 /// 
