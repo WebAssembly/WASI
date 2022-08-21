@@ -1,18 +1,4 @@
 
-use { error } from common-types
-
-enum socket-kind {
-	/// TODO: https://github.com/WebAssembly/interface-types/issues/145
-	unknown,
-	tcp,
-	udp,
+resource socket {
+	
 }
-
-resource socket {}
-
-
-/// Get the type of the socket.
-/// 
-/// When this function does not return an error, the argument is guaranteed to be a socket.
-/// Note: `socket-kind::unknown` is not an error.
-kind: func(any-socket: handle socket) -> expected<socket-kind, error>

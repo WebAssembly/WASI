@@ -1,0 +1,29 @@
+
+use { error, ipv4-address, ipv6-address, ip-address-family } from common-types
+use { socket } from wasi-socket
+
+record ipv4-socket-address {
+	port: u16, // sin_port
+	address: ipv4-address, // sin_addr
+}
+
+record ipv6-socket-address {
+	port: u16, // sin6_port
+	flow-info: u32, // sin6_flowinfo
+	address: ipv6-address, // sin6_addr
+	scope-id: u32, // sin6_scope_id
+}
+
+variant ip-socket-address {
+	ipv4(ipv4-socket-address),
+	ipv6(ipv6-socket-address),
+}
+
+resource ip-socket implements socket {
+
+	/// Whether this is a IPv4 or IPv6 socket.
+	/// 
+	/// Equivalent to the SO_DOMAIN socket option.
+	address-family: func() -> ip-address-family
+
+}

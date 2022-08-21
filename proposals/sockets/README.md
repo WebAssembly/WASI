@@ -44,10 +44,11 @@ Unlike BSD sockets, WASI sockets require capability handles to create sockets an
 The socket APIs have been split up into standalone protocol-specific WASI modules. Both current and future socket modules can then be tailored to the needs of that specific protocol and progress the standardization process independently.
 
 This proposal introduces 4 new WASI modules:
-- [wasi-socket.wit](./wasi-socket.wit)
-- [wasi-socket-tcp.wit](./wasi-socket-tcp.wit)
-- [wasi-socket-udp.wit](./wasi-socket-udp.wit)
 - [wasi-ip-name-lookup.wit](./wasi-ip-name-lookup.wit)
+- [wasi-socket.wit](./wasi-socket.wit)
+  - [wasi-socket-ip.wit](./wasi-socket-ip.wit)
+    - [wasi-socket-tcp.wit](./wasi-socket-tcp.wit)
+    - [wasi-socket-udp.wit](./wasi-socket-udp.wit)
 
 ### Goals
 
