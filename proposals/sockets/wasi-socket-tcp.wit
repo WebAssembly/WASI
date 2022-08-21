@@ -2,17 +2,6 @@ use { error, ip-address-family, ip-socket-address, usize } from common-types
 use { network } from wasi-network
 use { socket } from wasi-socket
 
-enum shutdown-type {
-	/// Similar to `SHUT_RD` in POSIX.
-	receive,
-
-	/// Similar to `SHUT_WR` in POSIX.
-	send,
-
-	/// Similar to `SHUT_RDWR` in POSIX.
-	both,
-}
-
 /// Create a new TCP socket.
 /// 
 /// Similar to `socket(AF_INET or AF_INET6, SOCK_STREAM, 0 or IPPROTO_TCP)` in POSIX.
@@ -26,12 +15,11 @@ create-tcp-socket: func(network: handle network, address-family: ip-address-fami
 /// Receive data on the socket.
 /// 
 /// The returned stream can be used to continually read all data from the socket. The stream's final value will be
-/// `Ok(())` when the stream reached end-of-file without errors.
+/// `Ok(())` when the stream reached end-of-file without errors. When the returned stream is closed by the consumer,
+/// a `shutdown(this_socket, SHUT_RD)` syscall is executed.
 /// 
-/// The returned stream may be closed prematurely by the consumer. In that case the socket becomes available
-/// for reading again.
+/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
 /// 
-/// Fails when there is already an active `receive` operation in progress on the socket.
 /// Fails when the socket is not in the Connection state.
 /// 
 /// References
@@ -44,12 +32,13 @@ receive: func(tcp-socket: handle socket) -> stream<u8, expected<unit, error>>
 /// Send data on the socket.
 /// 
 /// The input stream can be used to continually write data to the socket.
-/// After the input stream is finalized by the producer, the socket becomes available for writing again.
+/// After the input stream is finalized by the producer, a `shutdown(this_socket, SHUT_WR)` syscall is executed.
 /// 
 /// The returned future completes successfully after the input stream is drained completely.
 /// If an error occurs during sending, the input stream is closed and the future completes with an error.
 /// 
-/// Fails when there is already an active `send` operation in progress on the socket.
+/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
+/// 
 /// Fails when the socket is not in the Connection state.
 /// 
 /// References
@@ -110,32 +99,6 @@ listen: async func(tcp-socket: handle socket, backlog-size-hint: option<usize>) 
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
 /// - https://man7.org/linux/man-pages/man2/getpeername.2.html
 remote-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, error>
-
-/// Gracefully shut down the connection.
-/// 
-/// - receive: the socket is not expecting to receive any more data from the peer. Any active receive stream will be
-///   closed with a success value. If there is still data in the receive queue at time of
-///   calling `shutdown` or whenever new data arrives afterwards, then (TODO).
-/// - send: the socket is not expecting to send any more data to the peer. After all data in the send queue has
-///   been sent and acknowledged, a FIN will be sent. All subsequent write/send operations will return an
-///   EPIPE error.
-/// - both: receive & send
-/// 
-/// The shutdown function does not close the socket.
-/// 
-/// Fails when the socket is not in the Connection state.
-/// 
-/// TODO: Look into how different platforms behave after shutdown(Read) has been called and new data arrives. According to the internet (unverified):
-/// - BSD: silently discards the data
-/// - Linux: effectively ignores the shutdown call. New data can still be read. If not done will ultimately block the sender.
-/// - Windows: sends RST
-/// 
-/// TODO: Look into how different platforms behave when trying to shut down the same direction multiple times.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html
-/// - https://man7.org/linux/man-pages/man2/shutdown.2.html
-shutdown: async func(tcp-socket: handle socket, shutdown-type: shutdown-type) -> expected<unit, error>
 
 /// Start accepting new client sockets.
 /// 
