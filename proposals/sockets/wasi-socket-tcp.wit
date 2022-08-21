@@ -104,10 +104,8 @@ remote-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, e
 /// 
 /// The returned sockets are bound and in the Connection state.
 /// 
-/// The returned stream may be closed prematurely by the consumer. In that case the socket becomes available
-/// for accepting again.
+/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an error.
 /// 
-/// Fails when there is already an active `accept` stream operation in progress on the socket.
 /// Fails when this socket is not in the Listening state.
 /// 
 /// References:
