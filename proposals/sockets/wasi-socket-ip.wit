@@ -26,4 +26,16 @@ resource ip-socket implements socket {
 	/// Equivalent to the SO_DOMAIN socket option.
 	address-family: func() -> ip-address-family
 
+	/// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
+	unicast-hop-limit: func() -> expected<u8, error>
+	set-unicast-hop-limit: func(value: u8) -> expected<unit, error>
+
+	/// Whether IPv4 compatibility (dual-stack) mode is disabled or not.
+	/// Implementations are not required to support dual-stack mode, so calling `set-ipv6-only(false)` might fail.
+	/// 
+	/// Fails when called on an IPv4 socket.
+	/// 
+	/// Equivalent to the IPV6_V6ONLY socket option.
+	ipv6-only: func() -> expected<bool, error>
+	set-ipv6-only: func(value: bool) -> expected<unit, error>
 }

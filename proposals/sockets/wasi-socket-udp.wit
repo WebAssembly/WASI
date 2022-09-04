@@ -109,4 +109,20 @@ resource udp-socket implements ip-socket {
 	/// - https://man7.org/linux/man-pages/man2/getpeername.2.html
 	remote-address: func() -> expected<ip-socket-address, error>
 
+	/// The kernel buffer space reserved for sends/receives on this socket.
+	/// 
+	/// Note #1: an implementation may choose to cap or round the buffer size when setting the value.
+	/// 	In other words, after setting a value, reading the same setting back may return a different value.
+	/// 
+	/// Note #2: there is not necessarily a direct relationship between the kernel buffer size and the bytes of
+	/// 	actual data to be sent/received by the application, because the kernel might also use the buffer space
+	/// 	for internal metadata structures.
+	/// 
+	/// Fails when this socket is in the Listening state.
+	/// 
+	/// Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.
+	receive-buffer-size: func() -> expected<usize, error>
+	set-receive-buffer-size: func(value: usize) -> expected<unit, error>
+	send-buffer-size: func() -> expected<usize, error>
+	set-send-buffer-size: func(value: usize) -> expected<unit, error>
 }
