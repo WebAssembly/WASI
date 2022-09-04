@@ -1,114 +1,118 @@
-use { error, ip-address-family, ip-socket-address, usize } from common-types
+use { error, ip-address-family, usize } from common-types
 use { network } from wasi-network
-use { socket } from wasi-socket
+use { ip-socket, ip-socket-address } from wasi-socket-ip
 
-/// Create a new TCP socket.
-/// 
-/// Similar to `socket(AF_INET or AF_INET6, SOCK_STREAM, 0 or IPPROTO_TCP)` in POSIX.
-/// 
-/// References:
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
-/// - https://man7.org/linux/man-pages/man2/socket.2.html
-/// 
-create-tcp-socket: func(network: handle network, address-family: ip-address-family) -> expected<handle socket, error>
+resource tcp-socket implements ip-socket {
 
-/// Receive data on the socket.
-/// 
-/// The returned stream can be used to continually read all data from the socket. The stream's final value will be
-/// `Ok(())` when the stream reached end-of-file without errors. When the returned stream is closed by the consumer,
-/// a `shutdown(this_socket, SHUT_RD)` syscall is executed.
-/// 
-/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
-/// 
-/// Fails when the socket is not in the Connection state.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/read.html
-/// - https://man7.org/linux/man-pages/man2/recv.2.html
-/// - https://man7.org/linux/man-pages/man2/read.2.html
-receive: func(tcp-socket: handle socket) -> stream<u8, expected<unit, error>>
+	/// Create a new TCP socket.
+	/// 
+	/// Similar to `socket(AF_INET or AF_INET6, SOCK_STREAM, 0 or IPPROTO_TCP)` in POSIX.
+	/// 
+	/// References:
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
+	/// - https://man7.org/linux/man-pages/man2/socket.2.html
+	/// 
+	static new: async func(network: handle network, address-family: ip-address-family) -> expected<handle tcp-socket, error>
 
-/// Send data on the socket.
-/// 
-/// The input stream can be used to continually write data to the socket.
-/// After the input stream is finalized by the producer, a `shutdown(this_socket, SHUT_WR)` syscall is executed.
-/// 
-/// The returned future completes successfully after the input stream is drained completely.
-/// If an error occurs during sending, the input stream is closed and the future completes with an error.
-/// 
-/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
-/// 
-/// Fails when the socket is not in the Connection state.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
-/// - https://man7.org/linux/man-pages/man2/send.2.html
-/// - https://man7.org/linux/man-pages/man2/write.2.html
-send: func(tcp-socket: handle socket, data: stream<u8, unit>) -> future<expected<unit, error>>
+	/// Receive data on the socket.
+	/// 
+	/// The returned stream can be used to continually read all data from the socket. The stream's final value will be
+	/// `Ok(())` when the stream reached end-of-file without errors. When the returned stream is closed by the consumer,
+	/// a `shutdown(this_socket, SHUT_RD)` syscall is executed.
+	/// 
+	/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
+	/// 
+	/// Fails when the socket is not in the Connection state.
+	/// 
+	/// References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/read.html
+	/// - https://man7.org/linux/man-pages/man2/recv.2.html
+	/// - https://man7.org/linux/man-pages/man2/read.2.html
+	receive: func() -> stream<u8, expected<unit, error>>
 
-/// Bind the socket to a specific IP address and port.
-///
-/// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
-/// network interface(s) to bind to.
-/// If the TCP/UDP port is zero, the socket will be bound to a random free port.
-/// 
-/// When a socket is not explicitly bound, the first invocation to a listen or connect operation will
-/// implicitly bind the socket.
-/// 
-/// Returns an error if the socket is already bound.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
-/// - https://man7.org/linux/man-pages/man2/bind.2.html
-bind: async func(tcp-socket: handle socket, local-address: ip-socket-address) -> expected<unit, error>
+	/// Send data on the socket.
+	/// 
+	/// The input stream can be used to continually write data to the socket.
+	/// After the input stream is finalized by the producer, a `shutdown(this_socket, SHUT_WR)` syscall is executed.
+	/// 
+	/// The returned future completes successfully after the input stream is drained completely.
+	/// If an error occurs during sending, the input stream is closed and the future completes with an error.
+	/// 
+	/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an EPIPE error.
+	/// 
+	/// Fails when the socket is not in the Connection state.
+	/// 
+	/// References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
+	/// - https://man7.org/linux/man-pages/man2/send.2.html
+	/// - https://man7.org/linux/man-pages/man2/write.2.html
+	send: func(data: stream<u8, unit>) -> future<expected<unit, error>>
 
-/// Get the current bound address.
-/// 
-/// Returns an error if the socket is not bound.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
-/// - https://man7.org/linux/man-pages/man2/getsockname.2.html
-local-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, error>
+	/// Bind the socket to a specific IP address and port.
+	///
+	/// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
+	/// network interface(s) to bind to.
+	/// If the TCP/UDP port is zero, the socket will be bound to a random free port.
+	/// 
+	/// When a socket is not explicitly bound, the first invocation to a listen or connect operation will
+	/// implicitly bind the socket.
+	/// 
+	/// Returns an error if the socket is already bound.
+	/// 
+	/// References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
+	/// - https://man7.org/linux/man-pages/man2/bind.2.html
+	bind: async func(local-address: ip-socket-address) -> expected<unit, error>
 
-///	Connect to a remote endpoint.
-/// 
-/// Transitions the socket into the Connection state.
-/// Fails when the socket is already in the Connection or Listener state.
-/// 
-///  References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
-/// - https://man7.org/linux/man-pages/man2/connect.2.html
-connect: async func(tcp-socket: handle socket, remote-address: ip-socket-address) -> expected<unit, error>
+	/// Get the current bound address.
+	/// 
+	/// Returns an error if the socket is not bound.
+	/// 
+	/// References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
+	/// - https://man7.org/linux/man-pages/man2/getsockname.2.html
+	local-address: func() -> expected<ip-socket-address, error>
 
-/// Start listening for new connections.
-/// 
-/// Transitions the socket into the Listener state.
-/// Fails when the socket is already in the Connection or Listener state.
-/// 
-///  References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
-/// - https://man7.org/linux/man-pages/man2/listen.2.html
-listen: async func(tcp-socket: handle socket, backlog-size-hint: option<usize>) -> expected<unit, error>
+	///	Connect to a remote endpoint.
+	/// 
+	/// Transitions the socket into the Connection state.
+	/// Fails when the socket is already in the Connection or Listener state.
+	/// 
+	///  References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
+	/// - https://man7.org/linux/man-pages/man2/connect.2.html
+	connect: async func(remote-address: ip-socket-address) -> expected<unit, error>
 
-/// Fails when the socket is not in the Connection state.
-/// 
-/// References
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
-/// - https://man7.org/linux/man-pages/man2/getpeername.2.html
-remote-address: func(tcp-socket: handle socket) -> expected<ip-socket-address, error>
+	/// Start listening for new connections.
+	/// 
+	/// Transitions the socket into the Listener state.
+	/// Fails when the socket is already in the Connection or Listener state.
+	/// 
+	///  References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
+	/// - https://man7.org/linux/man-pages/man2/listen.2.html
+	listen: async func(backlog-size-hint: option<usize>) -> expected<unit, error>
 
-/// Start accepting new client sockets.
-/// 
-/// The returned sockets are bound and in the Connection state.
-/// 
-/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an error.
-/// 
-/// Fails when this socket is not in the Listening state.
-/// 
-/// References:
-/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html
-/// - https://man7.org/linux/man-pages/man2/accept.2.html
-accept: func(tcp-socket: handle socket) -> stream<handle socket, expected<unit, error>>
+	/// Fails when the socket is not in the Connection state.
+	/// 
+	/// References
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
+	/// - https://man7.org/linux/man-pages/man2/getpeername.2.html
+	remote-address: func() -> expected<ip-socket-address, error>
+
+	/// Start accepting new client sockets.
+	/// 
+	/// The returned sockets are bound and in the Connection state.
+	/// 
+	/// This function can only be called successfully _once_ on a socket. All subsequent calls will result in an error.
+	/// 
+	/// Fails when this socket is not in the Listening state.
+	/// 
+	/// References:
+	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html
+	/// - https://man7.org/linux/man-pages/man2/accept.2.html
+	accept: func() -> stream<handle tcp-socket, expected<unit, error>>
+
+}
