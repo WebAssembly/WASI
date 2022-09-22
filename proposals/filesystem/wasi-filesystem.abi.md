@@ -774,22 +774,6 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_read" name="descriptor_read"></a> `descriptor::read` 
-
-  Read from a descriptor.
-  
-  The meaning of `read` on a directory is unspecified.
-  
-  Note: This is similar to `read` in POSIX.
-##### Params
-
-- <a href="#descriptor_read.self" name="descriptor_read.self"></a> `self`: handle<descriptor>
-##### Result
-
-- stream<`u8`, [`errno`](#errno)>
-
-----
-
 #### <a href="#descriptor_readdir" name="descriptor_readdir"></a> `descriptor::readdir` 
 
   Read directory entries from a directory.
@@ -859,21 +843,6 @@ Size: 16, Alignment: 8
 ##### Result
 
 - expected<[`filesize`](#filesize), [`errno`](#errno)>
-
-----
-
-#### <a href="#descriptor_write" name="descriptor_write"></a> `descriptor::write` 
-
-  Write to a descriptor.
-  
-  Note: This is similar to `write` in POSIX.
-##### Params
-
-- <a href="#descriptor_write.self" name="descriptor_write.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_write.buf" name="descriptor_write.buf"></a> `buf`: stream<`u8`, `unit`>
-##### Result
-
-- future<expected<`unit`, [`errno`](#errno)>>
 
 ----
 

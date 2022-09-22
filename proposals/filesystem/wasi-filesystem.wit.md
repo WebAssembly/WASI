@@ -499,16 +499,6 @@ pwrite: func(
 ) -> future<expected<unit, errno>>
 ```
 
-## `read`
-```wit
-/// Read from a descriptor.
-///
-/// The meaning of `read` on a directory is unspecified.
-///
-/// Note: This is similar to `read` in POSIX.
-read: func() -> stream<u8, errno>
-```
-
 ## `readdir`
 ```wit
 /// Read directory entries from a directory.
@@ -559,17 +549,6 @@ sync: func() -> expected<unit, errno>
 ///
 /// Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
 tell: func() -> expected<filesize, errno>
-```
-
-## `write`
-```wit
-/// Write to a descriptor.
-///
-/// Note: This is similar to `write` in POSIX.
-write: func(
-    /// Data to write
-    buf: stream<u8, unit>,
-) -> future<expected<unit, errno>>
 ```
 
 ## `create-directory-at`
