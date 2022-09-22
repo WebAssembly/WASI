@@ -317,10 +317,6 @@ Size: 1, Alignment: 1
 
 ### Enum Cases
 
-- <a href="errno.success" name="errno.success"></a> [`success`](#errno.success)
-
-  No error occurred. System call completed successfully.
-
 - <a href="errno.toobig" name="errno.toobig"></a> [`toobig`](#errno.toobig)
 
   Argument list too long. This is similar to `E2BIG` in POSIX.

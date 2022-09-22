@@ -225,8 +225,6 @@ record dirent {
 /// API; some are used in higher-level library layers, and others are provided
 /// merely for alignment with POSIX.
 enum errno {
-    /// No error occurred. System call completed successfully.
-    success,
     /// Argument list too long. This is similar to `E2BIG` in POSIX.
     toobig,
     /// Permission denied.
