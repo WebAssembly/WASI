@@ -259,9 +259,7 @@ enum errno {
     deadlk,
     /// Destination address required.
     destaddrreq,
-    /// Mathematics argument out of domain of function.
-    dom,
-    /// Reserved.
+    /// Storage quota exceeded.
     dquot,
     /// File exists.
     exist,
@@ -295,7 +293,7 @@ enum errno {
     mlink,
     /// Message too large.
     msgsize,
-    /// Reserved.
+    /// Multihop attempted.
     multihop,
     /// Filename too long.
     nametoolong,
@@ -317,7 +315,7 @@ enum errno {
     noexec,
     /// No locks available.
     nolck,
-    /// Reserved.
+    /// Link has been severed.
     nolink,
     /// Not enough space.
     nomem,
@@ -329,16 +327,12 @@ enum errno {
     nospc,
     /// Function not supported.
     nosys,
-    /// The socket is not connected.
-    notconn,
     /// Not a directory or a symbolic link to a directory.
     notdir,
     /// Directory not empty.
     notempty,
     /// State not recoverable.
     notrecoverable,
-    /// Not a socket.
-    notsock,
     /// Not supported, or operation not supported on socket.
     notsup,
     /// Inappropriate I/O control operation.
@@ -353,12 +347,6 @@ enum errno {
     perm,
     /// Broken pipe.
     pipe,
-    /// Protocol error.
-    proto,
-    /// Protocol not supported.
-    protonosupport,
-    /// Protocol wrong type for socket.
-    prototype,
     /// Result too large.
     range,
     /// Read-only file system.
@@ -367,7 +355,7 @@ enum errno {
     spipe,
     /// No such process.
     srch,
-    /// Reserved.
+    /// Stale file handle.
     stale,
     /// Connection timed out.
     timedout,

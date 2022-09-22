@@ -385,13 +385,9 @@ Size: 1, Alignment: 1
 
   Destination address required.
 
-- <a href="errno.dom" name="errno.dom"></a> [`dom`](#errno.dom)
-
-  Mathematics argument out of domain of function.
-
 - <a href="errno.dquot" name="errno.dquot"></a> [`dquot`](#errno.dquot)
 
-  Reserved.
+  Storage quota exceeded.
 
 - <a href="errno.exist" name="errno.exist"></a> [`exist`](#errno.exist)
 
@@ -459,7 +455,7 @@ Size: 1, Alignment: 1
 
 - <a href="errno.multihop" name="errno.multihop"></a> [`multihop`](#errno.multihop)
 
-  Reserved.
+  Multihop attempted.
 
 - <a href="errno.nametoolong" name="errno.nametoolong"></a> [`nametoolong`](#errno.nametoolong)
 
@@ -503,7 +499,7 @@ Size: 1, Alignment: 1
 
 - <a href="errno.nolink" name="errno.nolink"></a> [`nolink`](#errno.nolink)
 
-  Reserved.
+  Link has been severed.
 
 - <a href="errno.nomem" name="errno.nomem"></a> [`nomem`](#errno.nomem)
 
@@ -525,10 +521,6 @@ Size: 1, Alignment: 1
 
   Function not supported.
 
-- <a href="errno.notconn" name="errno.notconn"></a> [`notconn`](#errno.notconn)
-
-  The socket is not connected.
-
 - <a href="errno.notdir" name="errno.notdir"></a> [`notdir`](#errno.notdir)
 
   Not a directory or a symbolic link to a directory.
@@ -540,10 +532,6 @@ Size: 1, Alignment: 1
 - <a href="errno.notrecoverable" name="errno.notrecoverable"></a> [`notrecoverable`](#errno.notrecoverable)
 
   State not recoverable.
-
-- <a href="errno.notsock" name="errno.notsock"></a> [`notsock`](#errno.notsock)
-
-  Not a socket.
 
 - <a href="errno.notsup" name="errno.notsup"></a> [`notsup`](#errno.notsup)
 
@@ -573,18 +561,6 @@ Size: 1, Alignment: 1
 
   Broken pipe.
 
-- <a href="errno.proto" name="errno.proto"></a> [`proto`](#errno.proto)
-
-  Protocol error.
-
-- <a href="errno.protonosupport" name="errno.protonosupport"></a> [`protonosupport`](#errno.protonosupport)
-
-  Protocol not supported.
-
-- <a href="errno.prototype" name="errno.prototype"></a> [`prototype`](#errno.prototype)
-
-  Protocol wrong type for socket.
-
 - <a href="errno.range" name="errno.range"></a> [`range`](#errno.range)
 
   Result too large.
@@ -603,7 +579,7 @@ Size: 1, Alignment: 1
 
 - <a href="errno.stale" name="errno.stale"></a> [`stale`](#errno.stale)
 
-  Reserved.
+  Stale file handle.
 
 - <a href="errno.timedout" name="errno.timedout"></a> [`timedout`](#errno.timedout)
 
