@@ -123,5 +123,5 @@ Size: 16, Alignment: 8
 - <a href="#monotonic_timer_expiration.self" name="monotonic_timer_expiration.self"></a> `self`: handle<monotonic-timer>
 ##### Result
 
-- future<`unit`>
+- future
 

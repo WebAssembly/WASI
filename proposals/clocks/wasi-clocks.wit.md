@@ -114,7 +114,7 @@ current: func() -> instant
 ## `expiration`
 ```wit
 /// Returns a future that completes when the timer reaches zero.
-expiration: func() -> future<unit>
+expiration: func() -> future
 ```
 
 ```wit
