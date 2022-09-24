@@ -41,11 +41,19 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
-| [HTTP][wasi-http]                                                              | Piotr Sikora                           |          |
-| [Native threads][wasi-native-threads]                                          | Alexandru Ene                          |          |
+| [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [gRPC][wasi-grpc]                                                              | Jiaxiao Zhou, Dan Chiarlone, David Justice, Piotr Sikora |          |
+| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
+| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
+| [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Threads][wasi-threads]                                                        | Alexandru Ene                          |          |
 | [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
 
 ### Phase 0 - Pre-Proposal (CG)
@@ -71,20 +79,27 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [witx]: https://github.com/WebAssembly/WASI/blob/master/docs/witx.md
 [ephemeral/snapshot/old process]: https://github.com/WebAssembly/WASI/blob/master/phases/README.md
 
+[wasi-blob-store]: https://github.com/WebAssembly/wasi-blob-store
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-classic-command]: https://github.com/WebAssembly/wasi-classic-command
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
 [wasi-data]: https://github.com/singlestore-labs/wasi-data
+[wasi-distributed-lock-service]: https://github.com/WebAssembly/wasi-distributed-lock-service
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
+[wasi-grpc]: https://github.com/WebAssembly/wasi-grpc
+[wasi-handle-index]: https://github.com/WebAssembly/wasi-handle-index
+[wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-io]: https://github.com/WebAssembly/wasi-io
+[wasi-kv-store]: https://github.com/WebAssembly/wasi-kv-store
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
 [wasi-native-threads]: https://github.com/WebAssembly/wasi-native-threads
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
-[wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
-[wasi-handle-index]: https://github.com/WebAssembly/wasi-handle-index
-[wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
+[wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
+[wasi-pubsub]: https://github.com/WebAssembly/wasi-pubsub
+[wasi-runtime-config]: https://github.com/WebAssembly/wasi-runtime-config
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
+[wasi-sql]: https://github.com/WebAssembly/wasi-sql
 [wasi-url]: https://github.com/WebAssembly/wasi-url
