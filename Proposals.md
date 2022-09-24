@@ -91,8 +91,9 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-kv-store]: https://github.com/WebAssembly/wasi-kv-store
+[wasi-message-queue]: https://github.com/WebAssembly/wasi-message-queue
 [wasi-misc]: https://github.com/WebAssembly/wasi-misc
-[wasi-native-threads]: https://github.com/WebAssembly/wasi-native-threads
+[wasi-threads]: https://github.com/WebAssembly/wasi-native-threads
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
