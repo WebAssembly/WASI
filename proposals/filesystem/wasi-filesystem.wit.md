@@ -416,7 +416,7 @@ fadvise: func(
     len: u64,
     /// The advice.
     advice: advice
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `fallocate`
@@ -429,7 +429,7 @@ fallocate: func(
     offset: filesize,
     /// The length of the area that is allocated.
     len: filesize
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `fdatasync`
@@ -437,7 +437,7 @@ fallocate: func(
 /// Synchronize the data of a file to disk.
 ///
 /// Note: This is similar to `fdatasync` in POSIX.
-datasync: func() -> expected<unit, errno>
+datasync: func() -> result<_, errno>
 ```
 
 ## `info`
@@ -448,7 +448,7 @@ datasync: func() -> expected<unit, errno>
 /// as additional fields.
 ///
 /// Note: This was called `fdstat_get` in earlier versions of WASI.
-info: func() -> expected<info, errno>
+info: func() -> result<info, errno>
 ```
 
 ## `set-size`
@@ -457,7 +457,7 @@ info: func() -> expected<info, errno>
 /// extra bytes are filled with zeros.
 ///
 /// Note: This was called `fd_filestat_set_size` in earlier versions of WASI.
-set-size: func(size: filesize) -> expected<unit, errno>
+set-size: func(size: filesize) -> result<_, errno>
 ```
 
 ## `set-times`
@@ -472,7 +472,7 @@ set-times: func(
     atim: new-timestamp,
     /// The desired values of the data modification timestamp.
     mtim: new-timestamp,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `pread`
@@ -493,10 +493,10 @@ pread: func(
 /// Note: This is similar to `pwrite` in POSIX.
 pwrite: func(
     /// Data to write
-    buf: stream<u8, unit>,
+    buf: stream<u8>,
     /// The offset within the file at which to write.
     offset: filesize,
-) -> future<expected<unit, errno>>
+) -> future<result<_, errno>>
 ```
 
 ## `readdir`
@@ -530,7 +530,7 @@ readdir: func(
 seek: func(
     /// The method to compute the new offset.
     %from: seek-from,
-) -> expected<filesize, errno>
+) -> result<filesize, errno>
 ```
 
 ## `sync`
@@ -538,7 +538,7 @@ seek: func(
 /// Synchronize the data and metadata of a file to disk.
 ///
 /// Note: This is similar to `fsync` in POSIX.
-sync: func() -> expected<unit, errno>
+sync: func() -> result<_, errno>
 ```
 
 ## `tell`
@@ -548,7 +548,7 @@ sync: func() -> expected<unit, errno>
 /// Returns the current offset of the descriptor, relative to the start of the file.
 ///
 /// Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
-tell: func() -> expected<filesize, errno>
+tell: func() -> result<filesize, errno>
 ```
 
 ## `create-directory-at`
@@ -559,7 +559,7 @@ tell: func() -> expected<filesize, errno>
 create-directory-at: func(
     /// The relative path at which to create the directory.
     path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `stat-at`
@@ -574,7 +574,7 @@ stat-at: func(
     at-flags: at-flags,
     /// The relative path of the file or directory to inspect.
     path: string,
-) -> expected<stat, errno>
+) -> result<stat, errno>
 ```
 
 ## `set-times-at`
@@ -593,7 +593,7 @@ set-times-at: func(
     atim: new-timestamp,
     /// The desired values of the data modification timestamp.
     mtim: new-timestamp,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `link-at`
@@ -610,7 +610,7 @@ link-at: func(
     new-descriptor: handle descriptor,
     /// The relative destination path at which to create the hard link.
     new-path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `open-at`
@@ -635,7 +635,7 @@ open-at: func(
     %flags: %flags,
     /// Permissions to use when creating a new file.
     mode: mode
-) -> expected<descriptor, errno>
+) -> result<descriptor, errno>
 ```
 
 ## `readlink-at`
@@ -646,7 +646,7 @@ open-at: func(
 readlink-at: func(
     /// The relative path of the symbolic link from which to read.
     path: string,
-) -> expected<string, errno>
+) -> result<string, errno>
 ```
 
 ## `remove-directory-at`
@@ -659,7 +659,7 @@ readlink-at: func(
 remove-directory-at: func(
     /// The relative path to a directory to remove.
     path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `rename-at`
@@ -674,7 +674,7 @@ rename-at: func(
     new-descriptor: handle descriptor,
     /// The relative destination path to which to rename the file or directory.
     new-path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `symlink-at`
@@ -687,7 +687,7 @@ symlink-at: func(
     old-path: string,
     /// The relative destination path at which to create the symbolic link.
     new-path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `unlink-file-at`
@@ -699,7 +699,7 @@ symlink-at: func(
 unlink-file-at: func(
     /// The relative path to a file to unlink.
     path: string,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `change-file-permissions-at`
@@ -717,7 +717,7 @@ change-file-permissions-at: func(
     path: string,
     /// The new permissions for the filesystem object.
     mode: mode,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ## `change-dir-permissions-at`
@@ -739,7 +739,7 @@ change-directory-permissions-at: func(
     path: string,
     /// The new permissions for the directory.
     mode: mode,
-) -> expected<unit, errno>
+) -> result<_, errno>
 ```
 
 ```wit

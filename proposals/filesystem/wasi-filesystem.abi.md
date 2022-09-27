@@ -273,11 +273,11 @@ Size: 16, Alignment: 8
 
 ### Variant Cases
 
-- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change): `unit`
+- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change)
 
   Leave the timestamp set to its previous value.
 
-- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now): `unit`
+- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now)
 
   Set the timestamp to the current time of the system clock associated
   with the filesystem.
@@ -658,7 +658,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_fadvise.advice" name="descriptor_fadvise.advice"></a> `advice`: [`advice`](#advice)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -674,7 +674,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_fallocate.len" name="descriptor_fallocate.len"></a> `len`: [`filesize`](#filesize)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -688,7 +688,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_datasync.self" name="descriptor_datasync.self"></a> `self`: handle<descriptor>
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -705,7 +705,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_info.self" name="descriptor_info.self"></a> `self`: handle<descriptor>
 ##### Result
 
-- expected<[`info`](#info), [`errno`](#errno)>
+- result<[`info`](#info), [`errno`](#errno)>
 
 ----
 
@@ -721,7 +721,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_set_size.size" name="descriptor_set_size.size"></a> `size`: [`filesize`](#filesize)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -739,7 +739,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_set_times.mtim" name="descriptor_set_times.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -766,11 +766,11 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_pwrite.self" name="descriptor_pwrite.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_pwrite.buf" name="descriptor_pwrite.buf"></a> `buf`: stream<`u8`, `unit`>
+- <a href="#descriptor_pwrite.buf" name="descriptor_pwrite.buf"></a> `buf`: stream<`u8`>
 - <a href="#descriptor_pwrite.offset" name="descriptor_pwrite.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Result
 
-- future<expected<`unit`, [`errno`](#errno)>>
+- future<result<_, [`errno`](#errno)>>
 
 ----
 
@@ -812,7 +812,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_seek.from" name="descriptor_seek.from"></a> `from`: [`seek-from`](#seek_from)
 ##### Result
 
-- expected<[`filesize`](#filesize), [`errno`](#errno)>
+- result<[`filesize`](#filesize), [`errno`](#errno)>
 
 ----
 
@@ -826,7 +826,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_sync.self" name="descriptor_sync.self"></a> `self`: handle<descriptor>
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -842,7 +842,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_tell.self" name="descriptor_tell.self"></a> `self`: handle<descriptor>
 ##### Result
 
-- expected<[`filesize`](#filesize), [`errno`](#errno)>
+- result<[`filesize`](#filesize), [`errno`](#errno)>
 
 ----
 
@@ -857,7 +857,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_create_directory_at.path" name="descriptor_create_directory_at.path"></a> `path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -875,7 +875,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_stat_at.path" name="descriptor_stat_at.path"></a> `path`: `string`
 ##### Result
 
-- expected<[`stat`](#stat), [`errno`](#errno)>
+- result<[`stat`](#stat), [`errno`](#errno)>
 
 ----
 
@@ -895,7 +895,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_set_times_at.mtim" name="descriptor_set_times_at.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -913,7 +913,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_link_at.new_path" name="descriptor_link_at.new_path"></a> `new-path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -938,7 +938,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_open_at.mode" name="descriptor_open_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Result
 
-- expected<handle<descriptor>, [`errno`](#errno)>
+- result<handle<descriptor>, [`errno`](#errno)>
 
 ----
 
@@ -953,7 +953,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_readlink_at.path" name="descriptor_readlink_at.path"></a> `path`: `string`
 ##### Result
 
-- expected<`string`, [`errno`](#errno)>
+- result<`string`, [`errno`](#errno)>
 
 ----
 
@@ -970,7 +970,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_remove_directory_at.path" name="descriptor_remove_directory_at.path"></a> `path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -987,7 +987,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_rename_at.new_path" name="descriptor_rename_at.new_path"></a> `new-path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -1003,7 +1003,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_symlink_at.new_path" name="descriptor_symlink_at.new_path"></a> `new-path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -1019,7 +1019,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_unlink_file_at.path" name="descriptor_unlink_file_at.path"></a> `path`: `string`
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -1039,7 +1039,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_change_file_permissions_at.mode" name="descriptor_change_file_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -1063,5 +1063,5 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_change_directory_permissions_at.mode" name="descriptor_change_directory_permissions_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Result
 
-- expected<`unit`, [`errno`](#errno)>
+- result<_, [`errno`](#errno)>
 
