@@ -33,7 +33,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_clock_now.self" name="monotonic_clock_now.self"></a> `self`: handle<monotonic-clock>
-##### Result
+##### Results
 
 - [`instant`](#instant)
 
@@ -45,7 +45,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_clock_resolution.self" name="monotonic_clock_resolution.self"></a> `self`: handle<monotonic-clock>
-##### Result
+##### Results
 
 - [`instant`](#instant)
 
@@ -59,7 +59,7 @@ Size: 16, Alignment: 8
 
 - <a href="#monotonic_clock_new_timer.self" name="monotonic_clock_new_timer.self"></a> `self`: handle<monotonic-clock>
 - <a href="#monotonic_clock_new_timer.initial" name="monotonic_clock_new_timer.initial"></a> `initial`: [`instant`](#instant)
-##### Result
+##### Results
 
 - handle<monotonic-timer>
 
@@ -83,7 +83,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#wall_clock_now.self" name="wall_clock_now.self"></a> `self`: handle<wall-clock>
-##### Result
+##### Results
 
 - [`datetime`](#datetime)
 
@@ -97,7 +97,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#wall_clock_resolution.self" name="wall_clock_resolution.self"></a> `self`: handle<wall-clock>
-##### Result
+##### Results
 
 - [`datetime`](#datetime)
 
@@ -109,7 +109,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_timer_current.self" name="monotonic_timer_current.self"></a> `self`: handle<monotonic-timer>
-##### Result
+##### Results
 
 - [`instant`](#instant)
 
@@ -121,7 +121,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#monotonic_timer_expiration.self" name="monotonic_timer_expiration.self"></a> `self`: handle<monotonic-timer>
-##### Result
+##### Results
 
 - future
 
