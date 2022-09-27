@@ -14,7 +14,7 @@
 ##### Params
 
 - <a href="#getrandom.len" name="getrandom.len"></a> `len`: `u32`
-##### Result
+##### Results
 
 - list<`u8`>
 
