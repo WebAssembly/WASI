@@ -1,6 +1,6 @@
 ;; WASI Environment Variables.
 ;;
-;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/master/docs/witx.md)
+;; This is a `witx` file. See [here](https://github.com/WebAssembly/WASI/tree/main/tools/witx-docs.md)
 ;; for an explanation of what that means.
 
 (use "typenames.witx")
