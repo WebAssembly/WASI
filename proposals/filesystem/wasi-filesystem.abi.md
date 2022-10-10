@@ -751,6 +751,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_pread.self" name="descriptor_pread.self"></a> `self`: handle<descriptor>
+- <a href="#descriptor_pread.len" name="descriptor_pread.len"></a> `len`: [`size`](#size)
 - <a href="#descriptor_pread.offset" name="descriptor_pread.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
@@ -770,7 +771,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_pwrite.offset" name="descriptor_pwrite.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- future<result<_, [`errno`](#errno)>>
+- future<result<[`size`](#size), [`errno`](#errno)>>
 
 ----
 
