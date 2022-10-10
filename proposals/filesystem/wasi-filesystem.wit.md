@@ -239,6 +239,8 @@ enum errno {
     again,
     /// Connection already in progress.
     already,
+    /// Bad file descriptor.
+    badf,
     /// Bad message.
     badmsg,
     /// Device or resource busy.

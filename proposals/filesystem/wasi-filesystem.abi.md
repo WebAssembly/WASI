@@ -345,6 +345,10 @@ Size: 1, Alignment: 1
 
   Connection already in progress.
 
+- <a href="errno.badf" name="errno.badf"></a> [`badf`](#errno.badf)
+
+  Bad file descriptor.
+
 - <a href="errno.badmsg" name="errno.badmsg"></a> [`badmsg`](#errno.badmsg)
 
   Bad message.
