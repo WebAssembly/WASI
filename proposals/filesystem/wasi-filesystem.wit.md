@@ -421,19 +421,6 @@ fadvise: func(
 ) -> result<_, errno>
 ```
 
-## `fallocate`
-```wit
-/// Force the allocation of space in a file.
-///
-/// Note: This is similar to `posix_fallocate` in POSIX.
-fallocate: func(
-    /// The offset at which to start the allocation.
-    offset: filesize,
-    /// The length of the area that is allocated.
-    len: filesize
-) -> result<_, errno>
-```
-
 ## `fdatasync`
 ```wit
 /// Synchronize the data of a file to disk.

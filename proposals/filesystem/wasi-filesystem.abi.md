@@ -666,22 +666,6 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_fallocate" name="descriptor_fallocate"></a> `descriptor::fallocate` 
-
-  Force the allocation of space in a file.
-  
-  Note: This is similar to `posix_fallocate` in POSIX.
-##### Params
-
-- <a href="#descriptor_fallocate.self" name="descriptor_fallocate.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_fallocate.offset" name="descriptor_fallocate.offset"></a> `offset`: [`filesize`](#filesize)
-- <a href="#descriptor_fallocate.len" name="descriptor_fallocate.len"></a> `len`: [`filesize`](#filesize)
-##### Results
-
-- result<_, [`errno`](#errno)>
-
-----
-
 #### <a href="#descriptor_datasync" name="descriptor_datasync"></a> `descriptor::datasync` 
 
   Synchronize the data of a file to disk.
