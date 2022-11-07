@@ -1538,7 +1538,7 @@ Note: This is similar to `fdatasync` in POSIX.
 
 #### <a href="#fd_fdstat_get" name="fd_fdstat_get"></a> `fd_fdstat_get(fd: fd) -> Result<fdstat, errno>`
 Get the attributes of a file descriptor.
-Note: This returns similar flags to `fsync(fd, F_GETFL)` in POSIX, as well as additional fields.
+Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX, as well as additional fields.
 
 ##### Params
 - <a href="#fd_fdstat_get.fd" name="fd_fdstat_get.fd"></a> `fd`: [`fd`](#fd)
