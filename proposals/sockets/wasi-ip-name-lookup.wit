@@ -29,4 +29,4 @@ use { network } from wasi-network
 /// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
 /// - https://man7.org/linux/man-pages/man3/getaddrinfo.3.html
 /// 
-resolve-addresses: async func(name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> expected<list<ip-address>, error>
+resolve-addresses: func(name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> future<expected<list<ip-address>, error>>

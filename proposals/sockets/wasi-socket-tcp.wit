@@ -12,7 +12,7 @@ resource tcp-socket implements ip-socket {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 	/// - https://man7.org/linux/man-pages/man2/socket.2.html
 	/// 
-	static new: async func(network: handle network, address-family: ip-address-family) -> expected<handle tcp-socket, error>
+	static new: func(network: handle network, address-family: ip-address-family) -> future<expected<handle tcp-socket, error>>
 
 	/// Receive data on the socket.
 	/// 
@@ -64,7 +64,7 @@ resource tcp-socket implements ip-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: async func(local-address: ip-socket-address) -> expected<unit, error>
+	bind: func(local-address: ip-socket-address) -> future<expected<unit, error>>
 
 	/// Get the current bound address.
 	/// 
@@ -83,7 +83,7 @@ resource tcp-socket implements ip-socket {
 	///  References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: async func(remote-address: ip-socket-address) -> expected<unit, error>
+	connect: func(remote-address: ip-socket-address) -> future<expected<unit, error>>
 
 	/// Start listening for new connections.
 	/// 
@@ -93,7 +93,7 @@ resource tcp-socket implements ip-socket {
 	///  References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
 	/// - https://man7.org/linux/man-pages/man2/listen.2.html
-	listen: async func(backlog-size-hint: option<usize>) -> expected<unit, error>
+	listen: func(backlog-size-hint: option<usize>) -> future<expected<unit, error>>
 
 	/// Fails when the socket is not in the Connection state.
 	/// 
