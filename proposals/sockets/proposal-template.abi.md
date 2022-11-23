@@ -27,5 +27,5 @@ Size: 16, Alignment: 8
   Explanation for developers using the API.
 ##### Results
 
-- <a href="#api_function_one." name="api_function_one."></a> ``: [`api-type-one`](#api_type_one)
+- [`api-type-one`](#api_type_one)
 
