@@ -26,7 +26,7 @@ Size: 8, Alignment: 8
 
 Size: 8, Alignment: 8
 
-## <a href="#info" name="info"></a> `info`: record
+## <a href="#fd_info" name="fd_info"></a> `fd-info`: record
 
   Information associated with a descriptor.
   
@@ -36,11 +36,11 @@ Size: 2, Alignment: 1
 
 ### Record Fields
 
-- <a href="info.type" name="info.type"></a> [`type`](#info.type): [`type`](#type)
+- <a href="fd_info.type" name="fd_info.type"></a> [`type`](#fd_info.type): [`type`](#type)
 
   The type of filesystem object referenced by a descriptor.
 
-- <a href="info.flags" name="info.flags"></a> [`flags`](#info.flags): [`flags`](#flags)
+- <a href="fd_info.flags" name="fd_info.flags"></a> [`flags`](#fd_info.flags): [`flags`](#flags)
 
   Flags associated with a descriptor.
 
@@ -657,8 +657,8 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_fadvise.self" name="descriptor_fadvise.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_fadvise.offset" name="descriptor_fadvise.offset"></a> `offset`: `u64`
-- <a href="#descriptor_fadvise.len" name="descriptor_fadvise.len"></a> `len`: `u64`
+- <a href="#descriptor_fadvise.offset" name="descriptor_fadvise.offset"></a> `offset`: [`filesize`](#filesize)
+- <a href="#descriptor_fadvise.len" name="descriptor_fadvise.len"></a> `len`: [`size`](#size)
 - <a href="#descriptor_fadvise.advice" name="descriptor_fadvise.advice"></a> `advice`: [`advice`](#advice)
 ##### Results
 
@@ -693,7 +693,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_info.self" name="descriptor_info.self"></a> `self`: handle<descriptor>
 ##### Results
 
-- result<[`info`](#info), [`errno`](#errno)>
+- result<[`fd-info`](#fd_info), [`errno`](#errno)>
 
 ----
 
