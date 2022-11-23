@@ -26,7 +26,7 @@ More rigorous specification details for the implementer go here, if needed.
 /// Short description
 ///
 /// Explanation for developers using the API.
-api-function-one: function() -> api-type-one
+api-function-one: func() -> api-type-one
 ```
 
 If needed, this would explain what a compliant implementation MUST do, such as never returning an earlier result from a later call.
