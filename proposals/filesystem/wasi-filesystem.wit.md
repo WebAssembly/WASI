@@ -755,6 +755,118 @@ change-directory-permissions-at: func(
 ) -> result<_, errno>
 ```
 
+## `lock-shared`
+```wit
+/// Request a shared advisory lock for an open file.
+///
+/// This requests a *shared* lock; more than one shared lock can be held for
+/// a file at the same time.
+///
+/// If the open file has an exclusive lock, this function downgrades the lock
+/// to a shared lock. If it has a shared lock, this function has no effect.
+///
+/// This requests an *advisory* lock, meaning that the file could be accessed
+/// by other programs that don't hold the lock.
+///
+/// It is unspecified how shared locks interact with locks acquired by
+/// non-WASI programs.
+///
+/// This function blocks until the lock can be acquired.
+///
+/// Not all filesystems support locking; on filesystems which don't support
+/// locking, this function returns `errno::notsup`.
+///
+/// Note: This is similar to `flock(fd, LOCK_SH)` in Unix.
+lock-shared: func() -> result<_, errno>
+```
+
+## `lock-exclusive`
+```wit
+/// Request an exclusive advisory lock for an open file.
+///
+/// This requests an *exclusive* lock; no other locks may be held for the
+/// file while an exclusive lock is held.
+///
+/// If the open file has a shared lock and there are no exclusive locks held
+/// for the fhile, this function upgrades the lock to an exclusive lock. If the
+/// open file already has an exclusive lock, this function has no effect.
+///
+/// This requests an *advisory* lock, meaning that the file could be accessed
+/// by other programs that don't hold the lock.
+///
+/// It is unspecified whether this function succeeds if the file descriptor
+/// is not opened for writing. It is unspecified how exclusive locks interact
+/// with locks acquired by non-WASI programs.
+///
+/// This function blocks until the lock can be acquired.
+///
+/// Not all filesystems support locking; on filesystems which don't support
+/// locking, this function returns `errno::notsup`.
+///
+/// Note: This is similar to `flock(fd, LOCK_EX)` in Unix.
+lock-exclusive: func() -> result<_, errno>
+```
+
+## `try-lock-shared`
+```wit
+/// Request a shared advisory lock for an open file.
+///
+/// This requests a *shared* lock; more than one shared lock can be held for
+/// a file at the same time.
+///
+/// If the open file has an exclusive lock, this function downgrades the lock
+/// to a shared lock. If it has a shared lock, this function has no effect.
+///
+/// This requests an *advisory* lock, meaning that the file could be accessed
+/// by other programs that don't hold the lock.
+///
+/// It is unspecified how shared locks interact with locks acquired by
+/// non-WASI programs.
+///
+/// This function returns `errno::wouldblock` if the lock cannot be acquired.
+///
+/// Not all filesystems support locking; on filesystems which don't support
+/// locking, this function returns `errno::notsup`.
+///
+/// Note: This is similar to `flock(fd, LOCK_SH | LOCK_NB)` in Unix.
+try-lock-shared: func() -> result<_, errno>
+```
+
+## `try-lock-exclusive`
+```wit
+/// Request an exclusive advisory lock for an open file.
+///
+/// This requests an *exclusive* lock; no other locks may be held for the
+/// file while an exclusive lock is held.
+///
+/// If the open file has a shared lock and there are no exclusive locks held
+/// for the fhile, this function upgrades the lock to an exclusive lock. If the
+/// open file already has an exclusive lock, this function has no effect.
+///
+/// This requests an *advisory* lock, meaning that the file could be accessed
+/// by other programs that don't hold the lock.
+///
+/// It is unspecified whether this function succeeds if the file descriptor
+/// is not opened for writing. It is unspecified how exclusive locks interact
+/// with locks acquired by non-WASI programs.
+///
+/// This function returns `errno::wouldblock` if the lock cannot be acquired.
+///
+/// Not all filesystems support locking; on filesystems which don't support
+/// locking, this function returns `errno::notsup`.
+///
+/// Note: This is similar to `flock(fd, LOCK_EX | LOCK_NB)` in Unix.
+try-lock-exclusive: func() -> result<_, errno>
+```
+
+## `unlock`
+```wit
+/// Release a shared or exclusive lock on an open file.
+///
+/// Note: This is similar to `flock(fd, LOCK_UN)` in Unix.
+unlock: func() -> result<_, errno>
+```
+
 ```wit
 }
 ```
