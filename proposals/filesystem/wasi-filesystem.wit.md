@@ -93,12 +93,12 @@ flags descriptor-flags {
 }
 ```
 
-## `stat`
+## `descriptor-stat`
 ```wit
 /// File attributes.
 /// 
 /// Note: This was called `filestat` in earlier versions of WASI.
-record stat {
+record descriptor-stat {
     /// Device ID of device containing the file.
     dev: device,
     /// File serial number.
@@ -565,19 +565,29 @@ create-directory-at: func(
 ) -> result<_, errno>
 ```
 
+## `stat`
+```wit
+/// Return the attributes of an open file or directory.
+///
+/// Note: This is similar to `fstat` in POSIX.
+///
+/// Note: This was called `fd_filestat_get` in earlier versions of WASI.
+stat: func() -> result<descriptor-stat, errno>
+```
+
 ## `stat-at`
 ```wit
 /// Return the attributes of a file or directory.
 ///
 /// Note: This is similar to `fstatat` in POSIX.
 ///
-/// Note: This was called `fd_filestat_get` in earlier versions of WASI.
+/// Note: This was called `path_filestat_get` in earlier versions of WASI.
 stat-at: func(
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path of the file or directory to inspect.
     path: string,
-) -> result<stat, errno>
+) -> result<descriptor-stat, errno>
 ```
 
 ## `set-times-at`

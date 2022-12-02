@@ -118,7 +118,7 @@ Bit: 5
   implementation may also synchronously update the file's metadata.
 Bit: 6
 
-## <a href="#stat" name="stat"></a> `stat`: record
+## <a href="#descriptor_stat" name="descriptor_stat"></a> `descriptor-stat`: record
 
   File attributes.
   
@@ -128,36 +128,36 @@ Size: 64, Alignment: 8
 
 ### Record Fields
 
-- <a href="stat.dev" name="stat.dev"></a> [`dev`](#stat.dev): [`device`](#device)
+- <a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> [`dev`](#descriptor_stat.dev): [`device`](#device)
 
   Device ID of device containing the file.
 
-- <a href="stat.ino" name="stat.ino"></a> [`ino`](#stat.ino): [`inode`](#inode)
+- <a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> [`ino`](#descriptor_stat.ino): [`inode`](#inode)
 
   File serial number.
 
-- <a href="stat.type" name="stat.type"></a> [`type`](#stat.type): [`descriptor-type`](#descriptor_type)
+- <a href="descriptor_stat.type" name="descriptor_stat.type"></a> [`type`](#descriptor_stat.type): [`descriptor-type`](#descriptor_type)
 
   File type.
 
-- <a href="stat.nlink" name="stat.nlink"></a> [`nlink`](#stat.nlink): [`linkcount`](#linkcount)
+- <a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> [`nlink`](#descriptor_stat.nlink): [`linkcount`](#linkcount)
 
   Number of hard links to the file.
 
-- <a href="stat.size" name="stat.size"></a> [`size`](#stat.size): [`filesize`](#filesize)
+- <a href="descriptor_stat.size" name="descriptor_stat.size"></a> [`size`](#descriptor_stat.size): [`filesize`](#filesize)
 
   For regular files, the file size in bytes. For symbolic links, the length
   in bytes of the pathname contained in the symbolic link.
 
-- <a href="stat.atim" name="stat.atim"></a> [`atim`](#stat.atim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): [`timestamp`](#timestamp)
 
   Last data access timestamp.
 
-- <a href="stat.mtim" name="stat.mtim"></a> [`mtim`](#stat.mtim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): [`timestamp`](#timestamp)
 
   Last data modification timestamp.
 
-- <a href="stat.ctim" name="stat.ctim"></a> [`ctim`](#stat.ctim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): [`timestamp`](#timestamp)
 
   Last file status change timestamp.
 
@@ -870,13 +870,29 @@ Size: 16, Alignment: 8
 
 ----
 
+#### <a href="#descriptor_stat" name="descriptor_stat"></a> `descriptor::stat` 
+
+  Return the attributes of an open file or directory.
+  
+  Note: This is similar to `fstat` in POSIX.
+  
+  Note: This was called `fd_filestat_get` in earlier versions of WASI.
+##### Params
+
+- <a href="#descriptor_stat.self" name="descriptor_stat.self"></a> `self`: handle<descriptor>
+##### Results
+
+- result<[`descriptor-stat`](#descriptor_stat), [`errno`](#errno)>
+
+----
+
 #### <a href="#descriptor_stat_at" name="descriptor_stat_at"></a> `descriptor::stat-at` 
 
   Return the attributes of a file or directory.
   
   Note: This is similar to `fstatat` in POSIX.
   
-  Note: This was called `fd_filestat_get` in earlier versions of WASI.
+  Note: This was called `path_filestat_get` in earlier versions of WASI.
 ##### Params
 
 - <a href="#descriptor_stat_at.self" name="descriptor_stat_at.self"></a> `self`: handle<descriptor>
@@ -884,7 +900,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_stat_at.path" name="descriptor_stat_at.path"></a> `path`: `string`
 ##### Results
 
-- result<[`stat`](#stat), [`errno`](#errno)>
+- result<[`descriptor-stat`](#descriptor_stat), [`errno`](#errno)>
 
 ----
 
