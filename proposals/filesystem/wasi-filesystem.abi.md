@@ -26,25 +26,7 @@ Size: 8, Alignment: 8
 
 Size: 8, Alignment: 8
 
-## <a href="#fd_info" name="fd_info"></a> `fd-info`: record
-
-  Information associated with a descriptor.
-  
-  Note: This was called `fdstat` in earlier versions of WASI.
-
-Size: 2, Alignment: 1
-
-### Record Fields
-
-- <a href="fd_info.type" name="fd_info.type"></a> [`type`](#fd_info.type): [`type`](#type)
-
-  The type of filesystem object referenced by a descriptor.
-
-- <a href="fd_info.flags" name="fd_info.flags"></a> [`flags`](#fd_info.flags): [`flags`](#flags)
-
-  Flags associated with a descriptor.
-
-## <a href="#type" name="type"></a> `type`: enum
+## <a href="#descriptor_type" name="descriptor_type"></a> `descriptor-type`: enum
 
   The type of a filesystem object referenced by a descriptor.
   
@@ -54,82 +36,82 @@ Size: 1, Alignment: 1
 
 ### Enum Cases
 
-- <a href="type.unknown" name="type.unknown"></a> [`unknown`](#type.unknown)
+- <a href="descriptor_type.unknown" name="descriptor_type.unknown"></a> [`unknown`](#descriptor_type.unknown)
 
   The type of the descriptor or file is unknown or is different from
   any of the other types specified.
 
-- <a href="type.block_device" name="type.block_device"></a> [`block-device`](#type.block_device)
+- <a href="descriptor_type.block_device" name="descriptor_type.block_device"></a> [`block-device`](#descriptor_type.block_device)
 
   The descriptor refers to a block device inode.
 
-- <a href="type.character_device" name="type.character_device"></a> [`character-device`](#type.character_device)
+- <a href="descriptor_type.character_device" name="descriptor_type.character_device"></a> [`character-device`](#descriptor_type.character_device)
 
   The descriptor refers to a character device inode.
 
-- <a href="type.directory" name="type.directory"></a> [`directory`](#type.directory)
+- <a href="descriptor_type.directory" name="descriptor_type.directory"></a> [`directory`](#descriptor_type.directory)
 
   The descriptor refers to a directory inode.
 
-- <a href="type.fifo" name="type.fifo"></a> [`fifo`](#type.fifo)
+- <a href="descriptor_type.fifo" name="descriptor_type.fifo"></a> [`fifo`](#descriptor_type.fifo)
 
   The descriptor refers to a named pipe.
 
-- <a href="type.symbolic_link" name="type.symbolic_link"></a> [`symbolic-link`](#type.symbolic_link)
+- <a href="descriptor_type.symbolic_link" name="descriptor_type.symbolic_link"></a> [`symbolic-link`](#descriptor_type.symbolic_link)
 
   The file refers to a symbolic link inode.
 
-- <a href="type.regular_file" name="type.regular_file"></a> [`regular-file`](#type.regular_file)
+- <a href="descriptor_type.regular_file" name="descriptor_type.regular_file"></a> [`regular-file`](#descriptor_type.regular_file)
 
   The descriptor refers to a regular file inode.
 
-- <a href="type.socket" name="type.socket"></a> [`socket`](#type.socket)
+- <a href="descriptor_type.socket" name="descriptor_type.socket"></a> [`socket`](#descriptor_type.socket)
 
   The descriptor refers to a socket.
 
-## <a href="#flags" name="flags"></a> `flags`: flags
+## <a href="#descriptor_flags" name="descriptor_flags"></a> `descriptor-flags`: flags
 
   Descriptor flags.
   
-  Note: This was called `fd-flags` in earlier versions of WASI.
+  Note: This was called `fdflags` in earlier versions of WASI.
 
 Size: 1, Alignment: 1
 
 ### Flags Fields
 
-- <a href="flags.read" name="flags.read"></a> [`read`](#flags.read)
+- <a href="descriptor_flags.read" name="descriptor_flags.read"></a> [`read`](#descriptor_flags.read)
 
   Read mode: Data can be read.
 Bit: 0
 
-- <a href="flags.write" name="flags.write"></a> [`write`](#flags.write)
+- <a href="descriptor_flags.write" name="descriptor_flags.write"></a> [`write`](#descriptor_flags.write)
 
   Write mode: Data can be written to.
 Bit: 1
 
-- <a href="flags.append" name="flags.append"></a> [`append`](#flags.append)
+- <a href="descriptor_flags.append" name="descriptor_flags.append"></a> [`append`](#descriptor_flags.append)
 
   Append mode: Data written to the file is always appended to the file's
   end.
 Bit: 2
 
-- <a href="flags.dsync" name="flags.dsync"></a> [`dsync`](#flags.dsync)
+- <a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> [`dsync`](#descriptor_flags.dsync)
 
   Write according to synchronized I/O data integrity completion. Only the
   data stored in the file is synchronized.
 Bit: 3
 
-- <a href="flags.nonblock" name="flags.nonblock"></a> [`nonblock`](#flags.nonblock)
+- <a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> [`nonblock`](#descriptor_flags.nonblock)
 
   Non-blocking mode.
 Bit: 4
 
-- <a href="flags.rsync" name="flags.rsync"></a> [`rsync`](#flags.rsync)
+- <a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> [`rsync`](#descriptor_flags.rsync)
 
   Synchronized read I/O operations.
 Bit: 5
 
-- <a href="flags.sync" name="flags.sync"></a> [`sync`](#flags.sync)
+- <a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> [`sync`](#descriptor_flags.sync)
 
   Write according to synchronized I/O file integrity completion. In
   addition to synchronizing the data stored in the file, the
@@ -154,7 +136,7 @@ Size: 64, Alignment: 8
 
   File serial number.
 
-- <a href="stat.type" name="stat.type"></a> [`type`](#stat.type): [`type`](#type)
+- <a href="stat.type" name="stat.type"></a> [`type`](#stat.type): [`descriptor-type`](#descriptor_type)
 
   File type.
 
@@ -302,7 +284,7 @@ Size: 16, Alignment: 8
 
   The length of the name of the directory entry.
 
-- <a href="dirent.type" name="dirent.type"></a> [`type`](#dirent.type): [`type`](#type)
+- <a href="dirent.type" name="dirent.type"></a> [`type`](#dirent.type): [`descriptor-type`](#descriptor_type)
 
   The type of the file referred to by this directory entry.
 
@@ -347,7 +329,7 @@ Size: 1, Alignment: 1
 
 - <a href="errno.badf" name="errno.badf"></a> [`badf`](#errno.badf)
 
-  Bad file descriptor.
+  Bad descriptor.
 
 - <a href="errno.badmsg" name="errno.badmsg"></a> [`badmsg`](#errno.badmsg)
 
@@ -680,20 +662,58 @@ Size: 16, Alignment: 8
 
 ----
 
-#### <a href="#descriptor_info" name="descriptor_info"></a> `descriptor::info` 
+#### <a href="#descriptor_flags" name="descriptor_flags"></a> `descriptor::flags` 
 
-  Get information associated with a descriptor.
+  Get flags associated with a descriptor.
   
-  Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX, as well
-  as additional fields.
+  Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX.
   
-  Note: This was called `fdstat_get` in earlier versions of WASI.
+  Note: This returns the value that was the `fs_flags` value returned
+  from `fdstat_get` in earlier versions of WASI.
 ##### Params
 
-- <a href="#descriptor_info.self" name="descriptor_info.self"></a> `self`: handle<descriptor>
+- <a href="#descriptor_flags.self" name="descriptor_flags.self"></a> `self`: handle<descriptor>
 ##### Results
 
-- result<[`fd-info`](#fd_info), [`errno`](#errno)>
+- result<[`descriptor-flags`](#descriptor_flags), [`errno`](#errno)>
+
+----
+
+#### <a href="#descriptor_type" name="descriptor_type"></a> `descriptor::type` 
+
+  Get the dynamic type of a descriptor.
+  
+  Note: This returns the same value as the `type` field of the `fd-stat`
+  returned by `stat`, `stat-at` and similar.
+  
+  Note: This returns similar flags to the `st_mode & S_IFMT` value provided
+  by `fstat` in POSIX.
+  
+  Note: This returns the value that was the `fs_filetype` value returned
+  from `fdstat_get` in earlier versions of WASI.
+##### Params
+
+- <a href="#descriptor_type.self" name="descriptor_type.self"></a> `self`: handle<descriptor>
+##### Results
+
+- result<[`descriptor-type`](#descriptor_type), [`errno`](#errno)>
+
+----
+
+#### <a href="#descriptor_set_flags" name="descriptor_set_flags"></a> `descriptor::set-flags` 
+
+  Set flags associated with a descriptor.
+  
+  Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
+  
+  Note: This was called `fd_fdstat_set_flags` in earlier versions of WASI.
+##### Params
+
+- <a href="#descriptor_set_flags.self" name="descriptor_set_flags.self"></a> `self`: handle<descriptor>
+- <a href="#descriptor_set_flags.flags" name="descriptor_set_flags.flags"></a> `flags`: [`descriptor-flags`](#descriptor_flags)
+##### Results
+
+- result<_, [`errno`](#errno)>
 
 ----
 
@@ -923,7 +943,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_open_at.at_flags" name="descriptor_open_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
 - <a href="#descriptor_open_at.path" name="descriptor_open_at.path"></a> `path`: `string`
 - <a href="#descriptor_open_at.o_flags" name="descriptor_open_at.o_flags"></a> `o-flags`: [`o-flags`](#o_flags)
-- <a href="#descriptor_open_at.flags" name="descriptor_open_at.flags"></a> `flags`: [`flags`](#flags)
+- <a href="#descriptor_open_at.flags" name="descriptor_open_at.flags"></a> `flags`: [`descriptor-flags`](#descriptor_flags)
 - <a href="#descriptor_open_at.mode" name="descriptor_open_at.mode"></a> `mode`: [`mode`](#mode)
 ##### Results
 

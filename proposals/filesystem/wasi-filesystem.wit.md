@@ -40,25 +40,12 @@ type filedelta = s64
 type timestamp = u64
 ```
 
-## `fd-info`
-```wit
-/// Information associated with a descriptor.
-///
-/// Note: This was called `fdstat` in earlier versions of WASI.
-record fd-info {
-    /// The type of filesystem object referenced by a descriptor.
-    %type: %type,
-    /// Flags associated with a descriptor.
-    %flags: %flags,
-}
-```
-
-## `type`
+## `descriptor-type`
 ```wit
 /// The type of a filesystem object referenced by a descriptor.
 ///
 /// Note: This was called `filetype` in earlier versions of WASI.
-enum %type {
+enum descriptor-type {
     /// The type of the descriptor or file is unknown or is different from
     /// any of the other types specified.
     unknown,
@@ -79,12 +66,12 @@ enum %type {
 }
 ```
 
-## `flags`
+## `descriptor-flags`
 ```wit
 /// Descriptor flags.
 ///
-/// Note: This was called `fd-flags` in earlier versions of WASI.
-flags %flags {
+/// Note: This was called `fdflags` in earlier versions of WASI.
+flags descriptor-flags {
     /// Read mode: Data can be read.
     read,
     /// Write mode: Data can be written to.
@@ -117,7 +104,7 @@ record stat {
     /// File serial number.
     ino: inode,
     /// File type.
-    %type: %type,
+    %type: descriptor-type,
     /// Number of hard links to the file.
     nlink: linkcount,
     /// For regular files, the file size in bytes. For symbolic links, the length
@@ -214,7 +201,7 @@ record dirent {
     /// The length of the name of the directory entry.
     namelen: size,
     /// The type of the file referred to by this directory entry.
-    %type: %type,
+    %type: descriptor-type,
 }
 ```
 
@@ -239,7 +226,7 @@ enum errno {
     again,
     /// Connection already in progress.
     already,
-    /// Bad file descriptor.
+    /// Bad descriptor.
     badf,
     /// Bad message.
     badmsg,
@@ -429,15 +416,40 @@ fadvise: func(
 datasync: func() -> result<_, errno>
 ```
 
-## `info`
+## `flags`
 ```wit
-/// Get information associated with a descriptor.
+/// Get flags associated with a descriptor.
 ///
-/// Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX, as well
-/// as additional fields.
+/// Note: This returns similar flags to `fcntl(fd, F_GETFL)` in POSIX.
 ///
-/// Note: This was called `fdstat_get` in earlier versions of WASI.
-info: func() -> result<fd-info, errno>
+/// Note: This returns the value that was the `fs_flags` value returned
+/// from `fdstat_get` in earlier versions of WASI.
+%flags: func() -> result<descriptor-flags, errno>
+```
+
+## `type`
+```wit
+/// Get the dynamic type of a descriptor.
+///
+/// Note: This returns the same value as the `type` field of the `fd-stat`
+/// returned by `stat`, `stat-at` and similar.
+///
+/// Note: This returns similar flags to the `st_mode & S_IFMT` value provided
+/// by `fstat` in POSIX.
+///
+/// Note: This returns the value that was the `fs_filetype` value returned
+/// from `fdstat_get` in earlier versions of WASI.
+%type: func() -> result<descriptor-type, errno>
+```
+
+## `set-flags`
+```wit
+/// Set flags associated with a descriptor.
+///
+/// Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
+///
+/// Note: This was called `fd_fdstat_set_flags` in earlier versions of WASI.
+set-flags: func(%flags: descriptor-flags) -> result<_, errno>
 ```
 
 ## `set-size`
@@ -623,7 +635,7 @@ open-at: func(
     /// The method by which to open the file.
     o-flags: o-flags,
     /// Flags to use for the resulting descriptor.
-    %flags: %flags,
+    %flags: descriptor-flags,
     /// Permissions to use when creating a new file.
     mode: mode
 ) -> result<descriptor, errno>
