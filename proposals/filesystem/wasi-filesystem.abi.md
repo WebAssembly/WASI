@@ -268,25 +268,30 @@ Size: 16, Alignment: 8
 
   Set the timestamp to the given value.
 
-## <a href="#dirent" name="dirent"></a> `dirent`: record
+## <a href="#dir_entry" name="dir_entry"></a> `dir-entry`: record
 
   A directory entry.
 
-Size: 16, Alignment: 8
+Size: 32, Alignment: 8
 
 ### Record Fields
 
-- <a href="dirent.ino" name="dirent.ino"></a> [`ino`](#dirent.ino): [`inode`](#inode)
+- <a href="dir_entry.ino" name="dir_entry.ino"></a> [`ino`](#dir_entry.ino): option<[`inode`](#inode)>
 
-  The serial number of the file referred to by this directory entry.
+  The serial number of the object referred to by this directory entry.
+  May be none if the inode value is not known.
+  
+  When this is none, libc implementations might do an extra `stat-at`
+  call to retrieve the inode number to fill their `d_ino` fields, so
+  implementations which can set this to a non-none value should do so.
 
-- <a href="dirent.namelen" name="dirent.namelen"></a> [`namelen`](#dirent.namelen): [`size`](#size)
-
-  The length of the name of the directory entry.
-
-- <a href="dirent.type" name="dirent.type"></a> [`type`](#dirent.type): [`descriptor-type`](#descriptor_type)
+- <a href="dir_entry.type" name="dir_entry.type"></a> [`type`](#dir_entry.type): [`descriptor-type`](#descriptor_type)
 
   The type of the file referred to by this directory entry.
+
+- <a href="dir_entry.name" name="dir_entry.name"></a> [`name`](#dir_entry.name): `string`
+
+  The name of the object.
 
 ## <a href="#errno" name="errno"></a> `errno`: enum
 
@@ -787,22 +792,14 @@ Size: 16, Alignment: 8
 
   Read directory entries from a directory.
   
-  When successful, the contents of the output buffer consist of a sequence of
-  directory entries. Each directory entry consists of a `dirent` object,
-  followed by `dirent::d_namlen` bytes holding the name of the directory
-  entry.
-  
-  This function fills the output buffer as much as possible, potentially
-  truncating the last directory entry. This allows the caller to grow its
-  read buffer size in case it's too small to fit a single large directory
-  entry, or skip the oversized directory entry.
+  This always returns a new stream which starts at the beginning of the
+  directory.
 ##### Params
 
 - <a href="#descriptor_readdir.self" name="descriptor_readdir.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_readdir.rewind" name="descriptor_readdir.rewind"></a> `rewind`: `bool`
 ##### Results
 
-- stream<`u8`, [`errno`](#errno)>
+- stream<[`dir-entry`](#dir_entry), [`errno`](#errno)>
 
 ----
 

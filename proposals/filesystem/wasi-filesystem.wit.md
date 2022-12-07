@@ -192,16 +192,23 @@ variant new-timestamp {
 }
 ```
 
-## `dirent`
+## `dir-entry`
 ```wit
 /// A directory entry. 
-record dirent {
-    /// The serial number of the file referred to by this directory entry.
-    ino: inode,
-    /// The length of the name of the directory entry.
-    namelen: size,
+record dir-entry {
+    /// The serial number of the object referred to by this directory entry.
+    /// May be none if the inode value is not known.
+    ///
+    /// When this is none, libc implementations might do an extra `stat-at`
+    /// call to retrieve the inode number to fill their `d_ino` fields, so
+    /// implementations which can set this to a non-none value should do so.
+    ino: option<inode>,
+
     /// The type of the file referred to by this directory entry.
     %type: descriptor-type,
+
+    /// The name of the object.
+    name: string,
 }
 ```
 
@@ -506,19 +513,9 @@ pwrite: func(
 ```wit
 /// Read directory entries from a directory.
 ///
-/// When successful, the contents of the output buffer consist of a sequence of
-/// directory entries. Each directory entry consists of a `dirent` object,
-/// followed by `dirent::d_namlen` bytes holding the name of the directory
-/// entry.
-///
-/// This function fills the output buffer as much as possible, potentially
-/// truncating the last directory entry. This allows the caller to grow its
-/// read buffer size in case it's too small to fit a single large directory
-/// entry, or skip the oversized directory entry.
-readdir: func(
-    /// If true, rewind the current position to the beginning before reading.
-    rewind: bool
-) -> stream<u8, errno>
+/// This always returns a new stream which starts at the beginning of the
+/// directory.
+readdir: func() -> stream<dir-entry, errno>
 ```
 
 ## `seek`
