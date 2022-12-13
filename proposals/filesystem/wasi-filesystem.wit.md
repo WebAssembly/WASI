@@ -11,9 +11,6 @@ Paths are passed as interface-type `string`s, meaning they must consist of
 a sequence of Unicode Scalar Values (USVs). Some filesystems may contain paths
 which are not accessible by this API.
 
-Some of the content and ideas here are derived from
-[CloudABI](https://github.com/NuxiNL/cloudabi).
-
 ## `size`
 ```wit
 /// Size of a range of bytes in memory.

@@ -57,6 +57,10 @@ WASI filesystem is not intended to be used as a virtual API for accessing
 arbitary resources. Unix's "everything is a file" philosophy is in conflict
 with the goals of supporting modularity and the principle of least authority.
 
+Many of the ideas related to doing capability-based filesystem sandboxing with
+`openat` come from [CloudABI](https://github.com/NuxiNL/cloudabi) and
+[Capsicum](https://wiki.freebsd.org/Capsicum).
+
 ### Goals
 
 The primary goal of WASI filesystem is to allow users to use WASI programs to
