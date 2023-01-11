@@ -53,7 +53,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Threads][wasi-threads]                                                        | Alexandru Ene                          |          |
+| [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
 
 ### Phase 0 - Pre-Proposal (CG)
