@@ -29,12 +29,13 @@ type filesize = u64
 type filedelta = s64
 ```
 
-## `timestamp`
+## `datetime`
 ```wit
-/// Timestamp in nanoseconds.
-///
-/// TODO: wasi-clocks is moving to seconds+nanoseconds.
-type timestamp = u64
+/// Timestamp in seconds and nanoseconds.
+record datetime {
+    seconds: u64,
+    nanoseconds: u32,
+}
 ```
 
 ## `descriptor-type`
@@ -108,11 +109,11 @@ record descriptor-stat {
     /// in bytes of the pathname contained in the symbolic link.
     size: filesize,
     /// Last data access timestamp.
-    atim: timestamp,
+    atim: datetime,
     /// Last data modification timestamp.
-    mtim: timestamp,
+    mtim: datetime,
     /// Last file status change timestamp.
-    ctim: timestamp,
+    ctim: datetime,
 }
 ```
 
@@ -142,7 +143,8 @@ flags o-flags {
 
 ## `mode`
 ```wit
-/// Permissions mode used by `open-at`, `change-permissions-at`, and similar.
+/// Permissions mode used by `open-at`, `change-file-permissions-at`, and
+/// similar.
 flags mode {
     /// True if the resource is considered readable by the containing
     /// filesystem.
@@ -185,7 +187,7 @@ variant new-timestamp {
     /// with the filesystem.
     now,
     /// Set the timestamp to the given value.
-    timestamp(timestamp),
+    timestamp(datetime),
 }
 ```
 

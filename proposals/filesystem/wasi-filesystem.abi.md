@@ -18,13 +18,19 @@ Size: 8, Alignment: 8
 
 Size: 8, Alignment: 8
 
-## <a href="#timestamp" name="timestamp"></a> `timestamp`: `u64`
+## <a href="#datetime" name="datetime"></a> `datetime`: record
 
-  Timestamp in nanoseconds.
-  
-  TODO: wasi-clocks is moving to seconds+nanoseconds.
+  Timestamp in seconds and nanoseconds.
 
-Size: 8, Alignment: 8
+Size: 16, Alignment: 8
+
+### Record Fields
+
+- <a href="datetime.seconds" name="datetime.seconds"></a> [`seconds`](#datetime.seconds): `u64`
+
+
+- <a href="datetime.nanoseconds" name="datetime.nanoseconds"></a> [`nanoseconds`](#datetime.nanoseconds): `u32`
+
 
 ## <a href="#descriptor_type" name="descriptor_type"></a> `descriptor-type`: enum
 
@@ -124,7 +130,7 @@ Bit: 6
   
   Note: This was called `filestat` in earlier versions of WASI.
 
-Size: 64, Alignment: 8
+Size: 88, Alignment: 8
 
 ### Record Fields
 
@@ -149,15 +155,15 @@ Size: 64, Alignment: 8
   For regular files, the file size in bytes. For symbolic links, the length
   in bytes of the pathname contained in the symbolic link.
 
-- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): [`datetime`](#datetime)
 
   Last data access timestamp.
 
-- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): [`datetime`](#datetime)
 
   Last data modification timestamp.
 
-- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): [`timestamp`](#timestamp)
+- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): [`datetime`](#datetime)
 
   Last file status change timestamp.
 
@@ -204,7 +210,8 @@ Bit: 3
 
 ## <a href="#mode" name="mode"></a> `mode`: flags
 
-  Permissions mode used by `open-at`, `change-permissions-at`, and similar.
+  Permissions mode used by `open-at`, `change-file-permissions-at`, and
+  similar.
 
 Size: 1, Alignment: 1
 
@@ -251,7 +258,7 @@ Size: 8, Alignment: 8
 
   When setting a timestamp, this gives the value to set it to.
 
-Size: 16, Alignment: 8
+Size: 24, Alignment: 8
 
 ### Variant Cases
 
@@ -264,7 +271,7 @@ Size: 16, Alignment: 8
   Set the timestamp to the current time of the system clock associated
   with the filesystem.
 
-- <a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> [`timestamp`](#new_timestamp.timestamp): [`timestamp`](#timestamp)
+- <a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> [`timestamp`](#new_timestamp.timestamp): [`datetime`](#datetime)
 
   Set the timestamp to the given value.
 
