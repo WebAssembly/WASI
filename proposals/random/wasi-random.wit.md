@@ -5,7 +5,7 @@ WASI Random is a random data API.
 It is intended to be portable at least between Unix-family platforms and
 Windows.
 
-## `getrandom`
+## `get-random-bytes`
 ```wit
 /// Return `len` random bytes.
 ///
@@ -14,7 +14,19 @@ Windows.
 ///
 /// Deterministic environments must omit this function, rather than
 /// implementing it with deterministic data.
-getrandom: func(len: u32) -> list<u8>
+get-random-bytes: func(len: u32) -> list<u8>
+```
+
+## `get-random-u64`
+```wit
+/// Return a random `u64` value.
+///
+/// This function must produce data from an adaquately seeded CSPRNG, so it
+/// must not block, and the returned data is always unpredictable.
+///
+/// Deterministic environments must omit this function, rather than
+/// implementing it with deterministic data.
+get-random-u64: func() -> u64
 ```
 
 ## `insecure-random`
