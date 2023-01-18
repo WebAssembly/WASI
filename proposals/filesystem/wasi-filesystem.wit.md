@@ -218,52 +218,26 @@ record dir-entry {
 /// API; some are used in higher-level library layers, and others are provided
 /// merely for alignment with POSIX.
 enum errno {
-    /// Argument list too long. This is similar to `E2BIG` in POSIX.
-    toobig,
     /// Permission denied.
     access,
-    /// Address in use.
-    addrinuse,
-    /// Address not available.
-    addrnotavail,
-    /// Address family not supported.
-    afnosupport,
     /// Resource unavailable, or operation would block.
     again,
     /// Connection already in progress.
     already,
     /// Bad descriptor.
     badf,
-    /// Bad message.
-    badmsg,
     /// Device or resource busy.
     busy,
-    /// Operation canceled.
-    canceled,
     /// No child processes.
     child,
-    /// Connection aborted.
-    connaborted,
-    /// Connection refused.
-    connrefused,
-    /// Connection reset.
-    connreset,
     /// Resource deadlock would occur.
     deadlk,
-    /// Destination address required.
-    destaddrreq,
     /// Storage quota exceeded.
     dquot,
     /// File exists.
     exist,
-    /// Bad address.
-    fault,
     /// File too large.
     fbig,
-    /// Host is unreachable.
-    hostunreach,
-    /// Identifier removed.
-    idrm,
     /// Illegal byte sequence.
     ilseq,
     /// Operation in progress.
@@ -274,48 +248,24 @@ enum errno {
     inval,
     /// I/O error.
     io,
-    /// Socket is connected.
-    isconn,
     /// Is a directory.
     isdir,
     /// Too many levels of symbolic links.
     loop,
-    /// File descriptor value too large.
-    mfile,
     /// Too many links.
     mlink,
     /// Message too large.
     msgsize,
-    /// Multihop attempted.
-    multihop,
     /// Filename too long.
     nametoolong,
-    /// Network is down.
-    netdown,
-    /// Connection aborted by network.
-    netreset,
-    /// Network unreachable.
-    netunreach,
-    /// Too many files open in system.
-    nfile,
-    /// No buffer space available.
-    nobufs,
     /// No such device.
     nodev,
     /// No such file or directory.
     noent,
-    /// Executable file format error.
-    noexec,
     /// No locks available.
     nolck,
-    /// Link has been severed.
-    nolink,
     /// Not enough space.
     nomem,
-    /// No message of the desired type.
-    nomsg,
-    /// Protocol not available.
-    noprotoopt,
     /// No space left on device.
     nospc,
     /// Function not supported.
@@ -334,24 +284,14 @@ enum errno {
     nxio,
     /// Value too large to be stored in data type.
     overflow,
-    /// Previous owner died.
-    ownerdead,
     /// Operation not permitted.
     perm,
     /// Broken pipe.
     pipe,
-    /// Result too large.
-    range,
     /// Read-only file system.
     rofs,
     /// Invalid seek.
     spipe,
-    /// No such process.
-    srch,
-    /// Stale file handle.
-    stale,
-    /// Connection timed out.
-    timedout,
     /// Text file busy.
     txtbsy,
     /// Cross-device link.

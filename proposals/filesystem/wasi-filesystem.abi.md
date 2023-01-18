@@ -311,25 +311,9 @@ Size: 1, Alignment: 1
 
 ### Enum Cases
 
-- <a href="errno.toobig" name="errno.toobig"></a> [`toobig`](#errno.toobig)
-
-  Argument list too long. This is similar to `E2BIG` in POSIX.
-
 - <a href="errno.access" name="errno.access"></a> [`access`](#errno.access)
 
   Permission denied.
-
-- <a href="errno.addrinuse" name="errno.addrinuse"></a> [`addrinuse`](#errno.addrinuse)
-
-  Address in use.
-
-- <a href="errno.addrnotavail" name="errno.addrnotavail"></a> [`addrnotavail`](#errno.addrnotavail)
-
-  Address not available.
-
-- <a href="errno.afnosupport" name="errno.afnosupport"></a> [`afnosupport`](#errno.afnosupport)
-
-  Address family not supported.
 
 - <a href="errno.again" name="errno.again"></a> [`again`](#errno.again)
 
@@ -343,41 +327,17 @@ Size: 1, Alignment: 1
 
   Bad descriptor.
 
-- <a href="errno.badmsg" name="errno.badmsg"></a> [`badmsg`](#errno.badmsg)
-
-  Bad message.
-
 - <a href="errno.busy" name="errno.busy"></a> [`busy`](#errno.busy)
 
   Device or resource busy.
-
-- <a href="errno.canceled" name="errno.canceled"></a> [`canceled`](#errno.canceled)
-
-  Operation canceled.
 
 - <a href="errno.child" name="errno.child"></a> [`child`](#errno.child)
 
   No child processes.
 
-- <a href="errno.connaborted" name="errno.connaborted"></a> [`connaborted`](#errno.connaborted)
-
-  Connection aborted.
-
-- <a href="errno.connrefused" name="errno.connrefused"></a> [`connrefused`](#errno.connrefused)
-
-  Connection refused.
-
-- <a href="errno.connreset" name="errno.connreset"></a> [`connreset`](#errno.connreset)
-
-  Connection reset.
-
 - <a href="errno.deadlk" name="errno.deadlk"></a> [`deadlk`](#errno.deadlk)
 
   Resource deadlock would occur.
-
-- <a href="errno.destaddrreq" name="errno.destaddrreq"></a> [`destaddrreq`](#errno.destaddrreq)
-
-  Destination address required.
 
 - <a href="errno.dquot" name="errno.dquot"></a> [`dquot`](#errno.dquot)
 
@@ -387,21 +347,9 @@ Size: 1, Alignment: 1
 
   File exists.
 
-- <a href="errno.fault" name="errno.fault"></a> [`fault`](#errno.fault)
-
-  Bad address.
-
 - <a href="errno.fbig" name="errno.fbig"></a> [`fbig`](#errno.fbig)
 
   File too large.
-
-- <a href="errno.hostunreach" name="errno.hostunreach"></a> [`hostunreach`](#errno.hostunreach)
-
-  Host is unreachable.
-
-- <a href="errno.idrm" name="errno.idrm"></a> [`idrm`](#errno.idrm)
-
-  Identifier removed.
 
 - <a href="errno.ilseq" name="errno.ilseq"></a> [`ilseq`](#errno.ilseq)
 
@@ -423,10 +371,6 @@ Size: 1, Alignment: 1
 
   I/O error.
 
-- <a href="errno.isconn" name="errno.isconn"></a> [`isconn`](#errno.isconn)
-
-  Socket is connected.
-
 - <a href="errno.isdir" name="errno.isdir"></a> [`isdir`](#errno.isdir)
 
   Is a directory.
@@ -434,10 +378,6 @@ Size: 1, Alignment: 1
 - <a href="errno.loop" name="errno.loop"></a> [`loop`](#errno.loop)
 
   Too many levels of symbolic links.
-
-- <a href="errno.mfile" name="errno.mfile"></a> [`mfile`](#errno.mfile)
-
-  File descriptor value too large.
 
 - <a href="errno.mlink" name="errno.mlink"></a> [`mlink`](#errno.mlink)
 
@@ -447,33 +387,9 @@ Size: 1, Alignment: 1
 
   Message too large.
 
-- <a href="errno.multihop" name="errno.multihop"></a> [`multihop`](#errno.multihop)
-
-  Multihop attempted.
-
 - <a href="errno.nametoolong" name="errno.nametoolong"></a> [`nametoolong`](#errno.nametoolong)
 
   Filename too long.
-
-- <a href="errno.netdown" name="errno.netdown"></a> [`netdown`](#errno.netdown)
-
-  Network is down.
-
-- <a href="errno.netreset" name="errno.netreset"></a> [`netreset`](#errno.netreset)
-
-  Connection aborted by network.
-
-- <a href="errno.netunreach" name="errno.netunreach"></a> [`netunreach`](#errno.netunreach)
-
-  Network unreachable.
-
-- <a href="errno.nfile" name="errno.nfile"></a> [`nfile`](#errno.nfile)
-
-  Too many files open in system.
-
-- <a href="errno.nobufs" name="errno.nobufs"></a> [`nobufs`](#errno.nobufs)
-
-  No buffer space available.
 
 - <a href="errno.nodev" name="errno.nodev"></a> [`nodev`](#errno.nodev)
 
@@ -483,29 +399,13 @@ Size: 1, Alignment: 1
 
   No such file or directory.
 
-- <a href="errno.noexec" name="errno.noexec"></a> [`noexec`](#errno.noexec)
-
-  Executable file format error.
-
 - <a href="errno.nolck" name="errno.nolck"></a> [`nolck`](#errno.nolck)
 
   No locks available.
 
-- <a href="errno.nolink" name="errno.nolink"></a> [`nolink`](#errno.nolink)
-
-  Link has been severed.
-
 - <a href="errno.nomem" name="errno.nomem"></a> [`nomem`](#errno.nomem)
 
   Not enough space.
-
-- <a href="errno.nomsg" name="errno.nomsg"></a> [`nomsg`](#errno.nomsg)
-
-  No message of the desired type.
-
-- <a href="errno.noprotoopt" name="errno.noprotoopt"></a> [`noprotoopt`](#errno.noprotoopt)
-
-  Protocol not available.
 
 - <a href="errno.nospc" name="errno.nospc"></a> [`nospc`](#errno.nospc)
 
@@ -543,10 +443,6 @@ Size: 1, Alignment: 1
 
   Value too large to be stored in data type.
 
-- <a href="errno.ownerdead" name="errno.ownerdead"></a> [`ownerdead`](#errno.ownerdead)
-
-  Previous owner died.
-
 - <a href="errno.perm" name="errno.perm"></a> [`perm`](#errno.perm)
 
   Operation not permitted.
@@ -555,10 +451,6 @@ Size: 1, Alignment: 1
 
   Broken pipe.
 
-- <a href="errno.range" name="errno.range"></a> [`range`](#errno.range)
-
-  Result too large.
-
 - <a href="errno.rofs" name="errno.rofs"></a> [`rofs`](#errno.rofs)
 
   Read-only file system.
@@ -566,18 +458,6 @@ Size: 1, Alignment: 1
 - <a href="errno.spipe" name="errno.spipe"></a> [`spipe`](#errno.spipe)
 
   Invalid seek.
-
-- <a href="errno.srch" name="errno.srch"></a> [`srch`](#errno.srch)
-
-  No such process.
-
-- <a href="errno.stale" name="errno.stale"></a> [`stale`](#errno.stale)
-
-  Stale file handle.
-
-- <a href="errno.timedout" name="errno.timedout"></a> [`timedout`](#errno.timedout)
-
-  Connection timed out.
 
 - <a href="errno.txtbsy" name="errno.txtbsy"></a> [`txtbsy`](#errno.txtbsy)
 
