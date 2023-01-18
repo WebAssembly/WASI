@@ -499,6 +499,10 @@ pread: func(
 ```wit
 /// Write to a descriptor, without using and updating the descriptor's offset.
 ///
+/// It is valid to write past the end of a file; the file is extended to the
+/// extent of the write, with bytes between the previous end and the start of
+/// the write set to zero.
+///
 /// Note: This is similar to `pwrite` in POSIX.
 pwrite: func(
     /// Data to write
@@ -519,11 +523,17 @@ readdir: func() -> stream<dir-entry, errno>
 
 ## `seek`
 ```wit
-/// Move the offset of a descriptor.
+/// Move the offset of a file descriptor.
 ///
-/// The meaning of `seek` on a directory is unspecified.
+/// If the descriptor refers to a directory, this function fails with
+/// `errno::spipe`.
 ///
 /// Returns new offset of the descriptor, relative to the start of the file.
+///
+/// It is valid to seek past the end of a file. The file size is not modified
+/// until a write is performed, at which time the file is extended to the
+/// extent of the write, with bytes between the previous end and the start of
+/// the write set to zero.
 ///
 /// Note: This is similar to `lseek` in POSIX.
 seek: func(
@@ -543,6 +553,9 @@ sync: func() -> result<_, errno>
 ## `tell`
 ```wit
 /// Return the current offset of a descriptor.
+///
+/// If the descriptor refers to a directory, this function fails with
+/// `errno::spipe`.
 ///
 /// Returns the current offset of the descriptor, relative to the start of the file.
 ///
