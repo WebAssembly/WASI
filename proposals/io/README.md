@@ -1,28 +1,18 @@
-# [Example WASI proposal]
-
-This template can be used to start a new proposal, which can then be proposed in the WASI Subgroup meetings.
-
-The sections below are recommended. However, every proposal is different, and the community can help you flesh out the proposal, so don't block on having something filled in for each one of them.
-
-Thank you to the W3C Privacy CG for the [inspiration](https://github.com/privacycg/template)!
-
-# [Title]
+# WASI I/O
 
 A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) API.
 
 ### Current Phase
 
-[Fill in the current phase, e.g. Phase 1]
+WASI-filesystem is currently in [Phase 2].
 
 ### Champions
 
-- [Champion 1]
-- [Champion 2]
-- [etc.]
+- Dan Gohman
 
 ### Phase 4 Advancement Criteria
 
-TODO before entering Phase 2.
+WASI I/O has not yet proposed its phase-4 advancement criteria.
 
 ## Table of Contents [if the explainer is longer than one printed page]
 
