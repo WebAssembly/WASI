@@ -13,8 +13,15 @@
   (import "memory" (memory))
 
   ;;; Read command-line argument data.
+  ;;;
   ;;; The size of the array should match that returned by `args_sizes_get`.
+  ;;;
   ;;; Each argument is expected to be `\0` terminated.
+  ;;;
+  ;;; The first argument should be a string containing the "name" of the
+  ;;; program. This need not be a usable filesystem path or even file name,
+  ;;; and may even be a fixed string. Subsequent arguments are the arguments
+  ;;; passed to the program by the user.
   (@interface func (export "args_get")
     (param $argv (@witx pointer (@witx pointer u8)))
     (param $argv_buf (@witx pointer u8))
