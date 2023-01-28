@@ -399,8 +399,13 @@ The right to invoke [`path_filestat_get`](#path_filestat_get).
 Bit: 18
 
 - <a href="#rights.path_filestat_set_size" name="rights.path_filestat_set_size"></a> `path_filestat_set_size`: `bool`
-The right to change a file's size (there is no `path_filestat_set_size`).
+The right to change a file's size.
 If [`path_open`](#path_open) is set, includes the right to invoke [`path_open`](#path_open) with [`oflags::trunc`](#oflags.trunc).
+Note: there is no function named `path_filestat_set_size`. This follows POSIX design,
+which only has `ftruncate` and does not provide `ftruncateat`.
+While such function would be desirable from the API design perspective, there are virtually
+no use cases for it since no code written for POSIX systems would use it.
+Moreover, implementing it would require multiple syscalls, leading to inferior performance.
 
 Bit: 19
 
@@ -1691,7 +1696,7 @@ A bitmask indicating which timestamps to adjust.
 
 #### <a href="#fd_pread" name="fd_pread"></a> `fd_pread(fd: fd, iovs: iovec_array, offset: filesize) -> Result<size, errno>`
 Read from a file descriptor, without using and updating the file descriptor's offset.
-Note: This is similar to `preadv` in POSIX.
+Note: This is similar to `preadv` in Linux (and other Unix-es).
 
 ##### Params
 - <a href="#fd_pread.fd" name="fd_pread.fd"></a> `fd`: [`fd`](#fd)
@@ -1768,7 +1773,11 @@ A buffer into which to write the preopened directory name.
 
 #### <a href="#fd_pwrite" name="fd_pwrite"></a> `fd_pwrite(fd: fd, iovs: ciovec_array, offset: filesize) -> Result<size, errno>`
 Write to a file descriptor, without using and updating the file descriptor's offset.
-Note: This is similar to `pwritev` in POSIX.
+Note: This is similar to `pwritev` in Linux (and other Unix-es).
+
+Like Linux (and other Unix-es), any calls of `pwrite` (and other
+functions to read or write) for a regular file by other threads in the
+WASI process should not be interleaved while `pwrite` is executed.
 
 ##### Params
 - <a href="#fd_pwrite.fd" name="fd_pwrite.fd"></a> `fd`: [`fd`](#fd)
@@ -1967,6 +1976,10 @@ The current offset of the file descriptor, relative to the start of the file.
 #### <a href="#fd_write" name="fd_write"></a> `fd_write(fd: fd, iovs: ciovec_array) -> Result<size, errno>`
 Write to a file descriptor.
 Note: This is similar to `writev` in POSIX.
+
+Like POSIX, any calls of `write` (and other functions to read or write)
+for a regular file by other threads in the WASI process should not be
+interleaved while `write` is executed.
 
 ##### Params
 - <a href="#fd_write.fd" name="fd_write.fd"></a> `fd`: [`fd`](#fd)
@@ -2309,6 +2322,8 @@ The path to a file to unlink.
 
 #### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll_oneoff(in: ConstPointer<subscription>, out: Pointer<event>, nsubscriptions: size) -> Result<size, errno>`
 Concurrently poll for the occurrence of a set of events.
+
+If `nsubscriptions` is 0, returns [`errno::inval`](#errno.inval).
 
 ##### Params
 - <a href="#poll_oneoff.in" name="poll_oneoff.in"></a> `in`: `ConstPointer<subscription>`
