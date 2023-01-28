@@ -34,7 +34,7 @@ resource monotonic-clock {
 ```wit
 /// Read the current value of the clock.
 ///
-/// As this the clock is monotonic, calling this function repeatedly will produce
+/// The clock is monotonic, therefore calling this function repeatedly will produce
 /// a sequence of non-decreasing values.
 now: func() -> instant
 ```
@@ -72,7 +72,7 @@ resource wall-clock {
 ```wit
 /// Read the current value of the clock.
 ///
-/// As this the clock is not monotonic, calling this function repeatedly will
+/// This clock is not monotonic, therefore calling this function repeatedly will
 /// not necessarily produce a sequence of non-decreasing values.
 ///
 /// The returned timestamps represent the number of seconds since

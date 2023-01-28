@@ -25,6 +25,7 @@ default-monotonic-clock: monotonic-clock
 ///
 /// This allocates a new handle, so applications with frequent need of a clock
 /// handle should call this function once and reuse the handle instead of
+/// calling this function each time.
 ```wit
 default-wall-clock: wall-clock
 ```
