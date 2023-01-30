@@ -11,12 +11,6 @@ Paths are passed as interface-type `string`s, meaning they must consist of
 a sequence of Unicode Scalar Values (USVs). Some filesystems may contain paths
 which are not accessible by this API.
 
-## `size`
-```wit
-/// Size of a range of bytes in memory.
-type size = u32
-```
-
 ## `filesize`
 ```wit
 /// Non-negative file size or length of a region within a file.
@@ -348,7 +342,7 @@ fadvise: func(
     /// The offset within the file to which the advisory applies.
     offset: filesize,
     /// The length of the region to which the advisory applies.
-    len: size,
+    len: filesize,
     /// The advice.
     advice: advice
 ) -> result<_, errno>
@@ -429,7 +423,7 @@ set-times: func(
 /// Note: This is similar to `pread` in POSIX.
 pread: func(
     /// The maximim number of bytes to read.
-    len: size,
+    len: filesize,
     /// The offset within the file at which to read.
     offset: filesize,
 ) -> stream<u8, errno>
@@ -449,7 +443,7 @@ pwrite: func(
     buf: stream<u8>,
     /// The offset within the file at which to write.
     offset: filesize,
-) -> future<result<size, errno>>
+) -> future<result<filesize, errno>>
 ```
 
 ## `readdir`

@@ -1,11 +1,5 @@
 # Types
 
-## <a href="#size" name="size"></a> `size`: `u32`
-
-  Size of a range of bytes in memory.
-
-Size: 4, Alignment: 4
-
 ## <a href="#filesize" name="filesize"></a> `filesize`: `u64`
 
   Non-negative file size or length of a region within a file.
@@ -532,7 +526,7 @@ Size: 16, Alignment: 8
 
 - <a href="#descriptor_fadvise.self" name="descriptor_fadvise.self"></a> `self`: handle<descriptor>
 - <a href="#descriptor_fadvise.offset" name="descriptor_fadvise.offset"></a> `offset`: [`filesize`](#filesize)
-- <a href="#descriptor_fadvise.len" name="descriptor_fadvise.len"></a> `len`: [`size`](#size)
+- <a href="#descriptor_fadvise.len" name="descriptor_fadvise.len"></a> `len`: [`filesize`](#filesize)
 - <a href="#descriptor_fadvise.advice" name="descriptor_fadvise.advice"></a> `advice`: [`advice`](#advice)
 ##### Results
 
@@ -651,7 +645,7 @@ Size: 16, Alignment: 8
 ##### Params
 
 - <a href="#descriptor_pread.self" name="descriptor_pread.self"></a> `self`: handle<descriptor>
-- <a href="#descriptor_pread.len" name="descriptor_pread.len"></a> `len`: [`size`](#size)
+- <a href="#descriptor_pread.len" name="descriptor_pread.len"></a> `len`: [`filesize`](#filesize)
 - <a href="#descriptor_pread.offset" name="descriptor_pread.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
@@ -675,7 +669,7 @@ Size: 16, Alignment: 8
 - <a href="#descriptor_pwrite.offset" name="descriptor_pwrite.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- future<result<[`size`](#size), [`errno`](#errno)>>
+- future<result<[`filesize`](#filesize), [`errno`](#errno)>>
 
 ----
 
