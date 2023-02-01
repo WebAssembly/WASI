@@ -78,11 +78,11 @@ There are two kinds of capabilities:
 
  - Link-time capabilities, which are functions which require no handle
    arguments, are used sparingly, in situations where it's not necessary
-   to identify more than once instance of a resources at runtime. Link-time
+   to identify more than one instance of a resource at runtime. Link-time
    capabilities are *interposable*, so they are still refusable in a
    capability-based security sense.
 
-WASI has no ambient *ambient authorities*, meaning that there are no global
+WASI has no *ambient authorities*, meaning that there are no global
 namespaces at runtime, and no global functions at link time.
 
 [component model]: https://github.com/WebAssembly/component-model
