@@ -99,7 +99,7 @@ are per-process rather than per-resource.
 Component model interfaces always support link-time interposition. While
 WASI APIs are often implemented in hosts, they can also be implemented
 in Wasm, which may itself be a wrapper around the host. This may be used
-to implement *attentuation*, providing filtered access to the underlying
+to implement *attenuation*, providing filtered access to the underlying
 host-provided functionality.
 
 Interposition is sometimes referred to as "virtualization", however we
