@@ -96,6 +96,12 @@ are per-process rather than per-resource.
 
 ### Interposition
 
+Interposition in the context of WASI interfaces is the ability for a
+Webassembly instance to implement a given WASI interface, and for a
+consumer WebAssembly instance to be able to use this implementation
+transparently. This can be used to adapt or attenuate the functionality
+of a WASI API without changing the code using it.
+
 Component model interfaces always support link-time interposition. While
 WASI APIs are often implemented in hosts, they can also be implemented
 in Wasm, which may itself be a wrapper around the host. This may be used
