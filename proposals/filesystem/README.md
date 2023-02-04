@@ -19,7 +19,7 @@ on at least Windows, macOS, and Linux.
 
 WASI filesystem must have at least two complete independent implementations.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Goals](#goals)
@@ -76,19 +76,55 @@ defined behaviors, which would conflict with the goal of being efficient.
 
 ### API walk-through
 
-[Walk through of how someone would use this API.]
+#### Opening a file
 
-#### [Use case 1]
+```rust=
+/// Write "Hello, World" into a file called "greeting.txt" in `dir`.
+fn write_hello_world_to_a_file(dir: Descriptor) -> Result<(), Errno> {
+    let at_flags = AtFlags::FollowSymlinks;
+    let o_flags = OFlags::Create | OFlags::Trunc;
+    let descriptor_flags = DescriptorFlags::Write;
+    let mode = Mode::Readable;
+    let file =
+        dir.openat(at_flags, "greeting.txt", o_flags, descriptor_flags, mode)?;
+    let message = b"Hello, World\n";
+    let mut view = &message[..];
+    let mut offset = 0;
+    while !view.is_empty() {
+        let num_written = file.pwrite(view.to_owned(), 0)?;
+        offset += num_written;
+        view = &view[num_writen..];
+    }
+    // The file descriptor is closed when it's dropped!
+}
+```
 
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+Perhaps the biggest change from the preview1 version of openat, called
+`path_open`, is the removal of the *rights* flags. Preview1 associates
+a set of flags with every file descriptor enumerating which operatings
+may be performed on it, such as reading, writing, appending, truncating,
+and many other operations. In practice, this created a lot of ambiguity
+about how it mapped to POSIX semantics, as it doesn't directly correspond
+to any feature in POSIX, or in Windows either.
 
-#### [Use case 2]
+The other major change from preview1 is the introduction of the mode
+argument, which controls the permissions of the generated file. There
+was no way to control permissions in preview1, so this is new
+functionality.
 
-[etc.]
+#### Streaming read from a file
+
+TODO
+
+#### Reading from a directory
+
+fn read_entries(dir: Descriptor) -> Result<(), Errno> {
+    // TODO: Implement this example.
+}
+
+[etc.
 
 ### Detailed design discussion
-
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
 
 #### Should WASI filesystem be case-sensitive, case-insensitive, or platform-dependent?
 
@@ -108,27 +144,17 @@ issue is tha WASI filesystem in general can't assume it has exclusive access
 to the filesystem, so approaches that involve checking for files with names
 that differ only by case can race with other processes creating new files.
 
-#### [Tricky design choice 2]
-
-[etc.]
-
 ### Considered alternatives
 
-[This section is not required if you already covered considered alternatives in the design discussion above.]
+#### Fully deterministic filesystem
 
-#### [Alternative 1]
-
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
+The main tradeoff with full determinism is that it makes it difficult to access existing filesystems that the Wasm runtime doesn't have full control over. This proposal is aiming to address use cases where users have existing filesystems they want to access.
 
 ### Stakeholder Interest & Feedback
 
 TODO before entering Phase 3.
 
-[This should include a list of implementers who have expressed interest in implementing the proposal]
+Preview1 has a similar filesystem API, and it's widely exposed in toolchains.
 
 ### References & acknowledgements
 
