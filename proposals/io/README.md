@@ -4,7 +4,9 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-WASI-filesystem is currently in [Phase 2].
+WASI-io is currently in [Phase 2].
+
+[Phase 2]: https://github.com/WebAssembly/WASI/blob/42fe2a3ca159011b23099c3d10b5b1d9aff2140e/docs/Proposals.md#phase-2---proposed-spec-text-available-cg--wg
 
 ### Champions
 
@@ -14,7 +16,9 @@ WASI-filesystem is currently in [Phase 2].
 
 WASI I/O has not yet proposed its phase-4 advancement criteria.
 
-## Table of Contents [if the explainer is longer than one printed page]
+We anticipate it will involve ensuring it works well for streaming files, sockets, and pipes, and is usable from wasi-libc for implementing POSIX APIs.
+
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
@@ -33,68 +37,103 @@ WASI I/O has not yet proposed its phase-4 advancement criteria.
 
 ### Introduction
 
-[The "executive summary" or "abstract". Explain in a few sentences what the goals of the project are, and a brief overview of how the solution works. This should be no more than 1-2 paragraphs.]
+Wasi I/O is an API providing I/O stream abstractions. There are two
+types, `input-stream`, and `output-stream`, which support `read` and
+`write`, respectively, as well as a number of utility functions.
 
-### Goals [or Motivating Use Cases, or Scenarios]
+### Goals
 
-[What is the end-user need which this project aims to address?]
+ - Be usable by wasi-libc to implement POSIX-like file and socket APIs.
+ - Support many different kinds of host streams, including files, sockets,
+   pipes, character devices, and more.
 
 ### Non-goals
 
-[If there are "adjacent" goals which may appear to be in scope but aren't, enumerate them here. This section may be fleshed out as your design progresses and you encounter necessary technical and other trade-offs.]
+ - Support for async. That will be addressed in the component-model async
+   design, where we can have the benefit of tigher integration with language
+   bindings.
+ - Bidirectional streams.
 
 ### API walk-through
 
-[Walk through of how someone would use this API.]
+#### Copying from input to output using `read`/`write`:
 
-#### [Use case 1]
+```rust=
+   fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
+       const BUFFER_LEN: usize = 4096;
+       loop {
+           let (data, eos) = input.read(BUFFER_LEN)?;
+           let mut remaining = &data[..];
+           while !remaining.is_empty() {
+               let num_written = output.write(remaining)?;
+               remaining = &remaining[num_written..];
+           }
+           if eos {
+               break;
+           }
+       }
+       Ok(())
+   }
+}
+```
 
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+#### Copying from input to output using `splice`:
 
-#### [Use case 2]
+```rust=
+   fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
+       loop {
+           let (_num_copied, eos) = output.splice(input, u64::MAX)?;
+           if eos {
+               break;
+           }
+       }
+       Ok(())
+   }
+}
+```
 
-[etc.]
+#### Copying from input to output using `forward`:
+
+```rust=
+   fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
+       output.forward(input)?;
+       Ok(())
+   }
+}
+```
 
 ### Detailed design discussion
 
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
+#### Should we have support for non-blocking read/write?
 
-#### [Tricky design choice #1]
+This may be something we'll need to revisit, but currently, the way
+non-blocking streams work is that they perform reads or writes that
+read or write fewer bytes than requested.
 
-[Talk through the tradeoffs in coming to the specific design point you want to make.]
+#### Why do read/write use u64 sizes?
 
-```
-// Illustrated with example code.
-```
+This is to make the API independent of the address space size of
+the caller. Callees are still advised to avoid using sizes that
+are larger than their instances will be able to allocate.
 
-[This may be an open question, in which case you should link to any active discussion threads.]
+#### Why have a `forward` function when you can just `splice` in a loop?
 
-#### [Tricky design choice 2]
-
-[etc.]
-
-### Considered alternatives
-
-[This section is not required if you already covered considered alternatives in the design discussion above.]
-
-#### [Alternative 1]
-
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
+This seems like it'll be a common use case, and `forward`
+addresses it in a very simple way.
 
 ### Stakeholder Interest & Feedback
 
 TODO before entering Phase 3.
 
-[This should include a list of implementers who have expressed interest in implementing the proposal]
+Wasi-io is being proposed to be a dependency of wasi-filesystem and
+wasi-sockets, and is expected to be a foundational piece of WASI
+preview2.
 
 ### References & acknowledgements
 
 Many thanks for valuable feedback and advice from:
 
-- [Person 1]
-- [Person 2]
-- [etc.]
+- Thanks to Luke Wagner for many design functions and the design of
+  the component-model async streams which inform the design here.
+- Thanks to Calvin Prewitt for the idea to include a `forward` function
+  in this API.
