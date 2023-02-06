@@ -19,7 +19,7 @@ on at least Windows, macOS, and Linux.
 
 WASI clocks must have at least two complete independent implementations.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Goals](#goals)
@@ -57,19 +57,38 @@ formatting, or modifying the time of a clock.
 
 ### API walk-through
 
-[Walk through of how someone would use this API.]
+#### Measuring elapsed time
 
-#### [Use case 1]
+The monotonic clock APIs can be used to measure the elapsed time of a region of code:
 
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
+```wit=
+default-monotonic-clock: monotonic-clock
+```
 
-#### [Use case 2]
+```rust=
+   let clock: MonotonicClock = default_monotonic_clock();
 
-[etc.]
+   let start: Instant = monotonic_clock_now(clock);
+
+   // some stuff
+
+   let stop: Instant = monotonic_clock_now(clock);
+
+   let elapsed: Instant = stop - start;
+```
+
+
+#### Telling the current human time:
+
+```rust=
+    let clock: WallClock = default_wall_clock();
+
+    let the_current_time = wall_clock_now();
+
+    println!("it has been {} seconds and {} nanoseconds since the Unix epoch!", the_current_time.seconds, the_current_time.nanoseconds);
+```
 
 ### Detailed design discussion
-
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
 
 ### What should the type of a timestamp be?
 
@@ -89,21 +108,17 @@ And so, this API uses different data types for different types of clocks.
 
 ### Considered alternatives
 
-[This section is not required if you already covered considered alternatives in the design discussion above.]
+#### Per-process and per-thread clocks
 
-#### [Alternative 1]
+WASI preview1 included two clocks which measured the CPU time of the current process and the current thread, respectively. These clocks are difficult to implement efficiently in WASI implementations that have multiple wasm instances in the same host process, so they've been omitted from this API.
 
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
+Wasi-libc has support for emulating these clocks, by using the monotonic clock instead, which isn't a technically precise replacement, but is enough to ensure minimal compatibility with existing code.
 
 ### Stakeholder Interest & Feedback
 
 TODO before entering Phase 3.
 
-[This should include a list of implementers who have expressed interest in implementing the proposal]
+Preview1 has monotonic and wall clock functions, and they're widely exposed in toolchains.
 
 ### References & acknowledgements
 
