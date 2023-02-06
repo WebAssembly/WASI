@@ -85,14 +85,13 @@ Size: 0, Alignment: 1
 
 #### <a href="#output_stream_write_repeated" name="output_stream_write_repeated"></a> `output-stream::write-repeated` 
 
-  Write a single byte multiple times to a stream.
+  Write multiple zero bytes to a stream.
   
-  This function returns a `u64` indicating the number of copies of
-  `byte` that were written; it may be less than `len`.
+  This function returns a `u64` indicating the number of zero bytes
+  that were written; it may be less than `len`.
 ##### Params
 
 - <a href="#output_stream_write_repeated.self" name="output_stream_write_repeated.self"></a> `self`: handle<output-stream>
-- <a href="#output_stream_write_repeated.byte" name="output_stream_write_repeated.byte"></a> `byte`: `u8`
 - <a href="#output_stream_write_repeated.len" name="output_stream_write_repeated.len"></a> `len`: `u64`
 ##### Results
 

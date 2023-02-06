@@ -85,16 +85,14 @@ resource output-stream {
     ) -> result<u64, stream-error>
 ```
 
-## `write-repeated`
+## `write-zeroes`
 ```wit
-    /// Write a single byte multiple times to a stream.
+    /// Write multiple zero bytes to a stream.
     ///
-    /// This function returns a `u64` indicating the number of copies of
-    /// `byte` that were written; it may be less than `len`.
+    /// This function returns a `u64` indicating the number of zero bytes
+    /// that were written; it may be less than `len`.
     write-repeated: func(
-        /// The byte to write
-        byte: u8,
-        /// The number of times to write it
+        /// The number of zero bytes to write
         len: u64
     ) -> result<u64, stream-error>
 ```
