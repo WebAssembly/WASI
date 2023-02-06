@@ -19,7 +19,7 @@ on at least Windows, macOS, and Linux.
 
 WASI random must have at least two complete independent implementations.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Goals](#goals)
@@ -38,13 +38,13 @@ WASI random must have at least two complete independent implementations.
 
 ### Introduction
 
-WASI Random is a WASI API for obtaining random data.
+WASI Random is a WASI API for obtaining pseudo-random data.
 
 ### Goals
 
 The primary goals of WASI Random are:
  - To allow users to use WASI programs to obtain high-quality low-level
-   random data.
+   random data suitable for cryptography.
  - To allow source languages to enable DoS protection in their hash-maps
    in host environments that support it.
 
@@ -86,19 +86,39 @@ used for debugging, and not production use.
 
 ### API walk-through
 
-[Walk through of how someone would use this API.]
+#### Main API: getting cryptographically-secure pseudo-random bytes
 
-#### [Use case 1]
+Return a list of cryptographically-secure pseudo-random bytes:
 
-TODO: Describe a use case using `getrandom`.
+```rust=
+    let len: u32 = your_own_code_to_decide_how_many_bytes_you_want();
 
-#### [Use case 2]
+    let bytes: Vec<u8> = get_random_bytes(len);
+```
 
-TODO: Describe a use case using `insecure-random`.
+#### Main API: getting cryptographically-secure pseudo-random bytes faster
+
+Sometimes the bindings for `list<u8>` can have some overhead, so
+another function is available which returns the same data but as a
+`u64`:
+
+```rust=
+    let data: u64 = get_random_u64();
+```
+
+#### Insecure API: Hash-map DoS protection
+
+Return a pair of u64's that can be used to initialize a hash implementation:
+
+```rust=
+    let init: (u64, u64) = insecure_random();
+
+    let combined: u128 = init.0 as u128 | (init.1 as u128 << 64);
+
+    your_own_code_to_initialize_hash_map(combined);
+```
 
 ### Detailed design discussion
-
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
 
 ### What if the system lacks sufficient entropy during early boot?
 
@@ -151,28 +171,16 @@ their bits of security, and it doesn't seem desirable to require wasm engines to
 run their own CSPRNG on a platform which alreay has one, so for now, the API
 does not specify a specific number.
 
-### Why is insecure-random a fixed-length value import?
+### Why is insecure-random a fixed-sized return value?
 
 This limits the amount of data that can be obtained through it. Since it's
 insecure, it's not intended to be used as an alternative to `getrandom`.
-
-### Considered alternatives
-
-[This section is not required if you already covered considered alternatives in the design discussion above.]
-
-#### [Alternative 1]
-
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
 
 ### Stakeholder Interest & Feedback
 
 TODO before entering Phase 3.
 
-[This should include a list of implementers who have expressed interest in implementing the proposal]
+Preview1 has a random function, and it's widely exposed in toolchains.
 
 ### References & acknowledgements
 
