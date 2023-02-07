@@ -17,7 +17,7 @@ Windows.
 /// This function must always return fresh pseudo-random data. Deterministic
 /// environments must omit this function, rather than implementing it with
 /// deterministic data.
-get-random-bytes: func(len: u32) -> list<u8>
+get-random-bytes: func(len: u64) -> list<u8>
 ```
 
 ## `get-random-u64`

@@ -16,7 +16,7 @@
   deterministic data.
 ##### Params
 
-- <a href="#get_random_bytes.len" name="get_random_bytes.len"></a> `len`: `u32`
+- <a href="#get_random_bytes.len" name="get_random_bytes.len"></a> `len`: `u64`
 ##### Results
 
 - list<`u8`>
