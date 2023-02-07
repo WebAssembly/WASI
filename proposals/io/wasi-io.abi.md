@@ -83,7 +83,7 @@ Size: 0, Alignment: 1
 
 ----
 
-#### <a href="#output_stream_write_repeated" name="output_stream_write_repeated"></a> `output-stream::write-repeated` 
+#### <a href="#output_stream_write_zeroes" name="output_stream_write_zeroes"></a> `output-stream::write-zeroes` 
 
   Write multiple zero bytes to a stream.
   
@@ -91,8 +91,8 @@ Size: 0, Alignment: 1
   that were written; it may be less than `len`.
 ##### Params
 
-- <a href="#output_stream_write_repeated.self" name="output_stream_write_repeated.self"></a> `self`: handle<output-stream>
-- <a href="#output_stream_write_repeated.len" name="output_stream_write_repeated.len"></a> `len`: `u64`
+- <a href="#output_stream_write_zeroes.self" name="output_stream_write_zeroes.self"></a> `self`: handle<output-stream>
+- <a href="#output_stream_write_zeroes.len" name="output_stream_write_zeroes.len"></a> `len`: `u64`
 ##### Results
 
 - result<`u64`, [`stream-error`](#stream_error)>

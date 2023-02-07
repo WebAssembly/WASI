@@ -91,7 +91,7 @@ resource output-stream {
     ///
     /// This function returns a `u64` indicating the number of zero bytes
     /// that were written; it may be less than `len`.
-    write-repeated: func(
+    write-zeroes: func(
         /// The number of zero bytes to write
         len: u64
     ) -> result<u64, stream-error>
