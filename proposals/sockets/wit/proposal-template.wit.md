@@ -6,7 +6,16 @@
 
 [If you want to include examples of the API in use, these should be in the README and linked to from this file.]
 
-## api_type_one
+## `proposal-interface-name`
+
+```wit
+/// Short interface description.
+///
+/// Explanation for developers using the interface API.
+default interface proposal-interface-name {
+```
+
+## `api_type_one`
 
 ```wit
 /// Short description
@@ -20,7 +29,7 @@ record api-type-one {
 
 More rigorous specification details for the implementer go here, if needed.
 
-## api_function_one
+## `api_function_one`
 
 ```wit
 /// Short description
@@ -30,3 +39,7 @@ api-function-one: func() -> api-type-one
 ```
 
 If needed, this would explain what a compliant implementation MUST do, such as never returning an earlier result from a later call.
+
+```wit
+}
+```
