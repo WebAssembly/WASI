@@ -523,6 +523,9 @@ This is similar to `posix_fadvise` in POSIX.
 
 Synchronize the data of a file to disk.
 
+This function succeeds with no effect if the file descriptor is not
+opened for writing.
+
 Note: This is similar to `fdatasync` in POSIX.
 ##### Params
 
@@ -676,6 +679,9 @@ directory.
 #### <a href="#sync" name="sync"></a> `sync` 
 
 Synchronize the data and metadata of a file to disk.
+
+This function succeeds with no effect if the file descriptor is not
+opened for writing.
 
 Note: This is similar to `fsync` in POSIX.
 ##### Params

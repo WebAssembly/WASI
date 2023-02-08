@@ -344,6 +344,9 @@ fadvise: func(
 ```wit
 /// Synchronize the data of a file to disk.
 ///
+/// This function succeeds with no effect if the file descriptor is not
+/// opened for writing.
+///
 /// Note: This is similar to `fdatasync` in POSIX.
 datasync: func(this: descriptor) -> result<_, errno>
 ```
@@ -455,6 +458,9 @@ readdir: func(this: descriptor) -> stream<dir-entry-stream, errno>
 ## `sync`
 ```wit
 /// Synchronize the data and metadata of a file to disk.
+///
+/// This function succeeds with no effect if the file descriptor is not
+/// opened for writing.
 ///
 /// Note: This is similar to `fsync` in POSIX.
 sync: func(this: descriptor) -> result<_, errno>

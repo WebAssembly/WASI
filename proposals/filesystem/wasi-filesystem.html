@@ -469,6 +469,8 @@ Bit: 0</p>
 <hr />
 <h4><a href="#datasync" name="datasync"></a> <a href="#datasync"><code>datasync</code></a></h4>
 <p>Synchronize the data of a file to disk.</p>
+<p>This function succeeds with no effect if the file descriptor is not
+opened for writing.</p>
 <p>Note: This is similar to <code>fdatasync</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -599,6 +601,8 @@ directory.</p>
 <hr />
 <h4><a href="#sync" name="sync"></a> <a href="#sync"><code>sync</code></a></h4>
 <p>Synchronize the data and metadata of a file to disk.</p>
+<p>This function succeeds with no effect if the file descriptor is not
+opened for writing.</p>
 <p>Note: This is similar to <code>fsync</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
