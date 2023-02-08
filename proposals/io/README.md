@@ -24,14 +24,13 @@ We anticipate it will involve ensuring it works well for streaming files, socket
 - [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
 - [Non-goals](#non-goals)
 - [API walk-through](#api-walk-through)
-  - [Use case 1](#use-case-1)
-  - [Use case 2](#use-case-2)
+  - [Use case: Copying from input to output using `read`/`write`](#use-case-copying-from-input-to-output-using-readwrite)
+  - [Use case: copying from input to output using `splice`](#use-case-copying-from-input-to-output-using-splice)
+  - [Use case: copying from input to output using `forward`](#use-case-copying-from-input-to-output-using-forward)
 - [Detailed design discussion](#detailed-design-discussion)
-  - [[Tricky design choice 1]](#tricky-design-choice-1)
-  - [[Tricky design choice 2]](#tricky-design-choice-2)
-- [Considered alternatives](#considered-alternatives)
-  - [[Alternative 1]](#alternative-1)
-  - [[Alternative 2]](#alternative-2)
+  - [Should we have support for non-blocking read/write?](#should-we-have-support-for-non-blocking-read-write)
+  - [Why do read/write use u64 sizes?[Tricky design choice 2]](#why-do-read-write-use-u64-sizes)
+  - [Why have a `forward` function when you can just `splice` in a loop?](#why-have-a-forward-function-when-you-can-just-splice-in-a-loop)
 - [Stakeholder Interest & Feedback](#stakeholder-interest--feedback)
 - [References & acknowledgements](#references--acknowledgements)
 
@@ -56,7 +55,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
 ### API walk-through
 
-#### Copying from input to output using `read`/`write`:
+#### Use Case: copying from input to output using `read`/`write`
 
 ```rust=
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
@@ -77,7 +76,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 }
 ```
 
-#### Copying from input to output using `splice`:
+#### Use case: copying from input to output using `splice`
 
 ```rust=
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
@@ -92,7 +91,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 }
 ```
 
-#### Copying from input to output using `forward`:
+#### Use case: opying from input to output using `forward`
 
 ```rust=
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
