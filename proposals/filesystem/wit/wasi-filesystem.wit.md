@@ -57,17 +57,36 @@ flags descriptor-flags {
     read,
     /// Write mode: Data can be written to.
     write,
-    /// Write according to synchronized I/O data integrity completion. Only the
-    /// data stored in the file is synchronized.
-    dsync,
-    /// Non-blocking mode.
+    /// Requests non-blocking operation.
+    ///
+    /// When this flag is enabled, functions may return immediately with an
+    /// `errno::again` error code in situations where they would otherwise
+    /// block. However, this non-blocking behavior is not required.
+    /// Implementations are permitted to ignore this flag and block.
     nonblock,
-    /// Synchronized read I/O operations.
-    rsync,
-    /// Write according to synchronized I/O file integrity completion. In
-    /// addition to synchronizing the data stored in the file, the
-    /// implementation may also synchronously update the file's metadata.
+    /// Request that writes be performed according to synchronized I/O file
+    /// integrity completion. The data stored in the file and the file's
+    /// metadata are synchronized.
+    ///
+    /// The precise semantics of this operation have not yet been defined for
+    /// WASI. At this time, it should be interpreted as a request, and not a
+    /// requirement.
     sync,
+    /// Request that writes be performed according to synchronized I/O data
+    /// integrity completion. Only the data stored in the file is
+    /// synchronized.
+    ///
+    /// The precise semantics of this operation have not yet been defined for
+    /// WASI. At this time, it should be interpreted as a request, and not a
+    /// requirement.
+    dsync,
+    /// Requests that reads be performed at the same level of integrety
+    /// requested for writes.
+    ///
+    /// The precise semantics of this operation have not yet been defined for
+    /// WASI. At this time, it should be interpreted as a request, and not a
+    /// requirement.
+    rsync,
 }
 ```
 
@@ -722,7 +741,7 @@ lock-exclusive: func(this: descriptor) -> result<_, errno>
 /// It is unspecified how shared locks interact with locks acquired by
 /// non-WASI programs.
 ///
-/// This function returns `errno::wouldblock` if the lock cannot be acquired.
+/// This function returns `errno::again` if the lock cannot be acquired.
 ///
 /// Not all filesystems support locking; on filesystems which don't support
 /// locking, this function returns `errno::notsup`.
@@ -749,7 +768,7 @@ try-lock-shared: func(this: descriptor) -> result<_, errno>
 /// is not opened for writing. It is unspecified how exclusive locks interact
 /// with locks acquired by non-WASI programs.
 ///
-/// This function returns `errno::wouldblock` if the lock cannot be acquired.
+/// This function returns `errno::again` if the lock cannot be acquired.
 ///
 /// Not all filesystems support locking; on filesystems which don't support
 /// locking, this function returns `errno::notsup`.

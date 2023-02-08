@@ -403,27 +403,46 @@ Size: 1, Alignment: 1
   Write mode: Data can be written to.
   Bit: 1
 
-- <a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> [`dsync`](#descriptor_flags.dsync): 
-  
-  Write according to synchronized I/O data integrity completion. Only the
-  data stored in the file is synchronized.
-  Bit: 2
-
 - <a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> [`nonblock`](#descriptor_flags.nonblock): 
   
-  Non-blocking mode.
-  Bit: 3
-
-- <a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> [`rsync`](#descriptor_flags.rsync): 
+  Requests non-blocking operation.
   
-  Synchronized read I/O operations.
-  Bit: 4
+  When this flag is enabled, functions may return immediately with an
+  `errno::again` error code in situations where they would otherwise
+  block. However, this non-blocking behavior is not required.
+  Implementations are permitted to ignore this flag and block.
+  Bit: 2
 
 - <a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> [`sync`](#descriptor_flags.sync): 
   
-  Write according to synchronized I/O file integrity completion. In
-  addition to synchronizing the data stored in the file, the
-  implementation may also synchronously update the file's metadata.
+  Request that writes be performed according to synchronized I/O file
+  integrity completion. The data stored in the file and the file's
+  metadata are synchronized.
+  
+  The precise semantics of this operation have not yet been defined for
+  WASI. At this time, it should be interpreted as a request, and not a
+  requirement.
+  Bit: 3
+
+- <a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> [`dsync`](#descriptor_flags.dsync): 
+  
+  Request that writes be performed according to synchronized I/O data
+  integrity completion. Only the data stored in the file is
+  synchronized.
+  
+  The precise semantics of this operation have not yet been defined for
+  WASI. At this time, it should be interpreted as a request, and not a
+  requirement.
+  Bit: 4
+
+- <a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> [`rsync`](#descriptor_flags.rsync): 
+  
+  Requests that reads be performed at the same level of integrety
+  requested for writes.
+  
+  The precise semantics of this operation have not yet been defined for
+  WASI. At this time, it should be interpreted as a request, and not a
+  requirement.
   Bit: 5
 
 ## <a href="#descriptor" name="descriptor"></a> `descriptor`: `u32`
@@ -985,7 +1004,7 @@ by other programs that don't hold the lock.
 It is unspecified how shared locks interact with locks acquired by
 non-WASI programs.
 
-This function returns `errno::wouldblock` if the lock cannot be acquired.
+This function returns `errno::again` if the lock cannot be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
 locking, this function returns `errno::notsup`.
@@ -1018,7 +1037,7 @@ It is unspecified whether this function succeeds if the file descriptor
 is not opened for writing. It is unspecified how exclusive locks interact
 with locks acquired by non-WASI programs.
 
-This function returns `errno::wouldblock` if the lock cannot be acquired.
+This function returns `errno::again` if the lock cannot be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
 locking, this function returns `errno::notsup`.

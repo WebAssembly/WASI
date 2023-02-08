@@ -366,26 +366,41 @@ Bit: 0</p>
 Bit: 1</p>
 </li>
 <li>
-<p><a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> <a href="#descriptor_flags.dsync"><code>dsync</code></a>: </p>
-<p>Write according to synchronized I/O data integrity completion. Only the
-data stored in the file is synchronized.
+<p><a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> <a href="#descriptor_flags.nonblock"><code>nonblock</code></a>: </p>
+<p>Requests non-blocking operation.</p>
+<p>When this flag is enabled, functions may return immediately with an
+<a href="#errno.again"><code>errno::again</code></a> error code in situations where they would otherwise
+block. However, this non-blocking behavior is not required.
+Implementations are permitted to ignore this flag and block.
 Bit: 2</p>
 </li>
 <li>
-<p><a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> <a href="#descriptor_flags.nonblock"><code>nonblock</code></a>: </p>
-<p>Non-blocking mode.
+<p><a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> <a href="#descriptor_flags.sync"><a href="#sync"><code>sync</code></a></a>: </p>
+<p>Request that writes be performed according to synchronized I/O file
+integrity completion. The data stored in the file and the file's
+metadata are synchronized.</p>
+<p>The precise semantics of this operation have not yet been defined for
+WASI. At this time, it should be interpreted as a request, and not a
+requirement.
 Bit: 3</p>
 </li>
 <li>
-<p><a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> <a href="#descriptor_flags.rsync"><code>rsync</code></a>: </p>
-<p>Synchronized read I/O operations.
+<p><a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> <a href="#descriptor_flags.dsync"><code>dsync</code></a>: </p>
+<p>Request that writes be performed according to synchronized I/O data
+integrity completion. Only the data stored in the file is
+synchronized.</p>
+<p>The precise semantics of this operation have not yet been defined for
+WASI. At this time, it should be interpreted as a request, and not a
+requirement.
 Bit: 4</p>
 </li>
 <li>
-<p><a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> <a href="#descriptor_flags.sync"><a href="#sync"><code>sync</code></a></a>: </p>
-<p>Write according to synchronized I/O file integrity completion. In
-addition to synchronizing the data stored in the file, the
-implementation may also synchronously update the file's metadata.
+<p><a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> <a href="#descriptor_flags.rsync"><code>rsync</code></a>: </p>
+<p>Requests that reads be performed at the same level of integrety
+requested for writes.</p>
+<p>The precise semantics of this operation have not yet been defined for
+WASI. At this time, it should be interpreted as a request, and not a
+requirement.
 Bit: 5</p>
 </li>
 </ul>
@@ -855,7 +870,7 @@ to a shared lock. If it has a shared lock, this function has no effect.</p>
 by other programs that don't hold the lock.</p>
 <p>It is unspecified how shared locks interact with locks acquired by
 non-WASI programs.</p>
-<p>This function returns <code>errno::wouldblock</code> if the lock cannot be acquired.</p>
+<p>This function returns <a href="#errno.again"><code>errno::again</code></a> if the lock cannot be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
 locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_SH | LOCK_NB)</code> in Unix.</p>
@@ -880,7 +895,7 @@ by other programs that don't hold the lock.</p>
 <p>It is unspecified whether this function succeeds if the file descriptor
 is not opened for writing. It is unspecified how exclusive locks interact
 with locks acquired by non-WASI programs.</p>
-<p>This function returns <code>errno::wouldblock</code> if the lock cannot be acquired.</p>
+<p>This function returns <a href="#errno.again"><code>errno::again</code></a> if the lock cannot be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
 locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_EX | LOCK_NB)</code> in Unix.</p>
