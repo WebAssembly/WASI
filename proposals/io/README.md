@@ -24,7 +24,7 @@ We anticipate it will involve ensuring it works well for streaming files, socket
 - [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
 - [Non-goals](#non-goals)
 - [API walk-through](#api-walk-through)
-  - [Use case: Copying from input to output using `read`/`write`](#use-case-copying-from-input-to-output-using-readwrite)
+  - [Use case: copying from input to output using `read`/`write`](#use-case-copying-from-input-to-output-using-readwrite)
   - [Use case: copying from input to output using `splice`](#use-case-copying-from-input-to-output-using-splice)
   - [Use case: copying from input to output using `forward`](#use-case-copying-from-input-to-output-using-forward)
 - [Detailed design discussion](#detailed-design-discussion)
@@ -91,7 +91,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 }
 ```
 
-#### Use case: opying from input to output using `forward`
+#### Use case: copying from input to output using `forward`
 
 ```rust=
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
