@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - run: curl https://raw.githubusercontent.com/WebAssembly/wasi-poll/75ace039473c05928cfd8e6df0243fc47ee9e8c9/wit/wasi-poll.wit.md > wit/wasi-poll.wit.md
     - uses: WebAssembly/wit-abi-up-to-date@v10
       with:
         wit-abi-tag: wit-abi-0.8.0

@@ -10,6 +10,11 @@
 default interface wasi-monotonic-clock {
 ```
 
+## Imports
+```wit
+use pkg.wasi-poll.{pollable}
+```
+
 ## `instant`
 ```wit
 /// A timestamp in nanoseconds.
@@ -39,6 +44,12 @@ now: func(this: monotonic-clock) -> instant
 ```wit
 /// Query the resolution of the clock.
 resolution: func(this: monotonic-clock) -> instant
+```
+
+## `subscribe`
+```wit
+/// Create a `pollable` which will resolve once the specified time has been reached.
+subscribe: func(this: monotonic-clock, when: instant, absolute: bool) -> pollable
 ```
 
 ## `drop-monotonic-clock`

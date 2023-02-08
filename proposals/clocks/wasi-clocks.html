@@ -1,5 +1,43 @@
+<h1>Import interface <code>wasi-poll</code></h1>
+<h2>Types</h2>
+<h2><a href="#pollable" name="pollable"></a> <a href="#pollable"><code>pollable</code></a>: <code>u32</code></h2>
+<p>A &quot;pollable&quot; handle.</p>
+<p>This is conceptually represents a <code>stream&lt;_, _&gt;</code>, or in other words,
+a stream that one can wait on, repeatedly, but which does not itself
+produce any data. It's temporary scaffolding until component-model's
+async features are ready.</p>
+<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.</p>
+<p><a href="#pollable"><code>pollable</code></a> lifetimes are not automatically managed. Users must ensure
+that they do not outlive the resource they reference.</p>
+<p>Size: 4, Alignment: 4</p>
+<h2>Functions</h2>
+<hr />
+<h4><a href="#poll_oneoff" name="poll_oneoff"></a> <a href="#poll_oneoff"><code>poll-oneoff</code></a></h4>
+<p>Poll for completion on a set of pollables.</p>
+<p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
+linear scan through the entire list of subscriptions, which may be
+inefficient if the number is large and the same subscriptions are used
+many times. In the future, it may be accompanied by an API similar to
+Linux's <code>epoll</code> which allows sets of subscriptions to be registered and
+made efficiently reusable.</p>
+<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
+be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
+See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061
+for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
+mean &quot;ready&quot;.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#poll_oneoff.in" name="poll_oneoff.in"></a> <code>in</code>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#poll_oneoff.result0" name="poll_oneoff.result0"></a> <code>result0</code>: list&lt;<code>u8</code>&gt;</li>
+</ul>
 <h1>Import interface <code>wasi-monotonic-clock</code></h1>
 <h2>Types</h2>
+<h2><a href="#pollable" name="pollable"></a> <a href="#pollable"><code>pollable</code></a>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></h2>
+<p>Size: 4, Alignment: 4</p>
 <h2><a href="#monotonic_clock" name="monotonic_clock"></a> <a href="#monotonic_clock"><code>monotonic-clock</code></a>: <code>u32</code></h2>
 <p>A monotonic clock is a clock which has an unspecified initial value, and
 successive reads of the clock will produce non-decreasing values.</p>
@@ -32,6 +70,19 @@ a sequence of non-decreasing values.</p>
 <h5>Results</h5>
 <ul>
 <li><a href="#resolution.result0" name="resolution.result0"></a> <code>result0</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#subscribe" name="subscribe"></a> <a href="#subscribe"><code>subscribe</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified time has been reached.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#subscribe.this" name="subscribe.this"></a> <code>this</code>: <a href="#monotonic_clock"><a href="#monotonic_clock"><code>monotonic-clock</code></a></a></li>
+<li><a href="#subscribe.when" name="subscribe.when"></a> <code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+<li><a href="#subscribe.absolute" name="subscribe.absolute"></a> <code>absolute</code>: <code>bool</code></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#subscribe.result0" name="subscribe.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <hr />
 <h4><a href="#drop_monotonic_clock" name="drop_monotonic_clock"></a> <a href="#drop_monotonic_clock"><code>drop-monotonic-clock</code></a></h4>
