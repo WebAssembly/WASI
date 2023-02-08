@@ -1,10 +1,13 @@
 # WASI I/O
 
-WASI I/O is an I/O abstraction API which is currently focused on providing
-stream types.
-
-In the future, the component model is expected to add built-in stream types;
-when it does, they are expected to subsume this API.
+```wit
+/// WASI I/O is an I/O abstraction API which is currently focused on providing
+/// stream types.
+///
+/// In the future, the component model is expected to add built-in stream types;
+/// when it does, they are expected to subsume this API.
+default interface wasi-io {
+```
 
 ## `stream-error`
 ```wit
@@ -15,7 +18,16 @@ record stream-error {}
 
 ## `input-stream`
 ```wit
-resource input-stream {
+/// An input bytestream. In the future, this will be replaced by handle
+/// types.
+///
+/// This conceptually represents a `stream<u8, _>`. It's temporary
+/// scaffolding until component-model's async features are ready.
+///
+/// And at present, it is a `u32` instead of being an actual handle, until
+/// the wit-bindgen implementation of handles and resources is ready.
+// TODO(resource input-stream {)
+type input-stream = u32
 ```
 
 ## `read`
@@ -39,6 +51,7 @@ resource input-stream {
     /// a buffer as large as that would imply.
     /// FIXME: describe what happens if allocation fails.
     read: func(
+        this: input-stream,
         /// The maximum number of bytes to read
         len: u64
     ) -> result<tuple<list<u8>, bool>, stream-error>
@@ -59,18 +72,32 @@ resource input-stream {
     /// indicating whether the end of the stream was reached. The returned
     /// value will be at most `len`; it may be less.
     skip: func(
+        this: input-stream,
         /// The maximum number of bytes to skip.
         len: u64,
     ) -> result<tuple<u64, bool>, stream-error>
 ```
 
+# `drop-input-stream`
 ```wit
-}
+/// Dispose of the specified `input-stream`, after which it may no longer
+/// be used.
+// TODO(} /* resource input-stream */)
+drop-input-stream: func(this: input-stream)
 ```
 
 ## `output-stream`
 ```wit
-resource output-stream {
+/// An output bytestream. In the future, this will be replaced by handle
+/// types.
+///
+/// This conceptually represents a `stream<u8, _>`. It's temporary
+/// scaffolding until component-model's async features are ready.
+///
+/// And at present, it is a `u32` instead of being an actual handle, until
+/// the wit-bindgen implementation of handles and resources is ready.
+// TODO(resource output-stream {)
+type output-stream = u32
 ```
 
 ## `write`
@@ -80,6 +107,7 @@ resource output-stream {
     /// This function returns a `u64` indicating the number of bytes from
     /// `buf` that were written; it may be less than the full list.
     write: func(
+        this: output-stream,
         /// Data to write
         buf: list<u8>
     ) -> result<u64, stream-error>
@@ -92,6 +120,7 @@ resource output-stream {
     /// This function returns a `u64` indicating the number of zero bytes
     /// that were written; it may be less than `len`.
     write-zeroes: func(
+        this: output-stream,
         /// The number of zero bytes to write
         len: u64
     ) -> result<u64, stream-error>
@@ -104,9 +133,10 @@ resource output-stream {
     /// This function returns the number of bytes transferred; it may be less
     /// than `len`.
     splice: func(
-        /// The stream to read from.
+        this: output-stream,
+        /// The stream to read from
         src: input-stream,
-        /// The number of bytes to splice.
+        /// The number of bytes to splice
         len: u64,
     ) -> result<tuple<u64, bool>, stream-error>
 ```
@@ -121,9 +151,18 @@ resource output-stream {
     ///
     /// This function returns the number of bytes transferred.
     forward: func(
-        /// The stream to read from.
+        this: output-stream,
+        /// The stream to read from
         src: input-stream
     ) -> result<u64, stream-error>
+```
+
+# `drop-output-stream`
+```wit
+/// Dispose of the specified `output-stream`, after which it may no longer
+/// be used.
+// TODO(} /* resource output-stream */)
+drop-output-stream: func(this: output-stream)
 ```
 
 ```wit
