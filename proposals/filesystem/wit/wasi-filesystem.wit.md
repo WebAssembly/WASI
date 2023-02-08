@@ -1,35 +1,24 @@
 # WASI Filesystem API
 
-WASI filesystem is a filesystem API primarily intended to let users run WASI
-programs that access their files on their existing filesystems, without
-significant overhead.
-
-It is intended to be roughly portable between Unix-family platforms and
-Windows, though it does not hide many of the major differences.
-
-Paths are passed as interface-type `string`s, meaning they must consist of
-a sequence of Unicode Scalar Values (USVs). Some filesystems may contain paths
-which are not accessible by this API.
+## `wasi-filesystem`
+```wit
+/// WASI filesystem is a filesystem API primarily intended to let users run WASI
+/// programs that access their files on their existing filesystems, without
+/// significant overhead.
+///
+/// It is intended to be roughly portable between Unix-family platforms and
+/// Windows, though it does not hide many of the major differences.
+///
+/// Paths are passed as interface-type `string`s, meaning they must consist of
+/// a sequence of Unicode Scalar Values (USVs). Some filesystems may contain paths
+/// which are not accessible by this API.
+default interface wasi-filesystem {
+```
 
 ## `filesize`
 ```wit
-/// Non-negative file size or length of a region within a file.
+/// File size or length of a region within a file.
 type filesize = u64
-```
-
-## `filedelta`
-```wit
-/// Relative offset within a file.
-type filedelta = s64
-```
-
-## `datetime`
-```wit
-/// Timestamp in seconds and nanoseconds.
-record datetime {
-    seconds: u64,
-    nanoseconds: u32,
-}
 ```
 
 ## `descriptor-type`
@@ -68,9 +57,6 @@ flags descriptor-flags {
     read,
     /// Write mode: Data can be written to.
     write,
-    /// Append mode: Data written to the file is always appended to the file's
-    /// end.
-    append,
     /// Write according to synchronized I/O data integrity completion. Only the
     /// data stored in the file is synchronized.
     dsync,
@@ -103,11 +89,11 @@ record descriptor-stat {
     /// in bytes of the pathname contained in the symbolic link.
     size: filesize,
     /// Last data access timestamp.
-    atim: datetime,
+    atim: u64,
     /// Last data modification timestamp.
-    mtim: datetime,
+    mtim: u64,
     /// Last file status change timestamp.
-    ctim: datetime,
+    ctim: u64,
 }
 ```
 
@@ -181,7 +167,7 @@ variant new-timestamp {
     /// with the filesystem.
     now,
     /// Set the timestamp to the given value.
-    timestamp(datetime),
+    timestamp(u64),
 }
 ```
 
@@ -222,8 +208,6 @@ enum errno {
     badf,
     /// Device or resource busy.
     busy,
-    /// No child processes.
-    child,
     /// Resource deadlock would occur.
     deadlk,
     /// Storage quota exceeded.
@@ -312,25 +296,13 @@ enum advice {
 }
 ```
 
-## `seek-from`
-```wit
-/// The position relative to which to set the offset of the descriptor.
-variant seek-from {
-    /// Seek relative to start-of-file.
-    set(filesize),
-    /// Seek relative to current position.
-    cur(filedelta),
-    /// Seek relative to end-of-file.
-    end(filesize),
-}
-```
-
 ## `descriptor`
 ```wit
 /// A descriptor is a reference to a filesystem object, which may be a file,
 /// directory, named pipe, special file, or other object on which filesystem
 /// calls may be made.
-resource descriptor {
+// TODO(resource descriptor {)
+type descriptor = u32
 ```
 
 ## `fadvise`
@@ -339,6 +311,7 @@ resource descriptor {
 ///
 /// This is similar to `posix_fadvise` in POSIX.
 fadvise: func(
+    this: descriptor,
     /// The offset within the file to which the advisory applies.
     offset: filesize,
     /// The length of the region to which the advisory applies.
@@ -353,7 +326,7 @@ fadvise: func(
 /// Synchronize the data of a file to disk.
 ///
 /// Note: This is similar to `fdatasync` in POSIX.
-datasync: func() -> result<_, errno>
+datasync: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `flags`
@@ -364,7 +337,7 @@ datasync: func() -> result<_, errno>
 ///
 /// Note: This returns the value that was the `fs_flags` value returned
 /// from `fdstat_get` in earlier versions of WASI.
-%flags: func() -> result<descriptor-flags, errno>
+%flags: func(this: descriptor) -> result<descriptor-flags, errno>
 ```
 
 ## `type`
@@ -379,7 +352,7 @@ datasync: func() -> result<_, errno>
 ///
 /// Note: This returns the value that was the `fs_filetype` value returned
 /// from `fdstat_get` in earlier versions of WASI.
-%type: func() -> result<descriptor-type, errno>
+%type: func(this: descriptor) -> result<descriptor-type, errno>
 ```
 
 ## `set-flags`
@@ -389,7 +362,7 @@ datasync: func() -> result<_, errno>
 /// Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
 ///
 /// Note: This was called `fd_fdstat_set_flags` in earlier versions of WASI.
-set-flags: func(%flags: descriptor-flags) -> result<_, errno>
+set-flags: func(this: descriptor, %flags: descriptor-flags) -> result<_, errno>
 ```
 
 ## `set-size`
@@ -398,7 +371,7 @@ set-flags: func(%flags: descriptor-flags) -> result<_, errno>
 /// extra bytes are filled with zeros.
 ///
 /// Note: This was called `fd_filestat_set_size` in earlier versions of WASI.
-set-size: func(size: filesize) -> result<_, errno>
+set-size: func(this: descriptor, size: filesize) -> result<_, errno>
 ```
 
 ## `set-times`
@@ -409,6 +382,7 @@ set-size: func(size: filesize) -> result<_, errno>
 ///
 /// Note: This was called `fd_filestat_set_times` in earlier versions of WASI.
 set-times: func(
+    this: descriptor,
     /// The desired values of the data access timestamp.
     atim: new-timestamp,
     /// The desired values of the data modification timestamp.
@@ -421,12 +395,14 @@ set-times: func(
 /// Read from a descriptor, without using and updating the descriptor's offset.
 ///
 /// Note: This is similar to `pread` in POSIX.
+// TODO(stream<u8, errno>)
 pread: func(
-    /// The maximim number of bytes to read.
+    this: descriptor,
+    /// The maximum number of bytes to read.
     len: filesize,
     /// The offset within the file at which to read.
     offset: filesize,
-) -> stream<u8, errno>
+) -> result<list<u8>, errno>
 ```
 
 ## `pwrite`
@@ -438,12 +414,14 @@ pread: func(
 /// the write set to zero.
 ///
 /// Note: This is similar to `pwrite` in POSIX.
+// TODO(stream<u8, errno>)
 pwrite: func(
+    this: descriptor,
     /// Data to write
-    buf: stream<u8>,
+    buf: list<u8>,
     /// The offset within the file at which to write.
     offset: filesize,
-) -> future<result<filesize, errno>>
+) -> result<filesize, errno>
 ```
 
 ## `readdir`
@@ -452,28 +430,7 @@ pwrite: func(
 ///
 /// This always returns a new stream which starts at the beginning of the
 /// directory.
-readdir: func() -> stream<dir-entry, errno>
-```
-
-## `seek`
-```wit
-/// Move the offset of a file descriptor.
-///
-/// If the descriptor refers to a directory, this function fails with
-/// `errno::spipe`.
-///
-/// Returns new offset of the descriptor, relative to the start of the file.
-///
-/// It is valid to seek past the end of a file. The file size is not modified
-/// until a write is performed, at which time the file is extended to the
-/// extent of the write, with bytes between the previous end and the start of
-/// the write set to zero.
-///
-/// Note: This is similar to `lseek` in POSIX.
-seek: func(
-    /// The method to compute the new offset.
-    %from: seek-from,
-) -> result<filesize, errno>
+readdir: func(this: descriptor) -> stream<dir-entry-stream, errno>
 ```
 
 ## `sync`
@@ -481,20 +438,7 @@ seek: func(
 /// Synchronize the data and metadata of a file to disk.
 ///
 /// Note: This is similar to `fsync` in POSIX.
-sync: func() -> result<_, errno>
-```
-
-## `tell`
-```wit
-/// Return the current offset of a descriptor.
-///
-/// If the descriptor refers to a directory, this function fails with
-/// `errno::spipe`.
-///
-/// Returns the current offset of the descriptor, relative to the start of the file.
-///
-/// Note: This is similar to `lseek(fd, 0, SEEK_CUR)` in POSIX.
-tell: func() -> result<filesize, errno>
+sync: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `create-directory-at`
@@ -503,6 +447,7 @@ tell: func() -> result<filesize, errno>
 ///
 /// Note: This is similar to `mkdirat` in POSIX.
 create-directory-at: func(
+    this: descriptor,
     /// The relative path at which to create the directory.
     path: string,
 ) -> result<_, errno>
@@ -515,7 +460,7 @@ create-directory-at: func(
 /// Note: This is similar to `fstat` in POSIX.
 ///
 /// Note: This was called `fd_filestat_get` in earlier versions of WASI.
-stat: func() -> result<descriptor-stat, errno>
+stat: func(this: descriptor) -> result<descriptor-stat, errno>
 ```
 
 ## `stat-at`
@@ -526,6 +471,7 @@ stat: func() -> result<descriptor-stat, errno>
 ///
 /// Note: This was called `path_filestat_get` in earlier versions of WASI.
 stat-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path of the file or directory to inspect.
@@ -541,6 +487,7 @@ stat-at: func(
 ///
 /// Note: This was called `path_filestat_set_times` in earlier versions of WASI.
 set-times-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path of the file or directory to operate on.
@@ -558,12 +505,13 @@ set-times-at: func(
 ///
 /// Note: This is similar to `linkat` in POSIX.
 link-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     old-at-flags: at-flags,
     /// The relative source path from which to link.
     old-path: string,
     /// The base directory for `new-path`.
-    new-descriptor: handle descriptor,
+    new-descriptor: descriptor,
     /// The relative destination path at which to create the hard link.
     new-path: string,
 ) -> result<_, errno>
@@ -581,6 +529,7 @@ link-at: func(
 ///
 /// Note: This is similar to `openat` in POSIX.
 open-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path of the object to open.
@@ -600,6 +549,7 @@ open-at: func(
 ///
 /// Note: This is similar to `readlinkat` in POSIX.
 readlink-at: func(
+    this: descriptor,
     /// The relative path of the symbolic link from which to read.
     path: string,
 ) -> result<string, errno>
@@ -613,6 +563,7 @@ readlink-at: func(
 ///
 /// Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 remove-directory-at: func(
+    this: descriptor,
     /// The relative path to a directory to remove.
     path: string,
 ) -> result<_, errno>
@@ -624,10 +575,11 @@ remove-directory-at: func(
 ///
 /// Note: This is similar to `renameat` in POSIX.
 rename-at: func(
+    this: descriptor,
     /// The relative source path of the file or directory to rename.
     old-path: string,
     /// The base directory for `new-path`.
-    new-descriptor: handle descriptor,
+    new-descriptor: descriptor,
     /// The relative destination path to which to rename the file or directory.
     new-path: string,
 ) -> result<_, errno>
@@ -639,6 +591,7 @@ rename-at: func(
 ///
 /// Note: This is similar to `symlinkat` in POSIX.
 symlink-at: func(
+    this: descriptor,
     /// The contents of the symbolic link.
     old-path: string,
     /// The relative destination path at which to create the symbolic link.
@@ -653,6 +606,7 @@ symlink-at: func(
 /// Return `errno::isdir` if the path refers to a directory.
 /// Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
 unlink-file-at: func(
+    this: descriptor,
     /// The relative path to a file to unlink.
     path: string,
 ) -> result<_, errno>
@@ -667,6 +621,7 @@ unlink-file-at: func(
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
 change-file-permissions-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path to operate on.
@@ -689,6 +644,7 @@ change-file-permissions-at: func(
 ///
 /// Note: This is similar to `fchmodat` in POSIX.
 change-directory-permissions-at: func(
+    this: descriptor,
     /// Flags determining the method of how the path is resolved.
     at-flags: at-flags,
     /// The relative path to operate on.
@@ -720,7 +676,7 @@ change-directory-permissions-at: func(
 /// locking, this function returns `errno::notsup`.
 ///
 /// Note: This is similar to `flock(fd, LOCK_SH)` in Unix.
-lock-shared: func() -> result<_, errno>
+lock-shared: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `lock-exclusive`
@@ -731,7 +687,7 @@ lock-shared: func() -> result<_, errno>
 /// file while an exclusive lock is held.
 ///
 /// If the open file has a shared lock and there are no exclusive locks held
-/// for the fhile, this function upgrades the lock to an exclusive lock. If the
+/// for the file, this function upgrades the lock to an exclusive lock. If the
 /// open file already has an exclusive lock, this function has no effect.
 ///
 /// This requests an *advisory* lock, meaning that the file could be accessed
@@ -747,7 +703,7 @@ lock-shared: func() -> result<_, errno>
 /// locking, this function returns `errno::notsup`.
 ///
 /// Note: This is similar to `flock(fd, LOCK_EX)` in Unix.
-lock-exclusive: func() -> result<_, errno>
+lock-exclusive: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `try-lock-shared`
@@ -772,7 +728,7 @@ lock-exclusive: func() -> result<_, errno>
 /// locking, this function returns `errno::notsup`.
 ///
 /// Note: This is similar to `flock(fd, LOCK_SH | LOCK_NB)` in Unix.
-try-lock-shared: func() -> result<_, errno>
+try-lock-shared: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `try-lock-exclusive`
@@ -783,7 +739,7 @@ try-lock-shared: func() -> result<_, errno>
 /// file while an exclusive lock is held.
 ///
 /// If the open file has a shared lock and there are no exclusive locks held
-/// for the fhile, this function upgrades the lock to an exclusive lock. If the
+/// for the file, this function upgrades the lock to an exclusive lock. If the
 /// open file already has an exclusive lock, this function has no effect.
 ///
 /// This requests an *advisory* lock, meaning that the file could be accessed
@@ -799,7 +755,7 @@ try-lock-shared: func() -> result<_, errno>
 /// locking, this function returns `errno::notsup`.
 ///
 /// Note: This is similar to `flock(fd, LOCK_EX | LOCK_NB)` in Unix.
-try-lock-exclusive: func() -> result<_, errno>
+try-lock-exclusive: func(this: descriptor) -> result<_, errno>
 ```
 
 ## `unlock`
@@ -807,7 +763,37 @@ try-lock-exclusive: func() -> result<_, errno>
 /// Release a shared or exclusive lock on an open file.
 ///
 /// Note: This is similar to `flock(fd, LOCK_UN)` in Unix.
-unlock: func() -> result<_, errno>
+unlock: func(this: descriptor) -> result<_, errno>
+```
+
+# `drop-descriptor`
+```wit
+/// Dispose of the specified `descriptor`, after which it may no longer
+/// be used.
+// TODO(} /* resource descriptor */)
+drop-descriptor: func(this: descriptor)
+```
+
+## `dir-entry-stream`
+```wit
+/// A stream of directory entries.
+// TODO(resource dir-entry-stream {)
+// TODO(stream<dir-entry, errno>)
+type dir-entry-stream = u32
+```
+
+## `read-dir-entry`
+```wit
+/// Read a single directory entry from a `dir-entry-stream`.
+read-dir-entry: func(this: dir-entry-stream) -> result<option<dir-entry>, errno>
+```
+
+# `drop-dir-entry-stream`
+```wit
+/// Dispose of the specified `dir-entry-stream`, after which it may no longer
+/// be used.
+// TODO(} /* resource dir-entry-stream */)
+drop-dir-entry-stream: func(this: dir-entry-stream)
 ```
 
 ```wit
