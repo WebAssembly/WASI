@@ -1,15 +1,19 @@
 # WASI Random API
 
-WASI Random is a random data API.
-
-It is intended to be portable at least between Unix-family platforms and
-Windows.
+## `wasi-random`
+```wit
+/// WASI Random is a random data API.
+///
+/// It is intended to be portable at least between Unix-family platforms and
+/// Windows.
+default interface wasi-random {
+```
 
 ## `get-random-bytes`
 ```wit
 /// Return `len` cryptographically-secure pseudo-random bytes.
 ///
-/// This function must produce data from an adaquately seeded
+/// This function must produce data from an adequately seeded
 /// cryptographically-secure pseudo-random number generator (CSPRNG), so it
 /// must not block, from the perspective of the calling program, and the
 /// returned data is always unpredictable.
@@ -34,7 +38,7 @@ get-random-u64: func() -> u64
 /// Return a 128-bit value that may contain a pseudo-random value.
 ///
 /// The returned value is not required to be computed from a CSPRNG, and may
-/// even be entirely deterministic. Host implementatations are encouraged to
+/// even be entirely deterministic. Host implementations are encouraged to
 /// provide pseudo-random values to any program exposed to attacker-controlled
 /// content, to enable DoS protection built into many languages' hash-map
 /// implementations.
@@ -49,4 +53,8 @@ get-random-u64: func() -> u64
 /// called multiple times and potentially used for purposes other than DoS
 /// protection.
 insecure-random: func() -> tuple<u64, u64>
+```
+
+```wit
+}
 ```
