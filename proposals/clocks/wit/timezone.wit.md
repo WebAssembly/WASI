@@ -1,5 +1,10 @@
 # WASI Clocks Timezone API
 
+# `wasi-timezone`
+```wit
+default interface wasi-timezone {
+```
+
 ## `datetime`
 ```wit
 /// A time and date in seconds plus nanoseconds.
@@ -18,7 +23,8 @@ record datetime {
 /// In timezones that recognize daylight saving time, also known as daylight
 /// time and summer time, the information returned from the functions varies
 /// over time to reflect these adjustments.
-resource timezone {
+// TODO(resource timezone {)
+type timezone = u32
 ```
 
 ## `display`
@@ -30,17 +36,21 @@ resource timezone {
     /// If the timezone cannot be determined for the given `datetime`, return a
     /// `timezone-display` for `UTC` with a `utc-offset` of 0 and no daylight
     /// saving time.
-    display: func(when: datetime) -> timezone-display
+    display: func(this: timezone, when: datetime) -> timezone-display
 ```
 
 ## `utc-offset`
 ```wit
     /// The same as `display`, but only return the UTC offset.
-    utc-offset: func(when: datetime) -> u32
+    utc-offset: func(this: timezone, when: datetime) -> u32
 ```
 
+## `drop-timezone`
 ```wit
-}
+/// Dispose of the specified input-stream, after which it may no longer
+/// be used.
+// TODO(} /* resource timezone */)
+drop-timezone: func(this: timezone)
 ```
 
 ## `timezone-display`
@@ -86,6 +96,10 @@ record timezone-display {
     /// In implementations that do not expose an actual time zone, this should
     /// return false.
     in-daylight-saving-time: bool,
+```
+
+```wit
+}
 ```
 
 ```wit
