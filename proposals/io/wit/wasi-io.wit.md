@@ -9,6 +9,11 @@
 default interface wasi-io {
 ```
 
+## Imports
+```wit
+use pkg.wasi-poll.{pollable}
+```
+
 ## `stream-error`
 ```wit
 /// An error type returned from a stream operation. Currently this
@@ -76,6 +81,13 @@ type input-stream = u32
         /// The maximum number of bytes to skip.
         len: u64,
     ) -> result<tuple<u64, bool>, stream-error>
+```
+
+## `subscribe`
+```wit
+/// Create a `pollable` which will resolve once either the specified stream has bytes
+/// available to read or the other end of the stream has been closed.
+subscribe-read: func(this: input-stream) -> pollable
 ```
 
 # `drop-input-stream`
@@ -155,6 +167,13 @@ type output-stream = u32
         /// The stream to read from
         src: input-stream
     ) -> result<u64, stream-error>
+```
+
+# `subscribe`
+```wit
+/// Create a `pollable` which will resolve once either the specified stream is ready
+/// to accept bytes or the other end of the stream has been closed.
+subscribe: func(this: output-stream) -> pollable
 ```
 
 # `drop-output-stream`
