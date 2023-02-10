@@ -1,5 +1,5 @@
 This file contains a world that imports all interfaces in this proposal. Its
-primary purpose is to allow unified documentation to be easiy generated for
+primary purpose is to allow unified documentation to be easily generated for
 the whole proposal.
 
 Proposals should edit replace the import below (and this sentence) with imports
