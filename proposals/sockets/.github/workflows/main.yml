@@ -13,4 +13,4 @@ jobs:
     - uses: actions/checkout@v2
     - uses: WebAssembly/wit-abi-up-to-date@v10
       with:
-        wit-abi-tag: wit-abi-0.7.0
+        wit-abi-tag: wit-abi-0.8.0
