@@ -1,0 +1,15 @@
+// The `wasi:http/outgoing-handler` interface is meant to be imported by
+// components and implemented by the host.
+//
+//   NOTE: in Preview3, this interface will be merged with
+//   `wasi:http/outgoing-handler` into a single `wasi:http/handler` interface
+//   that takes a `request` parameter and returns a `response` result.
+//
+default interface outgoing-handler {
+  use pkg.types.{outgoing-request, incoming-response, error}
+
+  // The parameter and result types of the `handle` function allow the caller
+  // to concurrently stream the bodies of the outgoing request and the incoming
+  // response.
+  handle: func(request: outgoing-request) -> result<incoming-response, error>
+}

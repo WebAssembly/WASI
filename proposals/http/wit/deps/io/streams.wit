@@ -1,0 +1,128 @@
+default interface streams {
+    /// An error type returned from a stream operation. Currently this
+    /// doesn't provide any additional information.
+    record stream-error {}
+    
+    /// An input bytestream. In the future, this will be replaced by handle
+    /// types.
+    /// 
+    /// This conceptually represents a `stream<u8, _>`. It's temporary 
+    /// scaffolding until component-model's async features are ready. 
+    /// 
+    /// And at present, it is a `u32` instead of being an actual handle, until 
+    /// the wit-bindgen implementation of handles and resources is ready. 
+    type input-stream = u32
+    
+    /// Read bytes from a stream.
+    ///
+    /// This function returns a list of bytes containing the data that was
+    /// read, along with a bool indicating whether the end of the stream
+    /// was reached. The returned list will contain up to `len` bytes; it
+    /// may return fewer than requested, but not more.
+    ///
+    /// Once a stream has reached the end, subsequent calls to read or
+    /// `skip` will always report end-of-stream rather than producing more
+    /// data.
+    ///
+    /// If `len` is 0, it represents a request to read 0 bytes, which should
+    /// always succeed, assuming the stream hasn't reached its end yet, and
+    /// return an empty list.
+    ///
+    /// The len here is a `u64`, but some callees may not be able to allocate
+    /// a buffer as large as that would imply.
+    /// FIXME: describe what happens if allocation fails.
+    read: func(
+        /// The stream to read from
+        src: input-stream,
+        /// The maximum number of bytes to read
+        len: u64
+    ) -> result<tuple<list<u8>, bool>, stream-error>
+    
+    /// Skip bytes from a stream.
+    ///
+    /// This is similar to the `read` function, but avoids copying the
+    /// bytes into the instance.
+    ///
+    /// Once a stream has reached the end, subsequent calls to read or
+    /// `skip` will always report end-of-stream rather than producing more
+    /// data.
+    ///
+    /// This function returns the number of bytes skipped, along with a bool
+    /// indicating whether the end of the stream was reached. The returned
+    /// value will be at most `len`; it may be less.
+    skip: func(
+        /// The stream to skip in
+        src: input-stream,
+        /// The maximum number of bytes to skip.
+        len: u64,
+    ) -> result<tuple<u64, bool>, stream-error>
+    
+    /// An output bytestream. In the future, this will be replaced by handle
+    /// types.
+    /// 
+    /// This conceptually represents a `stream<u8, _>`. It's temporary 
+    /// scaffolding until component-model's async features are ready. 
+    /// 
+    /// And at present, it is a `u32` instead of being an actual handle, until 
+    /// the wit-bindgen implementation of handles and resources is ready. 
+    type output-stream = u32
+    
+    /// Write bytes to a stream.
+    ///
+    /// This function returns a `u64` indicating the number of bytes from
+    /// `buf` that were written; it may be less than the full list.
+    write: func(
+        /// The stream to write to
+        dst: output-stream,
+        /// Data to write
+        buf: list<u8>
+    ) -> result<u64, stream-error>
+    
+    /// Write a single byte multiple times to a stream.
+    ///
+    /// This function returns a `u64` indicating the number of copies of
+    /// `byte` that were written; it may be less than `len`.
+    write-repeated: func(
+        /// The stream to write to
+        dst: output-stream,
+        /// The byte to write
+        byte: u8,
+        /// The number of times to write it
+        len: u64
+    ) -> result<u64, stream-error>
+    
+    /// Read from one stream and write to another.
+    ///
+    /// This function returns the number of bytes transferred; it may be less
+    /// than `len`.
+    splice: func(
+        /// The stream to write to
+        dst: output-stream,
+        /// The stream to read from
+        src: input-stream,
+        /// The number of bytes to splice
+        len: u64,
+    ) -> result<tuple<u64, bool>, stream-error>
+    
+    /// Forward the entire contents of an input stream to an output stream.
+    ///
+    /// This function repeatedly reads from the input stream and writes
+    /// the data to the output stream, until the end of the input stream
+    /// is reached, or an error is encountered.
+    ///
+    /// This function returns the number of bytes transferred.
+    forward: func(
+        /// The stream to write to
+        dst: output-stream,
+        /// The stream to read from
+        src: input-stream
+    ) -> result<u64, stream-error>
+
+    /// Dispose of the specified input-stream, after which it may no longer
+    /// be used.
+    drop-input-stream: func(f: input-stream)
+
+    /// Dispose of the specified output-stream, after which it may no longer
+    /// be used.
+    drop-output-stream: func(f: output-stream)
+}
