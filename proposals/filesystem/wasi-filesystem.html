@@ -403,6 +403,17 @@ WASI. At this time, it should be interpreted as a request, and not a
 requirement.
 Bit: 5</p>
 </li>
+<li>
+<p><a href="descriptor_flags.mutate_directory" name="descriptor_flags.mutate_directory"></a> <a href="#descriptor_flags.mutate_directory"><code>mutate-directory</code></a>: </p>
+<p>Mutating directories mode: Directory contents may be mutated.</p>
+<p>When this flag is unset on a descriptor, operations using the
+descriptor which would create, rename, delete, modify the data or
+metadata of filesystem objects, or obtain another handle which
+would permit any of those, shall fail with <a href="#errno.rofs"><code>errno::rofs</code></a> if
+they would otherwise succeed.</p>
+<p>This may only be set on directories.
+Bit: 6</p>
+</li>
 </ul>
 <h2><a href="#descriptor" name="descriptor"></a> <a href="#descriptor"><code>descriptor</code></a>: <code>u32</code></h2>
 <p>A descriptor is a reference to a filesystem object, which may be a file,
@@ -513,7 +524,8 @@ from <code>fdstat_get</code> in earlier versions of WASI.</p>
 </ul>
 <hr />
 <h4><a href="#set_flags" name="set_flags"></a> <a href="#set_flags"><code>set-flags</code></a></h4>
-<p>Set flags associated with a descriptor.</p>
+<p>Set status flags associated with a descriptor.</p>
+<p>This function may only change the <code>append</code> and <code>nonblock</code> flags.</p>
 <p>Note: This is similar to <code>fcntl(fd, F_SETFL, flags)</code> in POSIX.</p>
 <p>Note: This was called <code>fd_fdstat_set_flags</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
@@ -694,6 +706,13 @@ descriptor not currently open/ it is randomized to prevent applications
 from depending on making assumptions about indexes, since this is
 error-prone in multi-threaded contexts. The returned descriptor is
 guaranteed to be less than 2**31.</p>
+<p>If <a href="#flags"><code>flags</code></a> contains <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a>, and the base
+descriptor doesn't have <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set,
+<a href="#open_at"><code>open-at</code></a> fails with <a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
+<p>If <a href="#flags"><code>flags</code></a> contains <code>write</code> or <code>append</code>, or <a href="#o_flags"><code>o-flags</code></a> contains <code>trunc</code>
+or <code>create</code>, and the base descriptor doesn't have
+<a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set, <a href="#open_at"><code>open-at</code></a> fails with
+<a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
 <p>Note: This is similar to <code>openat</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>

@@ -87,6 +87,16 @@ flags descriptor-flags {
     /// WASI. At this time, it should be interpreted as a request, and not a
     /// requirement.
     rsync,
+    /// Mutating directories mode: Directory contents may be mutated.
+    ///
+    /// When this flag is unset on a descriptor, operations using the
+    /// descriptor which would create, rename, delete, modify the data or
+    /// metadata of filesystem objects, or obtain another handle which
+    /// would permit any of those, shall fail with `errno::rofs` if
+    /// they would otherwise succeed.
+    ///
+    /// This may only be set on directories.
+    mutate-directory,
 }
 ```
 
@@ -379,7 +389,9 @@ datasync: func(this: descriptor) -> result<_, errno>
 
 ## `set-flags`
 ```wit
-/// Set flags associated with a descriptor.
+/// Set status flags associated with a descriptor.
+///
+/// This function may only change the `append` and `nonblock` flags.
 ///
 /// Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
 ///
@@ -551,6 +563,15 @@ link-at: func(
 /// from depending on making assumptions about indexes, since this is
 /// error-prone in multi-threaded contexts. The returned descriptor is
 /// guaranteed to be less than 2**31.
+///
+/// If `flags` contains `descriptor-flags::mutate-directory`, and the base
+/// descriptor doesn't have `descriptor-flags::mutate-directory` set,
+/// `open-at` fails with `errno::rofs`.
+///
+/// If `flags` contains `write` or `append`, or `o-flags` contains `trunc`
+/// or `create`, and the base descriptor doesn't have
+/// `descriptor-flags::mutate-directory` set, `open-at` fails with
+/// `errno::rofs`.
 ///
 /// Note: This is similar to `openat` in POSIX.
 open-at: func(
