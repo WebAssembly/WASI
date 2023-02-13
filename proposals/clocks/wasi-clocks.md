@@ -218,7 +218,7 @@ Size: 16, Alignment: 4
 
 ### Record Fields
 
-- <a href="timezone_display.utc_offset" name="timezone_display.utc_offset"></a> [`utc-offset`](#timezone_display.utc_offset): `u32`
+- <a href="timezone_display.utc_offset" name="timezone_display.utc_offset"></a> [`utc-offset`](#timezone_display.utc_offset): `s32`
   
   The number of seconds difference between UTC time and the local time of
   the timezone.
@@ -306,7 +306,7 @@ The same as `display`, but only return the UTC offset.
 - <a href="#utc_offset.when" name="utc_offset.when"></a> `when`: [`datetime`](#datetime)
 ##### Results
 
-- <a href="#utc_offset.result0" name="utc_offset.result0"></a> `result0`: `u32`
+- <a href="#utc_offset.result0" name="utc_offset.result0"></a> `result0`: `s32`
 
 ----
 

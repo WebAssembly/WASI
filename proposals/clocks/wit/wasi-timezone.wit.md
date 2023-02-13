@@ -42,7 +42,7 @@ type timezone = u32
 ## `utc-offset`
 ```wit
     /// The same as `display`, but only return the UTC offset.
-    utc-offset: func(this: timezone, when: datetime) -> u32
+    utc-offset: func(this: timezone, when: datetime) -> s32
 ```
 
 ## `drop-timezone`
@@ -72,7 +72,7 @@ record timezone-display {
     ///
     /// In implementations that do not expose an actual time zone, this should
     /// return 0.
-    utc-offset: u32,
+    utc-offset: s32,
 ```
 
 ## `name`
