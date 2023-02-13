@@ -1,6 +1,344 @@
+# Import interface `wasi-poll`
+
+## Types
+
+## <a href="#pollable" name="pollable"></a> `pollable`: `u32`
+
+A "pollable" handle.
+
+This is conceptually represents a `stream<_, _>`, or in other words,
+a stream that one can wait on, repeatedly, but which does not itself
+produce any data. It's temporary scaffolding until component-model's
+async features are ready.
+
+And at present, it is a `u32` instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.
+
+`pollable` lifetimes are not automatically managed. Users must ensure
+that they do not outlive the resource they reference.
+
+Size: 4, Alignment: 4
+
+## Functions
+
+----
+
+#### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll-oneoff` 
+
+Poll for completion on a set of pollables.
+
+The "oneoff" in the name refers to the fact that this function must do a
+linear scan through the entire list of subscriptions, which may be
+inefficient if the number is large and the same subscriptions are used
+many times. In the future, it may be accompanied by an API similar to
+Linux's `epoll` which allows sets of subscriptions to be registered and
+made efficiently reusable.
+
+Note that the return type would ideally be `list<bool>`, but that would
+be more difficult to polyfill given the current state of `wit-bindgen`.
+See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061
+for details.  For now, we use zero to mean "not ready" and non-zero to
+mean "ready".
+##### Params
+
+- <a href="#poll_oneoff.in" name="poll_oneoff.in"></a> `in`: list<[`pollable`](#pollable)>
+##### Results
+
+- <a href="#poll_oneoff.result0" name="poll_oneoff.result0"></a> `result0`: list<`u8`>
+
+# Import interface `wasi-io`
+
+## Types
+
+## <a href="#pollable" name="pollable"></a> `pollable`: [`pollable`](#pollable)
+
+
+Size: 4, Alignment: 4
+
+## <a href="#stream_error" name="stream_error"></a> `stream-error`: record
+
+An error type returned from a stream operation. Currently this
+doesn't provide any additional information.
+
+Size: 0, Alignment: 1
+
+### Record Fields
+
+## <a href="#output_stream" name="output_stream"></a> `output-stream`: `u32`
+
+An output bytestream. In the future, this will be replaced by handle
+types.
+
+This conceptually represents a `stream<u8, _>`. It's temporary
+scaffolding until component-model's async features are ready.
+
+And at present, it is a `u32` instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.
+
+Size: 4, Alignment: 4
+
+## <a href="#input_stream" name="input_stream"></a> `input-stream`: `u32`
+
+An input bytestream. In the future, this will be replaced by handle
+types.
+
+This conceptually represents a `stream<u8, _>`. It's temporary
+scaffolding until component-model's async features are ready.
+
+And at present, it is a `u32` instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.
+
+Size: 4, Alignment: 4
+
+## Functions
+
+----
+
+#### <a href="#read" name="read"></a> `read` 
+
+Read bytes from a stream.
+
+This function returns a list of bytes containing the data that was
+read, along with a bool indicating whether the end of the stream
+was reached. The returned list will contain up to `len` bytes; it
+may return fewer than requested, but not more.
+
+Once a stream has reached the end, subsequent calls to read or
+`skip` will always report end-of-stream rather than producing more
+data.
+
+If `len` is 0, it represents a request to read 0 bytes, which should
+always succeed, assuming the stream hasn't reached its end yet, and
+return an empty list.
+
+The len here is a `u64`, but some callees may not be able to allocate
+a buffer as large as that would imply.
+FIXME: describe what happens if allocation fails.
+##### Params
+
+- <a href="#read.this" name="read.this"></a> `this`: [`input-stream`](#input_stream)
+- <a href="#read.len" name="read.len"></a> `len`: `u64`
+##### Results
+
+- <a href="#read.result0" name="read.result0"></a> `result0`: result<(list<`u8`>, `bool`), [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#skip" name="skip"></a> `skip` 
+
+Skip bytes from a stream.
+
+This is similar to the `read` function, but avoids copying the
+bytes into the instance.
+
+Once a stream has reached the end, subsequent calls to read or
+`skip` will always report end-of-stream rather than producing more
+data.
+
+This function returns the number of bytes skipped, along with a bool
+indicating whether the end of the stream was reached. The returned
+value will be at most `len`; it may be less.
+##### Params
+
+- <a href="#skip.this" name="skip.this"></a> `this`: [`input-stream`](#input_stream)
+- <a href="#skip.len" name="skip.len"></a> `len`: `u64`
+##### Results
+
+- <a href="#skip.result0" name="skip.result0"></a> `result0`: result<(`u64`, `bool`), [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#subscribe_read" name="subscribe_read"></a> `subscribe-read` 
+
+Create a `pollable` which will resolve once either the specified stream has bytes
+available to read or the other end of the stream has been closed.
+##### Params
+
+- <a href="#subscribe_read.this" name="subscribe_read.this"></a> `this`: [`input-stream`](#input_stream)
+##### Results
+
+- <a href="#subscribe_read.result0" name="subscribe_read.result0"></a> `result0`: [`pollable`](#pollable)
+
+----
+
+#### <a href="#drop_input_stream" name="drop_input_stream"></a> `drop-input-stream` 
+
+Dispose of the specified `input-stream`, after which it may no longer
+be used.
+##### Params
+
+- <a href="#drop_input_stream.this" name="drop_input_stream.this"></a> `this`: [`input-stream`](#input_stream)
+
+----
+
+#### <a href="#write" name="write"></a> `write` 
+
+Write bytes to a stream.
+
+This function returns a `u64` indicating the number of bytes from
+`buf` that were written; it may be less than the full list.
+##### Params
+
+- <a href="#write.this" name="write.this"></a> `this`: [`output-stream`](#output_stream)
+- <a href="#write.buf" name="write.buf"></a> `buf`: list<`u8`>
+##### Results
+
+- <a href="#write.result0" name="write.result0"></a> `result0`: result<`u64`, [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#write_zeroes" name="write_zeroes"></a> `write-zeroes` 
+
+Write multiple zero bytes to a stream.
+
+This function returns a `u64` indicating the number of zero bytes
+that were written; it may be less than `len`.
+##### Params
+
+- <a href="#write_zeroes.this" name="write_zeroes.this"></a> `this`: [`output-stream`](#output_stream)
+- <a href="#write_zeroes.len" name="write_zeroes.len"></a> `len`: `u64`
+##### Results
+
+- <a href="#write_zeroes.result0" name="write_zeroes.result0"></a> `result0`: result<`u64`, [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#splice" name="splice"></a> `splice` 
+
+Read from one stream and write to another.
+
+This function returns the number of bytes transferred; it may be less
+than `len`.
+##### Params
+
+- <a href="#splice.this" name="splice.this"></a> `this`: [`output-stream`](#output_stream)
+- <a href="#splice.src" name="splice.src"></a> `src`: [`input-stream`](#input_stream)
+- <a href="#splice.len" name="splice.len"></a> `len`: `u64`
+##### Results
+
+- <a href="#splice.result0" name="splice.result0"></a> `result0`: result<(`u64`, `bool`), [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#subscribe" name="subscribe"></a> `subscribe` 
+
+Create a `pollable` which will resolve once either the specified stream is ready
+to accept bytes or the other end of the stream has been closed.
+##### Params
+
+- <a href="#subscribe.this" name="subscribe.this"></a> `this`: [`output-stream`](#output_stream)
+##### Results
+
+- <a href="#subscribe.result0" name="subscribe.result0"></a> `result0`: [`pollable`](#pollable)
+
+----
+
+#### <a href="#drop_output_stream" name="drop_output_stream"></a> `drop-output-stream` 
+
+Dispose of the specified `output-stream`, after which it may no longer
+be used.
+##### Params
+
+- <a href="#drop_output_stream.this" name="drop_output_stream.this"></a> `this`: [`output-stream`](#output_stream)
+
+# Import interface `wasi-wall-clock`
+
+## Types
+
+## <a href="#wall_clock" name="wall_clock"></a> `wall-clock`: `u32`
+
+A wall clock is a clock which measures the date and time according to some
+external reference.
+
+External references may be reset, so this clock is not necessarily
+monotonic, making it unsuitable for measuring elapsed time.
+
+It is intended for reporting the current date and time for humans.
+
+Size: 4, Alignment: 4
+
+## <a href="#datetime" name="datetime"></a> `datetime`: record
+
+A time and date in seconds plus nanoseconds.
+
+Size: 16, Alignment: 8
+
+### Record Fields
+
+- <a href="datetime.seconds" name="datetime.seconds"></a> [`seconds`](#datetime.seconds): `u64`
+  
+  
+- <a href="datetime.nanoseconds" name="datetime.nanoseconds"></a> [`nanoseconds`](#datetime.nanoseconds): `u32`
+  
+  
+## Functions
+
+----
+
+#### <a href="#now" name="now"></a> `now` 
+
+Read the current value of the clock.
+
+This clock is not monotonic, therefore calling this function repeatedly will
+not necessarily produce a sequence of non-decreasing values.
+
+The returned timestamps represent the number of seconds since
+1970-01-01T00:00:00Z, also known as [POSIX's Seconds Since the Epoch], also
+known as [Unix Time].
+
+The nanoseconds field of the output is always less than 1000000000.
+
+[POSIX's Seconds Since the Epoch]: https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16
+[Unix Time]: https://en.wikipedia.org/wiki/Unix_time
+##### Params
+
+- <a href="#now.this" name="now.this"></a> `this`: [`wall-clock`](#wall_clock)
+##### Results
+
+- <a href="#now.result0" name="now.result0"></a> `result0`: [`datetime`](#datetime)
+
+----
+
+#### <a href="#resolution" name="resolution"></a> `resolution` 
+
+Query the resolution of the clock.
+
+The nanoseconds field of the output is always less than 1000000000.
+##### Params
+
+- <a href="#resolution.this" name="resolution.this"></a> `this`: [`wall-clock`](#wall_clock)
+##### Results
+
+- <a href="#resolution.result0" name="resolution.result0"></a> `result0`: [`datetime`](#datetime)
+
+----
+
+#### <a href="#drop_wall_clock" name="drop_wall_clock"></a> `drop-wall-clock` 
+
+Dispose of the specified `wall-clock`, after which it may no longer
+be used.
+##### Params
+
+- <a href="#drop_wall_clock.this" name="drop_wall_clock.this"></a> `this`: [`wall-clock`](#wall_clock)
+
 # Import interface `wasi-filesystem`
 
 ## Types
+
+## <a href="#input_stream" name="input_stream"></a> `input-stream`: [`input-stream`](#input_stream)
+
+
+Size: 4, Alignment: 4
+
+## <a href="#output_stream" name="output_stream"></a> `output-stream`: [`output-stream`](#output_stream)
+
+
+Size: 4, Alignment: 4
+
+## <a href="#datetime" name="datetime"></a> `datetime`: [`datetime`](#datetime)
+
+
+Size: 16, Alignment: 8
 
 ## <a href="#o_flags" name="o_flags"></a> `o-flags`: record
 
@@ -30,27 +368,6 @@ Size: 1, Alignment: 1
   Truncate file to size 0.
   Bit: 3
 
-## <a href="#new_timestamp" name="new_timestamp"></a> `new-timestamp`: variant
-
-When setting a timestamp, this gives the value to set it to.
-
-Size: 16, Alignment: 8
-
-### Variant Cases
-
-- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change)
-  
-  Leave the timestamp set to its previous value.
-  
-- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now)
-  
-  Set the timestamp to the current time of the system clock associated
-  with the filesystem.
-  
-- <a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> [`timestamp`](#new_timestamp.timestamp): `u64`
-  
-  Set the timestamp to the given value.
-  
 ## <a href="#mode" name="mode"></a> `mode`: record
 
 Permissions mode used by `open-at`, `change-file-permissions-at`, and
@@ -340,49 +657,6 @@ Size: 32, Alignment: 8
   
   The name of the object.
   
-## <a href="#descriptor_stat" name="descriptor_stat"></a> `descriptor-stat`: record
-
-File attributes.
-
-Note: This was called `filestat` in earlier versions of WASI.
-
-Size: 64, Alignment: 8
-
-### Record Fields
-
-- <a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> [`dev`](#descriptor_stat.dev): [`device`](#device)
-  
-  Device ID of device containing the file.
-  
-- <a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> [`ino`](#descriptor_stat.ino): [`inode`](#inode)
-  
-  File serial number.
-  
-- <a href="descriptor_stat.type" name="descriptor_stat.type"></a> [`type`](#descriptor_stat.type): [`descriptor-type`](#descriptor_type)
-  
-  File type.
-  
-- <a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> [`nlink`](#descriptor_stat.nlink): [`linkcount`](#linkcount)
-  
-  Number of hard links to the file.
-  
-- <a href="descriptor_stat.size" name="descriptor_stat.size"></a> [`size`](#descriptor_stat.size): [`filesize`](#filesize)
-  
-  For regular files, the file size in bytes. For symbolic links, the length
-  in bytes of the pathname contained in the symbolic link.
-  
-- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): `u64`
-  
-  Last data access timestamp.
-  
-- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): `u64`
-  
-  Last data modification timestamp.
-  
-- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): `u64`
-  
-  Last file status change timestamp.
-  
 ## <a href="#descriptor_flags" name="descriptor_flags"></a> `descriptor-flags`: record
 
 Descriptor flags.
@@ -466,6 +740,70 @@ calls may be made.
 
 Size: 4, Alignment: 4
 
+## <a href="#new_timestamp" name="new_timestamp"></a> `new-timestamp`: variant
+
+When setting a timestamp, this gives the value to set it to.
+
+Size: 24, Alignment: 8
+
+### Variant Cases
+
+- <a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> [`no-change`](#new_timestamp.no_change)
+  
+  Leave the timestamp set to its previous value.
+  
+- <a href="new_timestamp.now" name="new_timestamp.now"></a> [`now`](#new_timestamp.now)
+  
+  Set the timestamp to the current time of the system clock associated
+  with the filesystem.
+  
+- <a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> [`timestamp`](#new_timestamp.timestamp): [`datetime`](#datetime)
+  
+  Set the timestamp to the given value.
+  
+## <a href="#descriptor_stat" name="descriptor_stat"></a> `descriptor-stat`: record
+
+File attributes.
+
+Note: This was called `filestat` in earlier versions of WASI.
+
+Size: 88, Alignment: 8
+
+### Record Fields
+
+- <a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> [`dev`](#descriptor_stat.dev): [`device`](#device)
+  
+  Device ID of device containing the file.
+  
+- <a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> [`ino`](#descriptor_stat.ino): [`inode`](#inode)
+  
+  File serial number.
+  
+- <a href="descriptor_stat.type" name="descriptor_stat.type"></a> [`type`](#descriptor_stat.type): [`descriptor-type`](#descriptor_type)
+  
+  File type.
+  
+- <a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> [`nlink`](#descriptor_stat.nlink): [`linkcount`](#linkcount)
+  
+  Number of hard links to the file.
+  
+- <a href="descriptor_stat.size" name="descriptor_stat.size"></a> [`size`](#descriptor_stat.size): [`filesize`](#filesize)
+  
+  For regular files, the file size in bytes. For symbolic links, the length
+  in bytes of the pathname contained in the symbolic link.
+  
+- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): [`datetime`](#datetime)
+  
+  Last data access timestamp.
+  
+- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): [`datetime`](#datetime)
+  
+  Last data modification timestamp.
+  
+- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): [`datetime`](#datetime)
+  
+  Last file status change timestamp.
+  
 ## <a href="#at_flags" name="at_flags"></a> `at-flags`: record
 
 Flags determining the method of how paths are resolved.
@@ -512,6 +850,52 @@ Size: 1, Alignment: 1
   The application expects to access the specified data once and then not reuse it thereafter.
   
 ## Functions
+
+----
+
+#### <a href="#read_via_stream" name="read_via_stream"></a> `read-via-stream` 
+
+Return a stream for reading from a file.
+
+Note: This allows using `read-stream`, which is similar to `read` in POSIX.
+##### Params
+
+- <a href="#read_via_stream.this" name="read_via_stream.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#read_via_stream.offset" name="read_via_stream.offset"></a> `offset`: [`filesize`](#filesize)
+##### Results
+
+- <a href="#read_via_stream.result0" name="read_via_stream.result0"></a> `result0`: result<[`input-stream`](#input_stream), [`errno`](#errno)>
+
+----
+
+#### <a href="#write_via_stream" name="write_via_stream"></a> `write-via-stream` 
+
+Return a stream for writing to a file.
+
+Note: This allows using `write-stream`, which is similar to `write` in POSIX.
+##### Params
+
+- <a href="#write_via_stream.this" name="write_via_stream.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#write_via_stream.offset" name="write_via_stream.offset"></a> `offset`: [`filesize`](#filesize)
+##### Results
+
+- <a href="#write_via_stream.result0" name="write_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`errno`](#errno)>
+
+----
+
+#### <a href="#append_via_stream" name="append_via_stream"></a> `append-via-stream` 
+
+Return a stream for appending to a file.
+
+Note: This allows using `write-stream`, which is similar to `write` with
+`O_APPEND` in in POSIX.
+##### Params
+
+- <a href="#append_via_stream.this" name="append_via_stream.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#append_via_stream.fd" name="append_via_stream.fd"></a> `fd`: [`descriptor`](#descriptor)
+##### Results
+
+- <a href="#append_via_stream.result0" name="append_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`errno`](#errno)>
 
 ----
 
@@ -691,7 +1075,7 @@ directory.
 - <a href="#readdir.this" name="readdir.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#readdir.result0" name="readdir.result0"></a> `result0`: stream<[`dir-entry-stream`](#dir_entry_stream), [`errno`](#errno)>
+- <a href="#readdir.result0" name="readdir.result0"></a> `result0`: result<[`dir-entry-stream`](#dir_entry_stream), [`errno`](#errno)>
 
 ----
 

@@ -1,5 +1,260 @@
+<h1>Import interface <code>wasi-poll</code></h1>
+<h2>Types</h2>
+<h2><a href="#pollable" name="pollable"></a> <a href="#pollable"><code>pollable</code></a>: <code>u32</code></h2>
+<p>A &quot;pollable&quot; handle.</p>
+<p>This is conceptually represents a <code>stream&lt;_, _&gt;</code>, or in other words,
+a stream that one can wait on, repeatedly, but which does not itself
+produce any data. It's temporary scaffolding until component-model's
+async features are ready.</p>
+<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.</p>
+<p><a href="#pollable"><code>pollable</code></a> lifetimes are not automatically managed. Users must ensure
+that they do not outlive the resource they reference.</p>
+<p>Size: 4, Alignment: 4</p>
+<h2>Functions</h2>
+<hr />
+<h4><a href="#poll_oneoff" name="poll_oneoff"></a> <a href="#poll_oneoff"><code>poll-oneoff</code></a></h4>
+<p>Poll for completion on a set of pollables.</p>
+<p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
+linear scan through the entire list of subscriptions, which may be
+inefficient if the number is large and the same subscriptions are used
+many times. In the future, it may be accompanied by an API similar to
+Linux's <code>epoll</code> which allows sets of subscriptions to be registered and
+made efficiently reusable.</p>
+<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
+be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
+See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061
+for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
+mean &quot;ready&quot;.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#poll_oneoff.in" name="poll_oneoff.in"></a> <code>in</code>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#poll_oneoff.result0" name="poll_oneoff.result0"></a> <code>result0</code>: list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h1>Import interface <code>wasi-io</code></h1>
+<h2>Types</h2>
+<h2><a href="#pollable" name="pollable"></a> <a href="#pollable"><code>pollable</code></a>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></h2>
+<p>Size: 4, Alignment: 4</p>
+<h2><a href="#stream_error" name="stream_error"></a> <a href="#stream_error"><code>stream-error</code></a>: record</h2>
+<p>An error type returned from a stream operation. Currently this
+doesn't provide any additional information.</p>
+<p>Size: 0, Alignment: 1</p>
+<h3>Record Fields</h3>
+<h2><a href="#output_stream" name="output_stream"></a> <a href="#output_stream"><code>output-stream</code></a>: <code>u32</code></h2>
+<p>An output bytestream. In the future, this will be replaced by handle
+types.</p>
+<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
+scaffolding until component-model's async features are ready.</p>
+<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.</p>
+<p>Size: 4, Alignment: 4</p>
+<h2><a href="#input_stream" name="input_stream"></a> <a href="#input_stream"><code>input-stream</code></a>: <code>u32</code></h2>
+<p>An input bytestream. In the future, this will be replaced by handle
+types.</p>
+<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
+scaffolding until component-model's async features are ready.</p>
+<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
+the wit-bindgen implementation of handles and resources is ready.</p>
+<p>Size: 4, Alignment: 4</p>
+<h2>Functions</h2>
+<hr />
+<h4><a href="#read" name="read"></a> <a href="#read"><code>read</code></a></h4>
+<p>Read bytes from a stream.</p>
+<p>This function returns a list of bytes containing the data that was
+read, along with a bool indicating whether the end of the stream
+was reached. The returned list will contain up to <code>len</code> bytes; it
+may return fewer than requested, but not more.</p>
+<p>Once a stream has reached the end, subsequent calls to read or
+<a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
+data.</p>
+<p>If <code>len</code> is 0, it represents a request to read 0 bytes, which should
+always succeed, assuming the stream hasn't reached its end yet, and
+return an empty list.</p>
+<p>The len here is a <code>u64</code>, but some callees may not be able to allocate
+a buffer as large as that would imply.
+FIXME: describe what happens if allocation fails.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#read.this" name="read.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a href="#read.len" name="read.len"></a> <code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#read.result0" name="read.result0"></a> <code>result0</code>: result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#skip" name="skip"></a> <a href="#skip"><code>skip</code></a></h4>
+<p>Skip bytes from a stream.</p>
+<p>This is similar to the <a href="#read"><code>read</code></a> function, but avoids copying the
+bytes into the instance.</p>
+<p>Once a stream has reached the end, subsequent calls to read or
+<a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
+data.</p>
+<p>This function returns the number of bytes skipped, along with a bool
+indicating whether the end of the stream was reached. The returned
+value will be at most <code>len</code>; it may be less.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#skip.this" name="skip.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a href="#skip.len" name="skip.len"></a> <code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#skip.result0" name="skip.result0"></a> <code>result0</code>: result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#subscribe_read" name="subscribe_read"></a> <a href="#subscribe_read"><code>subscribe-read</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream has bytes
+available to read or the other end of the stream has been closed.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#subscribe_read.this" name="subscribe_read.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#subscribe_read.result0" name="subscribe_read.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#drop_input_stream" name="drop_input_stream"></a> <a href="#drop_input_stream"><code>drop-input-stream</code></a></h4>
+<p>Dispose of the specified <a href="#input_stream"><code>input-stream</code></a>, after which it may no longer
+be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#drop_input_stream.this" name="drop_input_stream.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#write" name="write"></a> <a href="#write"><code>write</code></a></h4>
+<p>Write bytes to a stream.</p>
+<p>This function returns a <code>u64</code> indicating the number of bytes from
+<code>buf</code> that were written; it may be less than the full list.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#write.this" name="write.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a href="#write.buf" name="write.buf"></a> <code>buf</code>: list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#write.result0" name="write.result0"></a> <code>result0</code>: result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#write_zeroes" name="write_zeroes"></a> <a href="#write_zeroes"><code>write-zeroes</code></a></h4>
+<p>Write multiple zero bytes to a stream.</p>
+<p>This function returns a <code>u64</code> indicating the number of zero bytes
+that were written; it may be less than <code>len</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#write_zeroes.this" name="write_zeroes.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a href="#write_zeroes.len" name="write_zeroes.len"></a> <code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#write_zeroes.result0" name="write_zeroes.result0"></a> <code>result0</code>: result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#splice" name="splice"></a> <a href="#splice"><code>splice</code></a></h4>
+<p>Read from one stream and write to another.</p>
+<p>This function returns the number of bytes transferred; it may be less
+than <code>len</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#splice.this" name="splice.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a href="#splice.src" name="splice.src"></a> <code>src</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a href="#splice.len" name="splice.len"></a> <code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#splice.result0" name="splice.result0"></a> <code>result0</code>: result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#subscribe" name="subscribe"></a> <a href="#subscribe"><code>subscribe</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream is ready
+to accept bytes or the other end of the stream has been closed.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#subscribe.this" name="subscribe.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#subscribe.result0" name="subscribe.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#drop_output_stream" name="drop_output_stream"></a> <a href="#drop_output_stream"><code>drop-output-stream</code></a></h4>
+<p>Dispose of the specified <a href="#output_stream"><code>output-stream</code></a>, after which it may no longer
+be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#drop_output_stream.this" name="drop_output_stream.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h1>Import interface <code>wasi-wall-clock</code></h1>
+<h2>Types</h2>
+<h2><a href="#wall_clock" name="wall_clock"></a> <a href="#wall_clock"><code>wall-clock</code></a>: <code>u32</code></h2>
+<p>A wall clock is a clock which measures the date and time according to some
+external reference.</p>
+<p>External references may be reset, so this clock is not necessarily
+monotonic, making it unsuitable for measuring elapsed time.</p>
+<p>It is intended for reporting the current date and time for humans.</p>
+<p>Size: 4, Alignment: 4</p>
+<h2><a href="#datetime" name="datetime"></a> <a href="#datetime"><code>datetime</code></a>: record</h2>
+<p>A time and date in seconds plus nanoseconds.</p>
+<p>Size: 16, Alignment: 8</p>
+<h3>Record Fields</h3>
+<ul>
+<li>
+<p><a href="datetime.seconds" name="datetime.seconds"></a> <a href="#datetime.seconds"><code>seconds</code></a>: <code>u64</code></p>
+</li>
+<li>
+<p><a href="datetime.nanoseconds" name="datetime.nanoseconds"></a> <a href="#datetime.nanoseconds"><code>nanoseconds</code></a>: <code>u32</code></p>
+</li>
+</ul>
+<h2>Functions</h2>
+<hr />
+<h4><a href="#now" name="now"></a> <a href="#now"><code>now</code></a></h4>
+<p>Read the current value of the clock.</p>
+<p>This clock is not monotonic, therefore calling this function repeatedly will
+not necessarily produce a sequence of non-decreasing values.</p>
+<p>The returned timestamps represent the number of seconds since
+1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>, also
+known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#now.this" name="now.this"></a> <code>this</code>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#now.result0" name="now.result0"></a> <code>result0</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#resolution" name="resolution"></a> <a href="#resolution"><code>resolution</code></a></h4>
+<p>Query the resolution of the clock.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#resolution.this" name="resolution.this"></a> <code>this</code>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#resolution.result0" name="resolution.result0"></a> <code>result0</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<hr />
+<h4><a href="#drop_wall_clock" name="drop_wall_clock"></a> <a href="#drop_wall_clock"><code>drop-wall-clock</code></a></h4>
+<p>Dispose of the specified <a href="#wall_clock"><code>wall-clock</code></a>, after which it may no longer
+be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#drop_wall_clock.this" name="drop_wall_clock.this"></a> <code>this</code>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
+</ul>
 <h1>Import interface <code>wasi-filesystem</code></h1>
 <h2>Types</h2>
+<h2><a href="#input_stream" name="input_stream"></a> <a href="#input_stream"><code>input-stream</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></h2>
+<p>Size: 4, Alignment: 4</p>
+<h2><a href="#output_stream" name="output_stream"></a> <a href="#output_stream"><code>output-stream</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></h2>
+<p>Size: 4, Alignment: 4</p>
+<h2><a href="#datetime" name="datetime"></a> <a href="#datetime"><code>datetime</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></h2>
+<p>Size: 16, Alignment: 8</p>
 <h2><a href="#o_flags" name="o_flags"></a> <a href="#o_flags"><code>o-flags</code></a>: record</h2>
 <p>Open flags used by <a href="#open_at"><code>open-at</code></a>.</p>
 <p>Size: 1, Alignment: 1</p>
@@ -24,25 +279,6 @@ Bit: 2</p>
 <p><a href="o_flags.trunc" name="o_flags.trunc"></a> <a href="#o_flags.trunc"><code>trunc</code></a>: </p>
 <p>Truncate file to size 0.
 Bit: 3</p>
-</li>
-</ul>
-<h2><a href="#new_timestamp" name="new_timestamp"></a> <a href="#new_timestamp"><code>new-timestamp</code></a>: variant</h2>
-<p>When setting a timestamp, this gives the value to set it to.</p>
-<p>Size: 16, Alignment: 8</p>
-<h3>Variant Cases</h3>
-<ul>
-<li>
-<p><a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> <a href="#new_timestamp.no_change"><code>no-change</code></a></p>
-<p>Leave the timestamp set to its previous value.</p>
-</li>
-<li>
-<p><a href="new_timestamp.now" name="new_timestamp.now"></a> <a href="#new_timestamp.now"><code>now</code></a></p>
-<p>Set the timestamp to the current time of the system clock associated
-with the filesystem.</p>
-</li>
-<li>
-<p><a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> <a href="#new_timestamp.timestamp"><code>timestamp</code></a>: <code>u64</code></p>
-<p>Set the timestamp to the given value.</p>
 </li>
 </ul>
 <h2><a href="#mode" name="mode"></a> <a href="#mode"><code>mode</code></a>: record</h2>
@@ -309,46 +545,6 @@ implementations which can set this to a non-none value should do so.</p>
 <p>The name of the object.</p>
 </li>
 </ul>
-<h2><a href="#descriptor_stat" name="descriptor_stat"></a> <a href="#descriptor_stat"><code>descriptor-stat</code></a>: record</h2>
-<p>File attributes.</p>
-<p>Note: This was called <code>filestat</code> in earlier versions of WASI.</p>
-<p>Size: 64, Alignment: 8</p>
-<h3>Record Fields</h3>
-<ul>
-<li>
-<p><a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> <a href="#descriptor_stat.dev"><code>dev</code></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
-<p>Device ID of device containing the file.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> <a href="#descriptor_stat.ino"><code>ino</code></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
-<p>File serial number.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.type" name="descriptor_stat.type"></a> <a href="#descriptor_stat.type"><a href="#type"><code>type</code></a></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
-<p>File type.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> <a href="#descriptor_stat.nlink"><code>nlink</code></a>: <a href="#linkcount"><a href="#linkcount"><code>linkcount</code></a></a></p>
-<p>Number of hard links to the file.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.size" name="descriptor_stat.size"></a> <a href="#descriptor_stat.size"><code>size</code></a>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></p>
-<p>For regular files, the file size in bytes. For symbolic links, the length
-in bytes of the pathname contained in the symbolic link.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> <a href="#descriptor_stat.atim"><code>atim</code></a>: <code>u64</code></p>
-<p>Last data access timestamp.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> <a href="#descriptor_stat.mtim"><code>mtim</code></a>: <code>u64</code></p>
-<p>Last data modification timestamp.</p>
-</li>
-<li>
-<p><a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> <a href="#descriptor_stat.ctim"><code>ctim</code></a>: <code>u64</code></p>
-<p>Last file status change timestamp.</p>
-</li>
-</ul>
 <h2><a href="#descriptor_flags" name="descriptor_flags"></a> <a href="#descriptor_flags"><code>descriptor-flags</code></a>: record</h2>
 <p>Descriptor flags.</p>
 <p>Note: This was called <code>fdflags</code> in earlier versions of WASI.</p>
@@ -356,12 +552,12 @@ in bytes of the pathname contained in the symbolic link.</p>
 <h3>Record Fields</h3>
 <ul>
 <li>
-<p><a href="descriptor_flags.read" name="descriptor_flags.read"></a> <a href="#descriptor_flags.read"><code>read</code></a>: </p>
+<p><a href="descriptor_flags.read" name="descriptor_flags.read"></a> <a href="#descriptor_flags.read"><a href="#read"><code>read</code></a></a>: </p>
 <p>Read mode: Data can be read.
 Bit: 0</p>
 </li>
 <li>
-<p><a href="descriptor_flags.write" name="descriptor_flags.write"></a> <a href="#descriptor_flags.write"><code>write</code></a>: </p>
+<p><a href="descriptor_flags.write" name="descriptor_flags.write"></a> <a href="#descriptor_flags.write"><a href="#write"><code>write</code></a></a>: </p>
 <p>Write mode: Data can be written to.
 Bit: 1</p>
 </li>
@@ -420,6 +616,65 @@ Bit: 6</p>
 directory, named pipe, special file, or other object on which filesystem
 calls may be made.</p>
 <p>Size: 4, Alignment: 4</p>
+<h2><a href="#new_timestamp" name="new_timestamp"></a> <a href="#new_timestamp"><code>new-timestamp</code></a>: variant</h2>
+<p>When setting a timestamp, this gives the value to set it to.</p>
+<p>Size: 24, Alignment: 8</p>
+<h3>Variant Cases</h3>
+<ul>
+<li>
+<p><a href="new_timestamp.no_change" name="new_timestamp.no_change"></a> <a href="#new_timestamp.no_change"><code>no-change</code></a></p>
+<p>Leave the timestamp set to its previous value.</p>
+</li>
+<li>
+<p><a href="new_timestamp.now" name="new_timestamp.now"></a> <a href="#new_timestamp.now"><a href="#now"><code>now</code></a></a></p>
+<p>Set the timestamp to the current time of the system clock associated
+with the filesystem.</p>
+</li>
+<li>
+<p><a href="new_timestamp.timestamp" name="new_timestamp.timestamp"></a> <a href="#new_timestamp.timestamp"><code>timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>Set the timestamp to the given value.</p>
+</li>
+</ul>
+<h2><a href="#descriptor_stat" name="descriptor_stat"></a> <a href="#descriptor_stat"><code>descriptor-stat</code></a>: record</h2>
+<p>File attributes.</p>
+<p>Note: This was called <code>filestat</code> in earlier versions of WASI.</p>
+<p>Size: 88, Alignment: 8</p>
+<h3>Record Fields</h3>
+<ul>
+<li>
+<p><a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> <a href="#descriptor_stat.dev"><code>dev</code></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
+<p>Device ID of device containing the file.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> <a href="#descriptor_stat.ino"><code>ino</code></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
+<p>File serial number.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.type" name="descriptor_stat.type"></a> <a href="#descriptor_stat.type"><a href="#type"><code>type</code></a></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
+<p>File type.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> <a href="#descriptor_stat.nlink"><code>nlink</code></a>: <a href="#linkcount"><a href="#linkcount"><code>linkcount</code></a></a></p>
+<p>Number of hard links to the file.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.size" name="descriptor_stat.size"></a> <a href="#descriptor_stat.size"><code>size</code></a>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></p>
+<p>For regular files, the file size in bytes. For symbolic links, the length
+in bytes of the pathname contained in the symbolic link.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> <a href="#descriptor_stat.atim"><code>atim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>Last data access timestamp.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> <a href="#descriptor_stat.mtim"><code>mtim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>Last data modification timestamp.</p>
+</li>
+<li>
+<p><a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> <a href="#descriptor_stat.ctim"><code>ctim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>Last file status change timestamp.</p>
+</li>
+</ul>
 <h2><a href="#at_flags" name="at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: record</h2>
 <p>Flags determining the method of how paths are resolved.</p>
 <p>Size: 1, Alignment: 1</p>
@@ -462,6 +717,46 @@ Bit: 0</p>
 </li>
 </ul>
 <h2>Functions</h2>
+<hr />
+<h4><a href="#read_via_stream" name="read_via_stream"></a> <a href="#read_via_stream"><code>read-via-stream</code></a></h4>
+<p>Return a stream for reading from a file.</p>
+<p>Note: This allows using <code>read-stream</code>, which is similar to <a href="#read"><code>read</code></a> in POSIX.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#read_via_stream.this" name="read_via_stream.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#read_via_stream.offset" name="read_via_stream.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#read_via_stream.result0" name="read_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#write_via_stream" name="write_via_stream"></a> <a href="#write_via_stream"><code>write-via-stream</code></a></h4>
+<p>Return a stream for writing to a file.</p>
+<p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> in POSIX.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#write_via_stream.this" name="write_via_stream.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#write_via_stream.offset" name="write_via_stream.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#write_via_stream.result0" name="write_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#append_via_stream" name="append_via_stream"></a> <a href="#append_via_stream"><code>append-via-stream</code></a></h4>
+<p>Return a stream for appending to a file.</p>
+<p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> with
+<code>O_APPEND</code> in in POSIX.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#append_via_stream.this" name="append_via_stream.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#append_via_stream.fd" name="append_via_stream.fd"></a> <code>fd</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#append_via_stream.result0" name="append_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+</ul>
 <hr />
 <h4><a href="#fadvise" name="fadvise"></a> <a href="#fadvise"><code>fadvise</code></a></h4>
 <p>Provide file advisory information on a descriptor.</p>
@@ -611,7 +906,7 @@ directory.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#readdir.result0" name="readdir.result0"></a> <code>result0</code>: stream&lt;<a href="#dir_entry_stream"><a href="#dir_entry_stream"><code>dir-entry-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#readdir.result0" name="readdir.result0"></a> <code>result0</code>: result&lt;<a href="#dir_entry_stream"><a href="#dir_entry_stream"><code>dir-entry-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#sync" name="sync"></a> <a href="#sync"><code>sync</code></a></h4>
@@ -823,7 +1118,7 @@ filesystem-specific.</p>
 <p>Note that the ultimate meanings of these permissions is
 filesystem-specific.</p>
 <p>Unlike in POSIX, the <code>executable</code> flag is not reinterpreted as a &quot;search&quot;
-flag. <code>read</code> on a directory implies readability and searchability, and
+flag. <a href="#read"><code>read</code></a> on a directory implies readability and searchability, and
 <code>execute</code> is not valid for directories.</p>
 <p>Note: This is similar to <code>fchmodat</code> in POSIX.</p>
 <h5>Params</h5>
