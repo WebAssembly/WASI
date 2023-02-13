@@ -1007,7 +1007,7 @@ guaranteed to be less than 2**31.</p>
 <p>If <a href="#flags"><code>flags</code></a> contains <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a>, and the base
 descriptor doesn't have <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set,
 <a href="#open_at"><code>open-at</code></a> fails with <a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
-<p>If <a href="#flags"><code>flags</code></a> contains <code>write</code> or <code>append</code>, or <a href="#o_flags"><code>o-flags</code></a> contains <code>trunc</code>
+<p>If <a href="#flags"><code>flags</code></a> contains <a href="#write"><code>write</code></a> or <code>append</code>, or <a href="#o_flags"><code>o-flags</code></a> contains <code>trunc</code>
 or <code>create</code>, and the base descriptor doesn't have
 <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set, <a href="#open_at"><code>open-at</code></a> fails with
 <a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
