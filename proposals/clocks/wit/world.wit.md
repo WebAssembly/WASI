@@ -6,7 +6,7 @@ the whole proposal.
 default world wasi-clocks {
     import wasi-monotonic-clock: pkg.wasi-monotonic-clock
     import wasi-wall-clock: pkg.wasi-wall-clock
-    import wasi-timezone: pkg.timezone
+    import wasi-timezone: pkg.wasi-timezone
     import wasi-default-clocks: pkg.wasi-default-clocks
 }
 ```
