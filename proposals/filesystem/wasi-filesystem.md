@@ -680,6 +680,10 @@ Note: This is similar to `pwrite` in POSIX.
 
 Read directory entries from a directory.
 
+On filesystems where directories contain entries referring to themselves
+and their parents, often named `.` and `..` respectively, these entries
+are omitted.
+
 This always returns a new stream which starts at the beginning of the
 directory.
 ##### Params

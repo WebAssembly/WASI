@@ -462,6 +462,10 @@ pwrite: func(
 ```wit
 /// Read directory entries from a directory.
 ///
+/// On filesystems where directories contain entries referring to themselves
+/// and their parents, often named `.` and `..` respectively, these entries
+/// are omitted.
+///
 /// This always returns a new stream which starts at the beginning of the
 /// directory.
 readdir: func(this: descriptor) -> stream<dir-entry-stream, errno>

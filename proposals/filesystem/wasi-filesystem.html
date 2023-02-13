@@ -600,6 +600,9 @@ the write set to zero.</p>
 <hr />
 <h4><a href="#readdir" name="readdir"></a> <a href="#readdir"><code>readdir</code></a></h4>
 <p>Read directory entries from a directory.</p>
+<p>On filesystems where directories contain entries referring to themselves
+and their parents, often named <code>.</code> and <code>..</code> respectively, these entries
+are omitted.</p>
 <p>This always returns a new stream which starts at the beginning of the
 directory.</p>
 <h5>Params</h5>
