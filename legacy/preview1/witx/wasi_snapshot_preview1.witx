@@ -13,8 +13,15 @@
   (import "memory" (memory))
 
   ;;; Read command-line argument data.
+  ;;;
   ;;; The size of the array should match that returned by `args_sizes_get`.
+  ;;;
   ;;; Each argument is expected to be `\0` terminated.
+  ;;;
+  ;;; The first argument should be a string containing the "name" of the
+  ;;; program. This need not be a usable filesystem path or even file name,
+  ;;; and may even be a fixed string. Subsequent arguments are the arguments
+  ;;; passed to the program by the user.
   (@interface func (export "args_get")
     (param $argv (@witx pointer (@witx pointer u8)))
     (param $argv_buf (@witx pointer u8))
@@ -158,7 +165,7 @@
   )
 
   ;;; Read from a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `preadv` in POSIX.
+  ;;; Note: This is similar to `preadv` in Linux (and other Unix-es).
   (@interface func (export "fd_pread")
     (param $fd $fd)
     ;;; List of scatter/gather vectors in which to store data.
@@ -186,7 +193,11 @@
   )
 
   ;;; Write to a file descriptor, without using and updating the file descriptor's offset.
-  ;;; Note: This is similar to `pwritev` in POSIX.
+  ;;; Note: This is similar to `pwritev` in Linux (and other Unix-es).
+  ;;;
+  ;;; Like Linux (and other Unix-es), any calls of `pwrite` (and other
+  ;;; functions to read or write) for a regular file by other threads in the
+  ;;; WASI process should not be interleaved while `pwrite` is executed.
   (@interface func (export "fd_pwrite")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
@@ -274,6 +285,10 @@
 
   ;;; Write to a file descriptor.
   ;;; Note: This is similar to `writev` in POSIX.
+  ;;;
+  ;;; Like POSIX, any calls of `write` (and other functions to read or write)
+  ;;; for a regular file by other threads in the WASI process should not be
+  ;;; interleaved while `write` is executed.
   (@interface func (export "fd_write")
     (param $fd $fd)
     ;;; List of scatter/gather vectors from which to retrieve data.
@@ -426,6 +441,8 @@
   )
 
   ;;; Concurrently poll for the occurrence of a set of events.
+  ;;;
+  ;;; If `nsubscriptions` is 0, returns `errno::inval`.
   (@interface func (export "poll_oneoff")
     ;;; The events to which to subscribe.
     (param $in (@witx const_pointer $subscription))
