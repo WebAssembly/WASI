@@ -90,7 +90,7 @@ used for debugging, and not production use.
 
 Return a list of cryptographically-secure pseudo-random bytes:
 
-```rust=
+```rust
     let len: u32 = your_own_code_to_decide_how_many_bytes_you_want();
 
     let bytes: Vec<u8> = get_random_bytes(len);
