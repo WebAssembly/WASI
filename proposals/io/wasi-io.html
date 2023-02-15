@@ -106,16 +106,16 @@ value will be at most <code>len</code>; it may be less.</p>
 <li><a href="#skip.result0" name="skip.result0"></a> <code>result0</code>: result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#subscribe_read" name="subscribe_read"></a> <a href="#subscribe_read"><code>subscribe-read</code></a></h4>
+<h4><a href="#subscribe_to_input_stream" name="subscribe_to_input_stream"></a> <a href="#subscribe_to_input_stream"><code>subscribe-to-input-stream</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream has bytes
 available to read or the other end of the stream has been closed.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#subscribe_read.this" name="subscribe_read.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a href="#subscribe_to_input_stream.this" name="subscribe_to_input_stream.this"></a> <code>this</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#subscribe_read.result0" name="subscribe_read.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a href="#subscribe_to_input_stream.result0" name="subscribe_to_input_stream.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <hr />
 <h4><a href="#drop_input_stream" name="drop_input_stream"></a> <a href="#drop_input_stream"><code>drop-input-stream</code></a></h4>
@@ -169,16 +169,16 @@ than <code>len</code>.</p>
 <li><a href="#splice.result0" name="splice.result0"></a> <code>result0</code>: result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#subscribe" name="subscribe"></a> <a href="#subscribe"><code>subscribe</code></a></h4>
+<h4><a href="#subscribe_to_output_stream" name="subscribe_to_output_stream"></a> <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream is ready
 to accept bytes or the other end of the stream has been closed.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#subscribe.this" name="subscribe.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a href="#subscribe_to_output_stream.this" name="subscribe_to_output_stream.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#subscribe.result0" name="subscribe.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a href="#subscribe_to_output_stream.result0" name="subscribe_to_output_stream.result0"></a> <code>result0</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <hr />
 <h4><a href="#drop_output_stream" name="drop_output_stream"></a> <a href="#drop_output_stream"><code>drop-output-stream</code></a></h4>
