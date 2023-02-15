@@ -23,6 +23,15 @@ Size: 4, Alignment: 4
 
 ----
 
+#### <a href="#drop_pollable" name="drop_pollable"></a> `drop-pollable` 
+
+Dispose of the specified `pollable`, after which it may no longer be used.
+##### Params
+
+- <a href="#drop_pollable.this" name="drop_pollable.this"></a> `this`: [`pollable`](#pollable)
+
+----
+
 #### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll-oneoff` 
 
 Poll for completion on a set of pollables.
@@ -30,13 +39,13 @@ Poll for completion on a set of pollables.
 The "oneoff" in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
-many times. In the future, it may be accompanied by an API similar to
-Linux's `epoll` which allows sets of subscriptions to be registered and
-made efficiently reusable.
+many times. In the future, this is expected to be obsoleted by the
+component model async proposal, which will include a scalable waiting
+facility.
 
 Note that the return type would ideally be `list<bool>`, but that would
 be more difficult to polyfill given the current state of `wit-bindgen`.
-See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061
+See <https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061>
 for details.  For now, we use zero to mean "not ready" and non-zero to
 mean "ready".
 ##### Params
@@ -148,16 +157,16 @@ value will be at most `len`; it may be less.
 
 ----
 
-#### <a href="#subscribe_read" name="subscribe_read"></a> `subscribe-read` 
+#### <a href="#subscribe_to_input_stream" name="subscribe_to_input_stream"></a> `subscribe-to-input-stream` 
 
 Create a `pollable` which will resolve once either the specified stream has bytes
 available to read or the other end of the stream has been closed.
 ##### Params
 
-- <a href="#subscribe_read.this" name="subscribe_read.this"></a> `this`: [`input-stream`](#input_stream)
+- <a href="#subscribe_to_input_stream.this" name="subscribe_to_input_stream.this"></a> `this`: [`input-stream`](#input_stream)
 ##### Results
 
-- <a href="#subscribe_read.result0" name="subscribe_read.result0"></a> `result0`: [`pollable`](#pollable)
+- <a href="#subscribe_to_input_stream.result0" name="subscribe_to_input_stream.result0"></a> `result0`: [`pollable`](#pollable)
 
 ----
 
@@ -220,16 +229,35 @@ than `len`.
 
 ----
 
-#### <a href="#subscribe" name="subscribe"></a> `subscribe` 
+#### <a href="#forward" name="forward"></a> `forward` 
+
+Forward the entire contents of an input stream to an output stream.
+
+This function repeatedly reads from the input stream and writes
+the data to the output stream, until the end of the input stream
+is reached, or an error is encountered.
+
+This function returns the number of bytes transferred.
+##### Params
+
+- <a href="#forward.this" name="forward.this"></a> `this`: [`output-stream`](#output_stream)
+- <a href="#forward.src" name="forward.src"></a> `src`: [`input-stream`](#input_stream)
+##### Results
+
+- <a href="#forward.result0" name="forward.result0"></a> `result0`: result<`u64`, [`stream-error`](#stream_error)>
+
+----
+
+#### <a href="#subscribe_to_output_stream" name="subscribe_to_output_stream"></a> `subscribe-to-output-stream` 
 
 Create a `pollable` which will resolve once either the specified stream is ready
 to accept bytes or the other end of the stream has been closed.
 ##### Params
 
-- <a href="#subscribe.this" name="subscribe.this"></a> `this`: [`output-stream`](#output_stream)
+- <a href="#subscribe_to_output_stream.this" name="subscribe_to_output_stream.this"></a> `this`: [`output-stream`](#output_stream)
 ##### Results
 
-- <a href="#subscribe.result0" name="subscribe.result0"></a> `result0`: [`pollable`](#pollable)
+- <a href="#subscribe_to_output_stream.result0" name="subscribe_to_output_stream.result0"></a> `result0`: [`pollable`](#pollable)
 
 ----
 
@@ -1028,6 +1056,12 @@ Note: This was called `fd_filestat_set_times` in earlier versions of WASI.
 
 Read from a descriptor, without using and updating the descriptor's offset.
 
+This function returns a list of bytes containing the data that was
+read, along with a bool which, when true, indicates that the end of the
+file was reached. The returned list will contain up to `len` bytes; it
+may return fewer than requested, if the end of the file is reached or
+if the I/O operation is interrupted.
+
 Note: This is similar to `pread` in POSIX.
 ##### Params
 
@@ -1036,7 +1070,7 @@ Note: This is similar to `pread` in POSIX.
 - <a href="#pread.offset" name="pread.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#pread.result0" name="pread.result0"></a> `result0`: result<list<`u8`>, [`errno`](#errno)>
+- <a href="#pread.result0" name="pread.result0"></a> `result0`: result<(list<`u8`>, `bool`), [`errno`](#errno)>
 
 ----
 
