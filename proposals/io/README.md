@@ -57,7 +57,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
 #### Use Case: copying from input to output using `read`/`write`
 
-```rust=
+```rust
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
        const BUFFER_LEN: usize = 4096;
        loop {
@@ -78,7 +78,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
 #### Use case: copying from input to output using `splice`
 
-```rust=
+```rust
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
        loop {
            let (_num_copied, eos) = output.splice(input, u64::MAX)?;
@@ -93,7 +93,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
 #### Use case: copying from input to output using `forward`
 
-```rust=
+```rust
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
        output.forward(input)?;
        Ok(())

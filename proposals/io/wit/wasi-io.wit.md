@@ -154,7 +154,7 @@ type output-stream = u32
 ```
 
 ## `forward`
-```wit=
+```wit
     /// Forward the entire contents of an input stream to an output stream.
     ///
     /// This function repeatedly reads from the input stream and writes
