@@ -13,17 +13,24 @@ that they do not outlive the resource they reference.</p>
 <p>Size: 4, Alignment: 4</p>
 <h2>Functions</h2>
 <hr />
+<h4><a href="#drop_pollable" name="drop_pollable"></a> <a href="#drop_pollable"><code>drop-pollable</code></a></h4>
+<p>Dispose of the specified <a href="#pollable"><code>pollable</code></a>, after which it may no longer be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#drop_pollable.this" name="drop_pollable.this"></a> <code>this</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+</ul>
+<hr />
 <h4><a href="#poll_oneoff" name="poll_oneoff"></a> <a href="#poll_oneoff"><code>poll-oneoff</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
 <p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
-many times. In the future, it may be accompanied by an API similar to
-Linux's <code>epoll</code> which allows sets of subscriptions to be registered and
-made efficiently reusable.</p>
+many times. In the future, this is expected to be obsoleted by the
+component model async proposal, which will include a scalable waiting
+facility.</p>
 <p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
 be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
-See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061
+See <a href="https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061">https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061</a>
 for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
 mean &quot;ready&quot;.</p>
 <h5>Params</h5>
@@ -167,6 +174,22 @@ than <code>len</code>.</p>
 <h5>Results</h5>
 <ul>
 <li><a href="#splice.result0" name="splice.result0"></a> <code>result0</code>: result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<hr />
+<h4><a href="#forward" name="forward"></a> <a href="#forward"><code>forward</code></a></h4>
+<p>Forward the entire contents of an input stream to an output stream.</p>
+<p>This function repeatedly reads from the input stream and writes
+the data to the output stream, until the end of the input stream
+is reached, or an error is encountered.</p>
+<p>This function returns the number of bytes transferred.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#forward.this" name="forward.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a href="#forward.src" name="forward.src"></a> <code>src</code>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+</ul>
+<h5>Results</h5>
+<ul>
+<li><a href="#forward.result0" name="forward.result0"></a> <code>result0</code>: result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#subscribe_to_output_stream" name="subscribe_to_output_stream"></a> <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a></h4>
