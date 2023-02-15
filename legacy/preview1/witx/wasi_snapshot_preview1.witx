@@ -228,6 +228,9 @@
   ;;; truncating the last directory entry. This allows the caller to grow its
   ;;; read buffer size in case it's too small to fit a single large directory
   ;;; entry, or skip the oversized directory entry.
+  ;;;
+  ;;; Entries for the special `.` and `..` directory entries are included in the
+  ;;; sequence.
   (@interface func (export "fd_readdir")
     (param $fd $fd)
     ;;; The buffer where directory entries are stored
