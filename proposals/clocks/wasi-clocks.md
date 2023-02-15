@@ -23,6 +23,15 @@ Size: 4, Alignment: 4
 
 ----
 
+#### <a href="#drop_pollable" name="drop_pollable"></a> `drop-pollable` 
+
+Dispose of the specified `pollable`, after which it may no longer be used.
+##### Params
+
+- <a href="#drop_pollable.this" name="drop_pollable.this"></a> `this`: [`pollable`](#pollable)
+
+----
+
 #### <a href="#poll_oneoff" name="poll_oneoff"></a> `poll-oneoff` 
 
 Poll for completion on a set of pollables.
@@ -30,9 +39,9 @@ Poll for completion on a set of pollables.
 The "oneoff" in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
-many times. In the future, it may be accompanied by an API similar to
-Linux's `epoll` which allows sets of subscriptions to be registered and
-made efficiently reusable.
+many times. In the future, this is expected to be obsoleted by the
+component model async proposal, which will include a scalable waiting
+facility.
 
 Note that the return type would ideally be `list<bool>`, but that would
 be more difficult to polyfill given the current state of `wit-bindgen`.

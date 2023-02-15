@@ -13,14 +13,21 @@ that they do not outlive the resource they reference.</p>
 <p>Size: 4, Alignment: 4</p>
 <h2>Functions</h2>
 <hr />
+<h4><a href="#drop_pollable" name="drop_pollable"></a> <a href="#drop_pollable"><code>drop-pollable</code></a></h4>
+<p>Dispose of the specified <a href="#pollable"><code>pollable</code></a>, after which it may no longer be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a href="#drop_pollable.this" name="drop_pollable.this"></a> <code>this</code>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+</ul>
+<hr />
 <h4><a href="#poll_oneoff" name="poll_oneoff"></a> <a href="#poll_oneoff"><code>poll-oneoff</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
 <p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
-many times. In the future, it may be accompanied by an API similar to
-Linux's <code>epoll</code> which allows sets of subscriptions to be registered and
-made efficiently reusable.</p>
+many times. In the future, this is expected to be obsoleted by the
+component model async proposal, which will include a scalable waiting
+facility.</p>
 <p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
 be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
 See https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061

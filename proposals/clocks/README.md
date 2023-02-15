@@ -61,11 +61,11 @@ formatting, or modifying the time of a clock.
 
 The monotonic clock APIs can be used to measure the elapsed time of a region of code:
 
-```wit=
+```wit
 default-monotonic-clock: monotonic-clock
 ```
 
-```rust=
+```rust
    let clock: MonotonicClock = default_monotonic_clock();
 
    let start: Instant = monotonic_clock_now(clock);
@@ -80,7 +80,7 @@ default-monotonic-clock: monotonic-clock
 
 #### Telling the current human time:
 
-```rust=
+```rust
     let clock: WallClock = default_wall_clock();
 
     let the_current_time = wall_clock_now();
