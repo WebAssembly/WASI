@@ -1,31 +1,35 @@
 
-use { error, ip-address-family, usize } from common-types
-use { network } from wasi-network
-use { ip-socket, ip-socket-address } from wasi-socket-ip
+default interface wasi-udp {
+	use pkg.wasi-poll.{pollable}
+	use pkg.wasi-network.{network, error, ip-socket-address, ip-address-family}
 
-record datagram {
-	data: list<u8>, // Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.
-	remote-address: ip-socket-address,
+	record datagram {
+		data: list<u8>, // Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.
+		remote-address: ip-socket-address,
 
-	/// Possible future additions:
-	/// local-address: ip-socket-address, // IP_PKTINFO / IP_RECVDSTADDR / IPV6_PKTINFO
-	/// local-interface: u32, // IP_PKTINFO / IP_RECVIF
-	/// ttl: u8, // IP_RECVTTL
-	/// dscp: u6, // IP_RECVTOS
-	/// ecn: u2, // IP_RECVTOS
-}
+		/// Possible future additions:
+		/// local-address: ip-socket-address, // IP_PKTINFO / IP_RECVDSTADDR / IPV6_PKTINFO
+		/// local-interface: u32, // IP_PKTINFO / IP_RECVIF
+		/// ttl: u8, // IP_RECVTTL
+		/// dscp: u6, // IP_RECVTOS
+		/// ecn: u2, // IP_RECVTOS
+	}
 
-resource udp-socket implements ip-socket {
+	/// A UDP socket handle.
+    type udp-socket = u32
 
 	/// Create a new UDP socket.
 	/// 
-	/// Similar to `socket(AF_INET or AF_INET6, SOCK_DGRAM, 0 or IPPROTO_UDP)` in POSIX.
+	/// Similar to `socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)` in POSIX.
 	/// 
 	/// References:
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 	/// - https://man7.org/linux/man-pages/man2/socket.2.html
 	/// 
-	static new: func(network: handle network, address-family: ip-address-family) -> future<expected<handle udp-socket, error>>
+	create-udp-socket: func(network: network, address-family: ip-address-family) -> result<udp-socket, error>
+
+	/// Dispose of the specified `udp-socket`, after which it may no longer be used.
+	drop-udp-socket: func(this: udp-socket)
 
 	/// Bind the socket to a specific IP address and port.
 	///
@@ -45,7 +49,7 @@ resource udp-socket implements ip-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: func(local-address: ip-socket-address) -> future<expected<unit, error>>
+	bind: func(this: udp-socket, local-address: ip-socket-address) -> result<_, error>
 
 	/// Get the current bound address.
 	/// 
@@ -54,7 +58,7 @@ resource udp-socket implements ip-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
 	/// - https://man7.org/linux/man-pages/man2/getsockname.2.html
-	local-address: func() -> expected<ip-socket-address, error>
+	local-address: func(this: udp-socket) -> result<ip-socket-address, error>
 
 	/// receive a message.
 	/// 
@@ -68,7 +72,7 @@ resource udp-socket implements ip-socket {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
 	/// - https://man7.org/linux/man-pages/man2/recv.2.html
-	receive: func() -> future<expected<datagram, error>>
+	receive: func(this: udp-socket) -> result<datagram, error>
 
 	/// send a message to a specific destination address.
 	/// 
@@ -79,7 +83,7 @@ resource udp-socket implements ip-socket {
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html
 	/// - https://man7.org/linux/man-pages/man2/send.2.html
-	send: func(datagram: datagram) -> future<expected<unit, error>>
+	send: func(this: udp-socket, datagram: datagram) -> result<_, error>
 
 	/// Set the destination address.
 	/// 
@@ -100,14 +104,14 @@ resource udp-socket implements ip-socket {
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: func(remote-address: ip-socket-address) -> future<expected<unit, error>>
+	connect: func(this: udp-socket, remote-address: ip-socket-address) -> result<_, error>
 
 	/// Get the address set with `connect`.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
 	/// - https://man7.org/linux/man-pages/man2/getpeername.2.html
-	remote-address: func() -> expected<ip-socket-address, error>
+	remote-address: func(this: udp-socket) -> result<ip-socket-address, error>
 
 	/// The kernel buffer space reserved for sends/receives on this socket.
 	/// 
@@ -121,8 +125,44 @@ resource udp-socket implements ip-socket {
 	/// Fails when this socket is in the Listening state.
 	/// 
 	/// Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.
-	receive-buffer-size: func() -> expected<usize, error>
-	set-receive-buffer-size: func(value: usize) -> expected<unit, error>
-	send-buffer-size: func() -> expected<usize, error>
-	set-send-buffer-size: func(value: usize) -> expected<unit, error>
+	receive-buffer-size: func(this: udp-socket) -> result<u64, error>
+	set-receive-buffer-size: func(this: udp-socket, value: u64) -> result<_, error>
+	send-buffer-size: func(this: udp-socket) -> result<u64, error>
+	set-send-buffer-size: func(this: udp-socket, value: u64) -> result<_, error>
+
+	/// Whether this is a IPv4 or IPv6 socket.
+	/// 
+	/// Equivalent to the SO_DOMAIN socket option.
+	address-family: func(this: udp-socket) -> ip-address-family
+
+	/// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
+	unicast-hop-limit: func(this: udp-socket) -> result<u8, error>
+	set-unicast-hop-limit: func(this: udp-socket, value: u8) -> result<_, error>
+
+	/// Whether IPv4 compatibility (dual-stack) mode is disabled or not.
+	/// Implementations are not required to support dual-stack mode, so calling `set-ipv6-only(false)` might fail.
+	/// 
+	/// Fails when called on an IPv4 socket.
+	/// 
+	/// Equivalent to the IPV6_V6ONLY socket option.
+	ipv6-only: func(this: udp-socket) -> result<bool, error>
+	set-ipv6-only: func(this: udp-socket, value: bool) -> result<_, error>
+
+
+	/// Get/set the blocking mode of the socket.
+	/// 
+	/// By default a socket is in "blocking" mode, meaning that any function blocks and waits for its completion.
+	/// When switched to "non-blocking" mode, operations that would block return an `again` error. After which
+	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
+	/// 
+	/// Note: these functions are here for WASI Preview2 only.
+	/// They're planned to be removed when `async` is natively supported in Preview3.
+	non-blocking: func(this: udp-socket) -> result<bool, error>
+	set-non-blocking: func(this: udp-socket, value: bool) -> result<_, error>
+
+	/// Create a `pollable` which will resolve once the socket is ready for I/O.
+	/// 
+	/// Note: this function is here for WASI Preview2 only.
+	/// It's planned to be removed when `async` is natively supported in Preview3.
+	subscribe: func(this: udp-socket) -> pollable
 }
