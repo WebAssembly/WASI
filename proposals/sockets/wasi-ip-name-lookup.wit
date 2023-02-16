@@ -48,6 +48,8 @@ default interface wasi-ip-name-lookup {
 
 
 	/// Dispose of the specified `resolve-address-stream`, after which it may no longer be used.
+	/// 
+	/// Note: this function is scheduled to be removed when Resources are natively supported in Wit.
 	drop-resolve-address-stream: func(this: resolve-address-stream)
 
 	/// Get/set the blocking mode of the stream.
@@ -57,13 +59,13 @@ default interface wasi-ip-name-lookup {
 	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
 	/// 
 	/// Note: these functions are here for WASI Preview2 only.
-	/// They're planned to be removed when `async` is natively supported in Preview3.
+	/// They're planned to be removed when `future` is natively supported in Preview3.
 	non-blocking: func(this: resolve-address-stream) -> result<bool, error>
 	set-non-blocking: func(this: resolve-address-stream, value: bool) -> result<_, error>
 
 	/// Create a `pollable` which will resolve once the stream is ready for I/O.
 	/// 
 	/// Note: this function is here for WASI Preview2 only.
-	/// It's planned to be removed when `async` is natively supported in Preview3.
+	/// It's planned to be removed when `future` is natively supported in Preview3.
 	subscribe: func(this: resolve-address-stream) -> pollable
 }
