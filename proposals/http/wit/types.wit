@@ -13,7 +13,8 @@ default interface types {
     connect,
     options,
     trace,
-    patch
+    patch,
+    other(string)
   }
 
   // This type corresponds to HTTP standard Related Schemes.
