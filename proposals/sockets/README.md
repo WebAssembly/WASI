@@ -55,6 +55,8 @@ TODO before entering Phase 2.
 
 ### API walk-through
 
+The full API documentation can be found [here](wasi-proposal-template.md).
+
 [Walk through of how someone would use this API.]
 
 #### [Use case 1]

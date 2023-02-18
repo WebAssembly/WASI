@@ -1,0 +1,6 @@
+// An example dependency, showing how these look. Actual proposals should
+// delete this file and add their actual dependencies in the `deps` directory.
+
+interface example-dep-interface {
+    type example-dep-type = u32
+}
