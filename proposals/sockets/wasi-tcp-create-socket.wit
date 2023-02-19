@@ -8,8 +8,8 @@ default interface wasi-tcp-create-socket {
 	/// Similar to `socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)` in POSIX.
 	/// 
 	/// This function does not require a network capability handle. This is considered to be safe because
-	/// at time of creation, the socket is not "attached" to any `network` yet. Up to the moment `attach` is called,
-	/// the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
+	/// at time of creation, the socket is not bound to any `network` yet. Up to the moment `bind`/`listen`/`connect`
+	/// is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
 	/// 
 	/// References:
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html

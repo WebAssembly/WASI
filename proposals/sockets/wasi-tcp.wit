@@ -19,15 +19,8 @@ default interface wasi-tcp {
 		both,
 	}
 
-	
-	/// Attach the socket to a specific network.
-	/// 
-	/// Only "attached" sockets can perform any I/O.
-	///
-	/// Returns an error if the socket is already attached.
-	attach: func(this: tcp-socket, network: network) -> result<_, error>
 
-	/// Bind the socket to a specific IP address and port.
+	/// Bind the socket to a specific network on the provided IP address and port.
 	///
 	/// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
 	/// network interface(s) to bind to.
@@ -37,13 +30,12 @@ default interface wasi-tcp {
 	/// implicitly bind the socket.
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
 	/// - the socket is already bound.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: func(this: tcp-socket, local-address: ip-socket-address) -> result<_, error>
+	bind: func(this: tcp-socket, network: network, local-address: ip-socket-address) -> result<_, error>
 
 	/// Connect to a remote endpoint.
 	/// 
@@ -52,27 +44,29 @@ default interface wasi-tcp {
 	/// - a pair of streams is returned that can be used to read & write to the connection
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
+	/// - the socket is already bound to a different network.
+	/// - the provided network does not allow connections to the specified endpoint.
 	/// - the socket is already in the Connection or Listener state.
 	/// - either the remote IP address or port is 0.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: func(this: tcp-socket, remote-address: ip-socket-address) -> result<tuple<input-stream, output-stream>, error>
+	connect: func(this: tcp-socket, network: network, remote-address: ip-socket-address) -> result<tuple<input-stream, output-stream>, error>
 
 	/// Start listening for new connections.
 	/// 
 	/// Transitions the socket into the Listener state.
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
+	/// - the socket is already bound to a different network.
+	/// - the provided network does not allow listening on the specified address.
 	/// - the socket is already in the Connection or Listener state.
 	///
 	///  References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
 	/// - https://man7.org/linux/man-pages/man2/listen.2.html
-	listen: func(this: tcp-socket) -> result<_, error>
+	listen: func(this: tcp-socket, network: network) -> result<_, error>
 
 	/// Accept a new client socket.
 	/// 

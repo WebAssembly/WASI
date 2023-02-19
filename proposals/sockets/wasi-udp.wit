@@ -21,15 +21,8 @@ default interface wasi-udp {
 	}
 
 
-		
-	/// Attach the socket to a specific network.
-	/// 
-	/// Only "attached" sockets can perform any I/O.
-	///
-	/// Returns an error if the socket is already attached.
-	attach: func(this: udp-socket, network: network) -> result<_, error>
 
-	/// Bind the socket to a specific IP address and port.
+	/// Bind the socket to a specific network on the provided IP address and port.
 	///
 	/// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
 	/// network interface(s) to bind to.
@@ -39,41 +32,30 @@ default interface wasi-udp {
 	/// implicitly bind the socket.
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
 	/// - the socket is already bound.
-	/// 
-	/// TODO: disallow wildcard binds as long as there isn't a way to pass the local address to send & receive?
-	/// - https://blog.cloudflare.com/everything-you-ever-wanted-to-know-about-udp-sockets-but-were-afraid-to-ask-part-1/#sourcing-packets-from-a-wildcard-socket
-	/// - https://blog.powerdns.com/2012/10/08/on-binding-datagram-udp-sockets-to-the-any-addresses/
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
 	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	bind: func(this: udp-socket, local-address: ip-socket-address) -> result<_, error>
+	bind: func(this: udp-socket, network: network, local-address: ip-socket-address) -> result<_, error>
 
 	/// Set the destination address.
 	/// 
+	/// The local-address is updated based on the best network path to `remote-address`.
+	/// 
 	/// When a destination address is set:
 	/// - all receive operations will only return datagrams sent from the provided `remote-address`.
-	/// - the `send` function can still be used to send to any other destination, however you can't receive their response.
-	/// 
-	/// Similar to `connect(sock, ...)` in POSIX.
+	/// - the `send` function can only be used to send to this destination.
 	/// 
 	/// Note that this function does not generate any network traffic and the peer is not aware of this "connection".
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
-	/// 
-	/// TODO: "connect" is a rather odd name for this function because it doesn't reflect what's actually happening.
-	///     Feels like it was chosen just to shoehorn UDP into the existing Socket interface.
-	///     Do we have to keep this name?
-	/// 
-	/// TODO: add unconnect ability.
+	/// - the socket is already bound to a different network.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
 	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	connect: func(this: udp-socket, remote-address: ip-socket-address) -> result<_, error>
+	connect: func(this: udp-socket, network: network, remote-address: ip-socket-address) -> result<_, error>
 
 	/// Receive a message.
 	/// 
@@ -82,7 +64,7 @@ default interface wasi-udp {
 	/// - The number of bytes read.
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
+	/// - the socket is not bound.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html
@@ -96,7 +78,8 @@ default interface wasi-udp {
 	/// call `remote-address` to get their address.
 	/// 
 	/// Fails when:
-	/// - the socket is not attached to a network.
+	/// - the socket is not bound. Unlike POSIX, this function does not perform an implicit bind.
+	/// - the socket is in "connected" mode and the `datagram.remote-address` does not match the address passed to `connect`.
 	/// 
 	/// References
 	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html
