@@ -16,10 +16,7 @@ WASI is transitioning away from the `witx` format and its early experimental ABI
 
 All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
 
-Some APIs can not yet be supported in the `wit` format. The advancement of these proposals will be unblocked with work that is ongoing:
-
-- Proposals that require async/streams are expected to be unblocked in early Q2 2022
-- Proposals that depend on libc are expected to be unblocked by work in `wasi-libc` and elsewhere. Until then, implementers of these APIs should continue to use the snapshots in this repo, which use the `witx` format. We will provide updates on the progress of this work in the bi-weekly meetings.
+See the [Wit in WASI](docs/WitInWasi.md) document for more information about using Wit for WASI proposals.
 
 ---
 
