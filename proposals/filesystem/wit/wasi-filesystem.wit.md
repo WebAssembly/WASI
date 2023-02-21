@@ -78,10 +78,11 @@ flags descriptor-flags {
     /// `error-code::would-block` error code in situations where they would otherwise
     /// block. However, this non-blocking behavior is not required.
     /// Implementations are permitted to ignore this flag and block.
+    /// This is similar to `O_NONBLOCK` in POSIX.
     non-blocking,
     /// Request that writes be performed according to synchronized I/O file
     /// integrity completion. The data stored in the file and the file's
-    /// metadata are synchronized.
+    /// metadata are synchronized. This is similar to `O_SYNC` in POSIX.
     ///
     /// The precise semantics of this operation have not yet been defined for
     /// WASI. At this time, it should be interpreted as a request, and not a
@@ -89,14 +90,14 @@ flags descriptor-flags {
     file-integrity-sync,
     /// Request that writes be performed according to synchronized I/O data
     /// integrity completion. Only the data stored in the file is
-    /// synchronized.
+    /// synchronized. This is similar to `O_DSYNC` in POSIX.
     ///
     /// The precise semantics of this operation have not yet been defined for
     /// WASI. At this time, it should be interpreted as a request, and not a
     /// requirement.
     data-integrity-sync,
     /// Requests that reads be performed at the same level of integrety
-    /// requested for writes.
+    /// requested for writes. This is similar to `O_RSYNC` in POSIX.
     ///
     /// The precise semantics of this operation have not yet been defined for
     /// WASI. At this time, it should be interpreted as a request, and not a
@@ -154,13 +155,13 @@ flags path-flags {
 ```wit
 /// Open flags used by `open-at`.
 flags open-flags {
-    /// Create file if it does not exist.
+    /// Create file if it does not exist, similar to `O_CREAT` in POSIX.
     create,
-    /// Fail if not a directory.
+    /// Fail if not a directory, similar to `O_DIRECTORY` in POSIX.
     directory,
-    /// Fail if file already exists.
+    /// Fail if file already exists, similar to `O_EXCL` in POSIX.
     exclusive,
-    /// Truncate file to size 0.
+    /// Truncate file to size 0, similar to `O_TRUNC` in POSIX.
     truncate,
 }
 ```
@@ -237,84 +238,84 @@ record directory-entry {
 
 ## `error-code`
 ```wit
-/// Error codes returned by functions.
+/// Error codes returned by functions, similar to `errno` in POSIX.
 /// Not all of these error codes are returned by the functions provided by this
 /// API; some are used in higher-level library layers, and others are provided
 /// merely for alignment with POSIX.
 enum error-code {
-    /// Permission denied.
+    /// Permission denied, similar to `EACCES` in POSIX.
     access,
-    /// Resource unavailable, or operation would block.
+    /// Resource unavailable, or operation would block, similar to `EAGAIN` and `EWOULDBLOCK` in POSIX.
     would-block,
-    /// Connection already in progress.
+    /// Connection already in progress, similar to `EALREADY` in POSIX.
     already,
-    /// Bad descriptor.
+    /// Bad descriptor, similar to `EBADF` in POSIX.
     bad-descriptor,
-    /// Device or resource busy.
+    /// Device or resource busy, similar to `EBUSY` in POSIX.
     busy,
-    /// Resource deadlock would occur.
+    /// Resource deadlock would occur, similar to `EDEADLK` in POSIX.
     deadlock,
-    /// Storage quota exceeded.
+    /// Storage quota exceeded, similar to `EDQUOT` in POSIX.
     quota,
-    /// File exists.
+    /// File exists, similar to `EEXIST` in POSIX.
     exist,
-    /// File too large.
+    /// File too large, similar to `EFBIG` in POSIX.
     file-too-large,
-    /// Illegal byte sequence.
+    /// Illegal byte sequence, similar to `EILSEQ` in POSIX.
     illegal-byte-sequence,
-    /// Operation in progress.
+    /// Operation in progress, similar to `EINPROGRESS` in POSIX.
     in-progress,
-    /// Interrupted function.
+    /// Interrupted function, similar to `EINTR` in POSIX.
     interrupted,
-    /// Invalid argument.
+    /// Invalid argument, similar to `EINVAL` in POSIX.
     invalid,
-    /// I/O error.
+    /// I/O error, similar to `EIO` in POSIX.
     io,
-    /// Is a directory.
+    /// Is a directory, similar to `EISDIR` in POSIX.
     is-directory,
-    /// Too many levels of symbolic links.
+    /// Too many levels of symbolic links, similar to `ELOOP` in POSIX.
     loop,
-    /// Too many links.
+    /// Too many links, similar to `EMLINK` in POSIX.
     too-many-links,
-    /// Message too large.
+    /// Message too large, similar to `EMSGSIZE` in POSIX.
     message-size,
-    /// Filename too long.
+    /// Filename too long, similar to `ENAMETOOLONG` in POSIX.
     name-too-long,
-    /// No such device.
+    /// No such device, similar to `ENODEV` in POSIX.
     no-device,
-    /// No such file or directory.
+    /// No such file or directory, similar to `ENOENT` in POSIX.
     no-entry,
-    /// No locks available.
+    /// No locks available, similar to `ENOLCK` in POSIX.
     no-lock,
-    /// Not enough space.
+    /// Not enough space, similar to `ENOMEM` in POSIX.
     insufficient-memory,
-    /// No space left on device.
+    /// No space left on device, similar to `ENOSPC` in POSIX.
     insufficient-space,
-    /// Not a directory or a symbolic link to a directory.
+    /// Not a directory or a symbolic link to a directory, similar to `ENOTDIR` in POSIX.
     not-directory,
-    /// Directory not empty.
+    /// Directory not empty, similar to `ENOTEMPTY` in POSIX.
     not-empty,
-    /// State not recoverable.
+    /// State not recoverable, similar to `ENOTRECOVERABLE` in POSIX.
     not-recoverable,
-    /// Not supported
+    /// Not supported, similar to `ENOTSUP` and `ENOSYS` in POSIX.
     unsupported,
-    /// Inappropriate I/O control operation.
+    /// Inappropriate I/O control operation, similar to `ENOTTY` in POSIX.
     no-tty,
-    /// No such device or address.
+    /// No such device or address, similar to `ENXIO` in POSIX.
     no-such-device,
-    /// Value too large to be stored in data type.
+    /// Value too large to be stored in data type, similar to `EOVERFLOW` in POSIX.
     overflow,
-    /// Operation not permitted.
+    /// Operation not permitted, similar to `EPERM` in POSIX.
     not-permitted,
-    /// Broken pipe.
+    /// Broken pipe, similar to `EPIPE` in POSIX.
     pipe,
-    /// Read-only file system.
+    /// Read-only file system, similar to `EROFS` in POSIX.
     read-only,
-    /// Invalid seek.
+    /// Invalid seek, similar to `ESPIPE` in POSIX.
     invalid-seek,
-    /// Text file busy.
+    /// Text file busy, similar to `ETXTBSY` in POSIX.
     text-file-busy,
-    /// Cross-device link.
+    /// Cross-device link, similar to `EXDEV` in POSIX.
     cross-device,
 }
 ```
