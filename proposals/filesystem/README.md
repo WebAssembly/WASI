@@ -78,7 +78,7 @@ defined behaviors, which would conflict with the goal of being efficient.
 
 #### Opening a file
 
-```rust=
+```rust
 /// Write "Hello, World" into a file called "greeting.txt" in `dir`.
 fn write_hello_world_to_a_file(dir: Descriptor) -> Result<(), Errno> {
     let at_flags = AtFlags::FollowSymlinks;

@@ -278,58 +278,69 @@ be used.</p>
 <p>Size: 4, Alignment: 4</p>
 <h2><a href="#datetime" name="datetime"></a> <a href="#datetime"><code>datetime</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></h2>
 <p>Size: 16, Alignment: 8</p>
-<h2><a href="#o_flags" name="o_flags"></a> <a href="#o_flags"><code>o-flags</code></a>: record</h2>
+<h2><a href="#path_flags" name="path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: record</h2>
+<p>Flags determining the method of how paths are resolved.</p>
+<p>Size: 1, Alignment: 1</p>
+<h3>Record Fields</h3>
+<ul>
+<li>
+<p><a href="path_flags.symlink_follow" name="path_flags.symlink_follow"></a> <a href="#path_flags.symlink_follow"><code>symlink-follow</code></a>: </p>
+<p>As long as the resolved path corresponds to a symbolic link, it is expanded.
+Bit: 0</p>
+</li>
+</ul>
+<h2><a href="#open_flags" name="open_flags"></a> <a href="#open_flags"><code>open-flags</code></a>: record</h2>
 <p>Open flags used by <a href="#open_at"><code>open-at</code></a>.</p>
 <p>Size: 1, Alignment: 1</p>
 <h3>Record Fields</h3>
 <ul>
 <li>
-<p><a href="o_flags.create" name="o_flags.create"></a> <a href="#o_flags.create"><code>create</code></a>: </p>
+<p><a href="open_flags.create" name="open_flags.create"></a> <a href="#open_flags.create"><code>create</code></a>: </p>
 <p>Create file if it does not exist.
 Bit: 0</p>
 </li>
 <li>
-<p><a href="o_flags.directory" name="o_flags.directory"></a> <a href="#o_flags.directory"><code>directory</code></a>: </p>
+<p><a href="open_flags.directory" name="open_flags.directory"></a> <a href="#open_flags.directory"><code>directory</code></a>: </p>
 <p>Fail if not a directory.
 Bit: 1</p>
 </li>
 <li>
-<p><a href="o_flags.excl" name="o_flags.excl"></a> <a href="#o_flags.excl"><code>excl</code></a>: </p>
+<p><a href="open_flags.exclusive" name="open_flags.exclusive"></a> <a href="#open_flags.exclusive"><code>exclusive</code></a>: </p>
 <p>Fail if file already exists.
 Bit: 2</p>
 </li>
 <li>
-<p><a href="o_flags.trunc" name="o_flags.trunc"></a> <a href="#o_flags.trunc"><code>trunc</code></a>: </p>
+<p><a href="open_flags.truncate" name="open_flags.truncate"></a> <a href="#open_flags.truncate"><code>truncate</code></a>: </p>
 <p>Truncate file to size 0.
 Bit: 3</p>
 </li>
 </ul>
-<h2><a href="#mode" name="mode"></a> <a href="#mode"><code>mode</code></a>: record</h2>
+<h2><a href="#modes" name="modes"></a> <a href="#modes"><code>modes</code></a>: record</h2>
 <p>Permissions mode used by <a href="#open_at"><code>open-at</code></a>, <a href="#change_file_permissions_at"><code>change-file-permissions-at</code></a>, and
 similar.</p>
 <p>Size: 1, Alignment: 1</p>
 <h3>Record Fields</h3>
 <ul>
 <li>
-<p><a href="mode.readable" name="mode.readable"></a> <a href="#mode.readable"><code>readable</code></a>: </p>
+<p><a href="modes.readable" name="modes.readable"></a> <a href="#modes.readable"><code>readable</code></a>: </p>
 <p>True if the resource is considered readable by the containing
 filesystem.
 Bit: 0</p>
 </li>
 <li>
-<p><a href="mode.writeable" name="mode.writeable"></a> <a href="#mode.writeable"><code>writeable</code></a>: </p>
+<p><a href="modes.writeable" name="modes.writeable"></a> <a href="#modes.writeable"><code>writeable</code></a>: </p>
 <p>True if the resource is considered writeable by the containing
 filesystem.
 Bit: 1</p>
 </li>
 <li>
-<p><a href="mode.executable" name="mode.executable"></a> <a href="#mode.executable"><code>executable</code></a>: </p>
+<p><a href="modes.executable" name="modes.executable"></a> <a href="#modes.executable"><code>executable</code></a>: </p>
 <p>True if the resource is considered executable by the containing
 filesystem. This does not apply to directories.
 Bit: 2</p>
 </li>
 </ul>
-<h2><a href="#linkcount" name="linkcount"></a> <a href="#linkcount"><code>linkcount</code></a>: <code>u64</code></h2>
+<h2><a href="#link_count" name="link_count"></a> <a href="#link_count"><code>link-count</code></a>: <code>u64</code></h2>
 <p>Number of hard links to an inode.</p>
 <p>Size: 8, Alignment: 8</p>
 <h2><a href="#inode" name="inode"></a> <a href="#inode"><code>inode</code></a>: <code>u64</code></h2>
@@ -338,7 +349,7 @@ Bit: 2</p>
 <h2><a href="#filesize" name="filesize"></a> <a href="#filesize"><code>filesize</code></a>: <code>u64</code></h2>
 <p>File size or length of a region within a file.</p>
 <p>Size: 8, Alignment: 8</p>
-<h2><a href="#errno" name="errno"></a> <a href="#errno"><code>errno</code></a>: enum</h2>
+<h2><a href="#error_code" name="error_code"></a> <a href="#error_code"><code>error-code</code></a>: enum</h2>
 <p>Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
 API; some are used in higher-level library layers, and others are provided
@@ -347,159 +358,155 @@ merely for alignment with POSIX.</p>
 <h3>Enum Cases</h3>
 <ul>
 <li>
-<p><a href="errno.access" name="errno.access"></a> <a href="#errno.access"><code>access</code></a></p>
+<p><a href="error_code.access" name="error_code.access"></a> <a href="#error_code.access"><code>access</code></a></p>
 <p>Permission denied.</p>
 </li>
 <li>
-<p><a href="errno.again" name="errno.again"></a> <a href="#errno.again"><code>again</code></a></p>
+<p><a href="error_code.would_block" name="error_code.would_block"></a> <a href="#error_code.would_block"><code>would-block</code></a></p>
 <p>Resource unavailable, or operation would block.</p>
 </li>
 <li>
-<p><a href="errno.already" name="errno.already"></a> <a href="#errno.already"><code>already</code></a></p>
+<p><a href="error_code.already" name="error_code.already"></a> <a href="#error_code.already"><code>already</code></a></p>
 <p>Connection already in progress.</p>
 </li>
 <li>
-<p><a href="errno.badf" name="errno.badf"></a> <a href="#errno.badf"><code>badf</code></a></p>
+<p><a href="error_code.bad_descriptor" name="error_code.bad_descriptor"></a> <a href="#error_code.bad_descriptor"><code>bad-descriptor</code></a></p>
 <p>Bad descriptor.</p>
 </li>
 <li>
-<p><a href="errno.busy" name="errno.busy"></a> <a href="#errno.busy"><code>busy</code></a></p>
+<p><a href="error_code.busy" name="error_code.busy"></a> <a href="#error_code.busy"><code>busy</code></a></p>
 <p>Device or resource busy.</p>
 </li>
 <li>
-<p><a href="errno.deadlk" name="errno.deadlk"></a> <a href="#errno.deadlk"><code>deadlk</code></a></p>
+<p><a href="error_code.deadlock" name="error_code.deadlock"></a> <a href="#error_code.deadlock"><code>deadlock</code></a></p>
 <p>Resource deadlock would occur.</p>
 </li>
 <li>
-<p><a href="errno.dquot" name="errno.dquot"></a> <a href="#errno.dquot"><code>dquot</code></a></p>
+<p><a href="error_code.quota" name="error_code.quota"></a> <a href="#error_code.quota"><code>quota</code></a></p>
 <p>Storage quota exceeded.</p>
 </li>
 <li>
-<p><a href="errno.exist" name="errno.exist"></a> <a href="#errno.exist"><code>exist</code></a></p>
+<p><a href="error_code.exist" name="error_code.exist"></a> <a href="#error_code.exist"><code>exist</code></a></p>
 <p>File exists.</p>
 </li>
 <li>
-<p><a href="errno.fbig" name="errno.fbig"></a> <a href="#errno.fbig"><code>fbig</code></a></p>
+<p><a href="error_code.file_too_large" name="error_code.file_too_large"></a> <a href="#error_code.file_too_large"><code>file-too-large</code></a></p>
 <p>File too large.</p>
 </li>
 <li>
-<p><a href="errno.ilseq" name="errno.ilseq"></a> <a href="#errno.ilseq"><code>ilseq</code></a></p>
+<p><a href="error_code.illegal_byte_sequence" name="error_code.illegal_byte_sequence"></a> <a href="#error_code.illegal_byte_sequence"><code>illegal-byte-sequence</code></a></p>
 <p>Illegal byte sequence.</p>
 </li>
 <li>
-<p><a href="errno.inprogress" name="errno.inprogress"></a> <a href="#errno.inprogress"><code>inprogress</code></a></p>
+<p><a href="error_code.in_progress" name="error_code.in_progress"></a> <a href="#error_code.in_progress"><code>in-progress</code></a></p>
 <p>Operation in progress.</p>
 </li>
 <li>
-<p><a href="errno.intr" name="errno.intr"></a> <a href="#errno.intr"><code>intr</code></a></p>
+<p><a href="error_code.interrupted" name="error_code.interrupted"></a> <a href="#error_code.interrupted"><code>interrupted</code></a></p>
 <p>Interrupted function.</p>
 </li>
 <li>
-<p><a href="errno.inval" name="errno.inval"></a> <a href="#errno.inval"><code>inval</code></a></p>
+<p><a href="error_code.invalid" name="error_code.invalid"></a> <a href="#error_code.invalid"><code>invalid</code></a></p>
 <p>Invalid argument.</p>
 </li>
 <li>
-<p><a href="errno.io" name="errno.io"></a> <a href="#errno.io"><code>io</code></a></p>
+<p><a href="error_code.io" name="error_code.io"></a> <a href="#error_code.io"><code>io</code></a></p>
 <p>I/O error.</p>
 </li>
 <li>
-<p><a href="errno.isdir" name="errno.isdir"></a> <a href="#errno.isdir"><code>isdir</code></a></p>
+<p><a href="error_code.is_directory" name="error_code.is_directory"></a> <a href="#error_code.is_directory"><code>is-directory</code></a></p>
 <p>Is a directory.</p>
 </li>
 <li>
-<p><a href="errno.loop" name="errno.loop"></a> <a href="#errno.loop"><code>loop</code></a></p>
+<p><a href="error_code.loop" name="error_code.loop"></a> <a href="#error_code.loop"><code>loop</code></a></p>
 <p>Too many levels of symbolic links.</p>
 </li>
 <li>
-<p><a href="errno.mlink" name="errno.mlink"></a> <a href="#errno.mlink"><code>mlink</code></a></p>
+<p><a href="error_code.too_many_links" name="error_code.too_many_links"></a> <a href="#error_code.too_many_links"><code>too-many-links</code></a></p>
 <p>Too many links.</p>
 </li>
 <li>
-<p><a href="errno.msgsize" name="errno.msgsize"></a> <a href="#errno.msgsize"><code>msgsize</code></a></p>
+<p><a href="error_code.message_size" name="error_code.message_size"></a> <a href="#error_code.message_size"><code>message-size</code></a></p>
 <p>Message too large.</p>
 </li>
 <li>
-<p><a href="errno.nametoolong" name="errno.nametoolong"></a> <a href="#errno.nametoolong"><code>nametoolong</code></a></p>
+<p><a href="error_code.name_too_long" name="error_code.name_too_long"></a> <a href="#error_code.name_too_long"><code>name-too-long</code></a></p>
 <p>Filename too long.</p>
 </li>
 <li>
-<p><a href="errno.nodev" name="errno.nodev"></a> <a href="#errno.nodev"><code>nodev</code></a></p>
+<p><a href="error_code.no_device" name="error_code.no_device"></a> <a href="#error_code.no_device"><code>no-device</code></a></p>
 <p>No such device.</p>
 </li>
 <li>
-<p><a href="errno.noent" name="errno.noent"></a> <a href="#errno.noent"><code>noent</code></a></p>
+<p><a href="error_code.no_entry" name="error_code.no_entry"></a> <a href="#error_code.no_entry"><code>no-entry</code></a></p>
 <p>No such file or directory.</p>
 </li>
 <li>
-<p><a href="errno.nolck" name="errno.nolck"></a> <a href="#errno.nolck"><code>nolck</code></a></p>
+<p><a href="error_code.no_lock" name="error_code.no_lock"></a> <a href="#error_code.no_lock"><code>no-lock</code></a></p>
 <p>No locks available.</p>
 </li>
 <li>
-<p><a href="errno.nomem" name="errno.nomem"></a> <a href="#errno.nomem"><code>nomem</code></a></p>
+<p><a href="error_code.insufficient_memory" name="error_code.insufficient_memory"></a> <a href="#error_code.insufficient_memory"><code>insufficient-memory</code></a></p>
 <p>Not enough space.</p>
 </li>
 <li>
-<p><a href="errno.nospc" name="errno.nospc"></a> <a href="#errno.nospc"><code>nospc</code></a></p>
+<p><a href="error_code.insufficient_space" name="error_code.insufficient_space"></a> <a href="#error_code.insufficient_space"><code>insufficient-space</code></a></p>
 <p>No space left on device.</p>
 </li>
 <li>
-<p><a href="errno.nosys" name="errno.nosys"></a> <a href="#errno.nosys"><code>nosys</code></a></p>
-<p>Function not supported.</p>
-</li>
-<li>
-<p><a href="errno.notdir" name="errno.notdir"></a> <a href="#errno.notdir"><code>notdir</code></a></p>
+<p><a href="error_code.not_directory" name="error_code.not_directory"></a> <a href="#error_code.not_directory"><code>not-directory</code></a></p>
 <p>Not a directory or a symbolic link to a directory.</p>
 </li>
 <li>
-<p><a href="errno.notempty" name="errno.notempty"></a> <a href="#errno.notempty"><code>notempty</code></a></p>
+<p><a href="error_code.not_empty" name="error_code.not_empty"></a> <a href="#error_code.not_empty"><code>not-empty</code></a></p>
 <p>Directory not empty.</p>
 </li>
 <li>
-<p><a href="errno.notrecoverable" name="errno.notrecoverable"></a> <a href="#errno.notrecoverable"><code>notrecoverable</code></a></p>
+<p><a href="error_code.not_recoverable" name="error_code.not_recoverable"></a> <a href="#error_code.not_recoverable"><code>not-recoverable</code></a></p>
 <p>State not recoverable.</p>
 </li>
 <li>
-<p><a href="errno.notsup" name="errno.notsup"></a> <a href="#errno.notsup"><code>notsup</code></a></p>
-<p>Not supported, or operation not supported on socket.</p>
+<p><a href="error_code.unsupported" name="error_code.unsupported"></a> <a href="#error_code.unsupported"><code>unsupported</code></a></p>
+<p>Not supported</p>
 </li>
 <li>
-<p><a href="errno.notty" name="errno.notty"></a> <a href="#errno.notty"><code>notty</code></a></p>
+<p><a href="error_code.no_tty" name="error_code.no_tty"></a> <a href="#error_code.no_tty"><code>no-tty</code></a></p>
 <p>Inappropriate I/O control operation.</p>
 </li>
 <li>
-<p><a href="errno.nxio" name="errno.nxio"></a> <a href="#errno.nxio"><code>nxio</code></a></p>
+<p><a href="error_code.no_such_device" name="error_code.no_such_device"></a> <a href="#error_code.no_such_device"><code>no-such-device</code></a></p>
 <p>No such device or address.</p>
 </li>
 <li>
-<p><a href="errno.overflow" name="errno.overflow"></a> <a href="#errno.overflow"><code>overflow</code></a></p>
+<p><a href="error_code.overflow" name="error_code.overflow"></a> <a href="#error_code.overflow"><code>overflow</code></a></p>
 <p>Value too large to be stored in data type.</p>
 </li>
 <li>
-<p><a href="errno.perm" name="errno.perm"></a> <a href="#errno.perm"><code>perm</code></a></p>
+<p><a href="error_code.not_permitted" name="error_code.not_permitted"></a> <a href="#error_code.not_permitted"><code>not-permitted</code></a></p>
 <p>Operation not permitted.</p>
 </li>
 <li>
-<p><a href="errno.pipe" name="errno.pipe"></a> <a href="#errno.pipe"><code>pipe</code></a></p>
+<p><a href="error_code.pipe" name="error_code.pipe"></a> <a href="#error_code.pipe"><code>pipe</code></a></p>
 <p>Broken pipe.</p>
 </li>
 <li>
-<p><a href="errno.rofs" name="errno.rofs"></a> <a href="#errno.rofs"><code>rofs</code></a></p>
+<p><a href="error_code.read_only" name="error_code.read_only"></a> <a href="#error_code.read_only"><code>read-only</code></a></p>
 <p>Read-only file system.</p>
 </li>
 <li>
-<p><a href="errno.spipe" name="errno.spipe"></a> <a href="#errno.spipe"><code>spipe</code></a></p>
+<p><a href="error_code.invalid_seek" name="error_code.invalid_seek"></a> <a href="#error_code.invalid_seek"><code>invalid-seek</code></a></p>
 <p>Invalid seek.</p>
 </li>
 <li>
-<p><a href="errno.txtbsy" name="errno.txtbsy"></a> <a href="#errno.txtbsy"><code>txtbsy</code></a></p>
+<p><a href="error_code.text_file_busy" name="error_code.text_file_busy"></a> <a href="#error_code.text_file_busy"><code>text-file-busy</code></a></p>
 <p>Text file busy.</p>
 </li>
 <li>
-<p><a href="errno.xdev" name="errno.xdev"></a> <a href="#errno.xdev"><code>xdev</code></a></p>
+<p><a href="error_code.cross_device" name="error_code.cross_device"></a> <a href="#error_code.cross_device"><code>cross-device</code></a></p>
 <p>Cross-device link.</p>
 </li>
 </ul>
-<h2><a href="#dir_entry_stream" name="dir_entry_stream"></a> <a href="#dir_entry_stream"><code>dir-entry-stream</code></a>: <code>u32</code></h2>
+<h2><a href="#directory_entry_stream" name="directory_entry_stream"></a> <a href="#directory_entry_stream"><code>directory-entry-stream</code></a>: <code>u32</code></h2>
 <p>A stream of directory entries.</p>
 <p>Size: 4, Alignment: 4</p>
 <h2><a href="#device" name="device"></a> <a href="#device"><code>device</code></a>: <code>u64</code></h2>
@@ -546,13 +553,13 @@ any of the other types specified.</p>
 <p>The descriptor refers to a socket.</p>
 </li>
 </ul>
-<h2><a href="#dir_entry" name="dir_entry"></a> <a href="#dir_entry"><code>dir-entry</code></a>: record</h2>
+<h2><a href="#directory_entry" name="directory_entry"></a> <a href="#directory_entry"><code>directory-entry</code></a>: record</h2>
 <p>A directory entry.</p>
 <p>Size: 32, Alignment: 8</p>
 <h3>Record Fields</h3>
 <ul>
 <li>
-<p><a href="dir_entry.ino" name="dir_entry.ino"></a> <a href="#dir_entry.ino"><code>ino</code></a>: option&lt;<a href="#inode"><a href="#inode"><code>inode</code></a></a>&gt;</p>
+<p><a href="directory_entry.inode" name="directory_entry.inode"></a> <a href="#directory_entry.inode"><a href="#inode"><code>inode</code></a></a>: option&lt;<a href="#inode"><a href="#inode"><code>inode</code></a></a>&gt;</p>
 <p>The serial number of the object referred to by this directory entry.
 May be none if the inode value is not known.</p>
 <p>When this is none, libc implementations might do an extra <a href="#stat_at"><code>stat-at</code></a>
@@ -560,11 +567,11 @@ call to retrieve the inode number to fill their <code>d_ino</code> fields, so
 implementations which can set this to a non-none value should do so.</p>
 </li>
 <li>
-<p><a href="dir_entry.type" name="dir_entry.type"></a> <a href="#dir_entry.type"><a href="#type"><code>type</code></a></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
+<p><a href="directory_entry.type" name="directory_entry.type"></a> <a href="#directory_entry.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>The type of the file referred to by this directory entry.</p>
 </li>
 <li>
-<p><a href="dir_entry.name" name="dir_entry.name"></a> <a href="#dir_entry.name"><code>name</code></a>: <code>string</code></p>
+<p><a href="directory_entry.name" name="directory_entry.name"></a> <a href="#directory_entry.name"><code>name</code></a>: <code>string</code></p>
 <p>The name of the object.</p>
 </li>
 </ul>
@@ -585,16 +592,16 @@ Bit: 0</p>
 Bit: 1</p>
 </li>
 <li>
-<p><a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> <a href="#descriptor_flags.nonblock"><code>nonblock</code></a>: </p>
+<p><a href="descriptor_flags.non_blocking" name="descriptor_flags.non_blocking"></a> <a href="#descriptor_flags.non_blocking"><code>non-blocking</code></a>: </p>
 <p>Requests non-blocking operation.</p>
 <p>When this flag is enabled, functions may return immediately with an
-<a href="#errno.again"><code>errno::again</code></a> error code in situations where they would otherwise
+<a href="#error_code.would_block"><code>error-code::would-block</code></a> error code in situations where they would otherwise
 block. However, this non-blocking behavior is not required.
 Implementations are permitted to ignore this flag and block.
 Bit: 2</p>
 </li>
 <li>
-<p><a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> <a href="#descriptor_flags.sync"><a href="#sync"><code>sync</code></a></a>: </p>
+<p><a href="descriptor_flags.file_integrity_sync" name="descriptor_flags.file_integrity_sync"></a> <a href="#descriptor_flags.file_integrity_sync"><code>file-integrity-sync</code></a>: </p>
 <p>Request that writes be performed according to synchronized I/O file
 integrity completion. The data stored in the file and the file's
 metadata are synchronized.</p>
@@ -604,7 +611,7 @@ requirement.
 Bit: 3</p>
 </li>
 <li>
-<p><a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> <a href="#descriptor_flags.dsync"><code>dsync</code></a>: </p>
+<p><a href="descriptor_flags.data_integrity_sync" name="descriptor_flags.data_integrity_sync"></a> <a href="#descriptor_flags.data_integrity_sync"><code>data-integrity-sync</code></a>: </p>
 <p>Request that writes be performed according to synchronized I/O data
 integrity completion. Only the data stored in the file is
 synchronized.</p>
@@ -614,7 +621,7 @@ requirement.
 Bit: 4</p>
 </li>
 <li>
-<p><a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> <a href="#descriptor_flags.rsync"><code>rsync</code></a>: </p>
+<p><a href="descriptor_flags.requested_write_sync" name="descriptor_flags.requested_write_sync"></a> <a href="#descriptor_flags.requested_write_sync"><code>requested-write-sync</code></a>: </p>
 <p>Requests that reads be performed at the same level of integrety
 requested for writes.</p>
 <p>The precise semantics of this operation have not yet been defined for
@@ -628,7 +635,7 @@ Bit: 5</p>
 <p>When this flag is unset on a descriptor, operations using the
 descriptor which would create, rename, delete, modify the data or
 metadata of filesystem objects, or obtain another handle which
-would permit any of those, shall fail with <a href="#errno.rofs"><code>errno::rofs</code></a> if
+would permit any of those, shall fail with <a href="#error_code.read_only"><code>error-code::read-only</code></a> if
 they would otherwise succeed.</p>
 <p>This may only be set on directories.
 Bit: 6</p>
@@ -665,19 +672,19 @@ with the filesystem.</p>
 <h3>Record Fields</h3>
 <ul>
 <li>
-<p><a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> <a href="#descriptor_stat.dev"><code>dev</code></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
+<p><a href="descriptor_stat.device" name="descriptor_stat.device"></a> <a href="#descriptor_stat.device"><a href="#device"><code>device</code></a></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
 <p>Device ID of device containing the file.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> <a href="#descriptor_stat.ino"><code>ino</code></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
+<p><a href="descriptor_stat.inode" name="descriptor_stat.inode"></a> <a href="#descriptor_stat.inode"><a href="#inode"><code>inode</code></a></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
 <p>File serial number.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.type" name="descriptor_stat.type"></a> <a href="#descriptor_stat.type"><a href="#type"><code>type</code></a></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
+<p><a href="descriptor_stat.type" name="descriptor_stat.type"></a> <a href="#descriptor_stat.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>File type.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> <a href="#descriptor_stat.nlink"><code>nlink</code></a>: <a href="#linkcount"><a href="#linkcount"><code>linkcount</code></a></a></p>
+<p><a href="descriptor_stat.link_count" name="descriptor_stat.link_count"></a> <a href="#descriptor_stat.link_count"><a href="#link_count"><code>link-count</code></a></a>: <a href="#link_count"><a href="#link_count"><code>link-count</code></a></a></p>
 <p>Number of hard links to the file.</p>
 </li>
 <li>
@@ -686,27 +693,16 @@ with the filesystem.</p>
 in bytes of the pathname contained in the symbolic link.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> <a href="#descriptor_stat.atim"><code>atim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p><a href="descriptor_stat.data_access_timestamp" name="descriptor_stat.data_access_timestamp"></a> <a href="#descriptor_stat.data_access_timestamp"><code>data-access-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
 <p>Last data access timestamp.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> <a href="#descriptor_stat.mtim"><code>mtim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p><a href="descriptor_stat.data_modification_timestamp" name="descriptor_stat.data_modification_timestamp"></a> <a href="#descriptor_stat.data_modification_timestamp"><code>data-modification-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
 <p>Last data modification timestamp.</p>
 </li>
 <li>
-<p><a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> <a href="#descriptor_stat.ctim"><code>ctim</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p><a href="descriptor_stat.status_change_timestamp" name="descriptor_stat.status_change_timestamp"></a> <a href="#descriptor_stat.status_change_timestamp"><code>status-change-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
 <p>Last file status change timestamp.</p>
-</li>
-</ul>
-<h2><a href="#at_flags" name="at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: record</h2>
-<p>Flags determining the method of how paths are resolved.</p>
-<p>Size: 1, Alignment: 1</p>
-<h3>Record Fields</h3>
-<ul>
-<li>
-<p><a href="at_flags.symlink_follow" name="at_flags.symlink_follow"></a> <a href="#at_flags.symlink_follow"><code>symlink-follow</code></a>: </p>
-<p>As long as the resolved path corresponds to a symbolic link, it is expanded.
-Bit: 0</p>
 </li>
 </ul>
 <h2><a href="#advice" name="advice"></a> <a href="#advice"><code>advice</code></a>: enum</h2>
@@ -743,6 +739,8 @@ Bit: 0</p>
 <hr />
 <h4><a href="#read_via_stream" name="read_via_stream"></a> <a href="#read_via_stream"><code>read-via-stream</code></a></h4>
 <p>Return a stream for reading from a file.</p>
+<p>Multiple read, write, and append streams may be active on the same open
+file and they do not interfere with each other.</p>
 <p>Note: This allows using <code>read-stream</code>, which is similar to <a href="#read"><code>read</code></a> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -751,7 +749,7 @@ Bit: 0</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#read_via_stream.result0" name="read_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#read_via_stream.result0" name="read_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#write_via_stream" name="write_via_stream"></a> <a href="#write_via_stream"><code>write-via-stream</code></a></h4>
@@ -764,7 +762,7 @@ Bit: 0</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#write_via_stream.result0" name="write_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#write_via_stream.result0" name="write_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#append_via_stream" name="append_via_stream"></a> <a href="#append_via_stream"><code>append-via-stream</code></a></h4>
@@ -778,55 +776,55 @@ Bit: 0</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#append_via_stream.result0" name="append_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#append_via_stream.result0" name="append_via_stream.result0"></a> <code>result0</code>: result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#fadvise" name="fadvise"></a> <a href="#fadvise"><code>fadvise</code></a></h4>
+<h4><a href="#advise" name="advise"></a> <a href="#advise"><code>advise</code></a></h4>
 <p>Provide file advisory information on a descriptor.</p>
 <p>This is similar to <code>posix_fadvise</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#fadvise.this" name="fadvise.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#fadvise.offset" name="fadvise.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
-<li><a href="#fadvise.len" name="fadvise.len"></a> <code>len</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
-<li><a href="#fadvise.advice" name="fadvise.advice"></a> <a href="#advice"><code>advice</code></a>: <a href="#advice"><a href="#advice"><code>advice</code></a></a></li>
+<li><a href="#advise.this" name="advise.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#advise.offset" name="advise.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+<li><a href="#advise.length" name="advise.length"></a> <code>length</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+<li><a href="#advise.advice" name="advise.advice"></a> <a href="#advice"><code>advice</code></a>: <a href="#advice"><a href="#advice"><code>advice</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#fadvise.result0" name="fadvise.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#advise.result0" name="advise.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#datasync" name="datasync"></a> <a href="#datasync"><code>datasync</code></a></h4>
+<h4><a href="#sync_data" name="sync_data"></a> <a href="#sync_data"><code>sync-data</code></a></h4>
 <p>Synchronize the data of a file to disk.</p>
 <p>This function succeeds with no effect if the file descriptor is not
 opened for writing.</p>
 <p>Note: This is similar to <code>fdatasync</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#datasync.this" name="datasync.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#sync_data.this" name="sync_data.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#datasync.result0" name="datasync.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#sync_data.result0" name="sync_data.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#flags" name="flags"></a> <a href="#flags"><code>flags</code></a></h4>
+<h4><a href="#get_flags" name="get_flags"></a> <a href="#get_flags"><code>get-flags</code></a></h4>
 <p>Get flags associated with a descriptor.</p>
 <p>Note: This returns similar flags to <code>fcntl(fd, F_GETFL)</code> in POSIX.</p>
 <p>Note: This returns the value that was the <code>fs_flags</code> value returned
 from <code>fdstat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#flags.this" name="flags.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#get_flags.this" name="get_flags.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#flags.result0" name="flags.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#get_flags.result0" name="get_flags.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#type" name="type"></a> <a href="#type"><code>type</code></a></h4>
+<h4><a href="#get_type" name="get_type"></a> <a href="#get_type"><code>get-type</code></a></h4>
 <p>Get the dynamic type of a descriptor.</p>
-<p>Note: This returns the same value as the <a href="#type"><code>type</code></a> field of the <code>fd-stat</code>
+<p>Note: This returns the same value as the <code>type</code> field of the <code>fd-stat</code>
 returned by <a href="#stat"><code>stat</code></a>, <a href="#stat_at"><code>stat-at</code></a> and similar.</p>
 <p>Note: This returns similar flags to the <code>st_mode &amp; S_IFMT</code> value provided
 by <code>fstat</code> in POSIX.</p>
@@ -834,26 +832,26 @@ by <code>fstat</code> in POSIX.</p>
 from <code>fdstat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#type.this" name="type.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#get_type.this" name="get_type.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#type.result0" name="type.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#get_type.result0" name="get_type.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#set_flags" name="set_flags"></a> <a href="#set_flags"><code>set-flags</code></a></h4>
 <p>Set status flags associated with a descriptor.</p>
-<p>This function may only change the <code>append</code> and <code>nonblock</code> flags.</p>
+<p>This function may only change the <code>non-blocking</code> flag.</p>
 <p>Note: This is similar to <code>fcntl(fd, F_SETFL, flags)</code> in POSIX.</p>
 <p>Note: This was called <code>fd_fdstat_set_flags</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#set_flags.this" name="set_flags.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#set_flags.flags" name="set_flags.flags"></a> <a href="#flags"><code>flags</code></a>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
+<li><a href="#set_flags.flags" name="set_flags.flags"></a> <code>flags</code>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#set_flags.result0" name="set_flags.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#set_flags.result0" name="set_flags.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#set_size" name="set_size"></a> <a href="#set_size"><code>set-size</code></a></h4>
@@ -867,7 +865,7 @@ extra bytes are filled with zeros.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#set_size.result0" name="set_size.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#set_size.result0" name="set_size.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#set_times" name="set_times"></a> <a href="#set_times"><code>set-times</code></a></h4>
@@ -877,64 +875,65 @@ extra bytes are filled with zeros.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#set_times.this" name="set_times.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#set_times.atim" name="set_times.atim"></a> <code>atim</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
-<li><a href="#set_times.mtim" name="set_times.mtim"></a> <code>mtim</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
+<li><a href="#set_times.data_access_timestamp" name="set_times.data_access_timestamp"></a> <code>data-access-timestamp</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
+<li><a href="#set_times.data_modification_timestamp" name="set_times.data_modification_timestamp"></a> <code>data-modification-timestamp</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#set_times.result0" name="set_times.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#set_times.result0" name="set_times.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#pread" name="pread"></a> <a href="#pread"><code>pread</code></a></h4>
+<h4><a href="#read" name="read"></a> <a href="#read"><code>read</code></a></h4>
 <p>Read from a descriptor, without using and updating the descriptor's offset.</p>
 <p>This function returns a list of bytes containing the data that was
 read, along with a bool which, when true, indicates that the end of the
-file was reached. The returned list will contain up to <code>len</code> bytes; it
+file was reached. The returned list will contain up to <code>length</code> bytes; it
 may return fewer than requested, if the end of the file is reached or
 if the I/O operation is interrupted.</p>
-<p>Note: This is similar to <a href="#pread"><code>pread</code></a> in POSIX.</p>
+<p>Note: This is similar to <code>pread</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#pread.this" name="pread.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#pread.len" name="pread.len"></a> <code>len</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
-<li><a href="#pread.offset" name="pread.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+<li><a href="#read.this" name="read.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#read.length" name="read.length"></a> <code>length</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+<li><a href="#read.offset" name="read.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#pread.result0" name="pread.result0"></a> <code>result0</code>: result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#read.result0" name="read.result0"></a> <code>result0</code>: result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#pwrite" name="pwrite"></a> <a href="#pwrite"><code>pwrite</code></a></h4>
+<h4><a href="#write" name="write"></a> <a href="#write"><code>write</code></a></h4>
 <p>Write to a descriptor, without using and updating the descriptor's offset.</p>
 <p>It is valid to write past the end of a file; the file is extended to the
 extent of the write, with bytes between the previous end and the start of
 the write set to zero.</p>
-<p>Note: This is similar to <a href="#pwrite"><code>pwrite</code></a> in POSIX.</p>
+<p>Note: This is similar to <code>pwrite</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#pwrite.this" name="pwrite.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#pwrite.buf" name="pwrite.buf"></a> <code>buf</code>: list&lt;<code>u8</code>&gt;</li>
-<li><a href="#pwrite.offset" name="pwrite.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
+<li><a href="#write.this" name="write.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#write.buffer" name="write.buffer"></a> <code>buffer</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a href="#write.offset" name="write.offset"></a> <code>offset</code>: <a href="#filesize"><a href="#filesize"><code>filesize</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#pwrite.result0" name="pwrite.result0"></a> <code>result0</code>: result&lt;<a href="#filesize"><a href="#filesize"><code>filesize</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#write.result0" name="write.result0"></a> <code>result0</code>: result&lt;<a href="#filesize"><a href="#filesize"><code>filesize</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#readdir" name="readdir"></a> <a href="#readdir"><code>readdir</code></a></h4>
+<h4><a href="#read_directory" name="read_directory"></a> <a href="#read_directory"><code>read-directory</code></a></h4>
 <p>Read directory entries from a directory.</p>
 <p>On filesystems where directories contain entries referring to themselves
 and their parents, often named <code>.</code> and <code>..</code> respectively, these entries
 are omitted.</p>
 <p>This always returns a new stream which starts at the beginning of the
-directory.</p>
+directory. Multiple streams may be active on the same directory, and they
+do not interfere with each other.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#readdir.this" name="readdir.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a href="#read_directory.this" name="read_directory.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#readdir.result0" name="readdir.result0"></a> <code>result0</code>: result&lt;<a href="#dir_entry_stream"><a href="#dir_entry_stream"><code>dir-entry-stream</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#read_directory.result0" name="read_directory.result0"></a> <code>result0</code>: result&lt;<a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#sync" name="sync"></a> <a href="#sync"><code>sync</code></a></h4>
@@ -948,7 +947,7 @@ opened for writing.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#sync.result0" name="sync.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#sync.result0" name="sync.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#create_directory_at" name="create_directory_at"></a> <a href="#create_directory_at"><code>create-directory-at</code></a></h4>
@@ -961,7 +960,7 @@ opened for writing.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#create_directory_at.result0" name="create_directory_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#create_directory_at.result0" name="create_directory_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#stat" name="stat"></a> <a href="#stat"><code>stat</code></a></h4>
@@ -974,7 +973,7 @@ opened for writing.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#stat.result0" name="stat.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_stat"><a href="#descriptor_stat"><code>descriptor-stat</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#stat.result0" name="stat.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_stat"><a href="#descriptor_stat"><code>descriptor-stat</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#stat_at" name="stat_at"></a> <a href="#stat_at"><code>stat-at</code></a></h4>
@@ -984,12 +983,12 @@ opened for writing.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#stat_at.this" name="stat_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#stat_at.at_flags" name="stat_at.at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#stat_at.path_flags" name="stat_at.path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#stat_at.path" name="stat_at.path"></a> <code>path</code>: <code>string</code></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#stat_at.result0" name="stat_at.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_stat"><a href="#descriptor_stat"><code>descriptor-stat</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#stat_at.result0" name="stat_at.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor_stat"><a href="#descriptor_stat"><code>descriptor-stat</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#set_times_at" name="set_times_at"></a> <a href="#set_times_at"><code>set-times-at</code></a></h4>
@@ -999,14 +998,14 @@ opened for writing.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#set_times_at.this" name="set_times_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#set_times_at.at_flags" name="set_times_at.at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#set_times_at.path_flags" name="set_times_at.path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#set_times_at.path" name="set_times_at.path"></a> <code>path</code>: <code>string</code></li>
-<li><a href="#set_times_at.atim" name="set_times_at.atim"></a> <code>atim</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
-<li><a href="#set_times_at.mtim" name="set_times_at.mtim"></a> <code>mtim</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
+<li><a href="#set_times_at.data_access_timestamp" name="set_times_at.data_access_timestamp"></a> <code>data-access-timestamp</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
+<li><a href="#set_times_at.data_modification_timestamp" name="set_times_at.data_modification_timestamp"></a> <code>data-modification-timestamp</code>: <a href="#new_timestamp"><a href="#new_timestamp"><code>new-timestamp</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#set_times_at.result0" name="set_times_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#set_times_at.result0" name="set_times_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#link_at" name="link_at"></a> <a href="#link_at"><code>link-at</code></a></h4>
@@ -1015,14 +1014,14 @@ opened for writing.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#link_at.this" name="link_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#link_at.old_at_flags" name="link_at.old_at_flags"></a> <code>old-at-flags</code>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#link_at.old_path_flags" name="link_at.old_path_flags"></a> <code>old-path-flags</code>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#link_at.old_path" name="link_at.old_path"></a> <code>old-path</code>: <code>string</code></li>
 <li><a href="#link_at.new_descriptor" name="link_at.new_descriptor"></a> <code>new-descriptor</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 <li><a href="#link_at.new_path" name="link_at.new_path"></a> <code>new-path</code>: <code>string</code></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#link_at.result0" name="link_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#link_at.result0" name="link_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#open_at" name="open_at"></a> <a href="#open_at"><code>open-at</code></a></h4>
@@ -1032,30 +1031,32 @@ descriptor not currently open/ it is randomized to prevent applications
 from depending on making assumptions about indexes, since this is
 error-prone in multi-threaded contexts. The returned descriptor is
 guaranteed to be less than 2**31.</p>
-<p>If <a href="#flags"><code>flags</code></a> contains <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a>, and the base
+<p>If <code>flags</code> contains <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a>, and the base
 descriptor doesn't have <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set,
-<a href="#open_at"><code>open-at</code></a> fails with <a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
-<p>If <a href="#flags"><code>flags</code></a> contains <a href="#write"><code>write</code></a> or <code>append</code>, or <a href="#o_flags"><code>o-flags</code></a> contains <code>trunc</code>
-or <code>create</code>, and the base descriptor doesn't have
+<a href="#open_at"><code>open-at</code></a> fails with <a href="#error_code.read_only"><code>error-code::read-only</code></a>.</p>
+<p>If <code>flags</code> contains <a href="#write"><code>write</code></a> or <code>mutate-directory</code>, or <a href="#open_flags"><code>open-flags</code></a>
+contains <code>truncate</code> or <code>create</code>, and the base descriptor doesn't have
 <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set, <a href="#open_at"><code>open-at</code></a> fails with
-<a href="#errno.rofs"><code>errno::rofs</code></a>.</p>
+<a href="#error_code.read_only"><code>error-code::read-only</code></a>.</p>
 <p>Note: This is similar to <code>openat</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#open_at.this" name="open_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#open_at.at_flags" name="open_at.at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#open_at.path_flags" name="open_at.path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#open_at.path" name="open_at.path"></a> <code>path</code>: <code>string</code></li>
-<li><a href="#open_at.o_flags" name="open_at.o_flags"></a> <a href="#o_flags"><code>o-flags</code></a>: <a href="#o_flags"><a href="#o_flags"><code>o-flags</code></a></a></li>
-<li><a href="#open_at.flags" name="open_at.flags"></a> <a href="#flags"><code>flags</code></a>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
-<li><a href="#open_at.mode" name="open_at.mode"></a> <a href="#mode"><code>mode</code></a>: <a href="#mode"><a href="#mode"><code>mode</code></a></a></li>
+<li><a href="#open_at.open_flags" name="open_at.open_flags"></a> <a href="#open_flags"><code>open-flags</code></a>: <a href="#open_flags"><a href="#open_flags"><code>open-flags</code></a></a></li>
+<li><a href="#open_at.flags" name="open_at.flags"></a> <code>flags</code>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
+<li><a href="#open_at.modes" name="open_at.modes"></a> <a href="#modes"><code>modes</code></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#open_at.result0" name="open_at.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#open_at.result0" name="open_at.result0"></a> <code>result0</code>: result&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#readlink_at" name="readlink_at"></a> <a href="#readlink_at"><code>readlink-at</code></a></h4>
 <p>Read the contents of a symbolic link.</p>
+<p>If the contents contain an absolute or rooted path in the underlying
+filesystem, this function fails with <a href="#error_code.not_permitted"><code>error-code::not-permitted</code></a>.</p>
 <p>Note: This is similar to <code>readlinkat</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -1064,12 +1065,12 @@ or <code>create</code>, and the base descriptor doesn't have
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#readlink_at.result0" name="readlink_at.result0"></a> <code>result0</code>: result&lt;<code>string</code>, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#readlink_at.result0" name="readlink_at.result0"></a> <code>result0</code>: result&lt;<code>string</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#remove_directory_at" name="remove_directory_at"></a> <a href="#remove_directory_at"><code>remove-directory-at</code></a></h4>
 <p>Remove a directory.</p>
-<p>Return <a href="#errno.notempty"><code>errno::notempty</code></a> if the directory is not empty.</p>
+<p>Return <a href="#error_code.not_empty"><code>error-code::not-empty</code></a> if the directory is not empty.</p>
 <p>Note: This is similar to <code>unlinkat(fd, path, AT_REMOVEDIR)</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -1078,7 +1079,7 @@ or <code>create</code>, and the base descriptor doesn't have
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#remove_directory_at.result0" name="remove_directory_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#remove_directory_at.result0" name="remove_directory_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#rename_at" name="rename_at"></a> <a href="#rename_at"><code>rename-at</code></a></h4>
@@ -1093,11 +1094,12 @@ or <code>create</code>, and the base descriptor doesn't have
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#rename_at.result0" name="rename_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#rename_at.result0" name="rename_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#symlink_at" name="symlink_at"></a> <a href="#symlink_at"><code>symlink-at</code></a></h4>
-<p>Create a symbolic link.</p>
+<p>Create a symbolic link (also known as a &quot;symlink&quot;).</p>
+<p>If <code>old-path</code> starts with <code>/</code>, the function fails with <a href="#error_code.not_permitted"><code>error-code::not-permitted</code></a>.</p>
 <p>Note: This is similar to <code>symlinkat</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -1107,12 +1109,12 @@ or <code>create</code>, and the base descriptor doesn't have
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#symlink_at.result0" name="symlink_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#symlink_at.result0" name="symlink_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#unlink_file_at" name="unlink_file_at"></a> <a href="#unlink_file_at"><code>unlink-file-at</code></a></h4>
 <p>Unlink a filesystem object that is not a directory.</p>
-<p>Return <a href="#errno.isdir"><code>errno::isdir</code></a> if the path refers to a directory.
+<p>Return <a href="#error_code.is_directory"><code>error-code::is-directory</code></a> if the path refers to a directory.
 Note: This is similar to <code>unlinkat(fd, path, 0)</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
@@ -1121,7 +1123,7 @@ Note: This is similar to <code>unlinkat(fd, path, 0)</code> in POSIX.</p>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#unlink_file_at.result0" name="unlink_file_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#unlink_file_at.result0" name="unlink_file_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#change_file_permissions_at" name="change_file_permissions_at"></a> <a href="#change_file_permissions_at"><code>change-file-permissions-at</code></a></h4>
@@ -1132,13 +1134,13 @@ filesystem-specific.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#change_file_permissions_at.this" name="change_file_permissions_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#change_file_permissions_at.at_flags" name="change_file_permissions_at.at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#change_file_permissions_at.path_flags" name="change_file_permissions_at.path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#change_file_permissions_at.path" name="change_file_permissions_at.path"></a> <code>path</code>: <code>string</code></li>
-<li><a href="#change_file_permissions_at.mode" name="change_file_permissions_at.mode"></a> <a href="#mode"><code>mode</code></a>: <a href="#mode"><a href="#mode"><code>mode</code></a></a></li>
+<li><a href="#change_file_permissions_at.modes" name="change_file_permissions_at.modes"></a> <a href="#modes"><code>modes</code></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#change_file_permissions_at.result0" name="change_file_permissions_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#change_file_permissions_at.result0" name="change_file_permissions_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#change_directory_permissions_at" name="change_directory_permissions_at"></a> <a href="#change_directory_permissions_at"><code>change-directory-permissions-at</code></a></h4>
@@ -1152,13 +1154,13 @@ flag. <a href="#read"><code>read</code></a> on a directory implies readability a
 <h5>Params</h5>
 <ul>
 <li><a href="#change_directory_permissions_at.this" name="change_directory_permissions_at.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a href="#change_directory_permissions_at.at_flags" name="change_directory_permissions_at.at_flags"></a> <a href="#at_flags"><code>at-flags</code></a>: <a href="#at_flags"><a href="#at_flags"><code>at-flags</code></a></a></li>
+<li><a href="#change_directory_permissions_at.path_flags" name="change_directory_permissions_at.path_flags"></a> <a href="#path_flags"><code>path-flags</code></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a href="#change_directory_permissions_at.path" name="change_directory_permissions_at.path"></a> <code>path</code>: <code>string</code></li>
-<li><a href="#change_directory_permissions_at.mode" name="change_directory_permissions_at.mode"></a> <a href="#mode"><code>mode</code></a>: <a href="#mode"><a href="#mode"><code>mode</code></a></a></li>
+<li><a href="#change_directory_permissions_at.modes" name="change_directory_permissions_at.modes"></a> <a href="#modes"><code>modes</code></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#change_directory_permissions_at.result0" name="change_directory_permissions_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#change_directory_permissions_at.result0" name="change_directory_permissions_at.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#lock_shared" name="lock_shared"></a> <a href="#lock_shared"><code>lock-shared</code></a></h4>
@@ -1173,7 +1175,7 @@ by other programs that don't hold the lock.</p>
 non-WASI programs.</p>
 <p>This function blocks until the lock can be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
-locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
+locking, this function returns <a href="#error_code.unsupported"><code>error-code::unsupported</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_SH)</code> in Unix.</p>
 <h5>Params</h5>
 <ul>
@@ -1181,7 +1183,7 @@ locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#lock_shared.result0" name="lock_shared.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#lock_shared.result0" name="lock_shared.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#lock_exclusive" name="lock_exclusive"></a> <a href="#lock_exclusive"><code>lock-exclusive</code></a></h4>
@@ -1198,7 +1200,7 @@ is not opened for writing. It is unspecified how exclusive locks interact
 with locks acquired by non-WASI programs.</p>
 <p>This function blocks until the lock can be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
-locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
+locking, this function returns <a href="#error_code.unsupported"><code>error-code::unsupported</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_EX)</code> in Unix.</p>
 <h5>Params</h5>
 <ul>
@@ -1206,7 +1208,7 @@ locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#lock_exclusive.result0" name="lock_exclusive.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#lock_exclusive.result0" name="lock_exclusive.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#try_lock_shared" name="try_lock_shared"></a> <a href="#try_lock_shared"><code>try-lock-shared</code></a></h4>
@@ -1219,9 +1221,9 @@ to a shared lock. If it has a shared lock, this function has no effect.</p>
 by other programs that don't hold the lock.</p>
 <p>It is unspecified how shared locks interact with locks acquired by
 non-WASI programs.</p>
-<p>This function returns <a href="#errno.again"><code>errno::again</code></a> if the lock cannot be acquired.</p>
+<p>This function returns <a href="#error_code.would_block"><code>error-code::would-block</code></a> if the lock cannot be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
-locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
+locking, this function returns <a href="#error_code.unsupported"><code>error-code::unsupported</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_SH | LOCK_NB)</code> in Unix.</p>
 <h5>Params</h5>
 <ul>
@@ -1229,7 +1231,7 @@ locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#try_lock_shared.result0" name="try_lock_shared.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#try_lock_shared.result0" name="try_lock_shared.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#try_lock_exclusive" name="try_lock_exclusive"></a> <a href="#try_lock_exclusive"><code>try-lock-exclusive</code></a></h4>
@@ -1244,9 +1246,9 @@ by other programs that don't hold the lock.</p>
 <p>It is unspecified whether this function succeeds if the file descriptor
 is not opened for writing. It is unspecified how exclusive locks interact
 with locks acquired by non-WASI programs.</p>
-<p>This function returns <a href="#errno.again"><code>errno::again</code></a> if the lock cannot be acquired.</p>
+<p>This function returns <a href="#error_code.would_block"><code>error-code::would-block</code></a> if the lock cannot be acquired.</p>
 <p>Not all filesystems support locking; on filesystems which don't support
-locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code></a>.</p>
+locking, this function returns <a href="#error_code.unsupported"><code>error-code::unsupported</code></a>.</p>
 <p>Note: This is similar to <code>flock(fd, LOCK_EX | LOCK_NB)</code> in Unix.</p>
 <h5>Params</h5>
 <ul>
@@ -1254,7 +1256,7 @@ locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#try_lock_exclusive.result0" name="try_lock_exclusive.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#try_lock_exclusive.result0" name="try_lock_exclusive.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#unlock" name="unlock"></a> <a href="#unlock"><code>unlock</code></a></h4>
@@ -1266,7 +1268,7 @@ locking, this function returns <a href="#errno.notsup"><code>errno::notsup</code
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#unlock.result0" name="unlock.result0"></a> <code>result0</code>: result&lt;_, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#unlock.result0" name="unlock.result0"></a> <code>result0</code>: result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
 <h4><a href="#drop_descriptor" name="drop_descriptor"></a> <a href="#drop_descriptor"><code>drop-descriptor</code></a></h4>
@@ -1277,21 +1279,21 @@ be used.</p>
 <li><a href="#drop_descriptor.this" name="drop_descriptor.this"></a> <code>this</code>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <hr />
-<h4><a href="#read_dir_entry" name="read_dir_entry"></a> <a href="#read_dir_entry"><code>read-dir-entry</code></a></h4>
-<p>Read a single directory entry from a <a href="#dir_entry_stream"><code>dir-entry-stream</code></a>.</p>
+<h4><a href="#read_directory_entry" name="read_directory_entry"></a> <a href="#read_directory_entry"><code>read-directory-entry</code></a></h4>
+<p>Read a single directory entry from a <a href="#directory_entry_stream"><code>directory-entry-stream</code></a>.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#read_dir_entry.this" name="read_dir_entry.this"></a> <code>this</code>: <a href="#dir_entry_stream"><a href="#dir_entry_stream"><code>dir-entry-stream</code></a></a></li>
+<li><a href="#read_directory_entry.this" name="read_directory_entry.this"></a> <code>this</code>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
 </ul>
 <h5>Results</h5>
 <ul>
-<li><a href="#read_dir_entry.result0" name="read_dir_entry.result0"></a> <code>result0</code>: result&lt;option&lt;<a href="#dir_entry"><a href="#dir_entry"><code>dir-entry</code></a></a>&gt;, <a href="#errno"><a href="#errno"><code>errno</code></a></a>&gt;</li>
+<li><a href="#read_directory_entry.result0" name="read_directory_entry.result0"></a> <code>result0</code>: result&lt;option&lt;<a href="#directory_entry"><a href="#directory_entry"><code>directory-entry</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <hr />
-<h4><a href="#drop_dir_entry_stream" name="drop_dir_entry_stream"></a> <a href="#drop_dir_entry_stream"><code>drop-dir-entry-stream</code></a></h4>
-<p>Dispose of the specified <a href="#dir_entry_stream"><code>dir-entry-stream</code></a>, after which it may no longer
+<h4><a href="#drop_directory_entry_stream" name="drop_directory_entry_stream"></a> <a href="#drop_directory_entry_stream"><code>drop-directory-entry-stream</code></a></h4>
+<p>Dispose of the specified <a href="#directory_entry_stream"><code>directory-entry-stream</code></a>, after which it may no longer
 be used.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#drop_dir_entry_stream.this" name="drop_dir_entry_stream.this"></a> <code>this</code>: <a href="#dir_entry_stream"><a href="#dir_entry_stream"><code>dir-entry-stream</code></a></a></li>
+<li><a href="#drop_directory_entry_stream.this" name="drop_directory_entry_stream.this"></a> <code>this</code>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
 </ul>

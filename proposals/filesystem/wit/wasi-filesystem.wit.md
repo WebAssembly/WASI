@@ -12,6 +12,15 @@
 /// Paths are passed as interface-type `string`s, meaning they must consist of
 /// a sequence of Unicode Scalar Values (USVs). Some filesystems may contain paths
 /// which are not accessible by this API.
+///
+/// The directory separator in WASI is always the forward-slash (`/`).
+///
+/// All paths in WASI are relative paths, and are interpreted relative to a
+/// `descriptor` referring to a base directory. If a `path` argument to any WASI
+/// function starts with `/`, or if any step of resolving a `path`, including
+/// `..` and symbolic link steps, reaches a directory outside of the base
+/// directory, or reaches a symlink to an absolute or rooted path in the
+/// underlying filesystem, the function fails with `error-code::not-permitted`.
 default interface wasi-filesystem {
 ```
 
@@ -109,7 +118,7 @@ flags descriptor-flags {
 ## `descriptor-stat`
 ```wit
 /// File attributes.
-/// 
+///
 /// Note: This was called `filestat` in earlier versions of WASI.
 record descriptor-stat {
     /// Device ID of device containing the file.
@@ -208,7 +217,7 @@ variant new-timestamp {
 
 ## `directory-entry`
 ```wit
-/// A directory entry. 
+/// A directory entry.
 record directory-entry {
     /// The serial number of the object referred to by this directory entry.
     /// May be none if the inode value is not known.
@@ -252,7 +261,7 @@ enum error-code {
     /// File too large.
     file-too-large,
     /// Illegal byte sequence.
-    Illegal-byte-sequence,
+    illegal-byte-sequence,
     /// Operation in progress.
     in-progress,
     /// Interrupted function.
@@ -341,6 +350,9 @@ type descriptor = u32
 ## `read-via-stream`
 ```wit
 /// Return a stream for reading from a file.
+///
+/// Multiple read, write, and append streams may be active on the same open
+/// file and they do not interfere with each other.
 ///
 /// Note: This allows using `read-stream`, which is similar to `read` in POSIX.
 read-via-stream: func(
@@ -483,7 +495,7 @@ read: func(
     length: filesize,
     /// The offset within the file at which to read.
     offset: filesize,
-) -> result<tuple<list<u8>, bool>, errno>
+) -> result<tuple<list<u8>, bool>, error-code>
 ```
 
 ## `write`
@@ -514,7 +526,8 @@ write: func(
 /// are omitted.
 ///
 /// This always returns a new stream which starts at the beginning of the
-/// directory.
+/// directory. Multiple streams may be active on the same directory, and they
+/// do not interfere with each other.
 read-directory: func(this: descriptor) -> result<directory-entry-stream, error-code>
 ```
 
@@ -619,8 +632,8 @@ link-at: func(
 /// descriptor doesn't have `descriptor-flags::mutate-directory` set,
 /// `open-at` fails with `error-code::read-only`.
 ///
-/// If `flags` contains `write`, or `open-flags` contains `truncate`
-/// or `create`, and the base descriptor doesn't have
+/// If `flags` contains `write` or `mutate-directory`, or `open-flags`
+/// contains `truncate` or `create`, and the base descriptor doesn't have
 /// `descriptor-flags::mutate-directory` set, `open-at` fails with
 /// `error-code::read-only`.
 ///
@@ -643,6 +656,9 @@ open-at: func(
 ## `readlink-at`
 ```wit
 /// Read the contents of a symbolic link.
+///
+/// If the contents contain an absolute or rooted path in the underlying
+/// filesystem, this function fails with `error-code::not-permitted`.
 ///
 /// Note: This is similar to `readlinkat` in POSIX.
 readlink-at: func(
@@ -684,7 +700,9 @@ rename-at: func(
 
 ## `symlink-at`
 ```wit
-/// Create a symbolic link.
+/// Create a symbolic link (also known as a "symlink").
+///
+/// If `old-path` starts with `/`, the function fails with `error-code::not-permitted`.
 ///
 /// Note: This is similar to `symlinkat` in POSIX.
 symlink-at: func(

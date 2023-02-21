@@ -368,7 +368,20 @@ Size: 4, Alignment: 4
 
 Size: 16, Alignment: 8
 
-## <a href="#o_flags" name="o_flags"></a> `o-flags`: record
+## <a href="#path_flags" name="path_flags"></a> `path-flags`: record
+
+Flags determining the method of how paths are resolved.
+
+Size: 1, Alignment: 1
+
+### Record Fields
+
+- <a href="path_flags.symlink_follow" name="path_flags.symlink_follow"></a> [`symlink-follow`](#path_flags.symlink_follow): 
+  
+  As long as the resolved path corresponds to a symbolic link, it is expanded.
+  Bit: 0
+
+## <a href="#open_flags" name="open_flags"></a> `open-flags`: record
 
 Open flags used by `open-at`.
 
@@ -376,27 +389,27 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="o_flags.create" name="o_flags.create"></a> [`create`](#o_flags.create): 
+- <a href="open_flags.create" name="open_flags.create"></a> [`create`](#open_flags.create): 
   
   Create file if it does not exist.
   Bit: 0
 
-- <a href="o_flags.directory" name="o_flags.directory"></a> [`directory`](#o_flags.directory): 
+- <a href="open_flags.directory" name="open_flags.directory"></a> [`directory`](#open_flags.directory): 
   
   Fail if not a directory.
   Bit: 1
 
-- <a href="o_flags.excl" name="o_flags.excl"></a> [`excl`](#o_flags.excl): 
+- <a href="open_flags.exclusive" name="open_flags.exclusive"></a> [`exclusive`](#open_flags.exclusive): 
   
   Fail if file already exists.
   Bit: 2
 
-- <a href="o_flags.trunc" name="o_flags.trunc"></a> [`trunc`](#o_flags.trunc): 
+- <a href="open_flags.truncate" name="open_flags.truncate"></a> [`truncate`](#open_flags.truncate): 
   
   Truncate file to size 0.
   Bit: 3
 
-## <a href="#mode" name="mode"></a> `mode`: record
+## <a href="#modes" name="modes"></a> `modes`: record
 
 Permissions mode used by `open-at`, `change-file-permissions-at`, and
 similar.
@@ -405,25 +418,25 @@ Size: 1, Alignment: 1
 
 ### Record Fields
 
-- <a href="mode.readable" name="mode.readable"></a> [`readable`](#mode.readable): 
+- <a href="modes.readable" name="modes.readable"></a> [`readable`](#modes.readable): 
   
   True if the resource is considered readable by the containing
   filesystem.
   Bit: 0
 
-- <a href="mode.writeable" name="mode.writeable"></a> [`writeable`](#mode.writeable): 
+- <a href="modes.writeable" name="modes.writeable"></a> [`writeable`](#modes.writeable): 
   
   True if the resource is considered writeable by the containing
   filesystem.
   Bit: 1
 
-- <a href="mode.executable" name="mode.executable"></a> [`executable`](#mode.executable): 
+- <a href="modes.executable" name="modes.executable"></a> [`executable`](#modes.executable): 
   
   True if the resource is considered executable by the containing
   filesystem. This does not apply to directories.
   Bit: 2
 
-## <a href="#linkcount" name="linkcount"></a> `linkcount`: `u64`
+## <a href="#link_count" name="link_count"></a> `link-count`: `u64`
 
 Number of hard links to an inode.
 
@@ -441,7 +454,7 @@ File size or length of a region within a file.
 
 Size: 8, Alignment: 8
 
-## <a href="#errno" name="errno"></a> `errno`: enum
+## <a href="#error_code" name="error_code"></a> `error-code`: enum
 
 Error codes returned by functions.
 Not all of these error codes are returned by the functions provided by this
@@ -452,159 +465,155 @@ Size: 1, Alignment: 1
 
 ### Enum Cases
 
-- <a href="errno.access" name="errno.access"></a> [`access`](#errno.access)
+- <a href="error_code.access" name="error_code.access"></a> [`access`](#error_code.access)
   
   Permission denied.
   
-- <a href="errno.again" name="errno.again"></a> [`again`](#errno.again)
+- <a href="error_code.would_block" name="error_code.would_block"></a> [`would-block`](#error_code.would_block)
   
   Resource unavailable, or operation would block.
   
-- <a href="errno.already" name="errno.already"></a> [`already`](#errno.already)
+- <a href="error_code.already" name="error_code.already"></a> [`already`](#error_code.already)
   
   Connection already in progress.
   
-- <a href="errno.badf" name="errno.badf"></a> [`badf`](#errno.badf)
+- <a href="error_code.bad_descriptor" name="error_code.bad_descriptor"></a> [`bad-descriptor`](#error_code.bad_descriptor)
   
   Bad descriptor.
   
-- <a href="errno.busy" name="errno.busy"></a> [`busy`](#errno.busy)
+- <a href="error_code.busy" name="error_code.busy"></a> [`busy`](#error_code.busy)
   
   Device or resource busy.
   
-- <a href="errno.deadlk" name="errno.deadlk"></a> [`deadlk`](#errno.deadlk)
+- <a href="error_code.deadlock" name="error_code.deadlock"></a> [`deadlock`](#error_code.deadlock)
   
   Resource deadlock would occur.
   
-- <a href="errno.dquot" name="errno.dquot"></a> [`dquot`](#errno.dquot)
+- <a href="error_code.quota" name="error_code.quota"></a> [`quota`](#error_code.quota)
   
   Storage quota exceeded.
   
-- <a href="errno.exist" name="errno.exist"></a> [`exist`](#errno.exist)
+- <a href="error_code.exist" name="error_code.exist"></a> [`exist`](#error_code.exist)
   
   File exists.
   
-- <a href="errno.fbig" name="errno.fbig"></a> [`fbig`](#errno.fbig)
+- <a href="error_code.file_too_large" name="error_code.file_too_large"></a> [`file-too-large`](#error_code.file_too_large)
   
   File too large.
   
-- <a href="errno.ilseq" name="errno.ilseq"></a> [`ilseq`](#errno.ilseq)
+- <a href="error_code.illegal_byte_sequence" name="error_code.illegal_byte_sequence"></a> [`illegal-byte-sequence`](#error_code.illegal_byte_sequence)
   
   Illegal byte sequence.
   
-- <a href="errno.inprogress" name="errno.inprogress"></a> [`inprogress`](#errno.inprogress)
+- <a href="error_code.in_progress" name="error_code.in_progress"></a> [`in-progress`](#error_code.in_progress)
   
   Operation in progress.
   
-- <a href="errno.intr" name="errno.intr"></a> [`intr`](#errno.intr)
+- <a href="error_code.interrupted" name="error_code.interrupted"></a> [`interrupted`](#error_code.interrupted)
   
   Interrupted function.
   
-- <a href="errno.inval" name="errno.inval"></a> [`inval`](#errno.inval)
+- <a href="error_code.invalid" name="error_code.invalid"></a> [`invalid`](#error_code.invalid)
   
   Invalid argument.
   
-- <a href="errno.io" name="errno.io"></a> [`io`](#errno.io)
+- <a href="error_code.io" name="error_code.io"></a> [`io`](#error_code.io)
   
   I/O error.
   
-- <a href="errno.isdir" name="errno.isdir"></a> [`isdir`](#errno.isdir)
+- <a href="error_code.is_directory" name="error_code.is_directory"></a> [`is-directory`](#error_code.is_directory)
   
   Is a directory.
   
-- <a href="errno.loop" name="errno.loop"></a> [`loop`](#errno.loop)
+- <a href="error_code.loop" name="error_code.loop"></a> [`loop`](#error_code.loop)
   
   Too many levels of symbolic links.
   
-- <a href="errno.mlink" name="errno.mlink"></a> [`mlink`](#errno.mlink)
+- <a href="error_code.too_many_links" name="error_code.too_many_links"></a> [`too-many-links`](#error_code.too_many_links)
   
   Too many links.
   
-- <a href="errno.msgsize" name="errno.msgsize"></a> [`msgsize`](#errno.msgsize)
+- <a href="error_code.message_size" name="error_code.message_size"></a> [`message-size`](#error_code.message_size)
   
   Message too large.
   
-- <a href="errno.nametoolong" name="errno.nametoolong"></a> [`nametoolong`](#errno.nametoolong)
+- <a href="error_code.name_too_long" name="error_code.name_too_long"></a> [`name-too-long`](#error_code.name_too_long)
   
   Filename too long.
   
-- <a href="errno.nodev" name="errno.nodev"></a> [`nodev`](#errno.nodev)
+- <a href="error_code.no_device" name="error_code.no_device"></a> [`no-device`](#error_code.no_device)
   
   No such device.
   
-- <a href="errno.noent" name="errno.noent"></a> [`noent`](#errno.noent)
+- <a href="error_code.no_entry" name="error_code.no_entry"></a> [`no-entry`](#error_code.no_entry)
   
   No such file or directory.
   
-- <a href="errno.nolck" name="errno.nolck"></a> [`nolck`](#errno.nolck)
+- <a href="error_code.no_lock" name="error_code.no_lock"></a> [`no-lock`](#error_code.no_lock)
   
   No locks available.
   
-- <a href="errno.nomem" name="errno.nomem"></a> [`nomem`](#errno.nomem)
+- <a href="error_code.insufficient_memory" name="error_code.insufficient_memory"></a> [`insufficient-memory`](#error_code.insufficient_memory)
   
   Not enough space.
   
-- <a href="errno.nospc" name="errno.nospc"></a> [`nospc`](#errno.nospc)
+- <a href="error_code.insufficient_space" name="error_code.insufficient_space"></a> [`insufficient-space`](#error_code.insufficient_space)
   
   No space left on device.
   
-- <a href="errno.nosys" name="errno.nosys"></a> [`nosys`](#errno.nosys)
-  
-  Function not supported.
-  
-- <a href="errno.notdir" name="errno.notdir"></a> [`notdir`](#errno.notdir)
+- <a href="error_code.not_directory" name="error_code.not_directory"></a> [`not-directory`](#error_code.not_directory)
   
   Not a directory or a symbolic link to a directory.
   
-- <a href="errno.notempty" name="errno.notempty"></a> [`notempty`](#errno.notempty)
+- <a href="error_code.not_empty" name="error_code.not_empty"></a> [`not-empty`](#error_code.not_empty)
   
   Directory not empty.
   
-- <a href="errno.notrecoverable" name="errno.notrecoverable"></a> [`notrecoverable`](#errno.notrecoverable)
+- <a href="error_code.not_recoverable" name="error_code.not_recoverable"></a> [`not-recoverable`](#error_code.not_recoverable)
   
   State not recoverable.
   
-- <a href="errno.notsup" name="errno.notsup"></a> [`notsup`](#errno.notsup)
+- <a href="error_code.unsupported" name="error_code.unsupported"></a> [`unsupported`](#error_code.unsupported)
   
-  Not supported, or operation not supported on socket.
+  Not supported
   
-- <a href="errno.notty" name="errno.notty"></a> [`notty`](#errno.notty)
+- <a href="error_code.no_tty" name="error_code.no_tty"></a> [`no-tty`](#error_code.no_tty)
   
   Inappropriate I/O control operation.
   
-- <a href="errno.nxio" name="errno.nxio"></a> [`nxio`](#errno.nxio)
+- <a href="error_code.no_such_device" name="error_code.no_such_device"></a> [`no-such-device`](#error_code.no_such_device)
   
   No such device or address.
   
-- <a href="errno.overflow" name="errno.overflow"></a> [`overflow`](#errno.overflow)
+- <a href="error_code.overflow" name="error_code.overflow"></a> [`overflow`](#error_code.overflow)
   
   Value too large to be stored in data type.
   
-- <a href="errno.perm" name="errno.perm"></a> [`perm`](#errno.perm)
+- <a href="error_code.not_permitted" name="error_code.not_permitted"></a> [`not-permitted`](#error_code.not_permitted)
   
   Operation not permitted.
   
-- <a href="errno.pipe" name="errno.pipe"></a> [`pipe`](#errno.pipe)
+- <a href="error_code.pipe" name="error_code.pipe"></a> [`pipe`](#error_code.pipe)
   
   Broken pipe.
   
-- <a href="errno.rofs" name="errno.rofs"></a> [`rofs`](#errno.rofs)
+- <a href="error_code.read_only" name="error_code.read_only"></a> [`read-only`](#error_code.read_only)
   
   Read-only file system.
   
-- <a href="errno.spipe" name="errno.spipe"></a> [`spipe`](#errno.spipe)
+- <a href="error_code.invalid_seek" name="error_code.invalid_seek"></a> [`invalid-seek`](#error_code.invalid_seek)
   
   Invalid seek.
   
-- <a href="errno.txtbsy" name="errno.txtbsy"></a> [`txtbsy`](#errno.txtbsy)
+- <a href="error_code.text_file_busy" name="error_code.text_file_busy"></a> [`text-file-busy`](#error_code.text_file_busy)
   
   Text file busy.
   
-- <a href="errno.xdev" name="errno.xdev"></a> [`xdev`](#errno.xdev)
+- <a href="error_code.cross_device" name="error_code.cross_device"></a> [`cross-device`](#error_code.cross_device)
   
   Cross-device link.
   
-## <a href="#dir_entry_stream" name="dir_entry_stream"></a> `dir-entry-stream`: `u32`
+## <a href="#directory_entry_stream" name="directory_entry_stream"></a> `directory-entry-stream`: `u32`
 
 A stream of directory entries.
 
@@ -660,7 +669,7 @@ Size: 1, Alignment: 1
   
   The descriptor refers to a socket.
   
-## <a href="#dir_entry" name="dir_entry"></a> `dir-entry`: record
+## <a href="#directory_entry" name="directory_entry"></a> `directory-entry`: record
 
 A directory entry.
 
@@ -668,7 +677,7 @@ Size: 32, Alignment: 8
 
 ### Record Fields
 
-- <a href="dir_entry.ino" name="dir_entry.ino"></a> [`ino`](#dir_entry.ino): option<[`inode`](#inode)>
+- <a href="directory_entry.inode" name="directory_entry.inode"></a> [`inode`](#directory_entry.inode): option<[`inode`](#inode)>
   
   The serial number of the object referred to by this directory entry.
   May be none if the inode value is not known.
@@ -677,11 +686,11 @@ Size: 32, Alignment: 8
   call to retrieve the inode number to fill their `d_ino` fields, so
   implementations which can set this to a non-none value should do so.
   
-- <a href="dir_entry.type" name="dir_entry.type"></a> [`type`](#dir_entry.type): [`descriptor-type`](#descriptor_type)
+- <a href="directory_entry.type" name="directory_entry.type"></a> [`type`](#directory_entry.type): [`descriptor-type`](#descriptor_type)
   
   The type of the file referred to by this directory entry.
   
-- <a href="dir_entry.name" name="dir_entry.name"></a> [`name`](#dir_entry.name): `string`
+- <a href="directory_entry.name" name="directory_entry.name"></a> [`name`](#directory_entry.name): `string`
   
   The name of the object.
   
@@ -705,17 +714,17 @@ Size: 1, Alignment: 1
   Write mode: Data can be written to.
   Bit: 1
 
-- <a href="descriptor_flags.nonblock" name="descriptor_flags.nonblock"></a> [`nonblock`](#descriptor_flags.nonblock): 
+- <a href="descriptor_flags.non_blocking" name="descriptor_flags.non_blocking"></a> [`non-blocking`](#descriptor_flags.non_blocking): 
   
   Requests non-blocking operation.
   
   When this flag is enabled, functions may return immediately with an
-  `errno::again` error code in situations where they would otherwise
+  `error-code::would-block` error code in situations where they would otherwise
   block. However, this non-blocking behavior is not required.
   Implementations are permitted to ignore this flag and block.
   Bit: 2
 
-- <a href="descriptor_flags.sync" name="descriptor_flags.sync"></a> [`sync`](#descriptor_flags.sync): 
+- <a href="descriptor_flags.file_integrity_sync" name="descriptor_flags.file_integrity_sync"></a> [`file-integrity-sync`](#descriptor_flags.file_integrity_sync): 
   
   Request that writes be performed according to synchronized I/O file
   integrity completion. The data stored in the file and the file's
@@ -726,7 +735,7 @@ Size: 1, Alignment: 1
   requirement.
   Bit: 3
 
-- <a href="descriptor_flags.dsync" name="descriptor_flags.dsync"></a> [`dsync`](#descriptor_flags.dsync): 
+- <a href="descriptor_flags.data_integrity_sync" name="descriptor_flags.data_integrity_sync"></a> [`data-integrity-sync`](#descriptor_flags.data_integrity_sync): 
   
   Request that writes be performed according to synchronized I/O data
   integrity completion. Only the data stored in the file is
@@ -737,7 +746,7 @@ Size: 1, Alignment: 1
   requirement.
   Bit: 4
 
-- <a href="descriptor_flags.rsync" name="descriptor_flags.rsync"></a> [`rsync`](#descriptor_flags.rsync): 
+- <a href="descriptor_flags.requested_write_sync" name="descriptor_flags.requested_write_sync"></a> [`requested-write-sync`](#descriptor_flags.requested_write_sync): 
   
   Requests that reads be performed at the same level of integrety
   requested for writes.
@@ -754,7 +763,7 @@ Size: 1, Alignment: 1
   When this flag is unset on a descriptor, operations using the
   descriptor which would create, rename, delete, modify the data or
   metadata of filesystem objects, or obtain another handle which
-  would permit any of those, shall fail with `errno::rofs` if
+  would permit any of those, shall fail with `error-code::read-only` if
   they would otherwise succeed.
   
   This may only be set on directories.
@@ -799,11 +808,11 @@ Size: 88, Alignment: 8
 
 ### Record Fields
 
-- <a href="descriptor_stat.dev" name="descriptor_stat.dev"></a> [`dev`](#descriptor_stat.dev): [`device`](#device)
+- <a href="descriptor_stat.device" name="descriptor_stat.device"></a> [`device`](#descriptor_stat.device): [`device`](#device)
   
   Device ID of device containing the file.
   
-- <a href="descriptor_stat.ino" name="descriptor_stat.ino"></a> [`ino`](#descriptor_stat.ino): [`inode`](#inode)
+- <a href="descriptor_stat.inode" name="descriptor_stat.inode"></a> [`inode`](#descriptor_stat.inode): [`inode`](#inode)
   
   File serial number.
   
@@ -811,7 +820,7 @@ Size: 88, Alignment: 8
   
   File type.
   
-- <a href="descriptor_stat.nlink" name="descriptor_stat.nlink"></a> [`nlink`](#descriptor_stat.nlink): [`linkcount`](#linkcount)
+- <a href="descriptor_stat.link_count" name="descriptor_stat.link_count"></a> [`link-count`](#descriptor_stat.link_count): [`link-count`](#link_count)
   
   Number of hard links to the file.
   
@@ -820,31 +829,18 @@ Size: 88, Alignment: 8
   For regular files, the file size in bytes. For symbolic links, the length
   in bytes of the pathname contained in the symbolic link.
   
-- <a href="descriptor_stat.atim" name="descriptor_stat.atim"></a> [`atim`](#descriptor_stat.atim): [`datetime`](#datetime)
+- <a href="descriptor_stat.data_access_timestamp" name="descriptor_stat.data_access_timestamp"></a> [`data-access-timestamp`](#descriptor_stat.data_access_timestamp): [`datetime`](#datetime)
   
   Last data access timestamp.
   
-- <a href="descriptor_stat.mtim" name="descriptor_stat.mtim"></a> [`mtim`](#descriptor_stat.mtim): [`datetime`](#datetime)
+- <a href="descriptor_stat.data_modification_timestamp" name="descriptor_stat.data_modification_timestamp"></a> [`data-modification-timestamp`](#descriptor_stat.data_modification_timestamp): [`datetime`](#datetime)
   
   Last data modification timestamp.
   
-- <a href="descriptor_stat.ctim" name="descriptor_stat.ctim"></a> [`ctim`](#descriptor_stat.ctim): [`datetime`](#datetime)
+- <a href="descriptor_stat.status_change_timestamp" name="descriptor_stat.status_change_timestamp"></a> [`status-change-timestamp`](#descriptor_stat.status_change_timestamp): [`datetime`](#datetime)
   
   Last file status change timestamp.
   
-## <a href="#at_flags" name="at_flags"></a> `at-flags`: record
-
-Flags determining the method of how paths are resolved.
-
-Size: 1, Alignment: 1
-
-### Record Fields
-
-- <a href="at_flags.symlink_follow" name="at_flags.symlink_follow"></a> [`symlink-follow`](#at_flags.symlink_follow): 
-  
-  As long as the resolved path corresponds to a symbolic link, it is expanded.
-  Bit: 0
-
 ## <a href="#advice" name="advice"></a> `advice`: enum
 
 File or memory access pattern advisory information.
@@ -885,6 +881,9 @@ Size: 1, Alignment: 1
 
 Return a stream for reading from a file.
 
+Multiple read, write, and append streams may be active on the same open
+file and they do not interfere with each other.
+
 Note: This allows using `read-stream`, which is similar to `read` in POSIX.
 ##### Params
 
@@ -892,7 +891,7 @@ Note: This allows using `read-stream`, which is similar to `read` in POSIX.
 - <a href="#read_via_stream.offset" name="read_via_stream.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#read_via_stream.result0" name="read_via_stream.result0"></a> `result0`: result<[`input-stream`](#input_stream), [`errno`](#errno)>
+- <a href="#read_via_stream.result0" name="read_via_stream.result0"></a> `result0`: result<[`input-stream`](#input_stream), [`error-code`](#error_code)>
 
 ----
 
@@ -907,7 +906,7 @@ Note: This allows using `write-stream`, which is similar to `write` in POSIX.
 - <a href="#write_via_stream.offset" name="write_via_stream.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#write_via_stream.result0" name="write_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`errno`](#errno)>
+- <a href="#write_via_stream.result0" name="write_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`error-code`](#error_code)>
 
 ----
 
@@ -923,28 +922,28 @@ Note: This allows using `write-stream`, which is similar to `write` with
 - <a href="#append_via_stream.fd" name="append_via_stream.fd"></a> `fd`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#append_via_stream.result0" name="append_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`errno`](#errno)>
+- <a href="#append_via_stream.result0" name="append_via_stream.result0"></a> `result0`: result<[`output-stream`](#output_stream), [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#fadvise" name="fadvise"></a> `fadvise` 
+#### <a href="#advise" name="advise"></a> `advise` 
 
 Provide file advisory information on a descriptor.
 
 This is similar to `posix_fadvise` in POSIX.
 ##### Params
 
-- <a href="#fadvise.this" name="fadvise.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#fadvise.offset" name="fadvise.offset"></a> `offset`: [`filesize`](#filesize)
-- <a href="#fadvise.len" name="fadvise.len"></a> `len`: [`filesize`](#filesize)
-- <a href="#fadvise.advice" name="fadvise.advice"></a> `advice`: [`advice`](#advice)
+- <a href="#advise.this" name="advise.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#advise.offset" name="advise.offset"></a> `offset`: [`filesize`](#filesize)
+- <a href="#advise.length" name="advise.length"></a> `length`: [`filesize`](#filesize)
+- <a href="#advise.advice" name="advise.advice"></a> `advice`: [`advice`](#advice)
 ##### Results
 
-- <a href="#fadvise.result0" name="fadvise.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#advise.result0" name="advise.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#datasync" name="datasync"></a> `datasync` 
+#### <a href="#sync_data" name="sync_data"></a> `sync-data` 
 
 Synchronize the data of a file to disk.
 
@@ -954,14 +953,14 @@ opened for writing.
 Note: This is similar to `fdatasync` in POSIX.
 ##### Params
 
-- <a href="#datasync.this" name="datasync.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#sync_data.this" name="sync_data.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#datasync.result0" name="datasync.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#sync_data.result0" name="sync_data.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#flags" name="flags"></a> `flags` 
+#### <a href="#get_flags" name="get_flags"></a> `get-flags` 
 
 Get flags associated with a descriptor.
 
@@ -971,14 +970,14 @@ Note: This returns the value that was the `fs_flags` value returned
 from `fdstat_get` in earlier versions of WASI.
 ##### Params
 
-- <a href="#flags.this" name="flags.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#get_flags.this" name="get_flags.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#flags.result0" name="flags.result0"></a> `result0`: result<[`descriptor-flags`](#descriptor_flags), [`errno`](#errno)>
+- <a href="#get_flags.result0" name="get_flags.result0"></a> `result0`: result<[`descriptor-flags`](#descriptor_flags), [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#type" name="type"></a> `type` 
+#### <a href="#get_type" name="get_type"></a> `get-type` 
 
 Get the dynamic type of a descriptor.
 
@@ -992,10 +991,10 @@ Note: This returns the value that was the `fs_filetype` value returned
 from `fdstat_get` in earlier versions of WASI.
 ##### Params
 
-- <a href="#type.this" name="type.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#get_type.this" name="get_type.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#type.result0" name="type.result0"></a> `result0`: result<[`descriptor-type`](#descriptor_type), [`errno`](#errno)>
+- <a href="#get_type.result0" name="get_type.result0"></a> `result0`: result<[`descriptor-type`](#descriptor_type), [`error-code`](#error_code)>
 
 ----
 
@@ -1003,7 +1002,7 @@ from `fdstat_get` in earlier versions of WASI.
 
 Set status flags associated with a descriptor.
 
-This function may only change the `append` and `nonblock` flags.
+This function may only change the `non-blocking` flag.
 
 Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
 
@@ -1014,7 +1013,7 @@ Note: This was called `fd_fdstat_set_flags` in earlier versions of WASI.
 - <a href="#set_flags.flags" name="set_flags.flags"></a> `flags`: [`descriptor-flags`](#descriptor_flags)
 ##### Results
 
-- <a href="#set_flags.result0" name="set_flags.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#set_flags.result0" name="set_flags.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1030,7 +1029,7 @@ Note: This was called `fd_filestat_set_size` in earlier versions of WASI.
 - <a href="#set_size.size" name="set_size.size"></a> `size`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#set_size.result0" name="set_size.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#set_size.result0" name="set_size.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1044,37 +1043,37 @@ Note: This was called `fd_filestat_set_times` in earlier versions of WASI.
 ##### Params
 
 - <a href="#set_times.this" name="set_times.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#set_times.atim" name="set_times.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
-- <a href="#set_times.mtim" name="set_times.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
+- <a href="#set_times.data_access_timestamp" name="set_times.data_access_timestamp"></a> `data-access-timestamp`: [`new-timestamp`](#new_timestamp)
+- <a href="#set_times.data_modification_timestamp" name="set_times.data_modification_timestamp"></a> `data-modification-timestamp`: [`new-timestamp`](#new_timestamp)
 ##### Results
 
-- <a href="#set_times.result0" name="set_times.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#set_times.result0" name="set_times.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#pread" name="pread"></a> `pread` 
+#### <a href="#read" name="read"></a> `read` 
 
 Read from a descriptor, without using and updating the descriptor's offset.
 
 This function returns a list of bytes containing the data that was
 read, along with a bool which, when true, indicates that the end of the
-file was reached. The returned list will contain up to `len` bytes; it
+file was reached. The returned list will contain up to `length` bytes; it
 may return fewer than requested, if the end of the file is reached or
 if the I/O operation is interrupted.
 
 Note: This is similar to `pread` in POSIX.
 ##### Params
 
-- <a href="#pread.this" name="pread.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#pread.len" name="pread.len"></a> `len`: [`filesize`](#filesize)
-- <a href="#pread.offset" name="pread.offset"></a> `offset`: [`filesize`](#filesize)
+- <a href="#read.this" name="read.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#read.length" name="read.length"></a> `length`: [`filesize`](#filesize)
+- <a href="#read.offset" name="read.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#pread.result0" name="pread.result0"></a> `result0`: result<(list<`u8`>, `bool`), [`errno`](#errno)>
+- <a href="#read.result0" name="read.result0"></a> `result0`: result<(list<`u8`>, `bool`), [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#pwrite" name="pwrite"></a> `pwrite` 
+#### <a href="#write" name="write"></a> `write` 
 
 Write to a descriptor, without using and updating the descriptor's offset.
 
@@ -1085,16 +1084,16 @@ the write set to zero.
 Note: This is similar to `pwrite` in POSIX.
 ##### Params
 
-- <a href="#pwrite.this" name="pwrite.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#pwrite.buf" name="pwrite.buf"></a> `buf`: list<`u8`>
-- <a href="#pwrite.offset" name="pwrite.offset"></a> `offset`: [`filesize`](#filesize)
+- <a href="#write.this" name="write.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#write.buffer" name="write.buffer"></a> `buffer`: list<`u8`>
+- <a href="#write.offset" name="write.offset"></a> `offset`: [`filesize`](#filesize)
 ##### Results
 
-- <a href="#pwrite.result0" name="pwrite.result0"></a> `result0`: result<[`filesize`](#filesize), [`errno`](#errno)>
+- <a href="#write.result0" name="write.result0"></a> `result0`: result<[`filesize`](#filesize), [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#readdir" name="readdir"></a> `readdir` 
+#### <a href="#read_directory" name="read_directory"></a> `read-directory` 
 
 Read directory entries from a directory.
 
@@ -1103,13 +1102,14 @@ and their parents, often named `.` and `..` respectively, these entries
 are omitted.
 
 This always returns a new stream which starts at the beginning of the
-directory.
+directory. Multiple streams may be active on the same directory, and they
+do not interfere with each other.
 ##### Params
 
-- <a href="#readdir.this" name="readdir.this"></a> `this`: [`descriptor`](#descriptor)
+- <a href="#read_directory.this" name="read_directory.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#readdir.result0" name="readdir.result0"></a> `result0`: result<[`dir-entry-stream`](#dir_entry_stream), [`errno`](#errno)>
+- <a href="#read_directory.result0" name="read_directory.result0"></a> `result0`: result<[`directory-entry-stream`](#directory_entry_stream), [`error-code`](#error_code)>
 
 ----
 
@@ -1126,7 +1126,7 @@ Note: This is similar to `fsync` in POSIX.
 - <a href="#sync.this" name="sync.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#sync.result0" name="sync.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#sync.result0" name="sync.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1141,7 +1141,7 @@ Note: This is similar to `mkdirat` in POSIX.
 - <a href="#create_directory_at.path" name="create_directory_at.path"></a> `path`: `string`
 ##### Results
 
-- <a href="#create_directory_at.result0" name="create_directory_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#create_directory_at.result0" name="create_directory_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1157,7 +1157,7 @@ Note: This was called `fd_filestat_get` in earlier versions of WASI.
 - <a href="#stat.this" name="stat.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#stat.result0" name="stat.result0"></a> `result0`: result<[`descriptor-stat`](#descriptor_stat), [`errno`](#errno)>
+- <a href="#stat.result0" name="stat.result0"></a> `result0`: result<[`descriptor-stat`](#descriptor_stat), [`error-code`](#error_code)>
 
 ----
 
@@ -1171,11 +1171,11 @@ Note: This was called `path_filestat_get` in earlier versions of WASI.
 ##### Params
 
 - <a href="#stat_at.this" name="stat_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#stat_at.at_flags" name="stat_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
+- <a href="#stat_at.path_flags" name="stat_at.path_flags"></a> `path-flags`: [`path-flags`](#path_flags)
 - <a href="#stat_at.path" name="stat_at.path"></a> `path`: `string`
 ##### Results
 
-- <a href="#stat_at.result0" name="stat_at.result0"></a> `result0`: result<[`descriptor-stat`](#descriptor_stat), [`errno`](#errno)>
+- <a href="#stat_at.result0" name="stat_at.result0"></a> `result0`: result<[`descriptor-stat`](#descriptor_stat), [`error-code`](#error_code)>
 
 ----
 
@@ -1189,13 +1189,13 @@ Note: This was called `path_filestat_set_times` in earlier versions of WASI.
 ##### Params
 
 - <a href="#set_times_at.this" name="set_times_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#set_times_at.at_flags" name="set_times_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
+- <a href="#set_times_at.path_flags" name="set_times_at.path_flags"></a> `path-flags`: [`path-flags`](#path_flags)
 - <a href="#set_times_at.path" name="set_times_at.path"></a> `path`: `string`
-- <a href="#set_times_at.atim" name="set_times_at.atim"></a> `atim`: [`new-timestamp`](#new_timestamp)
-- <a href="#set_times_at.mtim" name="set_times_at.mtim"></a> `mtim`: [`new-timestamp`](#new_timestamp)
+- <a href="#set_times_at.data_access_timestamp" name="set_times_at.data_access_timestamp"></a> `data-access-timestamp`: [`new-timestamp`](#new_timestamp)
+- <a href="#set_times_at.data_modification_timestamp" name="set_times_at.data_modification_timestamp"></a> `data-modification-timestamp`: [`new-timestamp`](#new_timestamp)
 ##### Results
 
-- <a href="#set_times_at.result0" name="set_times_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#set_times_at.result0" name="set_times_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1207,13 +1207,13 @@ Note: This is similar to `linkat` in POSIX.
 ##### Params
 
 - <a href="#link_at.this" name="link_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#link_at.old_at_flags" name="link_at.old_at_flags"></a> `old-at-flags`: [`at-flags`](#at_flags)
+- <a href="#link_at.old_path_flags" name="link_at.old_path_flags"></a> `old-path-flags`: [`path-flags`](#path_flags)
 - <a href="#link_at.old_path" name="link_at.old_path"></a> `old-path`: `string`
 - <a href="#link_at.new_descriptor" name="link_at.new_descriptor"></a> `new-descriptor`: [`descriptor`](#descriptor)
 - <a href="#link_at.new_path" name="link_at.new_path"></a> `new-path`: `string`
 ##### Results
 
-- <a href="#link_at.result0" name="link_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#link_at.result0" name="link_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1229,31 +1229,34 @@ guaranteed to be less than 2**31.
 
 If `flags` contains `descriptor-flags::mutate-directory`, and the base
 descriptor doesn't have `descriptor-flags::mutate-directory` set,
-`open-at` fails with `errno::rofs`.
+`open-at` fails with `error-code::read-only`.
 
-If `flags` contains `write` or `append`, or `o-flags` contains `trunc`
-or `create`, and the base descriptor doesn't have
+If `flags` contains `write` or `mutate-directory`, or `open-flags`
+contains `truncate` or `create`, and the base descriptor doesn't have
 `descriptor-flags::mutate-directory` set, `open-at` fails with
-`errno::rofs`.
+`error-code::read-only`.
 
 Note: This is similar to `openat` in POSIX.
 ##### Params
 
 - <a href="#open_at.this" name="open_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#open_at.at_flags" name="open_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
+- <a href="#open_at.path_flags" name="open_at.path_flags"></a> `path-flags`: [`path-flags`](#path_flags)
 - <a href="#open_at.path" name="open_at.path"></a> `path`: `string`
-- <a href="#open_at.o_flags" name="open_at.o_flags"></a> `o-flags`: [`o-flags`](#o_flags)
+- <a href="#open_at.open_flags" name="open_at.open_flags"></a> `open-flags`: [`open-flags`](#open_flags)
 - <a href="#open_at.flags" name="open_at.flags"></a> `flags`: [`descriptor-flags`](#descriptor_flags)
-- <a href="#open_at.mode" name="open_at.mode"></a> `mode`: [`mode`](#mode)
+- <a href="#open_at.modes" name="open_at.modes"></a> `modes`: [`modes`](#modes)
 ##### Results
 
-- <a href="#open_at.result0" name="open_at.result0"></a> `result0`: result<[`descriptor`](#descriptor), [`errno`](#errno)>
+- <a href="#open_at.result0" name="open_at.result0"></a> `result0`: result<[`descriptor`](#descriptor), [`error-code`](#error_code)>
 
 ----
 
 #### <a href="#readlink_at" name="readlink_at"></a> `readlink-at` 
 
 Read the contents of a symbolic link.
+
+If the contents contain an absolute or rooted path in the underlying
+filesystem, this function fails with `error-code::not-permitted`.
 
 Note: This is similar to `readlinkat` in POSIX.
 ##### Params
@@ -1262,7 +1265,7 @@ Note: This is similar to `readlinkat` in POSIX.
 - <a href="#readlink_at.path" name="readlink_at.path"></a> `path`: `string`
 ##### Results
 
-- <a href="#readlink_at.result0" name="readlink_at.result0"></a> `result0`: result<`string`, [`errno`](#errno)>
+- <a href="#readlink_at.result0" name="readlink_at.result0"></a> `result0`: result<`string`, [`error-code`](#error_code)>
 
 ----
 
@@ -1270,7 +1273,7 @@ Note: This is similar to `readlinkat` in POSIX.
 
 Remove a directory.
 
-Return `errno::notempty` if the directory is not empty.
+Return `error-code::not-empty` if the directory is not empty.
 
 Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 ##### Params
@@ -1279,7 +1282,7 @@ Note: This is similar to `unlinkat(fd, path, AT_REMOVEDIR)` in POSIX.
 - <a href="#remove_directory_at.path" name="remove_directory_at.path"></a> `path`: `string`
 ##### Results
 
-- <a href="#remove_directory_at.result0" name="remove_directory_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#remove_directory_at.result0" name="remove_directory_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1296,13 +1299,15 @@ Note: This is similar to `renameat` in POSIX.
 - <a href="#rename_at.new_path" name="rename_at.new_path"></a> `new-path`: `string`
 ##### Results
 
-- <a href="#rename_at.result0" name="rename_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#rename_at.result0" name="rename_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
 #### <a href="#symlink_at" name="symlink_at"></a> `symlink-at` 
 
-Create a symbolic link.
+Create a symbolic link (also known as a "symlink").
+
+If `old-path` starts with `/`, the function fails with `error-code::not-permitted`.
 
 Note: This is similar to `symlinkat` in POSIX.
 ##### Params
@@ -1312,7 +1317,7 @@ Note: This is similar to `symlinkat` in POSIX.
 - <a href="#symlink_at.new_path" name="symlink_at.new_path"></a> `new-path`: `string`
 ##### Results
 
-- <a href="#symlink_at.result0" name="symlink_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#symlink_at.result0" name="symlink_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1320,7 +1325,7 @@ Note: This is similar to `symlinkat` in POSIX.
 
 Unlink a filesystem object that is not a directory.
 
-Return `errno::isdir` if the path refers to a directory.
+Return `error-code::is-directory` if the path refers to a directory.
 Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
 ##### Params
 
@@ -1328,7 +1333,7 @@ Note: This is similar to `unlinkat(fd, path, 0)` in POSIX.
 - <a href="#unlink_file_at.path" name="unlink_file_at.path"></a> `path`: `string`
 ##### Results
 
-- <a href="#unlink_file_at.result0" name="unlink_file_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#unlink_file_at.result0" name="unlink_file_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1343,12 +1348,12 @@ Note: This is similar to `fchmodat` in POSIX.
 ##### Params
 
 - <a href="#change_file_permissions_at.this" name="change_file_permissions_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#change_file_permissions_at.at_flags" name="change_file_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
+- <a href="#change_file_permissions_at.path_flags" name="change_file_permissions_at.path_flags"></a> `path-flags`: [`path-flags`](#path_flags)
 - <a href="#change_file_permissions_at.path" name="change_file_permissions_at.path"></a> `path`: `string`
-- <a href="#change_file_permissions_at.mode" name="change_file_permissions_at.mode"></a> `mode`: [`mode`](#mode)
+- <a href="#change_file_permissions_at.modes" name="change_file_permissions_at.modes"></a> `modes`: [`modes`](#modes)
 ##### Results
 
-- <a href="#change_file_permissions_at.result0" name="change_file_permissions_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#change_file_permissions_at.result0" name="change_file_permissions_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1367,12 +1372,12 @@ Note: This is similar to `fchmodat` in POSIX.
 ##### Params
 
 - <a href="#change_directory_permissions_at.this" name="change_directory_permissions_at.this"></a> `this`: [`descriptor`](#descriptor)
-- <a href="#change_directory_permissions_at.at_flags" name="change_directory_permissions_at.at_flags"></a> `at-flags`: [`at-flags`](#at_flags)
+- <a href="#change_directory_permissions_at.path_flags" name="change_directory_permissions_at.path_flags"></a> `path-flags`: [`path-flags`](#path_flags)
 - <a href="#change_directory_permissions_at.path" name="change_directory_permissions_at.path"></a> `path`: `string`
-- <a href="#change_directory_permissions_at.mode" name="change_directory_permissions_at.mode"></a> `mode`: [`mode`](#mode)
+- <a href="#change_directory_permissions_at.modes" name="change_directory_permissions_at.modes"></a> `modes`: [`modes`](#modes)
 ##### Results
 
-- <a href="#change_directory_permissions_at.result0" name="change_directory_permissions_at.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#change_directory_permissions_at.result0" name="change_directory_permissions_at.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1395,7 +1400,7 @@ non-WASI programs.
 This function blocks until the lock can be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
-locking, this function returns `errno::notsup`.
+locking, this function returns `error-code::unsupported`.
 
 Note: This is similar to `flock(fd, LOCK_SH)` in Unix.
 ##### Params
@@ -1403,7 +1408,7 @@ Note: This is similar to `flock(fd, LOCK_SH)` in Unix.
 - <a href="#lock_shared.this" name="lock_shared.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#lock_shared.result0" name="lock_shared.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#lock_shared.result0" name="lock_shared.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1428,7 +1433,7 @@ with locks acquired by non-WASI programs.
 This function blocks until the lock can be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
-locking, this function returns `errno::notsup`.
+locking, this function returns `error-code::unsupported`.
 
 Note: This is similar to `flock(fd, LOCK_EX)` in Unix.
 ##### Params
@@ -1436,7 +1441,7 @@ Note: This is similar to `flock(fd, LOCK_EX)` in Unix.
 - <a href="#lock_exclusive.this" name="lock_exclusive.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#lock_exclusive.result0" name="lock_exclusive.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#lock_exclusive.result0" name="lock_exclusive.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1456,10 +1461,10 @@ by other programs that don't hold the lock.
 It is unspecified how shared locks interact with locks acquired by
 non-WASI programs.
 
-This function returns `errno::again` if the lock cannot be acquired.
+This function returns `error-code::would-block` if the lock cannot be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
-locking, this function returns `errno::notsup`.
+locking, this function returns `error-code::unsupported`.
 
 Note: This is similar to `flock(fd, LOCK_SH | LOCK_NB)` in Unix.
 ##### Params
@@ -1467,7 +1472,7 @@ Note: This is similar to `flock(fd, LOCK_SH | LOCK_NB)` in Unix.
 - <a href="#try_lock_shared.this" name="try_lock_shared.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#try_lock_shared.result0" name="try_lock_shared.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#try_lock_shared.result0" name="try_lock_shared.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1489,10 +1494,10 @@ It is unspecified whether this function succeeds if the file descriptor
 is not opened for writing. It is unspecified how exclusive locks interact
 with locks acquired by non-WASI programs.
 
-This function returns `errno::again` if the lock cannot be acquired.
+This function returns `error-code::would-block` if the lock cannot be acquired.
 
 Not all filesystems support locking; on filesystems which don't support
-locking, this function returns `errno::notsup`.
+locking, this function returns `error-code::unsupported`.
 
 Note: This is similar to `flock(fd, LOCK_EX | LOCK_NB)` in Unix.
 ##### Params
@@ -1500,7 +1505,7 @@ Note: This is similar to `flock(fd, LOCK_EX | LOCK_NB)` in Unix.
 - <a href="#try_lock_exclusive.this" name="try_lock_exclusive.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#try_lock_exclusive.result0" name="try_lock_exclusive.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#try_lock_exclusive.result0" name="try_lock_exclusive.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1514,7 +1519,7 @@ Note: This is similar to `flock(fd, LOCK_UN)` in Unix.
 - <a href="#unlock.this" name="unlock.this"></a> `this`: [`descriptor`](#descriptor)
 ##### Results
 
-- <a href="#unlock.result0" name="unlock.result0"></a> `result0`: result<_, [`errno`](#errno)>
+- <a href="#unlock.result0" name="unlock.result0"></a> `result0`: result<_, [`error-code`](#error_code)>
 
 ----
 
@@ -1528,23 +1533,23 @@ be used.
 
 ----
 
-#### <a href="#read_dir_entry" name="read_dir_entry"></a> `read-dir-entry` 
+#### <a href="#read_directory_entry" name="read_directory_entry"></a> `read-directory-entry` 
 
-Read a single directory entry from a `dir-entry-stream`.
+Read a single directory entry from a `directory-entry-stream`.
 ##### Params
 
-- <a href="#read_dir_entry.this" name="read_dir_entry.this"></a> `this`: [`dir-entry-stream`](#dir_entry_stream)
+- <a href="#read_directory_entry.this" name="read_directory_entry.this"></a> `this`: [`directory-entry-stream`](#directory_entry_stream)
 ##### Results
 
-- <a href="#read_dir_entry.result0" name="read_dir_entry.result0"></a> `result0`: result<option<[`dir-entry`](#dir_entry)>, [`errno`](#errno)>
+- <a href="#read_directory_entry.result0" name="read_directory_entry.result0"></a> `result0`: result<option<[`directory-entry`](#directory_entry)>, [`error-code`](#error_code)>
 
 ----
 
-#### <a href="#drop_dir_entry_stream" name="drop_dir_entry_stream"></a> `drop-dir-entry-stream` 
+#### <a href="#drop_directory_entry_stream" name="drop_directory_entry_stream"></a> `drop-directory-entry-stream` 
 
-Dispose of the specified `dir-entry-stream`, after which it may no longer
+Dispose of the specified `directory-entry-stream`, after which it may no longer
 be used.
 ##### Params
 
-- <a href="#drop_dir_entry_stream.this" name="drop_dir_entry_stream.this"></a> `this`: [`dir-entry-stream`](#dir_entry_stream)
+- <a href="#drop_directory_entry_stream.this" name="drop_directory_entry_stream.this"></a> `this`: [`directory-entry-stream`](#directory_entry_stream)
 
