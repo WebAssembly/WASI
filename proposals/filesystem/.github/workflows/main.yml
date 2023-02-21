@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: curl https://raw.githubusercontent.com/WebAssembly/wasi-poll/1bafe7b4a16848a61dd81595ac7f67733561112f/wit/wasi-poll.wit.md > wit/wasi-poll.wit.md
-    - run: curl https://raw.githubusercontent.com/WebAssembly/wasi-io/32ad9a13480d591d1c094dcafdd4d19518e4de93/wit/wasi-io.wit.md > wit/wasi-io.wit.md
-    - run: curl https://raw.githubusercontent.com/WebAssembly/wasi-clocks/778a8323dde9385be37e774558febd7576548984/wit/wasi-wall-clock.wit.md > wit/wasi-wall-clock.wit.md
-    - uses: WebAssembly/wit-abi-up-to-date@v10
+    - uses: WebAssembly/wit-abi-up-to-date@v12
       with:
-        wit-abi-tag: wit-abi-0.8.0
+        wit-abi-tag: wit-abi-0.10.0
