@@ -738,7 +738,7 @@
   )
 )
 
-;;; The contents of a $prestat when type is `preopentype::dir`.
+;;; The contents of a `prestat` when type is `preopentype::dir`.
 (typename $prestat_dir
   (record
     ;;; The length of the directory name for use with `fd_prestat_dir_name`.
