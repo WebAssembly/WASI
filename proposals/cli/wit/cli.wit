@@ -7,7 +7,7 @@ default world cli {
   import filesystem: filesystem.filesystem
   import random: random.random
   import poll: poll.poll
-  import io: io.streams
+  import streams: io.streams
   import exit: pkg.exit
 
   use io.streams.{input-stream, output-stream}

@@ -8,7 +8,7 @@
 <li>interface <a href="#instance_wall_clock"><code>instance-wall-clock</code></a></li>
 <li>interface <a href="#instance_monotonic_clock"><code>instance-monotonic-clock</code></a></li>
 <li>interface <a href="#timezone"><code>timezone</code></a></li>
-<li>interface <a href="#io"><code>io</code></a></li>
+<li>interface <a href="#streams"><code>streams</code></a></li>
 <li>interface <a href="#filesystem"><code>filesystem</code></a></li>
 <li>interface <a href="#random"><code>random</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
@@ -315,7 +315,7 @@ be used.</p>
 <ul>
 <li><a name="drop_timezone.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 </ul>
-<h2><a name="io">Import interface io</a></h2>
+<h2><a name="streams">Import interface streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -626,7 +626,7 @@ merely for alignment with POSIX.</p>
 <p>Invalid argument, similar to `EINVAL` in POSIX.
 </li>
 <li>
-<p><a name="error_code.io"><a href="#io"><code>io</code></a></a></p>
+<p><a name="error_code.io"><code>io</code></a></p>
 <p>I/O error, similar to `EIO` in POSIX.
 </li>
 <li>
