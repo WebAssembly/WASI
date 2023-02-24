@@ -77,7 +77,7 @@ As a temporary workaround for use cases that need byte streams, [use] the
 `input-stream` and `output-stream` types defined in [wasi-io].
 
 ```wit
-use pkg.wasi-io.{input-stream, output-stream}
+use io.streams.{input-stream, output-stream}
 ```
 
 For use cases that need typed streams, another option is to define a [resource]
@@ -142,7 +142,7 @@ depending on dynamic keys.
 To use types from one package in another, use a `use` declaration:
 
 ```wit
-use pkg.wasi-io.{input-stream, output-stream}
+use io.streams.{input-stream, output-stream}
 ```
 
 For now, the tooling requires the wit files defining types to be colocated with
