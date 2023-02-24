@@ -55,6 +55,12 @@ doesn't provide any additional information.</p>
 types.</p>
 <p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
 scaffolding until component-model's async features are ready.</p>
+<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+underlying platforms. Except where specified otherwise, I/O operations also
+always return promptly, after the number of bytes that can be written
+promptly, which could even be zero. To wait for the stream to be ready to
+accept data, the <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a> function to obtain a
+<a href="#pollable"><code>pollable</code></a> which can be polled for using <code>wasi_poll</code>.</p>
 <p>And at present, it is a <code>u32</code> instead of being an actual handle, until
 the wit-bindgen implementation of handles and resources is ready.</p>
 <p>Size: 4, Alignment: 4</p>
@@ -63,6 +69,12 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 types.</p>
 <p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
 scaffolding until component-model's async features are ready.</p>
+<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
+platforms. I/O operations always return promptly; if fewer bytes are
+promptly available than requested, they return the number of bytes promptly
+available, which could even be zero. To wait for data to be available,
+use the <a href="#subscribe_to_input_stream"><code>subscribe-to-input-stream</code></a> function to obtain a <a href="#pollable"><code>pollable</code></a> which
+can be polled for using <code>wasi_poll</code>.</p>
 <p>And at present, it is a <code>u32</code> instead of being an actual handle, until
 the wit-bindgen implementation of handles and resources is ready.</p>
 <p>Size: 4, Alignment: 4</p>
@@ -165,6 +177,8 @@ that were written; it may be less than <code>len</code>.</p>
 <p>Read from one stream and write to another.</p>
 <p>This function returns the number of bytes transferred; it may be less
 than <code>len</code>.</p>
+<p>Unlike other I/O functions, this function blocks until all the data
+read from the input stream has been written to the output stream.</p>
 <h5>Params</h5>
 <ul>
 <li><a href="#splice.this" name="splice.this"></a> <code>this</code>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
@@ -181,6 +195,9 @@ than <code>len</code>.</p>
 <p>This function repeatedly reads from the input stream and writes
 the data to the output stream, until the end of the input stream
 is reached, or an error is encountered.</p>
+<p>Unlike other I/O functions, this function blocks until the end
+of the input stream is seen and all the data has been written to
+the output stream.</p>
 <p>This function returns the number of bytes transferred.</p>
 <h5>Params</h5>
 <ul>

@@ -60,11 +60,29 @@ types, `input-stream`, and `output-stream`, which support `read` and
 ```rust
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
        const BUFFER_LEN: usize = 4096;
+
+       let wait_input = [subscribe_to_input_stream(input)];
+       let wait_output = [subscribe_to_output_stream(output)];
+
        loop {
-           let (data, eos) = input.read(BUFFER_LEN)?;
+           let (mut data, mut eos) = input.read(BUFFER_LEN)?;
+
+           // If we didn't get any data promptly, wait for it.
+           if data.len() == 0 {
+               let _ = poll_oneoff(&wait_input[..]);
+               (data, eos) = input.read(BUFFER_LEN)?;
+           }
+
            let mut remaining = &data[..];
            while !remaining.is_empty() {
-               let num_written = output.write(remaining)?;
+               let mut num_written = output.write(remaining)?;
+
+               // If we didn't put any data promptly, wait for it.
+               if num_written == 0 {
+                   let _ = poll_oneoff(&wait_output[..]);
+                   num_written = output.write(remaining)?;
+               }
+
                remaining = &remaining[num_written..];
            }
            if eos {
@@ -80,10 +98,17 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
 ```rust
    fn copy_data(input: InputStream, output: OutputStream) -> Result<(), StreamError> {
+       let wait_input = [subscribe_to_input_stream(input)];
+
        loop {
-           let (_num_copied, eos) = output.splice(input, u64::MAX)?;
+           let (num_copied, eos) = output.splice(input, u64::MAX)?;
            if eos {
                break;
+           }
+
+           // If we didn't get any data promptly, wait for it.
+           if num_copied == 0 {
+               let _ = poll_oneoff(&wait_input[..]);
            }
        }
        Ok(())

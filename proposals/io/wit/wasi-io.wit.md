@@ -29,6 +29,13 @@ record stream-error {}
 /// This conceptually represents a `stream<u8, _>`. It's temporary
 /// scaffolding until component-model's async features are ready.
 ///
+/// `input-stream`s are *non-blocking* to the extent practical on underlying
+/// platforms. I/O operations always return promptly; if fewer bytes are
+/// promptly available than requested, they return the number of bytes promptly
+/// available, which could even be zero. To wait for data to be available,
+/// use the `subscribe-to-input-stream` function to obtain a `pollable` which
+/// can be polled for using `wasi_poll`.
+///
 /// And at present, it is a `u32` instead of being an actual handle, until
 /// the wit-bindgen implementation of handles and resources is ready.
 // TODO(resource input-stream {)
@@ -106,6 +113,13 @@ drop-input-stream: func(this: input-stream)
 /// This conceptually represents a `stream<u8, _>`. It's temporary
 /// scaffolding until component-model's async features are ready.
 ///
+/// `output-stream`s are *non-blocking* to the extent practical on
+/// underlying platforms. Except where specified otherwise, I/O operations also
+/// always return promptly, after the number of bytes that can be written
+/// promptly, which could even be zero. To wait for the stream to be ready to
+/// accept data, the `subscribe-to-output-stream` function to obtain a
+/// `pollable` which can be polled for using `wasi_poll`.
+///
 /// And at present, it is a `u32` instead of being an actual handle, until
 /// the wit-bindgen implementation of handles and resources is ready.
 // TODO(resource output-stream {)
@@ -144,6 +158,9 @@ type output-stream = u32
     ///
     /// This function returns the number of bytes transferred; it may be less
     /// than `len`.
+    ///
+    /// Unlike other I/O functions, this function blocks until all the data
+    /// read from the input stream has been written to the output stream.
     splice: func(
         this: output-stream,
         /// The stream to read from
@@ -160,6 +177,10 @@ type output-stream = u32
     /// This function repeatedly reads from the input stream and writes
     /// the data to the output stream, until the end of the input stream
     /// is reached, or an error is encountered.
+    ///
+    /// Unlike other I/O functions, this function blocks until the end
+    /// of the input stream is seen and all the data has been written to
+    /// the output stream.
     ///
     /// This function returns the number of bytes transferred.
     forward: func(
