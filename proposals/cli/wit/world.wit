@@ -1,0 +1,10 @@
+// If the repository defines `interface`s, this file can define a minimal world
+// which contains those interfaces, to allow documentation to be generated for
+// them.
+//
+// Proposals should remove these `//` commments, and edit the `world` name and
+// imports below to pull in their own `interface`s.
+
+default world example-world {
+    import example-interface: pkg.example.example-interface
+}
