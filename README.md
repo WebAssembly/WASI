@@ -65,59 +65,34 @@ If you would like to create a new proposal, get started with our
 
 ### Capability-based security
 
-WASI is built using capability-based security principles. Access to
-external resources is always represented by *handles*, which are special
-values that are *unforgeable*, meaning there's no way to coerce an
-arbitrary integer or other type of value into a handle. WASI is also
-aiming to have no *ambient authorities*, meaning that there should
-be no way to request a handle purely by providing a string or other
-user-controlled identifier providing the name of a resource. With these
-two properties, the only ways to obtain access to resources are to be
-explicitly given handles, or to perform operations on handles which
-return new handles.
+WASI is designed with capability-based security principles, using the
+facilities provided by the Wasm [component model]. All access to external
+resources is provided by capabilities.
+
+There are two kinds of capabilities:
+
+ - Handles, defined in the [component-model type system], dynamically
+   identify and provide access to resources. They are unforgeable, meaning
+   there's no way for an instance to acquire access to a handle other than
+   to have another instance explicitly pass one to it.
+
+ - Link-time capabilities, which are functions which require no handle
+   arguments, are used sparingly, in situations where it's not necessary
+   to identify more than one instance of a resource at runtime. Link-time
+   capabilities are *interposable*, so they are still refusable in a
+   capability-based security sense.
+
+WASI has no *ambient authorities*, meaning that there are no global
+namespaces at runtime, and no global functions at link time.
+
+[component model]: https://github.com/WebAssembly/component-model
+[component model type system]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#type-definitions
 
 Note that this is a different sense of "capability" than [Linux
 capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
 or the withdrawn [POSIX
 capabilities](https://archive.org/details/posix_1003.1e-990310), which
 are per-process rather than per-resource.
-
-The simplest representation of handles are values of [reference
-type](https://github.com/WebAssembly/reference-types). References in
-wasm are inherently unforgeable, so they can represent handles directly.
-
-Some programming languages operate primarily within linear memory,
-such as C, C++, and Rust, and there currently is no easy way for
-these languages to use references in normal code. And even if it does
-become possible, it's likely that source code will still require
-annotations to fully opt into references, so it won't always be
-feasible to use. For these languages, references are stored in a
-[table](https://webassembly.github.io/spec/core/bikeshed/index.html#tables%E2%91%A0)
-called a *c-list*. Integer indices into the table then identify
-resources, which can be easily passed around or stored in memory. In
-some contexts, these indices are called *file descriptors* since they're
-similar to what POSIX uses that term for. There are even some tools,
-such as wasm-bindgen, which make this fairly easy. (Internally, tools
-and engines don't always use actual WebAssembly tables to do this,
-however those are implementation details. Conceptually, they work as if
-they had tables.)
-
-Integer indices are themselves forgeable, however a program can only
-access handles within the c-list it has access to, so isolation can still
-be achieved, even between libraries which internally use integer indices,
-by witholding access to each library's c-list to the other libraries.
-Instances can be given access to some c-lists and not others, or even
-no c-lists at all, so it's still possible to establish isolation between
-instances.
-
-Witx-specified APIs use a special `handle` keyword to mark parameters
-and return values which are handles. In the short term, these are
-lowered to integer indices, with an implied table, so that the APIs
-can be easily used from C and similar languages today. Once [interface
-types](https://github.com/WebAssembly/interface-types) is
-ready, we expect to make use of them to provide APIs which can be used
-either from languages using references or from languages using integer
-indices, with tables being used and managed automatically.
 
 ### Interposition
 
@@ -127,12 +102,11 @@ consumer WebAssembly instance to be able to use this implementation
 transparently. This can be used to adapt or attenuate the functionality
 of a WASI API without changing the code using it.
 
-In WASI, we envision interposition will primarily be configured
-through the mechanisms in the module linking' [link-time virtualization](https://github.com/WebAssembly/module-linking/blob/main/design/proposals/module-linking/Explainer.md#link-time-virtualization).
-Imports are resolved when a module is instantiated, which may happen
-during the runtime of a larger logical application, so we can support
-interposition of WASI APIs without defining them in terms of explicit
-dynamic dispatch mechanisms.
+Component model interfaces always support link-time interposition. While
+WASI APIs are often implemented in hosts, they can also be implemented
+in Wasm, which may itself be a wrapper around the host. This may be used
+to implement *attenuation*, providing filtered access to the underlying
+host-provided functionality.
 
 Interposition is sometimes referred to as "virtualization", however we
 use "interposition" here because the word "virtualization" has several
