@@ -6,10 +6,10 @@
 //   that takes a `request` parameter and returns a `response` result.
 //
 default interface outgoing-handler {
-  use pkg.types.{outgoing-request, incoming-response, error}
+  use pkg.types.{outgoing-request, future-incoming-response}
 
   // The parameter and result types of the `handle` function allow the caller
   // to concurrently stream the bodies of the outgoing request and the incoming
   // response.
-  handle: func(request: outgoing-request) -> result<incoming-response, error>
+  handle: func(request: outgoing-request) -> future-incoming-response
 }

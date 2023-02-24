@@ -2,6 +2,8 @@
 // define the HTTP resource types and operations used by the component's
 // imported and exported interfaces.
 default interface types {
+  use io.streams.{input-stream, output-stream}
+  use io.poll.{pollable}
   
   // This type corresponds to HTTP standard Methods.
   variant method {
@@ -61,7 +63,6 @@ default interface types {
   // resource types defined by `wasi:io/streams`. The `finish-` functions
   // emulate the stream's result value and MUST be called exactly once after
   // the final read/write from/to the stream before dropping the stream.
-  use io.streams.{input-stream, output-stream}
   type incoming-body = input-stream
   type outgoing-body = output-stream
   finish-incoming-body: func(body: incoming-body) -> option<trailers>
@@ -95,7 +96,7 @@ default interface types {
   outgoing-request-write-body: func(request: outgoing-request) -> result<outgoing-body>
 
   // The following block defines a special resource type used by the
-  // `wasi:http/outgoing-handler` interface. When resource types are added, this
+  // `wasi:http/incoming-handler` interface. When resource types are added, this
   // block can be replaced by a proper `resource response-outparam { ... }`
   // definition. Later, with Preview3, the need for an outparam goes away entirely
   // (the `wasi:http/handler` interface used for both incoming and outgoing can
@@ -126,4 +127,16 @@ default interface types {
     headers: headers
   ) -> outgoing-response
   outgoing-response-write-body: func(response: outgoing-response) -> result<outgoing-body>
+
+  // The following block defines a special resource type used by the
+  // `wasi:http/outgoing-handler` interface to emulate
+  // `future<result<response, error>>` in advance of Preview3. Given a
+  // `future-incoming-response`, the client can call the non-blocking `get`
+  // method to get the result if it is available. If the result is not available,
+  // the client can call `listen` to get a `pollable` that can be passed to
+  // `io.poll.poll-oneoff`.
+  type future-incoming-response = u32
+  drop-future-incoming-response: func(f: future-incoming-response)
+  future-incoming-response-get: func(f: future-incoming-response) -> option<result<incoming-response, error>>
+  listen-to-future-incoming-response: func(f: future-incoming-response) -> pollable
 }
