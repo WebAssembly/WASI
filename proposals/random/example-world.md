@@ -1,7 +1,18 @@
-<h1>Import interface <code>wasi-random</code></h1>
-<h2>Functions</h2>
+<h1><a name="example_world">World example-world</a></h1>
+<ul>
+<li>Imports:
+<ul>
+<li>interface <a href="#random"><code>random</code></a></li>
+</ul>
+</li>
+</ul>
+<h2><a name="random">Import interface random</a></h2>
+<p>WASI Random is a random data API.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
 <hr />
-<h4><a href="#get_random_bytes" name="get_random_bytes"></a> <a href="#get_random_bytes"><code>get-random-bytes</code></a></h4>
+<h3>Functions</h3>
+<h4><a name="get_random_bytes"><code>get-random-bytes: func</code></a></h4>
 <p>Return <code>len</code> cryptographically-secure pseudo-random bytes.</p>
 <p>This function must produce data from an adequately seeded
 cryptographically-secure pseudo-random number generator (CSPRNG), so it
@@ -12,29 +23,27 @@ environments must omit this function, rather than implementing it with
 deterministic data.</p>
 <h5>Params</h5>
 <ul>
-<li><a href="#get_random_bytes.len" name="get_random_bytes.len"></a> <code>len</code>: <code>u64</code></li>
+<li><a name="get_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
-<h5>Results</h5>
+<h5>Return values</h5>
 <ul>
-<li><a href="#get_random_bytes.result0" name="get_random_bytes.result0"></a> <code>result0</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
-<hr />
-<h4><a href="#get_random_u64" name="get_random_u64"></a> <a href="#get_random_u64"><code>get-random-u64</code></a></h4>
+<h4><a name="get_random_u64"><code>get-random-u64: func</code></a></h4>
 <p>Return a cryptographically-secure pseudo-random <code>u64</code> value.</p>
 <p>This function returns the same type of pseudo-random data as
 <a href="#get_random_bytes"><code>get-random-bytes</code></a>, represented as a <code>u64</code>.</p>
-<h5>Results</h5>
+<h5>Return values</h5>
 <ul>
-<li><a href="#get_random_u64.result0" name="get_random_u64.result0"></a> <code>result0</code>: <code>u64</code></li>
+<li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<hr />
-<h4><a href="#insecure_random" name="insecure_random"></a> <a href="#insecure_random"><code>insecure-random</code></a></h4>
+<h4><a name="insecure_random"><code>insecure-random: func</code></a></h4>
 <p>Return a 128-bit value that may contain a pseudo-random value.</p>
 <p>The returned value is not required to be computed from a CSPRNG, and may
 even be entirely deterministic. Host implementations are encouraged to
-provide pseudo-random values to any program exposed to attacker-controlled
-content, to enable DoS protection built into many languages' hash-map
-implementations.</p>
+provide pseudo-random values to any program exposed to
+attacker-controlled content, to enable DoS protection built into many
+languages' hash-map implementations.</p>
 <p>This function is intended to only be called once, by a source language
 to initialize Denial Of Service (DoS) protection in its hash-map
 implementation.</p>
@@ -42,7 +51,7 @@ implementation.</p>
 <p>This will likely be changed to a value import, to prevent it from being
 called multiple times and potentially used for purposes other than DoS
 protection.</p>
-<h5>Results</h5>
+<h5>Return values</h5>
 <ul>
-<li><a href="#insecure_random.result0" name="insecure_random.result0"></a> <code>result0</code>: (<code>u64</code>, <code>u64</code>)</li>
+<li><a name="insecure_random.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>

@@ -102,7 +102,7 @@ Sometimes the bindings for `list<u8>` can have some overhead, so
 another function is available which returns the same data but as a
 `u64`:
 
-```rust=
+```rust
     let data: u64 = get_random_u64();
 ```
 
@@ -110,7 +110,7 @@ another function is available which returns the same data but as a
 
 Return a pair of u64's that can be used to initialize a hash implementation:
 
-```rust=
+```rust
     let init: (u64, u64) = insecure_random();
 
     let combined: u128 = init.0 as u128 | (init.1 as u128 << 64);
