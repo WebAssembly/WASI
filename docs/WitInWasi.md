@@ -122,7 +122,11 @@ Define an `instance` function, like this:
 ```
 
 If the value type contains any handles, for now specify that calling the
-function more than once traps.
+function more than once creates new handles each time.
+
+It is often desirable to put these functions in their own interface, so that
+worlds may chose to include or exclude them independently of the rest of the
+APIs they're associated with.
 
 ### Star Imports
 
