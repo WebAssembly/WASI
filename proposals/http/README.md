@@ -6,7 +6,7 @@ This proposal currently only contains the proposed Wit interfaces with light
 explanation in comments; more work is necessary to fully document the proposal.
 The Wit comments annotate where the proposed interface is expected to change in
 the short term (for Preview2) once resources and handles are re-added to Wit,
-and then after that (for Preview2) once native stream support is added to the
+and then after that (for Preview3) once native stream support is added to the
 Component Model and Wit.
 
 The `wit` directory currently validates and can generate bindings with:
