@@ -1,6 +1,6 @@
 /// This interfaces proves a clock handles for wall clock, suitable for
 /// general-purpose application needs.
-default interface instance-clocks {
+default interface instance-wall-clock {
     use pkg.wall-clock.{wall-clock}
 
     /// Return a handle to a wall clock, suitable for general-purpose

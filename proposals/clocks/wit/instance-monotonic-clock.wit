@@ -1,6 +1,6 @@
 /// This interfaces proves a clock handles for monotonic clock, suitable for
 /// general-purpose application needs.
-default interface instance-clocks {
+default interface instance-monotonic-clock {
     use pkg.monotonic-clock.{monotonic-clock}
 
     /// Return a handle to a monotonic clock, suitable for general-purpose
