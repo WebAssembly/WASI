@@ -1,7 +1,7 @@
 
-default interface wasi-udp-create-socket {
-	use pkg.wasi-network.{network, error, ip-address-family}
-	use pkg.wasi-udp.{udp-socket}
+default interface udp-create-socket {
+	use pkg.network.{network, error, ip-address-family}
+	use pkg.udp.{udp-socket}
 
 	/// Create a new UDP socket.
 	/// 

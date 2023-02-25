@@ -1,7 +1,7 @@
 
-default interface wasi-ip-name-lookup {
-	use pkg.wasi-poll.{pollable}
-	use pkg.wasi-network.{network, error, ip-address, ip-address-family}
+default interface ip-name-lookup {
+	use poll.poll.{pollable}
+	use pkg.network.{network, error, ip-address, ip-address-family}
 
 
 	/// Resolve an internet host name to a list of IP addresses.

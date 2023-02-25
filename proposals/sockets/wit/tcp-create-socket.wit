@@ -1,7 +1,7 @@
 
-default interface wasi-tcp-create-socket {
-	use pkg.wasi-network.{network, error, ip-address-family}
-	use pkg.wasi-tcp.{tcp-socket}
+default interface tcp-create-socket {
+	use pkg.network.{network, error, ip-address-family}
+	use pkg.tcp.{tcp-socket}
 
 	/// Create a new TCP socket.
 	/// 
