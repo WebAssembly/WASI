@@ -1,0 +1,9 @@
+
+/// This interface provides a value-export of the default network handle..
+default interface wasi-default-network {
+	use pkg.wasi-network.{network}
+
+	/// Get a handle to the default network.
+	default-network: func() -> network
+
+}
