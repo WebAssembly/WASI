@@ -12,8 +12,8 @@ default interface tcp-create-socket {
 	/// is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
 	/// 
 	/// References:
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
-	/// - https://man7.org/linux/man-pages/man2/socket.2.html
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>
+	/// - <https://man7.org/linux/man-pages/man2/socket.2.html>
 	/// 
 	create-tcp-socket: func(address-family: ip-address-family) -> result<tcp-socket, error>
 }
