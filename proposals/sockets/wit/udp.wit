@@ -1,7 +1,7 @@
 
-default interface wasi-udp {
-	use pkg.wasi-poll.{pollable}
-	use pkg.wasi-network.{network, error, ip-socket-address, ip-address-family}
+default interface udp {
+	use poll.poll.{pollable}
+	use pkg.network.{network, error, ip-socket-address, ip-address-family}
 
 
 	/// A UDP socket handle.
