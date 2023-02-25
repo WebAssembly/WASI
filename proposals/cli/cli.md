@@ -11,6 +11,8 @@
 <li>interface <a href="#streams"><code>streams</code></a></li>
 <li>interface <a href="#filesystem"><code>filesystem</code></a></li>
 <li>interface <a href="#random"><code>random</code></a></li>
+<li>interface <a href="#environment"><code>environment</code></a></li>
+<li>interface <a href="#environment_preopens"><code>environment-preopens</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
 <li>type <a href="#input_stream"><code>input-stream</code></a></li>
 <li>type <a href="#output_stream"><code>output-stream</code></a></li>
@@ -1532,6 +1534,34 @@ protection.</p>
 <ul>
 <li><a name="insecure_random.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
+<h2><a name="environment">Import interface environment</a></h2>
+<hr />
+<h3>Functions</h3>
+<h4><a name="get_environment"><code>get-environment: func</code></a></h4>
+<p>Get the POSIX-style environment variables.</p>
+<p>Each environment variable is provided as a pair of string variable names
+and string value.</p>
+<p>Morally, these are a value import, but until value imports are available
+in the component model, this import function should return the same
+values each time it is called.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_environment.0"></a> list&lt;(<code>string</code>, <code>string</code>)&gt;</li>
+</ul>
+<h2><a name="environment_preopens">Import interface environment-preopens</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="descriptor"><code>type descriptor</code></a></h4>
+<p><a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="preopens"><code>preopens: func</code></a></h4>
+<p>Return a list of preopens for use in interpreting environment variables.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="preopens.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
+</ul>
 <h2><a name="exit">Import interface exit</a></h2>
 <hr />
 <h3>Functions</h3>
@@ -1561,7 +1591,7 @@ protection.</p>
 <li><a name="command.stdout"><code>stdout</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 <li><a name="command.stderr"><code>stderr</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 <li><a name="command.args"><code>args</code></a>: list&lt;<code>string</code>&gt;</li>
-<li><a name="command.preopens"><code>preopens</code></a>: list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
+<li><a name="command.preopens"><a href="#preopens"><code>preopens</code></a></a>: list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>

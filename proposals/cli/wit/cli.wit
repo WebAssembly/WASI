@@ -8,6 +8,8 @@ default world cli {
   import random: random.random
   import poll: poll.poll
   import streams: io.streams
+  import environment: pkg.environment
+  import environment-preopens: pkg.environment-preopens
   import exit: pkg.exit
 
   use io.streams.{input-stream, output-stream}
