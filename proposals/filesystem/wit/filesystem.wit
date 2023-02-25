@@ -17,7 +17,7 @@
 /// `..` and symbolic link steps, reaches a directory outside of the base
 /// directory, or reaches a symlink to an absolute or rooted path in the
 /// underlying filesystem, the function fails with `error-code::not-permitted`.
-default interface wasi-filesystem {
+default interface filesystem {
     use io.streams.{input-stream, output-stream}
     use clocks.wall-clock.{datetime}
 
