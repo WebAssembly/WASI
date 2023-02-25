@@ -13,11 +13,54 @@ default interface wasi-network {
 	drop-network: func(this: network)
 
 
-
+	/// Error codes.
+	/// 
+	/// In theory, every API can return any error code.
+	/// In practice, API's typically only return the errors documented per API
+	/// combined with a couple of errors that are always possible:
+	/// - `unknown`
+	/// - `access-denied`
+	/// - `not-supported`
+	/// - `resource-limit-reached`
+	/// - `out-of-memory`
+	/// 
+	/// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
 	enum error {
+		/// Unknown error
 		unknown,
-		again,
-		// TODO ...
+
+		/// POSIX equivalent: EACCES, EPERM
+		access-denied,
+
+		/// POSIX equivalent: EOPNOTSUPP
+		not-supported,
+
+		/// POSIX equivalent: EMFILE, ENFILE, ENOMEM, ENOBUFS, EAI_MEMORY
+		resource-limit-reached,
+
+		/// POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY
+		out-of-memory,
+
+		concurrency-conflict,
+		already-attached,
+		already-bound,
+		already-connected,
+		already-listening,
+		not-bound,
+		not-connected,
+		not-listening,
+		address-family-mismatch,
+		invalid-remote-address,
+		datagram-too-large,
+		address-not-bindable,
+		address-in-use,
+		ephemeral-ports-exhausted,
+		connection-refused,
+		connection-reset,
+		remote-unreachable,
+		timeout,
+		ipv4-only-operation,
+		ipv6-only-operation,
 	}
 
 	enum ip-address-family {
