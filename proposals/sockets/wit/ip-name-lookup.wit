@@ -26,8 +26,8 @@ default interface ip-name-lookup {
 	/// - a syntactically invalid domain name in another way
 	/// 
 	/// References:
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html
-	/// - https://man7.org/linux/man-pages/man3/getaddrinfo.3.html
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html>
+	/// - <https://man7.org/linux/man-pages/man3/getaddrinfo.3.html>
 	/// 
 	resolve-addresses: func(network: network, name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> result<resolve-address-stream, error>
 
