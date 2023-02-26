@@ -11,11 +11,11 @@ default interface udp-create-socket {
 	/// at time of creation, the socket is not bound to any `network` yet. Up to the moment `bind`/`connect` is called,
 	/// the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `not-supported`: The host does not support UDP sockets.
 	/// - `not-supported`: The specified `address-family` is not supported.
 	/// 
-	/// References:
+	/// # References:
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>
 	/// - <https://man7.org/linux/man-pages/man2/socket.2.html>
 	create-udp-socket: func(address-family: ip-address-family) -> result<udp-socket, error>

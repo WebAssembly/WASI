@@ -283,7 +283,7 @@ mean &quot;ready&quot;.</p>
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
 <li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
@@ -292,7 +292,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
 <li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
@@ -318,7 +318,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li>the <a href="#send"><code>send</code></a> function can only be used to send to this destination.</li>
 </ul>
 <p>Note that this function does not generate any network traffic and the peer is not aware of this &quot;connection&quot;.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
@@ -327,7 +327,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
 <li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
@@ -351,12 +351,12 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li>The sender address of the datagram</li>
 <li>The number of bytes read.</li>
 </ul>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
 <li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
@@ -378,7 +378,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>Send a message to a specific destination address.</p>
 <p>The remote address option is required. To send a message to the &quot;connected&quot; peer,
 call <a href="#remote_address"><code>remote-address</code></a> to get their address.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>: The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-remote-address</code>:  The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
@@ -388,7 +388,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
 <li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
@@ -409,11 +409,11 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-bound</code>: The socket is not bound to any local address.</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
@@ -430,11 +430,11 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
 <p>Get the address set with <a href="#connect"><code>connect</code></a>.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
@@ -463,7 +463,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
 <li><code>already-bound</code>:        (set) The socket is already bound.</li>
@@ -490,7 +490,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -521,7 +521,7 @@ actual data to be sent/received by the application, because the kernel might als
 for internal metadata structures.</p>
 <p>Fails when this socket is in the Listening state.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -569,7 +569,7 @@ When switched to &quot;non-blocking&quot; mode, operations that would block retu
 the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
 <p>Note: these functions are here for WASI Preview2 only.
 They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -633,12 +633,12 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <p>This function does not require a network capability handle. This is considered to be safe because
 at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#connect"><code>connect</code></a> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-supported</code>: The host does not support UDP sockets.</li>
 <li><code>not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
 </ul>
-<p>References:</p>
+<h1>References:</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
@@ -889,7 +889,7 @@ network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>When a socket is not explicitly bound, the first invocation to a listen or connect operation will
 implicitly bind the socket.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
 <li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
@@ -898,7 +898,7 @@ implicitly bind the socket.</p>
 <li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
 <li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
@@ -922,7 +922,7 @@ implicitly bind the socket.</p>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>timeout</code>:                   Connection timed out. (ETIMEDOUT)</li>
 <li><code>connection-refused</code>:        The connection was forcefully rejected. (ECONNREFUSED)</li>
@@ -937,7 +937,7 @@ implicitly bind the socket.</p>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
 <li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
@@ -957,7 +957,7 @@ implicitly bind the socket.</p>
 <h4><a name="listen"><code>listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the Listener state.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <a href="#listen"><code>listen</code></a> must be identical to the one passed to <a href="#bind"><code>bind</code></a>.</li>
 <li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
@@ -965,7 +965,7 @@ implicitly bind the socket.</p>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
 <li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EINVAL on BSD)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/listen.2.html">https://man7.org/linux/man-pages/man2/listen.2.html</a></li>
@@ -986,12 +986,12 @@ implicitly bind the socket.</p>
 <p>The returned socket is bound and in the Connection state.</p>
 <p>On success, this function returns the newly accepted client socket along with
 a pair of streams that can be used to read &amp; write to the connection.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-listening</code>: Socket is not in the Listener state. (EINVAL)</li>
 </ul>
 <p>Host implementations must skip over transient errors returned by the native accept syscall.</p>
-<p>References:</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/accept.2.html">https://man7.org/linux/man-pages/man2/accept.2.html</a></li>
@@ -1008,11 +1008,11 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the bound local address.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-bound</code>: The socket is not bound to any local address.</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
@@ -1029,11 +1029,11 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
 <p>Get the bound remote address.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
@@ -1062,7 +1062,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
 <li><code>already-bound</code>:        (set) The socket is already bound.</li>
@@ -1089,7 +1089,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="set_listen_backlog_size"><code>set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
 <li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
@@ -1105,7 +1105,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="keep_alive"><code>keep-alive: func</code></a></h4>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -1129,7 +1129,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="no_delay"><code>no-delay: func</code></a></h4>
 <p>Equivalent to the TCP_NODELAY socket option.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -1153,7 +1153,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
 <li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
@@ -1185,7 +1185,7 @@ In other words, after setting a value, reading the same setting back may return 
 actual data to be sent/received by the application, because the kernel might also use the buffer space
 for internal metadata structures.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
 <li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
@@ -1235,7 +1235,7 @@ When switched to &quot;non-blocking&quot; mode, operations that would block retu
 the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
 <p>Note: these functions are here for WASI Preview2 only.
 They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
 </ul>
@@ -1280,11 +1280,11 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <li>both: same effect as receive &amp; send combined.</li>
 </ul>
 <p>The shutdown function does not close (drop) the socket.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-connected</code>: The socket is not in the Connection state. (ENOTCONN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/shutdown.2.html">https://man7.org/linux/man-pages/man2/shutdown.2.html</a></li>
@@ -1331,12 +1331,12 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>This function does not require a network capability handle. This is considered to be safe because
 at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#listen"><code>listen</code></a>/<a href="#connect"><code>connect</code></a>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
-<p>Typical errors:</p>
+<h1>Typical errors</h1>
 <ul>
 <li><code>not-supported</code>: The host does not support TCP sockets.</li>
 <li><code>not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
 </ul>
-<p>References:</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
@@ -1394,7 +1394,7 @@ Or it immediately fails whenever <code>name</code> is:</p>
 <li>an IP address</li>
 <li>a syntactically invalid domain name in another way</li>
 </ul>
-<p>References:</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>

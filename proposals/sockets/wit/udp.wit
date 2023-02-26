@@ -30,7 +30,7 @@ default interface udp {
 	/// 
 	/// When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `address-family-mismatch`:   The `local-address` has the wrong address family. (EINVAL)
 	/// - `already-bound`:             The socket is already bound. (EINVAL)
 	/// - `ephemeral-ports-exhausted`: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)
@@ -38,7 +38,7 @@ default interface udp {
 	/// - `address-not-bindable`:      `local-address` is not an address that the `network` can bind to. (EADDRNOTAVAIL)
 	/// - `concurrency-conflict`:      Another `bind` or `connect` operation is already in progress. (EALREADY)
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html>
 	/// - <https://man7.org/linux/man-pages/man2/bind.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
@@ -55,7 +55,7 @@ default interface udp {
 	/// 
 	/// Note that this function does not generate any network traffic and the peer is not aware of this "connection".
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `address-family-mismatch`:   The `remote-address` has the wrong address family. (EAFNOSUPPORT)
 	/// - `invalid-remote-address`:    The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
 	/// - `invalid-remote-address`:    The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
@@ -63,7 +63,7 @@ default interface udp {
 	/// - `ephemeral-ports-exhausted`: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
 	/// - `concurrency-conflict`:      Another `bind` or `connect` operation is already in progress. (EALREADY)
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
 	/// - <https://man7.org/linux/man-pages/man2/connect.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
@@ -76,11 +76,11 @@ default interface udp {
 	/// - The sender address of the datagram
 	/// - The number of bytes read.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `not-bound`:          The socket is not bound to any local address. (EINVAL)
 	/// - `remote-unreachable`: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html>
 	/// - <https://man7.org/linux/man-pages/man2/recv.2.html>
@@ -95,7 +95,7 @@ default interface udp {
 	/// The remote address option is required. To send a message to the "connected" peer,
 	/// call `remote-address` to get their address.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `address-family-mismatch`: The `remote-address` has the wrong address family. (EAFNOSUPPORT)
 	/// - `invalid-remote-address`:  The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
 	/// - `invalid-remote-address`:  The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
@@ -104,7 +104,7 @@ default interface udp {
 	/// - `remote-unreachable`:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
 	/// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html>
 	/// - <https://man7.org/linux/man-pages/man2/send.2.html>
@@ -116,10 +116,10 @@ default interface udp {
 
 	/// Get the current bound address.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `not-bound`: The socket is not bound to any local address.
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html>
 	/// - <https://man7.org/linux/man-pages/man2/getsockname.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname>
@@ -128,10 +128,10 @@ default interface udp {
 
 	/// Get the address set with `connect`.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `not-connected`: The socket is not connected to a remote address. (ENOTCONN)
 	/// 
-	/// References
+	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html>
 	/// - <https://man7.org/linux/man-pages/man2/getpeername.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername>
@@ -147,7 +147,7 @@ default interface udp {
 	/// 
 	/// Equivalent to the IPV6_V6ONLY socket option.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `ipv6-only-operation`:  (get/set) `this` socket is an IPv4 socket.
 	/// - `already-bound`:        (set) The socket is already bound.
 	/// - `not-supported`:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)
@@ -157,7 +157,7 @@ default interface udp {
 
 	/// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
 	unicast-hop-limit: func(this: udp-socket) -> result<u8, error>
 	set-unicast-hop-limit: func(this: udp-socket, value: u8) -> result<_, error>
@@ -175,7 +175,7 @@ default interface udp {
 	/// 
 	/// Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
 	receive-buffer-size: func(this: udp-socket) -> result<u64, error>
 	set-receive-buffer-size: func(this: udp-socket, value: u64) -> result<_, error>
@@ -191,7 +191,7 @@ default interface udp {
 	/// Note: these functions are here for WASI Preview2 only.
 	/// They're planned to be removed when `future` is natively supported in Preview3.
 	/// 
-	/// Typical errors:
+	/// # Typical errors
 	/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
 	non-blocking: func(this: udp-socket) -> result<bool, error>
 	set-non-blocking: func(this: udp-socket, value: bool) -> result<_, error>
