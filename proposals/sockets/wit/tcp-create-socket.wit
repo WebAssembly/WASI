@@ -12,8 +12,8 @@ default interface tcp-create-socket {
 	/// is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
 	/// 
 	/// # Typical errors
-	/// - `not-supported`: The host does not support TCP sockets.
-	/// - `not-supported`: The specified `address-family` is not supported.
+	/// - `not-supported`:                The host does not support TCP sockets.
+	/// - `address-family-not-supported`: The specified `address-family` is not supported.
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>

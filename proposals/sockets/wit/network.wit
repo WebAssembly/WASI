@@ -26,6 +26,8 @@ default interface network {
 	/// 
 	/// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
 	enum error {
+		// ### GENERAL ERRORS ###
+
 		/// Unknown error
 		unknown,
 
@@ -41,26 +43,47 @@ default interface network {
 		/// POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY
 		out-of-memory,
 
+		timeout,
 		concurrency-conflict,
+
+
+		// ### IP ERRORS ###
+		address-family-not-supported,
+		address-family-mismatch,
+		invalid-remote-address,
+		ipv4-only-operation,
+		ipv6-only-operation,
+
+
+
+		// ### TCP & UDP SOCKET ERRORS ###
 		already-attached,
 		already-bound,
 		already-connected,
-		already-listening,
 		not-bound,
 		not-connected,
-		not-listening,
-		address-family-mismatch,
-		invalid-remote-address,
-		datagram-too-large,
 		address-not-bindable,
 		address-in-use,
 		ephemeral-ports-exhausted,
+		remote-unreachable,
+		
+
+		// ### TCP SOCKET ERRORS ###
+		already-listening,
+		not-listening,
 		connection-refused,
 		connection-reset,
-		remote-unreachable,
-		timeout,
-		ipv4-only-operation,
-		ipv6-only-operation,
+		
+		
+		// ### UDP SOCKET ERRORS ###
+		datagram-too-large,
+
+
+		// ### NAME LOOKUP ERRORS ###
+		invalid-name,
+		name-unresolvable,
+		temporary-resolver-failure,
+		permanent-resolver-failure,
 	}
 
 	enum ip-address-family {
