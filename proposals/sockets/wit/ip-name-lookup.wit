@@ -1,7 +1,7 @@
 
 default interface ip-name-lookup {
 	use poll.poll.{pollable}
-	use pkg.network.{network, error, ip-address, ip-address-family}
+	use pkg.network.{network, error-code, ip-address, ip-address-family}
 
 
 	/// Resolve an internet host name to a list of IP addresses.
@@ -34,7 +34,7 @@ default interface ip-name-lookup {
 	/// - <https://man7.org/linux/man-pages/man3/getaddrinfo.3.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&sektion=3>
-	resolve-addresses: func(network: network, name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> result<resolve-address-stream, error>
+	resolve-addresses: func(network: network, name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> result<resolve-address-stream, error-code>
 
 
 
@@ -53,7 +53,7 @@ default interface ip-name-lookup {
 	/// - `name-unresolvable`:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)
 	/// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
 	/// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
-	resolve-next-address: func(this: resolve-address-stream) -> result<option<ip-address>, error>
+	resolve-next-address: func(this: resolve-address-stream) -> result<option<ip-address>, error-code>
 
 
 
@@ -70,8 +70,8 @@ default interface ip-name-lookup {
 	/// 
 	/// Note: these functions are here for WASI Preview2 only.
 	/// They're planned to be removed when `future` is natively supported in Preview3.
-	non-blocking: func(this: resolve-address-stream) -> result<bool, error>
-	set-non-blocking: func(this: resolve-address-stream, value: bool) -> result<_, error>
+	non-blocking: func(this: resolve-address-stream) -> result<bool, error-code>
+	set-non-blocking: func(this: resolve-address-stream, value: bool) -> result<_, error-code>
 
 	/// Create a `pollable` which will resolve once the stream is ready for I/O.
 	/// 

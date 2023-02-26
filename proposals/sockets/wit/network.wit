@@ -25,7 +25,7 @@ default interface network {
 	/// - `out-of-memory`
 	/// 
 	/// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
-	enum error {
+	enum error-code {
 		// ### GENERAL ERRORS ###
 
 		/// Unknown error
@@ -74,7 +74,7 @@ default interface network {
 		connection-refused,
 		connection-reset,
 		
-		
+
 		// ### UDP SOCKET ERRORS ###
 		datagram-too-large,
 

@@ -81,7 +81,7 @@ There is no need for this to map 1:1 to a physical network interface.
 <li><a name="ip_address.ipv4"><code>ipv4</code></a>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></li>
 <li><a name="ip_address.ipv6"><code>ipv6</code></a>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></li>
 </ul>
-<h4><a name="error"><code>enum error</code></a></h4>
+<h4><a name="error_code"><code>enum error-code</code></a></h4>
 <p>Error codes.</p>
 <p>In theory, every API can return any error code.
 In practice, API's typically only return the errors documented per API
@@ -97,99 +97,99 @@ combined with a couple of errors that are always possible:</p>
 <h5>Enum Cases</h5>
 <ul>
 <li>
-<p><a name="error.unknown"><code>unknown</code></a></p>
+<p><a name="error_code.unknown"><code>unknown</code></a></p>
 <p>Unknown error
 </li>
 <li>
-<p><a name="error.access_denied"><code>access-denied</code></a></p>
+<p><a name="error_code.access_denied"><code>access-denied</code></a></p>
 <p>POSIX equivalent: EACCES, EPERM
 </li>
 <li>
-<p><a name="error.not_supported"><code>not-supported</code></a></p>
+<p><a name="error_code.not_supported"><code>not-supported</code></a></p>
 <p>POSIX equivalent: EOPNOTSUPP
 </li>
 <li>
-<p><a name="error.resource_limit_reached"><code>resource-limit-reached</code></a></p>
+<p><a name="error_code.resource_limit_reached"><code>resource-limit-reached</code></a></p>
 <p>POSIX equivalent: EMFILE, ENFILE, ENOMEM, ENOBUFS, EAI_MEMORY
 </li>
 <li>
-<p><a name="error.out_of_memory"><code>out-of-memory</code></a></p>
+<p><a name="error_code.out_of_memory"><code>out-of-memory</code></a></p>
 <p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY
 </li>
 <li>
-<p><a name="error.timeout"><code>timeout</code></a></p>
+<p><a name="error_code.timeout"><code>timeout</code></a></p>
 </li>
 <li>
-<p><a name="error.concurrency_conflict"><code>concurrency-conflict</code></a></p>
+<p><a name="error_code.concurrency_conflict"><code>concurrency-conflict</code></a></p>
 </li>
 <li>
-<p><a name="error.address_family_not_supported"><code>address-family-not-supported</code></a></p>
+<p><a name="error_code.address_family_not_supported"><code>address-family-not-supported</code></a></p>
 </li>
 <li>
-<p><a name="error.address_family_mismatch"><code>address-family-mismatch</code></a></p>
+<p><a name="error_code.address_family_mismatch"><code>address-family-mismatch</code></a></p>
 </li>
 <li>
-<p><a name="error.invalid_remote_address"><code>invalid-remote-address</code></a></p>
+<p><a name="error_code.invalid_remote_address"><code>invalid-remote-address</code></a></p>
 </li>
 <li>
-<p><a name="error.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
+<p><a name="error_code.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
 </li>
 <li>
-<p><a name="error.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
+<p><a name="error_code.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
 </li>
 <li>
-<p><a name="error.already_attached"><code>already-attached</code></a></p>
+<p><a name="error_code.already_attached"><code>already-attached</code></a></p>
 </li>
 <li>
-<p><a name="error.already_bound"><code>already-bound</code></a></p>
+<p><a name="error_code.already_bound"><code>already-bound</code></a></p>
 </li>
 <li>
-<p><a name="error.already_connected"><code>already-connected</code></a></p>
+<p><a name="error_code.already_connected"><code>already-connected</code></a></p>
 </li>
 <li>
-<p><a name="error.not_bound"><code>not-bound</code></a></p>
+<p><a name="error_code.not_bound"><code>not-bound</code></a></p>
 </li>
 <li>
-<p><a name="error.not_connected"><code>not-connected</code></a></p>
+<p><a name="error_code.not_connected"><code>not-connected</code></a></p>
 </li>
 <li>
-<p><a name="error.address_not_bindable"><code>address-not-bindable</code></a></p>
+<p><a name="error_code.address_not_bindable"><code>address-not-bindable</code></a></p>
 </li>
 <li>
-<p><a name="error.address_in_use"><code>address-in-use</code></a></p>
+<p><a name="error_code.address_in_use"><code>address-in-use</code></a></p>
 </li>
 <li>
-<p><a name="error.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
+<p><a name="error_code.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
 </li>
 <li>
-<p><a name="error.remote_unreachable"><code>remote-unreachable</code></a></p>
+<p><a name="error_code.remote_unreachable"><code>remote-unreachable</code></a></p>
 </li>
 <li>
-<p><a name="error.already_listening"><code>already-listening</code></a></p>
+<p><a name="error_code.already_listening"><code>already-listening</code></a></p>
 </li>
 <li>
-<p><a name="error.not_listening"><code>not-listening</code></a></p>
+<p><a name="error_code.not_listening"><code>not-listening</code></a></p>
 </li>
 <li>
-<p><a name="error.connection_refused"><code>connection-refused</code></a></p>
+<p><a name="error_code.connection_refused"><code>connection-refused</code></a></p>
 </li>
 <li>
-<p><a name="error.connection_reset"><code>connection-reset</code></a></p>
+<p><a name="error_code.connection_reset"><code>connection-reset</code></a></p>
 </li>
 <li>
-<p><a name="error.datagram_too_large"><code>datagram-too-large</code></a></p>
+<p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
 </li>
 <li>
-<p><a name="error.invalid_name"><code>invalid-name</code></a></p>
+<p><a name="error_code.invalid_name"><code>invalid-name</code></a></p>
 </li>
 <li>
-<p><a name="error.name_unresolvable"><code>name-unresolvable</code></a></p>
+<p><a name="error_code.name_unresolvable"><code>name-unresolvable</code></a></p>
 </li>
 <li>
-<p><a name="error.temporary_resolver_failure"><code>temporary-resolver-failure</code></a></p>
+<p><a name="error_code.temporary_resolver_failure"><code>temporary-resolver-failure</code></a></p>
 </li>
 <li>
-<p><a name="error.permanent_resolver_failure"><code>permanent-resolver-failure</code></a></p>
+<p><a name="error_code.permanent_resolver_failure"><code>permanent-resolver-failure</code></a></p>
 </li>
 </ul>
 <hr />
@@ -272,8 +272,8 @@ mean &quot;ready&quot;.</p>
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_socket_address">`type ip-socket-address`</a>
 [`ip-socket-address`](#ip_socket_address)
@@ -322,7 +322,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="connect"><code>connect: func</code></a></h4>
 <p>Set the destination address.</p>
@@ -357,7 +357,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive"><code>receive: func</code></a></h4>
 <p>Receive a message.</p>
@@ -387,7 +387,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send"><code>send: func</code></a></h4>
 <p>Send a message to a specific destination address.</p>
@@ -420,7 +420,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
@@ -441,7 +441,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
 <p>Get the address set with <a href="#connect"><code>connect</code></a>.</p>
@@ -462,7 +462,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="address_family"><code>address-family: func</code></a></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
@@ -473,7 +473,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
@@ -491,7 +491,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_ipv6_only"><code>set-ipv6-only: func</code></a></h4>
 <h5>Params</h5>
@@ -501,7 +501,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
@@ -515,7 +515,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_unicast_hop_limit"><code>set-unicast-hop-limit: func</code></a></h4>
 <h5>Params</h5>
@@ -525,7 +525,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive_buffer_size"><code>receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
@@ -546,7 +546,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_receive_buffer_size"><code>set-receive-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -556,7 +556,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send_buffer_size"><code>send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -565,7 +565,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_send_buffer_size"><code>set-send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -575,7 +575,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
 <p>Get/set the blocking mode of the socket.</p>
@@ -594,7 +594,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
 <h5>Params</h5>
@@ -604,7 +604,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
@@ -631,8 +631,8 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h4><a name="network"><code>type network</code></a></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address_family">`type ip-address-family`</a>
 [`ip-address-family`](#ip_address_family)
@@ -664,7 +664,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="streams">Import interface streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
@@ -867,8 +867,8 @@ be used.</p>
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_socket_address">`type ip-socket-address`</a>
 [`ip-socket-address`](#ip_socket_address)
@@ -928,7 +928,7 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="connect"><code>connect: func</code></a></h4>
 <p>Connect to a remote endpoint.</p>
@@ -967,7 +967,7 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="listen"><code>listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
@@ -994,7 +994,7 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="accept"><code>accept: func</code></a></h4>
 <p>Accept a new client socket.</p>
@@ -1019,7 +1019,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="accept.0"></a> result&lt;(<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="accept.0"></a> result&lt;(<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the bound local address.</p>
@@ -1040,7 +1040,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
 <p>Get the bound remote address.</p>
@@ -1061,7 +1061,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="address_family"><code>address-family: func</code></a></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
@@ -1072,7 +1072,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
@@ -1090,7 +1090,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_ipv6_only"><code>set-ipv6-only: func</code></a></h4>
 <h5>Params</h5>
@@ -1100,7 +1100,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_listen_backlog_size"><code>set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
@@ -1116,7 +1116,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_listen_backlog_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_listen_backlog_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="keep_alive"><code>keep-alive: func</code></a></h4>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
@@ -1130,7 +1130,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="keep_alive.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="keep_alive.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_keep_alive"><code>set-keep-alive: func</code></a></h4>
 <h5>Params</h5>
@@ -1140,7 +1140,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_keep_alive.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_keep_alive.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="no_delay"><code>no-delay: func</code></a></h4>
 <p>Equivalent to the TCP_NODELAY socket option.</p>
@@ -1154,7 +1154,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="no_delay.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="no_delay.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_no_delay"><code>set-no-delay: func</code></a></h4>
 <h5>Params</h5>
@@ -1164,7 +1164,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_no_delay.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_no_delay.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
@@ -1180,7 +1180,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_unicast_hop_limit"><code>set-unicast-hop-limit: func</code></a></h4>
 <h5>Params</h5>
@@ -1190,7 +1190,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive_buffer_size"><code>receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
@@ -1212,7 +1212,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_receive_buffer_size"><code>set-receive-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -1222,7 +1222,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send_buffer_size"><code>send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -1231,7 +1231,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_send_buffer_size"><code>set-send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -1241,7 +1241,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
 <p>Get/set the blocking mode of the socket.</p>
@@ -1260,7 +1260,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
 <h5>Params</h5>
@@ -1270,7 +1270,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
@@ -1313,7 +1313,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="shutdown.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_tcp_socket"><code>drop-tcp-socket: func</code></a></h4>
 <p>Dispose of the specified <a href="#tcp_socket"><code>tcp-socket</code></a>, after which it may no longer be used.</p>
@@ -1329,8 +1329,8 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <h4><a name="network"><code>type network</code></a></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address_family">`type ip-address-family`</a>
 [`ip-address-family`](#ip_address_family)
@@ -1362,7 +1362,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="ip_name_lookup">Import interface ip-name-lookup</a></h2>
 <hr />
@@ -1373,8 +1373,8 @@ is called, the socket is effectively an in-memory configuration object, unable t
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address">`type ip-address`</a>
 [`ip-address`](#ip_address)
@@ -1427,7 +1427,7 @@ to <a href="#resolve_next_address"><code>resolve-next-address</code></a> never r
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolve_addresses.0"></a> result&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="resolve_addresses.0"></a> result&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="resolve_next_address"><code>resolve-next-address: func</code></a></h4>
 <p>Returns the next address from the resolver.</p>
@@ -1448,7 +1448,7 @@ After which, you should release the stream with <a href="#drop_resolve_address_s
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_resolve_address_stream"><code>drop-resolve-address-stream: func</code></a></h4>
 <p>Dispose of the specified <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>, after which it may no longer be used.</p>
@@ -1470,7 +1470,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
 <h5>Params</h5>
@@ -1480,7 +1480,7 @@ They're planned to be removed when <code>future</code> is natively supported in 
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
