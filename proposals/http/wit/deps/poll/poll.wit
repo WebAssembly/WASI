@@ -1,7 +1,6 @@
-///
-/// WASI Poll is a poll API intended to let users wait for I/O events on
-/// multiple handles at once.
-default interface wasi-poll {
+/// A poll API intended to let users wait for I/O events on multiple handles
+/// at once.
+default interface poll {
     /// A "pollable" handle.
     ///
     /// This is conceptually represents a `stream<_, _>`, or in other words,
@@ -14,11 +13,12 @@ default interface wasi-poll {
     ///
     /// `pollable` lifetimes are not automatically managed. Users must ensure
     /// that they do not outlive the resource they reference.
-    // TODO(resource pollable {)
+    ///
+    /// This [represents a resource](https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources).
     type pollable = u32
 
-    /// Dispose of the specified `pollable`, after which it may no longer be used.
-    // TODO(} /* resource pollable */)
+    /// Dispose of the specified `pollable`, after which it may no longer
+    /// be used.
     drop-pollable: func(this: pollable)
 
     /// Poll for completion on a set of pollables.

@@ -3,7 +3,7 @@
 // imported and exported interfaces.
 default interface types {
   use io.streams.{input-stream, output-stream}
-  use io.poll.{pollable}
+  use poll.poll.{pollable}
   
   // This type corresponds to HTTP standard Methods.
   variant method {
