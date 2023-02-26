@@ -117,7 +117,25 @@ combined with a couple of errors that are always possible:</p>
 <p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY
 </li>
 <li>
+<p><a name="error.timeout"><code>timeout</code></a></p>
+</li>
+<li>
 <p><a name="error.concurrency_conflict"><code>concurrency-conflict</code></a></p>
+</li>
+<li>
+<p><a name="error.address_family_not_supported"><code>address-family-not-supported</code></a></p>
+</li>
+<li>
+<p><a name="error.address_family_mismatch"><code>address-family-mismatch</code></a></p>
+</li>
+<li>
+<p><a name="error.invalid_remote_address"><code>invalid-remote-address</code></a></p>
+</li>
+<li>
+<p><a name="error.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
+</li>
+<li>
+<p><a name="error.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
 </li>
 <li>
 <p><a name="error.already_attached"><code>already-attached</code></a></p>
@@ -129,25 +147,10 @@ combined with a couple of errors that are always possible:</p>
 <p><a name="error.already_connected"><code>already-connected</code></a></p>
 </li>
 <li>
-<p><a name="error.already_listening"><code>already-listening</code></a></p>
-</li>
-<li>
 <p><a name="error.not_bound"><code>not-bound</code></a></p>
 </li>
 <li>
 <p><a name="error.not_connected"><code>not-connected</code></a></p>
-</li>
-<li>
-<p><a name="error.not_listening"><code>not-listening</code></a></p>
-</li>
-<li>
-<p><a name="error.address_family_mismatch"><code>address-family-mismatch</code></a></p>
-</li>
-<li>
-<p><a name="error.invalid_remote_address"><code>invalid-remote-address</code></a></p>
-</li>
-<li>
-<p><a name="error.datagram_too_large"><code>datagram-too-large</code></a></p>
 </li>
 <li>
 <p><a name="error.address_not_bindable"><code>address-not-bindable</code></a></p>
@@ -159,22 +162,34 @@ combined with a couple of errors that are always possible:</p>
 <p><a name="error.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
 </li>
 <li>
+<p><a name="error.remote_unreachable"><code>remote-unreachable</code></a></p>
+</li>
+<li>
+<p><a name="error.already_listening"><code>already-listening</code></a></p>
+</li>
+<li>
+<p><a name="error.not_listening"><code>not-listening</code></a></p>
+</li>
+<li>
 <p><a name="error.connection_refused"><code>connection-refused</code></a></p>
 </li>
 <li>
 <p><a name="error.connection_reset"><code>connection-reset</code></a></p>
 </li>
 <li>
-<p><a name="error.remote_unreachable"><code>remote-unreachable</code></a></p>
+<p><a name="error.datagram_too_large"><code>datagram-too-large</code></a></p>
 </li>
 <li>
-<p><a name="error.timeout"><code>timeout</code></a></p>
+<p><a name="error.invalid_name"><code>invalid-name</code></a></p>
 </li>
 <li>
-<p><a name="error.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
+<p><a name="error.name_unresolvable"><code>name-unresolvable</code></a></p>
 </li>
 <li>
-<p><a name="error.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
+<p><a name="error.temporary_resolver_failure"><code>temporary-resolver-failure</code></a></p>
+</li>
+<li>
+<p><a name="error.permanent_resolver_failure"><code>permanent-resolver-failure</code></a></p>
 </li>
 </ul>
 <hr />
@@ -635,8 +650,8 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>: The host does not support UDP sockets.</li>
-<li><code>not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
+<li><code>not-supported</code>:                The host does not support UDP sockets.</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
 </ul>
 <h1>References:</h1>
 <ul>
@@ -1333,8 +1348,8 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>: The host does not support TCP sockets.</li>
-<li><code>not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
+<li><code>not-supported</code>:                The host does not support TCP sockets.</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1375,7 +1390,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <h4><a name="resolve_addresses"><code>resolve-addresses: func</code></a></h4>
 <p>Resolve an internet host name to a list of IP addresses.</p>
 <p>See the wasi-socket proposal README.md for a comparison with getaddrinfo.</p>
-<p>Parameters:</p>
+<h1>Parameters</h1>
 <ul>
 <li><code>name</code>: The name to look up. IP addresses are not allowed. Unicode domain names are automatically converted
 to ASCII using IDNA encoding.</li>
@@ -1386,18 +1401,22 @@ systems without an active IPv6 interface. Notes:</li>
 <li>Even when no public IPv6 interfaces are present or active, names like &quot;localhost&quot; can still resolve to an IPv6 address.</li>
 <li>Whatever is &quot;available&quot; or &quot;unavailable&quot; is volatile and can change everytime a network cable is unplugged.</li>
 </ul>
-<p>This function never blocks. It either immediately returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>
-that can be used to (asynchronously) fetch the results.
-Or it immediately fails whenever <code>name</code> is:</p>
+<p>This function never blocks. It either immediately fails or immediately returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>
+that can be used to (asynchronously) fetch the results.</p>
+<p>At the moment, the stream never completes successfully with 0 items. Ie. the first call
+to <a href="#resolve_next_address"><code>resolve-next-address</code></a> never returns <code>ok(none)</code>. This may change in the future.</p>
+<h1>Typical errors</h1>
 <ul>
-<li>empty</li>
-<li>an IP address</li>
-<li>a syntactically invalid domain name in another way</li>
+<li><code>invalid-name</code>:                 <code>name</code> is a syntactically invalid domain name.</li>
+<li><code>invalid-name</code>:                 <code>name</code> is an IP address.</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAI_FAMILY)</li>
 </ul>
-<h1>References</h1>
+<h1>References:</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo">https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3">https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1417,6 +1436,12 @@ return the next address in connection order preference. If all
 addresses have been exhausted, this function returns <code>none</code>.
 After which, you should release the stream with <a href="#drop_resolve_address_stream"><code>drop-resolve-address-stream</code></a>.</p>
 <p>This function never returns IPv4-mapped IPv6 addresses.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>name-unresolvable</code>:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)</li>
+<li><code>temporary-resolver-failure</code>: A temporary failure in name resolution occurred. (EAI_AGAIN)</li>
+<li><code>permanent-resolver-failure</code>: A permanent failure in name resolution occurred. (EAI_FAIL)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="resolve_next_address.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
