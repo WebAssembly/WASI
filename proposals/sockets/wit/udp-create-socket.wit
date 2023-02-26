@@ -1,7 +1,7 @@
 
-default interface wasi-udp-create-socket {
-	use pkg.wasi-network.{network, error, ip-address-family}
-	use pkg.wasi-udp.{udp-socket}
+default interface udp-create-socket {
+	use pkg.network.{network, error, ip-address-family}
+	use pkg.udp.{udp-socket}
 
 	/// Create a new UDP socket.
 	/// 
@@ -16,7 +16,7 @@ default interface wasi-udp-create-socket {
 	/// - `not-supported`: The specified `address-family` is not supported.
 	/// 
 	/// References:
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
-	/// - https://man7.org/linux/man-pages/man2/socket.2.html
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>
+	/// - <https://man7.org/linux/man-pages/man2/socket.2.html>
 	create-udp-socket: func(address-family: ip-address-family) -> result<udp-socket, error>
 }

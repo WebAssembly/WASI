@@ -1,8 +1,8 @@
 
-default interface wasi-tcp {
-	use pkg.wasi-io.{input-stream, output-stream}
-	use pkg.wasi-poll.{pollable}
-	use pkg.wasi-network.{network, error, ip-socket-address, ip-address-family}
+default interface tcp {
+	use io.streams.{input-stream, output-stream}
+	use poll.poll.{pollable}
+	use pkg.network.{network, error, ip-socket-address, ip-address-family}
 
 	/// A TCP socket handle.
 	type tcp-socket = u32
@@ -38,10 +38,10 @@ default interface wasi-tcp {
 	/// - `concurrency-conflict`:      Another `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
 	/// 
 	/// References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html
-	/// - https://man7.org/linux/man-pages/man2/bind.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind
-	/// - https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html>
+	/// - <https://man7.org/linux/man-pages/man2/bind.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
+	/// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
 	bind: func(this: tcp-socket, network: network, local-address: ip-socket-address) -> result<_, error>
 
 	/// Connect to a remote endpoint.
@@ -65,10 +65,10 @@ default interface wasi-tcp {
 	/// - `concurrency-conflict`:      Another `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
 	/// 
 	/// References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html
-	/// - https://man7.org/linux/man-pages/man2/connect.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect
-	/// - https://man.freebsd.org/cgi/man.cgi?connect
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
+	/// - <https://man7.org/linux/man-pages/man2/connect.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
+	/// - <https://man.freebsd.org/cgi/man.cgi?connect>
 	connect: func(this: tcp-socket, network: network, remote-address: ip-socket-address) -> result<tuple<input-stream, output-stream>, error>
 
 	/// Start listening for new connections.
@@ -83,10 +83,10 @@ default interface wasi-tcp {
 	/// - `concurrency-conflict`:      Another `bind`, `connect` or `listen` operation is already in progress. (EINVAL on BSD)
 	///
 	///  References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html
-	/// - https://man7.org/linux/man-pages/man2/listen.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen
-	/// - https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html>
+	/// - <https://man7.org/linux/man-pages/man2/listen.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen>
+	/// - <https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2>
 	listen: func(this: tcp-socket, network: network) -> result<_, error>
 
 	/// Accept a new client socket.
@@ -102,10 +102,10 @@ default interface wasi-tcp {
 	/// Host implementations must skip over transient errors returned by the native accept syscall.
 	/// 
 	/// References:
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html
-	/// - https://man7.org/linux/man-pages/man2/accept.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept
-	/// - https://man.freebsd.org/cgi/man.cgi?query=accept&sektion=2
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html>
+	/// - <https://man7.org/linux/man-pages/man2/accept.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept>
+	/// - <https://man.freebsd.org/cgi/man.cgi?query=accept&sektion=2>
 	accept: func(this: tcp-socket) -> result<tuple<tcp-socket, input-stream, output-stream>, error>
 
 	/// Get the bound local address.
@@ -114,10 +114,10 @@ default interface wasi-tcp {
 	/// - `not-bound`: The socket is not bound to any local address.
 	/// 
 	/// References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html
-	/// - https://man7.org/linux/man-pages/man2/getsockname.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname
-	/// - https://man.freebsd.org/cgi/man.cgi?getsockname
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html>
+	/// - <https://man7.org/linux/man-pages/man2/getsockname.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname>
+	/// - <https://man.freebsd.org/cgi/man.cgi?getsockname>
 	local-address: func(this: tcp-socket) -> result<ip-socket-address, error>
 
 	/// Get the bound remote address.
@@ -126,10 +126,10 @@ default interface wasi-tcp {
 	/// - `not-connected`: The socket is not connected to a remote address. (ENOTCONN)
 	/// 
 	/// References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html
-	/// - https://man7.org/linux/man-pages/man2/getpeername.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername
-	/// - https://man.freebsd.org/cgi/man.cgi?query=getpeername&sektion=2&n=1
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html>
+	/// - <https://man7.org/linux/man-pages/man2/getpeername.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername>
+	/// - <https://man.freebsd.org/cgi/man.cgi?query=getpeername&sektion=2&n=1>
 	remote-address: func(this: tcp-socket) -> result<ip-socket-address, error>
 
 	/// Whether this is a IPv4 or IPv6 socket.
@@ -234,10 +234,10 @@ default interface wasi-tcp {
 	/// - `not-connected`: The socket is not in the Connection state. (ENOTCONN)
 	/// 
 	/// References
-	/// - https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html
-	/// - https://man7.org/linux/man-pages/man2/shutdown.2.html
-	/// - https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown
-	/// - https://man.freebsd.org/cgi/man.cgi?query=shutdown&sektion=2
+	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html>
+	/// - <https://man7.org/linux/man-pages/man2/shutdown.2.html>
+	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown>
+	/// - <https://man.freebsd.org/cgi/man.cgi?query=shutdown&sektion=2>
 	shutdown: func(this: tcp-socket, shutdown-type: shutdown-type) -> result<_, error>
 
 	/// Dispose of the specified `tcp-socket`, after which it may no longer be used.
