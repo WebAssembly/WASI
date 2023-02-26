@@ -102,94 +102,121 @@ combined with a couple of errors that are always possible:</p>
 </li>
 <li>
 <p><a name="error_code.access_denied"><code>access-denied</code></a></p>
-<p>POSIX equivalent: EACCES, EPERM
+<p>Access denied.
+<p>POSIX equivalent: EACCES, EPERM</p>
 </li>
 <li>
 <p><a name="error_code.not_supported"><code>not-supported</code></a></p>
-<p>POSIX equivalent: EOPNOTSUPP
+<p>The operation is not supported.
+<p>POSIX equivalent: EOPNOTSUPP</p>
 </li>
 <li>
 <p><a name="error_code.resource_limit_reached"><code>resource-limit-reached</code></a></p>
-<p>POSIX equivalent: EMFILE, ENFILE, ENOMEM, ENOBUFS, EAI_MEMORY
+<p>Resource limit reached.
 </li>
 <li>
 <p><a name="error_code.out_of_memory"><code>out-of-memory</code></a></p>
-<p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY
+<p>Not enough memory to complete the operation.
+<p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY</p>
 </li>
 <li>
 <p><a name="error_code.timeout"><code>timeout</code></a></p>
+<p>The operation timed out before it could finish completely.
 </li>
 <li>
 <p><a name="error_code.concurrency_conflict"><code>concurrency-conflict</code></a></p>
+<p>This operation is incompatible with another asynchronous operation that is already in progress.
 </li>
 <li>
 <p><a name="error_code.address_family_not_supported"><code>address-family-not-supported</code></a></p>
+<p>The specified address-family is not supported.
 </li>
 <li>
 <p><a name="error_code.address_family_mismatch"><code>address-family-mismatch</code></a></p>
+<p>An IPv4 address was passed to an IPv6 resource, or vice versa.
 </li>
 <li>
 <p><a name="error_code.invalid_remote_address"><code>invalid-remote-address</code></a></p>
+<p>The socket address is not a valid remote address. E.g. the IP address is set to INADDR_ANY, or the port is set to 0.
 </li>
 <li>
 <p><a name="error_code.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
+<p>The operation is only supported on IPv4 resources.
 </li>
 <li>
 <p><a name="error_code.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
+<p>The operation is only supported on IPv6 resources.
 </li>
 <li>
 <p><a name="error_code.already_attached"><code>already-attached</code></a></p>
+<p>The socket is already attached to another network.
 </li>
 <li>
 <p><a name="error_code.already_bound"><code>already-bound</code></a></p>
+<p>The socket is already bound.
 </li>
 <li>
 <p><a name="error_code.already_connected"><code>already-connected</code></a></p>
+<p>The socket is already in the Connection state.
 </li>
 <li>
 <p><a name="error_code.not_bound"><code>not-bound</code></a></p>
+<p>The socket is not bound to any local address.
 </li>
 <li>
 <p><a name="error_code.not_connected"><code>not-connected</code></a></p>
+<p>The socket is not in the Connection state.
 </li>
 <li>
 <p><a name="error_code.address_not_bindable"><code>address-not-bindable</code></a></p>
+<p>A bind operation failed because the provided address is not an address that the `network` can bind to.
 </li>
 <li>
 <p><a name="error_code.address_in_use"><code>address-in-use</code></a></p>
+<p>A bind operation failed because the provided address is already in use.
 </li>
 <li>
 <p><a name="error_code.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
+<p>A bind operation failed because there are no ephemeral ports available.
 </li>
 <li>
 <p><a name="error_code.remote_unreachable"><code>remote-unreachable</code></a></p>
+<p>The remote address is not reachable
 </li>
 <li>
 <p><a name="error_code.already_listening"><code>already-listening</code></a></p>
+<p>The socket is already in the Listener state.
 </li>
 <li>
 <p><a name="error_code.not_listening"><code>not-listening</code></a></p>
+<p>The socket is already in the Listener state.
 </li>
 <li>
 <p><a name="error_code.connection_refused"><code>connection-refused</code></a></p>
+<p>The connection was forcefully rejected
 </li>
 <li>
 <p><a name="error_code.connection_reset"><code>connection-reset</code></a></p>
+<p>The connection was reset.
 </li>
 <li>
 <p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
 </li>
 <li>
 <p><a name="error_code.invalid_name"><code>invalid-name</code></a></p>
+<p>The provided name is a syntactically invalid domain name.
 </li>
 <li>
 <p><a name="error_code.name_unresolvable"><code>name-unresolvable</code></a></p>
+<p>Name does not exist or has no suitable associated IP addresses.
 </li>
 <li>
 <p><a name="error_code.temporary_resolver_failure"><code>temporary-resolver-failure</code></a></p>
+<p>A temporary failure in name resolution occurred.
 </li>
 <li>
 <p><a name="error_code.permanent_resolver_failure"><code>permanent-resolver-failure</code></a></p>
+<p>A permanent failure in name resolution occurred.
 </li>
 </ul>
 <hr />
