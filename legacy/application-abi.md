@@ -52,7 +52,7 @@ with the name `__indirect_function_table`. Function pointers in WASI API calls
 are relative to this table's index space.
 
 When `_start` or `_initialize` is called, environments shall provide file
-descriptors with indices 0, 1, and 2 representing file-like resources for
+descriptors with indices 0, 1, and 2 representing stream resources for
 standard input, standard output, and standard error. Environments may provide
 additional "preopen" file descriptors that can be inspected with
 `fd_prestat_get` and `fd_prestat_dir_name`. These resources may be closed at
