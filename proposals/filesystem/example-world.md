@@ -784,7 +784,6 @@ POSIX.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="append_via_stream.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a name="append_via_stream.fd"><code>fd</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
