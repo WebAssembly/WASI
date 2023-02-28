@@ -1,30 +1,22 @@
-# [Example WASI proposal]
-
-This template can be used to start a new proposal, which can then be proposed in the WASI Subgroup meetings.
-
-The sections below are recommended. However, every proposal is different, and the community can help you flesh out the proposal, so don't block on having something filled in for each one of them.
-
-Thank you to the W3C Privacy CG for the [inspiration](https://github.com/privacycg/template)!
-
-# [Title]
+# WASI CLI World
 
 A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) API.
 
 ### Current Phase
 
-[Fill in the current phase, e.g. Phase 1]
+wasi-cli is currently in [Phase 1].
+
+[Phase 1]: https://github.com/WebAssembly/WASI/blob/42fe2a3ca159011b23099c3d10b5b1d9aff2140e/docs/Proposals.md#phase-1---feature-proposal-cg
 
 ### Champions
 
-- [Champion 1]
-- [Champion 2]
-- [etc.]
+- Dan Gohman
 
 ### Phase 4 Advancement Criteria
 
 TODO before entering Phase 2.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
@@ -33,31 +25,40 @@ TODO before entering Phase 2.
   - [Use case 1](#use-case-1)
   - [Use case 2](#use-case-2)
 - [Detailed design discussion](#detailed-design-discussion)
-  - [[Tricky design choice 1]](#tricky-design-choice-1)
-  - [[Tricky design choice 2]](#tricky-design-choice-2)
-- [Considered alternatives](#considered-alternatives)
-  - [[Alternative 1]](#alternative-1)
-  - [[Alternative 2]](#alternative-2)
+  - [Should stdout be an `output-stream`?](#should-stdout-be-an-output-stream)
+  - [Should stderr be an `output-stream`?](#should-stderr-be-an-output-stream)
+  - [Should environment variables be arguments to `command`?](#should-environment-variables-be-arguments-to-command)
 - [Stakeholder Interest & Feedback](#stakeholder-interest--feedback)
 - [References & acknowledgements](#references--acknowledgements)
 
 ### Introduction
 
-[The "executive summary" or "abstract". Explain in a few sentences what the goals of the project are, and a brief overview of how the solution works. This should be no more than 1-2 paragraphs.]
+Wasi-cli a [World] proposal for a Command-Line Interface (CLI) environment. It provides APIs commonly available in such environments, such as filesystems and sockets, and also provides command-line facilities such as command-line arguments, environment variables, and stdio.
 
-### Goals [or Motivating Use Cases, or Scenarios]
+[World]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-worlds
 
-[What is the end-user need which this project aims to address?]
+### Goals
+
+Wasi-cli aims to be useful for:
+
+ - Interfactive command-line argument programs.
+
+ - Servers that use filesystems, sockets, and related APIs and expect to be started with
+   a CLI-style command-line.
+
+ - Stream filters that read from standard input and write to standard output.
 
 ### Non-goals
 
-[If there are "adjacent" goals which may appear to be in scope but aren't, enumerate them here. This section may be fleshed out as your design progresses and you encounter necessary technical and other trade-offs.]
+Wasi-cli is not aiming to significantly re-imagine the concept of command-line interface programs. While WASI as a whole is exploring ideas such as [Typed Main], wasi-cli sticks to the traditional list-of-strings style command-line arguments.
+
+[Typed Main]: https://sunfishcode.github.io/typed-main-wasi-presentation/
 
 ### API walk-through
 
-The full API documentation can be found [here](wasi-proposal-template.md).
+The full API documentation can be found [here](cli.md).
 
-[Walk through of how someone would use this API.]
+TODO [Walk through of how someone would use this API.]
 
 #### [Use case 1]
 
@@ -69,33 +70,35 @@ The full API documentation can be found [here](wasi-proposal-template.md).
 
 ### Detailed design discussion
 
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
+#### Should stdout be an `output-stream`?
 
-#### [Tricky design choice #1]
+For server use cases, standard output (stdout) is typically used as a log,
+where it's typically not meaningfully blocking, async, or fallible. It's just
+a place for the program to send messages to and forget about them. One option
+would be to give such use cases a dedicated API, which would have a single
+function to allow printing strings that doesn't return a `result`, meaning it
+never fails.
 
-[Talk through the tradeoffs in coming to the specific design point you want to make.]
+However, it'd only be a minor simplification in practice, and dedicated cloud
+or edge use cases should ideally migrate to more specialized worlds than the
+wasi-cli world anyway, as they can result in much greater simplifications, so
+this doesn't seem worthwhile.
 
-```
-// Illustrated with example code.
-```
+#### Should stderr be an `output-stream`?
 
-[This may be an open question, in which case you should link to any active discussion threads.]
+This is similar to the question for stdout, but for standard error (stderr),
+it's a little more tempting to do something like this because stderr is used
+in this logging style by many kinds of applications.
 
-#### [Tricky design choice 2]
+However, it seems better overall to keep stderr consistent with stdout, and
+focus our desires for simplification toward other worlds, which can achieve
+even greater simplifications.
 
-[etc.]
+#### Should environment variables be arguments to `command`?
 
-### Considered alternatives
-
-[This section is not required if you already covered considered alternatives in the design discussion above.]
-
-#### [Alternative 1]
-
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
+Environment variables are useful in some non-cli use cases, so leaving them
+as separate imports means they can be used from worlds that don't have a
+`command` entrypoint.
 
 ### Stakeholder Interest & Feedback
 
@@ -105,8 +108,9 @@ TODO before entering Phase 3.
 
 ### References & acknowledgements
 
-Many thanks for valuable feedback and advice from:
+The concept of wasi-cli has been in development for over a year since the proposal is
+posted here, and many people have contributed ideas that have influenced.  Many thanks
+for valuable feedback and advice in particular from:
 
-- [Person 1]
-- [Person 2]
-- [etc.]
+- Luke Wagner
+- Pat Hickey

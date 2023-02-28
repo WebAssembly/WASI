@@ -1,0 +1,25 @@
+default world cli {
+  import wall-clock: clocks.wall-clock
+  import monotonic-clock: clocks.monotonic-clock
+  import instance-wall-clock: clocks.instance-wall-clock
+  import instance-monotonic-clock: clocks.instance-monotonic-clock
+  import timezone: clocks.timezone
+  import filesystem: filesystem.filesystem
+  import random: random.random
+  import poll: poll.poll
+  import streams: io.streams
+  import environment: pkg.environment
+  import environment-preopens: pkg.environment-preopens
+  import exit: pkg.exit
+
+  use io.streams.{input-stream, output-stream}
+  use filesystem.filesystem.{descriptor}
+
+  export command: func(
+    stdin: input-stream,
+    stdout: output-stream,
+    stderr: output-stream,
+    args: list<string>,
+    preopens: list<tuple<descriptor, string>>,
+  ) -> result
+}
