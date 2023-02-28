@@ -57,6 +57,27 @@ __wasi_errno_t __wasi_fd_read(
 );
 ```
 
+## Pointers
+
+Witx supports two pointer types, `pointer` and `const_pointer`, which represent
+pointers into the exported linear memory named "memory". `const_pointer` in a
+function declaration documents that the function does not use the pointer for
+mutating memory. Similar to C, they can point to either a single value or an
+contiguous array of values.
+
+Pointer arguments use the `@witx` syntax inspired by the [annotations proposal].
+
+For example, the `poll_oneoff` function has these arguments:
+
+```witx
+   (param $in (@witx const_pointer $subscription))
+   (param $out (@witx pointer $event))
+```
+
+Pointer values are expected to be aligned, to the alignment of their pointee
+type. If a misaligned pointer is passed to a function, the function shall fail
+with an `errno::inval` error code.
+
 [module linking proposal]: https://github.com/WebAssembly/module-linking/
 [interface types]: https://github.com/WebAssembly/interface-types/blob/main/proposals/interface-types/Explainer.md
 [wat format]: https://webassembly.github.io/spec/core/bikeshed/index.html#text-format%E2%91%A0
@@ -66,3 +87,4 @@ __wasi_errno_t __wasi_fd_read(
 [Wit language]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 [Canonical ABI]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/CanonicalABI.md
 [migrating]: https://github.com/WebAssembly/wasi#important-note-wasi-is-in-transition
+[annotations proposal]: https://github.com/WebAssembly/annotations
