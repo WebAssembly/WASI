@@ -1,30 +1,68 @@
 # Know your `witx`
 
-The `witx` file format is an experimental format which is based on the
-[module linking] text format (`wit`), (which is in turn based on the
-[wat format], which is based on [S-expressions]). It adds some features
-using the same syntax as [interface types], some features with syntax
-similar to [gc types], as well as a few special features of its own.
+`Witx` is an experimental IDL. The text format is based on a text format
+associated with an early version of the [module linking proposal] text
+format, which at the time was called `wit`, though it is a different language
+than what we now call [Wit]. And that `wit` was in turn based on the
+[wat format], which is based on [S-expressions].
 
-`witx` is actively evolving. Expect backwards-incompatible changes,
-particularly in the areas where `witx` differs from `wit`.
+Witx adds some features inspired by [interface types], such as limited
+`string` and `array` arguments, and some features using for working with
+IDL files such as the ability to include one IDL file in another.
 
-The initial goal for `witx` is just to have a language suitable for
+The initial goal for `witx` was just to have a language suitable for
 expressing [WASI] APIs in, to serve as the vocabulary for proposing changes
-to existing APIs and proposing new APIs. Initially, while it uses some of
-the syntax and concepts from interface types, it doesn't currently imply the
-full interface types specification, or the use of the interface types custom
-sections.
+to existing APIs and proposing new APIs.
 
-We expect that eventually we will transition to using the full interface
-types specification, with `witx` having minimal additional features. Until then,
-the goals here are to remain aligned with interface types and other relevant
-WebAssembly standards and proposals wherever practical, and to be an input 
-into the design process of interface types.
+The WASI Subgroup is [migrating] away from `witx` and toward [Wit], because
+Wit provides much better support for non-C-like languages, better support for
+API virtualization, it has a path to integrating async behavior into WASI
+APIs in a comprehensive way, and it supports much more expression APIs, such
+as the ability to have `string`s and other types as return types in addition
+to just argument types. At this point, the tooling for Wit is also a lot more
+sophisticated and the [Wit language] and [Canonical ABI] have much more
+documentation.
 
-[module linking]: https://github.com/WebAssembly/module-linking/blob/main/design/proposals/module-linking/Explainer.md
+This document focused on the witx format.
+
+## Return types
+
+Function declarations in witx can have a special `expected` type, which is
+a variant which represents either success or failure, and can return a
+specific type off value for each.
+
+For example, the `fd_read` function declaration in Preview1 contains this:
+
+```witx
+    (result $error (expected $size (error $errno)))
+```
+
+This declares a result named `$error` which returns a value with type
+`$size` on success, and a value with type `$errno` on failure.
+
+The `expected` mechanism assumes that the error value is an enum where 0
+indicates success, and as such it doesn't return an explicit descriminant
+value. In the ABI, the `error` type is returned as the return value and
+the success value is handled by adding an argument of pointer type for
+the function to store the result into.
+
+The resulting ABI for `fd_read` looks like this:
+
+```c
+__wasi_errno_t __wasi_fd_read(
+    __wasi_fd_t fd,
+    const __wasi_iovec_t *iovs,
+    size_t iovs_len,
+    __wasi_size_t *retptr0
+);
+```
+
+[module linking proposal]: https://github.com/WebAssembly/module-linking/
 [interface types]: https://github.com/WebAssembly/interface-types/blob/main/proposals/interface-types/Explainer.md
-[gc types]: https://github.com/WebAssembly/gc
 [wat format]: https://webassembly.github.io/spec/core/bikeshed/index.html#text-format%E2%91%A0
 [S-expressions]: https://en.wikipedia.org/wiki/S-expression
 [WASI]: https://github.com/WebAssembly/WASI
+[Wit]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+[Wit language]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+[Canonical ABI]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/CanonicalABI.md
+[migrating]: https://github.com/WebAssembly/wasi#important-note-wasi-is-in-transition
