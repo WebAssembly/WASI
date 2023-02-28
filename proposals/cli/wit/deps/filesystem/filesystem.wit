@@ -331,8 +331,6 @@ default interface filesystem {
     /// `O_APPEND` in in POSIX.
     append-via-stream: func(
         this: descriptor,
-        /// The resource to operate on.
-        fd: descriptor,
     ) -> result<output-stream, error-code>
 
     /// Provide file advisory information on a descriptor.
