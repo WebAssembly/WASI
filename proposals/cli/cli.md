@@ -1635,8 +1635,8 @@ Or it immediately fails whenever <code>name</code> is:</p>
 </ul>
 <p>References:</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</li>
-<li>https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1766,8 +1766,8 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</li>
-<li>https://man7.org/linux/man-pages/man2/bind.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1795,8 +1795,8 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</li>
-<li>https://man7.org/linux/man-pages/man2/connect.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1819,8 +1819,8 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html</li>
-<li>https://man7.org/linux/man-pages/man2/listen.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/listen.2.html">https://man7.org/linux/man-pages/man2/listen.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1839,8 +1839,8 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Fails when this socket is not in the Listening state.</p>
 <p>References:</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html</li>
-<li>https://man7.org/linux/man-pages/man2/accept.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/accept.2.html">https://man7.org/linux/man-pages/man2/accept.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1855,8 +1855,8 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Returns an error if the socket is not bound.</p>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</li>
-<li>https://man7.org/linux/man-pages/man2/getsockname.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1871,8 +1871,8 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Fails when the socket is not in the Connection state.</p>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</li>
-<li>https://man7.org/linux/man-pages/man2/getpeername.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2084,8 +2084,8 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>Fails when the socket is not in the Connection state.</p>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html</li>
-<li>https://man7.org/linux/man-pages/man2/shutdown.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/shutdown.2.html">https://man7.org/linux/man-pages/man2/shutdown.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2128,8 +2128,8 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <p>References:</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</li>
-<li>https://man7.org/linux/man-pages/man2/socket.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2181,8 +2181,8 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</li>
-<li>https://man7.org/linux/man-pages/man2/bind.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2209,8 +2209,8 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</li>
-<li>https://man7.org/linux/man-pages/man2/connect.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2235,9 +2235,9 @@ implicitly bind the socket.</p>
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</li>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</li>
-<li>https://man7.org/linux/man-pages/man2/recv.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2258,9 +2258,9 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</li>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</li>
-<li>https://man7.org/linux/man-pages/man2/send.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2276,8 +2276,8 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <p>Returns an error if the socket is not bound.</p>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</li>
-<li>https://man7.org/linux/man-pages/man2/getsockname.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2291,8 +2291,8 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <p>Get the address set with <a href="#connect"><code>connect</code></a>.</p>
 <p>References</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</li>
-<li>https://man7.org/linux/man-pages/man2/getpeername.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2471,8 +2471,8 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <p>References:</p>
 <ul>
-<li>https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</li>
-<li>https://man7.org/linux/man-pages/man2/socket.2.html</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
