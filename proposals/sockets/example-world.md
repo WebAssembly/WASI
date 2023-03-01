@@ -3,7 +3,7 @@
 <li>Imports:
 <ul>
 <li>interface <a href="#network"><code>network</code></a></li>
-<li>interface <a href="#default_network"><code>default-network</code></a></li>
+<li>interface <a href="#instance_network"><code>instance-network</code></a></li>
 <li>interface <a href="#poll"><code>poll</code></a></li>
 <li>interface <a href="#udp"><code>udp</code></a></li>
 <li>interface <a href="#udp_create_socket"><code>udp-create-socket</code></a></li>
@@ -228,7 +228,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="drop_network.this"><code>this</code></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
-<h2><a name="default_network">Import interface default-network</a></h2>
+<h2><a name="instance_network">Import interface instance-network</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -237,11 +237,11 @@ combined with a couple of errors that are always possible:</p>
 <p>
 ----
 <h3>Functions</h3>
-<h4><a name="default_network"><code>default-network: func</code></a></h4>
+<h4><a name="instance_network"><code>instance-network: func</code></a></h4>
 <p>Get a handle to the default network.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="default_network.0"></a> <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="instance_network.0"></a> <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
 <h2><a name="poll">Import interface poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
