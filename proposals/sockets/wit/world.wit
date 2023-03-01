@@ -1,6 +1,6 @@
 
 default world example-world {
-    import default-network: pkg.default-network
+    import instance-network: pkg.instance-network
     import network: pkg.network
     import udp: pkg.udp
     import udp-create-socket: pkg.udp-create-socket
