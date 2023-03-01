@@ -21,7 +21,6 @@ default interface network {
 	/// - `unknown`
 	/// - `access-denied`
 	/// - `not-supported`
-	/// - `resource-limit-reached`
 	/// - `out-of-memory`
 	/// 
 	/// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
@@ -40,9 +39,6 @@ default interface network {
 		/// 
 		/// POSIX equivalent: EOPNOTSUPP
 		not-supported,
-
-		/// Resource limit reached.
-		resource-limit-reached,
 
 		/// Not enough memory to complete the operation.
 		/// 
@@ -76,6 +72,9 @@ default interface network {
 
 
 		// ### TCP & UDP SOCKET ERRORS ###
+
+		/// A new socket resource could not be created because of a system limit.
+		new-socket-limit,
 		
 		/// The socket is already attached to another network.
 		already-attached,
