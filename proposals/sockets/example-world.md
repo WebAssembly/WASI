@@ -90,7 +90,6 @@ combined with a couple of errors that are always possible:</p>
 <li><code>unknown</code></li>
 <li><code>access-denied</code></li>
 <li><code>not-supported</code></li>
-<li><code>resource-limit-reached</code></li>
 <li><code>out-of-memory</code></li>
 </ul>
 <p>See each individual API for what the POSIX equivalents are. They sometimes differ per API.</p>
@@ -109,10 +108,6 @@ combined with a couple of errors that are always possible:</p>
 <p><a name="error_code.not_supported"><code>not-supported</code></a></p>
 <p>The operation is not supported.
 <p>POSIX equivalent: EOPNOTSUPP</p>
-</li>
-<li>
-<p><a name="error_code.resource_limit_reached"><code>resource-limit-reached</code></a></p>
-<p>Resource limit reached.
 </li>
 <li>
 <p><a name="error_code.out_of_memory"><code>out-of-memory</code></a></p>
@@ -146,6 +141,10 @@ combined with a couple of errors that are always possible:</p>
 <li>
 <p><a name="error_code.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
 <p>The operation is only supported on IPv6 resources.
+</li>
+<li>
+<p><a name="error_code.new_socket_limit"><code>new-socket-limit</code></a></p>
+<p>A new socket resource could not be created because of a system limit.
 </li>
 <li>
 <p><a name="error_code.already_attached"><code>already-attached</code></a></p>
@@ -677,13 +676,16 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>:                The host does not support UDP sockets.</li>
-<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
+<li><code>not-supported</code>:                The host does not support UDP sockets. (EOPNOTSUPP)</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
 </ul>
 <h1>References:</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1375,13 +1377,16 @@ at time of creation, the socket is not bound to any <a href="#network"><code>net
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>:                The host does not support TCP sockets.</li>
-<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported.</li>
+<li><code>not-supported</code>:                The host does not support TCP sockets. (EOPNOTSUPP)</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
 </ul>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
