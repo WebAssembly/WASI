@@ -32,8 +32,8 @@ default interface streams {
     /// Read bytes from a stream.
     ///
     /// This function returns a list of bytes containing the data that was
-    /// read, along with a bool indicating whether the end of the stream
-    /// was reached. The returned list will contain up to `len` bytes; it
+    /// read, along with a bool which, when true, indicates that the end of the
+    /// stream was reached. The returned list will contain up to `len` bytes; it
     /// may return fewer than requested, but not more.
     ///
     /// Once a stream has reached the end, subsequent calls to read or

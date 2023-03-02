@@ -103,8 +103,8 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <h4><a name="read"><code>read: func</code></a></h4>
 <p>Read bytes from a stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a bool indicating whether the end of the stream
-was reached. The returned list will contain up to <code>len</code> bytes; it
+read, along with a bool which, when true, indicates that the end of the
+stream was reached. The returned list will contain up to <code>len</code> bytes; it
 may return fewer than requested, but not more.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
