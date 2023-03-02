@@ -26,6 +26,7 @@ default interface types {
     other(string)
   }
 
+  // TODO: perhaps better align with HTTP semantics?
   // This type enumerates the different kinds of errors that may occur when
   // initially returning a response.
   variant error {
