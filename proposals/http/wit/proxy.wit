@@ -26,7 +26,7 @@ default world proxy {
   // This is the default handler to use when user code simply wants to make an
   // HTTP request (e.g., via `fetch()`) but doesn't otherwise specify a
   // particular handler.
-  import default-upstream-HTTP: pkg.outgoing-handler
+  import default-outgoing-HTTP: pkg.outgoing-handler
 
   // TODO: Once the underlying Wit template machinery is implemented, add:
   //
