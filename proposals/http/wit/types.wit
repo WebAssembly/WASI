@@ -53,29 +53,26 @@ default interface types {
   type headers = fields
   type trailers = fields
 
-  // The following block defines the `body` type which corresponds to the HTTP
-  // standard Contents. With Preview3, all of these fields can be replaced by a
-  // single type definition:
-  //
-  //   type body = stream<u8, option<trailers>>
-  //
-  // In the interim, we need to use separate `input-stream` and `output-stream`
-  // resource types defined by `wasi:io/streams`. The `finish-` functions
-  // emulate the stream's result value and MUST be called exactly once after
-  // the final read/write from/to the stream before dropping the stream.
-  type incoming-body = input-stream
-  type outgoing-body = output-stream
-  finish-incoming-body: func(body: incoming-body) -> option<trailers>
-  finish-outgoing-body: func(body: outgoing-body, trailers: option<trailers>)
+  // The following block defines stream types which corresponds to the HTTP
+  // standard Contents and Trailers. With Preview3, all of these fields can be
+  // replaced by a stream<u8, option<trailers>>. In the interim, we need to
+  // build on separate resource types defined by `wasi:io/streams`. The
+  // `finish-` functions emulate the stream's result value and MUST be called
+  // exactly once after the final read/write from/to the stream before dropping
+  // the stream.
+  type incoming-stream = input-stream
+  type outgoing-stream = output-stream
+  finish-incoming-stream: func(s: incoming-stream) -> option<trailers>
+  finish-outgoing-stream: func(s: outgoing-stream, trailers: option<trailers>)
 
   // The following block defines the `incoming-request` and `outgoing-request`
   // resource types that correspond to HTTP standard Requests. Soon, when
   // resource types are added, the `u32` type aliases can be replaced by
   // proper `resource` type definitions containing all the functions as
   // methods. Later, Preview2 will allow both types to be merged together into
-  // a single `request` type (that uses the single `body` type mentioned
-  // above). The `consume` and `write-body` methods may only be called once
-  // (and return failure thereafter).
+  // a single `request` type (that uses the single `stream` type mentioned
+  // above). The `consume` and `write` methods may only be called once (and
+  // return failure thereafter).
   type incoming-request = u32
   type outgoing-request = u32
   drop-incoming-request: func(request: incoming-request)
@@ -85,7 +82,7 @@ default interface types {
   incoming-request-scheme: func(request: incoming-request) -> option<scheme>
   incoming-request-authority: func(request: incoming-request) -> string
   incoming-request-headers: func(request: incoming-request) -> headers
-  incoming-request-consume: func(request: incoming-request) -> result<incoming-body>
+  incoming-request-consume: func(request: incoming-request) -> result<incoming-stream>
   new-outgoing-request: func(
     method: method,
     path: string,
@@ -93,7 +90,7 @@ default interface types {
     authority: string,
     headers: headers
   ) -> outgoing-request
-  outgoing-request-write-body: func(request: outgoing-request) -> result<outgoing-body>
+  outgoing-request-write: func(request: outgoing-request) -> result<outgoing-stream>
 
   // Additional optional parameters that can be set when making a request.
   record request-options {
@@ -116,7 +113,7 @@ default interface types {
   // block can be replaced by a proper `resource response-outparam { ... }`
   // definition. Later, with Preview3, the need for an outparam goes away entirely
   // (the `wasi:http/handler` interface used for both incoming and outgoing can
-  // simply return a `body`).
+  // simply return a `stream`).
   type response-outparam = u32
   drop-response-outparam: func(response: response-outparam)
   set-response-outparam: func(response: result<outgoing-response, error>) -> result
@@ -129,20 +126,20 @@ default interface types {
   // resource types are added, the `u32` type aliases can be replaced by proper
   // `resource` type definitions containing all the functions as methods. Later,
   // Preview2 will allow both types to be merged together into a single `response`
-  // type (that uses the single `body` type mentioned above). The `consume` and
-  // `write-body` methods may only be called once (and return failure thereafter).
+  // type (that uses the single `stream` type mentioned above). The `consume` and
+  // `write` methods may only be called once (and return failure thereafter).
   type incoming-response = u32
   type outgoing-response = u32
   drop-incoming-response: func(response: incoming-response)
   drop-outgoing-response: func(response: outgoing-response)
   incoming-response-status: func(response: incoming-response) -> status-code
   incoming-response-headers: func(response: incoming-response) -> headers
-  incoming-response-consume: func(response: incoming-response) -> result<incoming-body>
+  incoming-response-consume: func(response: incoming-response) -> result<incoming-stream>
   new-outgoing-response: func(
     status-code: status-code,
     headers: headers
   ) -> outgoing-response
-  outgoing-response-write-body: func(response: outgoing-response) -> result<outgoing-body>
+  outgoing-response-write: func(response: outgoing-response) -> result<outgoing-stream>
 
   // The following block defines a special resource type used by the
   // `wasi:http/outgoing-handler` interface to emulate
