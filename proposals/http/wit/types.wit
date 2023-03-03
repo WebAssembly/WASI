@@ -99,10 +99,10 @@ default interface types {
     // independently of the overall timeouts passed to `io.poll.poll-oneoff`.
 
     // The timeout for the initial connect.
-    connect-timeout-nanos: option<u64>,
+    connect-timeout-ms: option<u32>,
 
     // The timeout for receiving the first byte of the response body.
-    first-byte-timeout-ns: option<u64>,
+    first-byte-timeout-ms: option<u32>,
 
     // The timeout for receiving the next chunk of bytes in the response body
     // stream.
