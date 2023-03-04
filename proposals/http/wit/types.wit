@@ -33,7 +33,6 @@ default interface types {
       invalid-url(string),
       timeout-error(string),
       protocol-error(string),
-      status-error(u16),
       unexpected-error(string)
   }
 
