@@ -33,6 +33,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
 | [Random][wasi-random]                                                          | Dan Gohman                             |          |
 | [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
+| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
 
 ### Phase 1 - Feature Proposal (CG)
@@ -49,7 +50,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
-| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
