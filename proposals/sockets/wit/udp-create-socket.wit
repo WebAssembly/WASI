@@ -11,6 +11,8 @@ default interface udp-create-socket {
 	/// at time of creation, the socket is not bound to any `network` yet. Up to the moment `bind`/`connect` is called,
 	/// the socket is effectively an in-memory configuration object, unable to communicate with the outside world.
 	/// 
+	/// All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.
+	/// 
 	/// # Typical errors
 	/// - `not-supported`:                The host does not support UDP sockets. (EOPNOTSUPP)
 	/// - `address-family-not-supported`: The specified `address-family` is not supported. (EAFNOSUPPORT)

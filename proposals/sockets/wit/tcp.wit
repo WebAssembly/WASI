@@ -98,6 +98,7 @@ default interface tcp {
 	/// 
 	/// # Typical errors
 	/// - `not-listening`: Socket is not in the Listener state. (EINVAL)
+	/// - `would-block`:   No pending connections at the moment. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// Host implementations must skip over transient errors returned by the native accept syscall.
 	/// 
@@ -199,27 +200,13 @@ default interface tcp {
 	send-buffer-size: func(this: tcp-socket) -> result<u64, error-code>
 	set-send-buffer-size: func(this: tcp-socket, value: u64) -> result<_, error-code>
 
-	/// Get/set the blocking mode of the socket.
-	/// 
-	/// By default a socket is in "blocking" mode, meaning that any function blocks and waits for its completion.
-	/// When switched to "non-blocking" mode, operations that would block return an `would-block` error. After which
-	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
-	/// 
-	/// Note: these functions are here for WASI Preview2 only.
-	/// They're planned to be removed when `future` is natively supported in Preview3.
-	/// 
-	/// # Typical errors
-	/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-	non-blocking: func(this: tcp-socket) -> result<bool, error-code>
-	set-non-blocking: func(this: tcp-socket, value: bool) -> result<_, error-code>
-
 	/// Create a `pollable` which will resolve once the socket is ready for I/O.
 	/// 
 	/// Note: this function is here for WASI Preview2 only.
 	/// It's planned to be removed when `future` is natively supported in Preview3.
 	subscribe: func(this: tcp-socket) -> pollable
 
-	/// Gracefully shut down the connection.
+	/// Initiate a graceful shutdown.
 	/// 
 	/// - receive: the socket is not expecting to receive any more data from the peer. All subsequent read
 	///   operations on the `input-stream` associated with this socket will return an End Of Stream indication.

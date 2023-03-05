@@ -79,6 +79,7 @@ default interface udp {
 	/// # Typical errors
 	/// - `not-bound`:          The socket is not bound to any local address. (EINVAL)
 	/// - `remote-unreachable`: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
+	/// - `would-block`:        There is no pending data available to be read at the moment. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
@@ -103,6 +104,7 @@ default interface udp {
 	/// - `not-bound`:               The socket is not bound to any local address. Unlike POSIX, this function does not perform an implicit bind.
 	/// - `remote-unreachable`:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
 	/// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
+	/// - `would-block`:             The send buffer is currently full. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
@@ -181,20 +183,6 @@ default interface udp {
 	set-receive-buffer-size: func(this: udp-socket, value: u64) -> result<_, error-code>
 	send-buffer-size: func(this: udp-socket) -> result<u64, error-code>
 	set-send-buffer-size: func(this: udp-socket, value: u64) -> result<_, error-code>
-
-	/// Get/set the blocking mode of the socket.
-	/// 
-	/// By default a socket is in "blocking" mode, meaning that any function blocks and waits for its completion.
-	/// When switched to "non-blocking" mode, operations that would block return an `would-block` error. After which
-	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
-	/// 
-	/// Note: these functions are here for WASI Preview2 only.
-	/// They're planned to be removed when `future` is natively supported in Preview3.
-	/// 
-	/// # Typical errors
-	/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
-	non-blocking: func(this: udp-socket) -> result<bool, error-code>
-	set-non-blocking: func(this: udp-socket, value: bool) -> result<_, error-code>
 
 	/// Create a `pollable` which will resolve once the socket is ready for I/O.
 	/// 
