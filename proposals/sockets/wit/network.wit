@@ -51,10 +51,18 @@ default interface network {
 		/// This operation is incompatible with another asynchronous operation that is already in progress.
 		concurrency-conflict,
 
+		/// Trying to finish an asynchronous operation that:
+		/// - has not been started yet, or:
+		/// - was already finished by a previous `finish-*` call.
+		/// 
+		/// Note: this is scheduled to be removed when `future`s are natively supported.
+		not-in-progress,
+
 		/// The operation has been aborted because it could not be completed immediately.
 		/// 
 		/// Note: this is scheduled to be removed when `future`s are natively supported.
 		would-block,
+
 
 		// ### IP ERRORS ###
 
