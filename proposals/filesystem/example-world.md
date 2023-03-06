@@ -762,7 +762,7 @@ file and they do not interfere with each other.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read_via_stream.0"></a> result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="read_via_stream.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
 </ul>
 <h4><a name="write_via_stream"><code>write-via-stream: func</code></a></h4>
 <p>Return a stream for writing to a file.</p>
@@ -775,7 +775,7 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="write_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
 <h4><a name="append_via_stream"><code>append-via-stream: func</code></a></h4>
 <p>Return a stream for appending to a file.</p>
@@ -787,7 +787,7 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="append_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="append_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
 <h4><a name="advise"><code>advise: func</code></a></h4>
 <p>Provide file advisory information on a descriptor.</p>
