@@ -53,6 +53,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | George Kulakowski and Radu Matei       |          |
+| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -102,3 +103,4 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
 [wasi-sql]: https://github.com/WebAssembly/wasi-sql
 [wasi-url]: https://github.com/WebAssembly/wasi-url
+[wasi-cli]: https://github.com/WebAssembly/wasi-cli
