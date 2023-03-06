@@ -1,4 +1,4 @@
-<h1><a name="cli">World cli</a></h1>
+<h1><a name="command">World command</a></h1>
 <ul>
 <li>Imports:
 <ul>
@@ -28,7 +28,7 @@
 </li>
 <li>Exports:
 <ul>
-<li>function <a href="#command"><code>command</code></a></li>
+<li>function <a href="#main"><code>main</code></a></li>
 </ul>
 </li>
 </ul>
@@ -2568,7 +2568,7 @@ values each time it is called.</p>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
 </ul>
-<h2>Exported types from world <a href="#cli"><code>cli</code></a></h2>
+<h2>Exported types from world <a href="#command"><code>command</code></a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -2580,17 +2580,17 @@ values each time it is called.</p>
 #### <a name="descriptor">`type descriptor`</a>
 [`descriptor`](#descriptor)
 <p>
-## Exported functions from world `cli`
-<h4><a name="command"><code>command: func</code></a></h4>
+## Exported functions from world `command`
+<h4><a name="main"><code>main: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="command.stdin"><code>stdin</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="command.stdout"><code>stdout</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="command.stderr"><code>stderr</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="command.args"><code>args</code></a>: list&lt;<code>string</code>&gt;</li>
-<li><a name="command.preopens"><a href="#preopens"><code>preopens</code></a></a>: list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
+<li><a name="main.stdin"><code>stdin</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="main.stdout"><code>stdout</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="main.stderr"><code>stderr</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="main.args"><code>args</code></a>: list&lt;<code>string</code>&gt;</li>
+<li><a name="main.preopens"><a href="#preopens"><code>preopens</code></a></a>: list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="command.0"></a> result</li>
+<li><a name="main.0"></a> result</li>
 </ul>
