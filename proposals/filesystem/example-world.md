@@ -5,7 +5,7 @@
 <li>interface <a href="#poll"><code>poll</code></a></li>
 <li>interface <a href="#streams"><code>streams</code></a></li>
 <li>interface <a href="#wall_clock"><code>wall-clock</code></a></li>
-<li>interface <a href="#filesystem"><code>filesystem</code></a></li>
+<li>interface <a href="#types"><code>types</code></a></li>
 </ul>
 </li>
 </ul>
@@ -280,7 +280,7 @@ be used.</p>
 <ul>
 <li><a name="drop_wall_clock.this"><code>this</code></a>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
 </ul>
-<h2><a name="filesystem">Import interface filesystem</a></h2>
+<h2><a name="types">Import interface types</a></h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
