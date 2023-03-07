@@ -1,4 +1,4 @@
-default world cli {
+default world command {
   import wall-clock: clocks.wall-clock
   import monotonic-clock: clocks.monotonic-clock
   import instance-wall-clock: clocks.instance-wall-clock
@@ -22,7 +22,7 @@ default world cli {
   use io.streams.{input-stream, output-stream}
   use filesystem.filesystem.{descriptor}
 
-  export command: func(
+  export main: func(
     stdin: input-stream,
     stdout: output-stream,
     stderr: output-stream,
