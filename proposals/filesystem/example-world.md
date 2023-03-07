@@ -74,6 +74,14 @@ doesn't provide any additional information.</p>
 <p><code>u32</code></p>
 <p>An output bytestream. In the future, this will be replaced by handle
 types.
+<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
+scaffolding until component-model's async features are ready.</p>
+<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+underlying platforms. Except where specified otherwise, I/O operations also
+always return promptly, after the number of bytes that can be written
+promptly, which could even be zero. To wait for the stream to be ready to
+accept data, the <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a> function to obtain a
+<a href="#pollable"><code>pollable</code></a> which can be polled for using <code>wasi_poll</code>.</p>
 <p>And at present, it is a <code>u32</code> instead of being an actual handle, until
 the wit-bindgen implementation of handles and resources is ready.</p>
 <p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
@@ -81,6 +89,14 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <p><code>u32</code></p>
 <p>An input bytestream. In the future, this will be replaced by handle
 types.
+<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
+scaffolding until component-model's async features are ready.</p>
+<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
+platforms. I/O operations always return promptly; if fewer bytes are
+promptly available than requested, they return the number of bytes promptly
+available, which could even be zero. To wait for data to be available,
+use the <a href="#subscribe_to_input_stream"><code>subscribe-to-input-stream</code></a> function to obtain a <a href="#pollable"><code>pollable</code></a> which
+can be polled for using <code>wasi_poll</code>.</p>
 <p>And at present, it is a <code>u32</code> instead of being an actual handle, until
 the wit-bindgen implementation of handles and resources is ready.</p>
 <p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
@@ -89,8 +105,8 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <h4><a name="read"><code>read: func</code></a></h4>
 <p>Read bytes from a stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a bool indicating whether the end of the stream
-was reached. The returned list will contain up to <code>len</code> bytes; it
+read, along with a bool which, when true, indicates that the end of the
+stream was reached. The returned list will contain up to <code>len</code> bytes; it
 may return fewer than requested, but not more.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
@@ -110,6 +126,19 @@ FIXME: describe what happens if allocation fails.</p>
 <ul>
 <li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
+<h4><a name="blocking_read"><code>blocking-read: func</code></a></h4>
+<p>Read bytes from a stream, with blocking.</p>
+<p>This is similar to <a href="#read"><code>read</code></a>, except that it blocks until at least one
+byte can be read.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_read.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="blocking_read.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="skip"><code>skip: func</code></a></h4>
 <p>Skip bytes from a stream.</p>
 <p>This is similar to the <a href="#read"><code>read</code></a> function, but avoids copying the
@@ -128,6 +157,19 @@ value will be at most <code>len</code>; it may be less.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="blocking_skip"><code>blocking-skip: func</code></a></h4>
+<p>Skip bytes from a stream, with blocking.</p>
+<p>This is similar to <a href="#skip"><code>skip</code></a>, except that it blocks until at least one
+byte can be consumed.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="blocking_skip.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_to_input_stream"><code>subscribe-to-input-stream: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
@@ -161,6 +203,19 @@ be used.</p>
 <ul>
 <li><a name="write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
+<h4><a name="blocking_write"><code>blocking-write: func</code></a></h4>
+<p>Write bytes to a stream, with blocking.</p>
+<p>This is similar to <a href="#write"><code>write</code></a>, except that it blocks until at least one
+byte can be written.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="blocking_write.buf"><code>buf</code></a>: list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="write_zeroes"><code>write-zeroes: func</code></a></h4>
 <p>Write multiple zero bytes to a stream.</p>
 <p>This function returns a <code>u64</code> indicating the number of zero bytes
@@ -174,10 +229,25 @@ that were written; it may be less than <code>len</code>.</p>
 <ul>
 <li><a name="write_zeroes.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
+<h4><a name="blocking_write_zeroes"><code>blocking-write-zeroes: func</code></a></h4>
+<p>Write multiple zero bytes to a stream, with blocking.</p>
+<p>This is similar to <a href="#write_zeroes"><code>write-zeroes</code></a>, except that it blocks until at least
+one byte can be written.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_write_zeroes.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="blocking_write_zeroes.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_write_zeroes.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="splice"><code>splice: func</code></a></h4>
 <p>Read from one stream and write to another.</p>
 <p>This function returns the number of bytes transferred; it may be less
 than <code>len</code>.</p>
+<p>Unlike other I/O functions, this function blocks until all the data
+read from the input stream has been written to the output stream.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="splice.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
@@ -188,11 +258,28 @@ than <code>len</code>.</p>
 <ul>
 <li><a name="splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
+<h4><a name="blocking_splice"><code>blocking-splice: func</code></a></h4>
+<p>Read from one stream and write to another, with blocking.</p>
+<p>This is similar to <a href="#splice"><code>splice</code></a>, except that it blocks until at least
+one byte can be read.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_splice.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="blocking_splice.src"><code>src</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="blocking_splice.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="forward"><code>forward: func</code></a></h4>
 <p>Forward the entire contents of an input stream to an output stream.</p>
 <p>This function repeatedly reads from the input stream and writes
 the data to the output stream, until the end of the input stream
 is reached, or an error is encountered.</p>
+<p>Unlike other I/O functions, this function blocks until the end
+of the input stream is seen and all the data has been written to
+the output stream.</p>
 <p>This function returns the number of bytes transferred.</p>
 <h5>Params</h5>
 <ul>
