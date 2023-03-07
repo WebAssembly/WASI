@@ -4,7 +4,7 @@ default world command {
   import instance-wall-clock: clocks.instance-wall-clock
   import instance-monotonic-clock: clocks.instance-monotonic-clock
   import timezone: clocks.timezone
-  import filesystem: filesystem.filesystem
+  import filesystem: filesystem.types
   import instance-network: sockets.instance-network
   import ip-name-lookup: sockets.ip-name-lookup
   import network: sockets.network
@@ -20,7 +20,7 @@ default world command {
   import exit: pkg.exit
 
   use io.streams.{input-stream, output-stream}
-  use filesystem.filesystem.{descriptor}
+  use filesystem.types.{descriptor}
 
   export main: func(
     stdin: input-stream,
