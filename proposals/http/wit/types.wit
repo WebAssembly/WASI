@@ -79,6 +79,7 @@ default interface types {
   drop-outgoing-request: func(request: outgoing-request)
   incoming-request-method: func(request: incoming-request) -> method
   incoming-request-path: func(request: incoming-request) -> string
+  incoming-request-query: func(request: incoming-request) -> string
   incoming-request-scheme: func(request: incoming-request) -> option<scheme>
   incoming-request-authority: func(request: incoming-request) -> string
   incoming-request-headers: func(request: incoming-request) -> headers
@@ -86,6 +87,7 @@ default interface types {
   new-outgoing-request: func(
     method: method,
     path: string,
+    query: string,
     scheme: option<scheme>,
     authority: string,
     headers: headers
