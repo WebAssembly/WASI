@@ -330,7 +330,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.
@@ -936,7 +936,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
 <p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.
