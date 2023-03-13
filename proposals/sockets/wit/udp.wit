@@ -157,7 +157,7 @@ default interface udp {
 	/// Whether this is a IPv4 or IPv6 socket.
 	/// 
 	/// Equivalent to the SO_DOMAIN socket option.
-	address-family: func(this: udp-socket) -> result<ip-address-family, error-code>
+	address-family: func(this: udp-socket) -> ip-address-family
 
 	/// Whether IPv4 compatibility (dual-stack) mode is disabled or not.
 	/// 
