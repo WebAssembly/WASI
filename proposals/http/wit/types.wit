@@ -118,7 +118,7 @@ default interface types {
   // simply return a `stream`).
   type response-outparam = u32
   drop-response-outparam: func(response: response-outparam)
-  set-response-outparam: func(response: result<outgoing-response, error>) -> result
+  set-response-outparam: func(param: response-outparam, response: result<outgoing-response, error>) -> result
 
   // This type corresponds to the HTTP standard Status Code.
   type status-code = u16
