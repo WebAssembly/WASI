@@ -117,7 +117,7 @@ with overall API cleanliness, safety, performance, or portability.
 Where practical, WASI seeks to keep the WASI API itself free of
 compatibility concerns, and provides compatibility through libraries,
 such as WASI libc, and tools. This way, applications which don't require
-compatibility for compatibility' sake aren't burdened by it.
+compatibility for compatibility's sake aren't burdened by it.
 
 ### Portability
 
