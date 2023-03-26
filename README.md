@@ -83,7 +83,7 @@ WASI has no *ambient authorities*, meaning that there are no global
 namespaces at runtime, and no global functions at link time.
 
 [component model]: https://github.com/WebAssembly/component-model
-[component model type system]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#type-definitions
+[component-model type system]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#type-definitions
 
 Note that this is a different sense of "capability" than [Linux
 capabilities](http://man7.org/linux/man-pages/man7/capabilities.7.html)
