@@ -32,8 +32,8 @@ default interface streams {
     /// Read bytes from a stream.
     ///
     /// This function returns a list of bytes containing the data that was
-    /// read, along with a bool indicating whether the end of the stream
-    /// was reached. The returned list will contain up to `len` bytes; it
+    /// read, along with a bool which, when true, indicates that the end of the
+    /// stream was reached. The returned list will contain up to `len` bytes; it
     /// may return fewer than requested, but not more.
     ///
     /// Once a stream has reached the end, subsequent calls to read or
@@ -53,6 +53,16 @@ default interface streams {
         len: u64
     ) -> result<tuple<list<u8>, bool>, stream-error>
 
+    /// Read bytes from a stream, with blocking.
+    ///
+    /// This is similar to `read`, except that it blocks until at least one
+    /// byte can be read.
+    blocking-read: func(
+        this: input-stream,
+        /// The maximum number of bytes to read
+        len: u64
+    ) -> result<tuple<list<u8>, bool>, stream-error>
+
     /// Skip bytes from a stream.
     ///
     /// This is similar to the `read` function, but avoids copying the
@@ -66,6 +76,16 @@ default interface streams {
     /// indicating whether the end of the stream was reached. The returned
     /// value will be at most `len`; it may be less.
     skip: func(
+        this: input-stream,
+        /// The maximum number of bytes to skip.
+        len: u64,
+    ) -> result<tuple<u64, bool>, stream-error>
+
+    /// Skip bytes from a stream, with blocking.
+    ///
+    /// This is similar to `skip`, except that it blocks until at least one
+    /// byte can be consumed.
+    blocking-skip: func(
         this: input-stream,
         /// The maximum number of bytes to skip.
         len: u64,
@@ -109,11 +129,31 @@ default interface streams {
         buf: list<u8>
     ) -> result<u64, stream-error>
 
+    /// Write bytes to a stream, with blocking.
+    ///
+    /// This is similar to `write`, except that it blocks until at least one
+    /// byte can be written.
+    blocking-write: func(
+        this: output-stream,
+        /// Data to write
+        buf: list<u8>
+    ) -> result<u64, stream-error>
+
     /// Write multiple zero bytes to a stream.
     ///
     /// This function returns a `u64` indicating the number of zero bytes
     /// that were written; it may be less than `len`.
     write-zeroes: func(
+        this: output-stream,
+        /// The number of zero bytes to write
+        len: u64
+    ) -> result<u64, stream-error>
+
+    /// Write multiple zero bytes to a stream, with blocking.
+    ///
+    /// This is similar to `write-zeroes`, except that it blocks until at least
+    /// one byte can be written.
+    blocking-write-zeroes: func(
         this: output-stream,
         /// The number of zero bytes to write
         len: u64
@@ -127,6 +167,18 @@ default interface streams {
     /// Unlike other I/O functions, this function blocks until all the data
     /// read from the input stream has been written to the output stream.
     splice: func(
+        this: output-stream,
+        /// The stream to read from
+        src: input-stream,
+        /// The number of bytes to splice
+        len: u64,
+    ) -> result<tuple<u64, bool>, stream-error>
+
+    /// Read from one stream and write to another, with blocking.
+    ///
+    /// This is similar to `splice`, except that it blocks until at least
+    /// one byte can be read.
+    blocking-splice: func(
         this: output-stream,
         /// The stream to read from
         src: input-stream,

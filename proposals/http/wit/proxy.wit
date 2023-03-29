@@ -12,30 +12,9 @@ default world proxy {
   // log to a developer-facing console (e.g., via `console.log()`).
   import console: logging.handler
 
-  // TODO: Once the underlying Wit template machinery is implemented, add:
-  //
-  //   import loggers: interface {
-  //     *: logging.handler
-  //   }
-  //
-  // which will allow a component to import any number of non-default logging
-  // backends that different categories of log messages can be sent to.
-
-  // TODO: add `import metrics: metrics.counters`
-
   // This is the default handler to use when user code simply wants to make an
-  // HTTP request (e.g., via `fetch()`) but doesn't otherwise specify a
-  // particular handler.
+  // HTTP request (e.g., via `fetch()`).
   import default-outgoing-HTTP: pkg.outgoing-handler
-
-  // TODO: Once the underlying Wit template machinery is implemented, add:
-  //
-  //  import upstreams: interface {
-  //    *: pkg.outgoing-handler
-  //  }
-  //
-  // which will allow a component to import any number of non-default backends
-  // that HTTP requests can be dispatched to.
 
   // The host delivers incoming HTTP requests to a component by calling the
   // `handle` function of this exported interface. A host may arbitrarily reuse
