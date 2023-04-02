@@ -88,7 +88,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
 [wasi-data]: https://github.com/singlestore-labs/wasi-data
-[wasi-digital-io]: https://github.com/singlestore-labs/wasi-digital-io
+[wasi-digital-io]: https://github.com/WebAssembly/wasi-digital-io
 [wasi-distributed-lock-service]: https://github.com/WebAssembly/wasi-distributed-lock-service
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-grpc]: https://github.com/WebAssembly/wasi-grpc
