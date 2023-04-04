@@ -10,7 +10,7 @@ default world proxy {
 
   // This is the default logging handler to use when user code simply wants to
   // log to a developer-facing console (e.g., via `console.log()`).
-  import console: logging.handler
+  import console: logging.logging
 
   // This is the default handler to use when user code simply wants to make an
   // HTTP request (e.g., via `fetch()`).
