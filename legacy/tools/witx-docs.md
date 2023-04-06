@@ -17,7 +17,7 @@ to existing APIs and proposing new APIs.
 The WASI Subgroup is [migrating] away from `witx` and toward [Wit], because
 Wit provides much better support for non-C-like languages, better support for
 API virtualization, it has a path to integrating async behavior into WASI
-APIs in a comprehensive way, and it supports much more expression APIs, such
+APIs in a comprehensive way, and it supports much more expressive APIs, such
 as the ability to have `string`s and other types as return types in addition
 to just argument types. At this point, the tooling for Wit is also a lot more
 sophisticated and the [Wit language] and [Canonical ABI] have much more
