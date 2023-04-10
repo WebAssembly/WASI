@@ -22,6 +22,7 @@ Phase 1
 - [Goals](#goals)
 - [Non-goals](#non-goals)
 - [API walk-through](#api-walk-through)
+  - [Asynchronous APIs](#asynchronous-apis)
   - [Use case 1](#use-case-1)
   - [Use case 2](#use-case-2)
 - [Detailed design discussion](#detailed-design-discussion)
@@ -29,6 +30,8 @@ Phase 1
   - [Modularity](#modularity)
   - [POSIX compatibility](#posix-compatibility)
   - [Why not getaddrinfo?](#why-not-getaddrinfo)
+  - [Security](#security)
+  - [Deferred permission requests](#deferred-permission-requests)
 - [Considered alternatives](#considered-alternatives)
   - [[Alternative 1]](#alternative-1)
   - [[Alternative 2]](#alternative-2)
@@ -64,6 +67,61 @@ This proposal introduces 4 new WASI modules:
 ### API walk-through
 
 [Walk through of how someone would use this API.]
+
+#### Asynchronous APIs
+
+At the moment, WIT has no built-in way of expressing asynchronous operations. To work around this limitation, we split up  async functions into two parts: `start-*` and `finish-*`.
+
+Desired signature:
+
+```
+operation: func(this, the-inputs...) -> future<result<the-outputs..., error-code>>
+```
+
+Temporary workaround:
+
+```
+start-operation: func(this, the-inputs...) -> result<_, error-code>
+finish-operation: func(this) -> result<the-outputs..., error-code>
+```
+
+
+The semantics are as follows:
+- When `start-*` completes successfully:
+	- The operation should be considered "in progress".
+	- This is the POSIX equivalent of EINPROGRESS.
+	- The socket can be polled for completion of the just started operation, using `wasi-poll`.
+	- Its corresponding `finish-*` function can be called until it returns something other than the `would-block` error code.
+- When `finish-*` returns anything other than `would-block`:
+	- The asynchronous operation should be considered "finished" (either successful or failed)
+	- Future calls to `finish-*` return the `not-in-progress` error code.
+
+Runtimes that don't need asynchrony, can simply validate the arguments provided to the `start` function and stash them on their internal socket instance and perform the actual syscall in the `finish` function. Conveniently, sockets only allow one of these `start/finish` asynchronous operation to be active at a time.
+
+
+Example of how to recover blocking semantics in guest code:
+```rs
+// Pseudo code:
+fn blocking-connect(sock: tcp-socket, addr: ip-socket-address) -> result<tuple<input-stream, output-stream>, error-code> {
+	
+	let pollable = tcp::subscribe(tcp-socket);
+
+	let start-result = tcp::start-connect(sock, addr);
+	if (start-result is error) {
+		return error;
+	}
+
+	while (true) {
+		poll::poll-oneoff([ pollable ]);
+
+		let finish-result = tcp::finish-connect(sock);
+		if (finish-result is NOT error(would-block)) {
+			return finish-result;
+		}
+	}
+}
+
+```
 
 #### Use case: Wasm module per connection
 
@@ -151,6 +209,21 @@ This means Wasm modules will get a lot more EACCES errors compared to when runni
 
 At the moment there is no way for a Wasm modules to query which network access permissions it has. The only thing it can do, is to just call the WASI functions it needs and see if they fail.
 
+
+#### Deferred permission requests
+
+This proposal does not specify how wasm runtimes should handle network permissions. One method could be to let end users declare on the command line which endpoints a wasm component may connect to. Another method could be to somehow let component authors distribute a manifest alongside the component itself, containing the set of permissions that it requires.
+
+Both of these examples depend on the network permissions being known and granted upfront. This is not always feasible and that's usually where dynamic permission requests come into play.
+
+The most likely contenders for permission prompt interception are:
+- TCP: `connect`
+- TCP: `bind`
+- TCP: `listen`
+- UDP: `bind`
+- UDP: `connect`
+
+Now, again, this proposal does not specify if/how permission prompts should be implemented. However, it does at least facilitate the ability for runtimes to do so. Since waiting for user input takes an unknowable amount of time, the operations listed above have been made asynchronous. POSIX-compatibility layers can simply synchronously block on the returned `future`s.
 
 ### Considered alternatives
 

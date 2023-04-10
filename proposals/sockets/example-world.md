@@ -123,6 +123,18 @@ combined with a couple of errors that are always possible:</p>
 <p>This operation is incompatible with another asynchronous operation that is already in progress.
 </li>
 <li>
+<p><a name="error_code.not_in_progress"><code>not-in-progress</code></a></p>
+<p>Trying to finish an asynchronous operation that:
+- has not been started yet, or:
+- was already finished by a previous `finish-*` call.
+<p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
+</li>
+<li>
+<p><a name="error_code.would_block"><code>would-block</code></a></p>
+<p>The operation has been aborted because it could not be completed immediately.
+<p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
+</li>
+<li>
 <p><a name="error_code.address_family_not_supported"><code>address-family-not-supported</code></a></p>
 <p>The specified address-family is not supported.
 </li>
@@ -318,20 +330,26 @@ mean &quot;ready&quot;.</p>
 </ul>
 <hr />
 <h3>Functions</h3>
-<h4><a name="bind"><code>bind: func</code></a></h4>
+<h4><a name="start_bind"><code>start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.</p>
-<h1>Typical errors</h1>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
 <li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+</ul>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
 <li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
-<li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -342,15 +360,24 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="start_bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="connect"><code>connect: func</code></a></h4>
+<h4><a name="finish_bind"><code>finish-bind: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_connect"><code>start-connect: func</code></a></h4>
 <p>Set the destination address.</p>
 <p>The local-address is updated based on the best network path to <a href="#remote_address"><code>remote-address</code></a>.</p>
 <p>When a destination address is set:</p>
@@ -359,14 +386,20 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li>the <a href="#send"><code>send</code></a> function can only be used to send to this destination.</li>
 </ul>
 <p>Note that this function does not generate any network traffic and the peer is not aware of this &quot;connection&quot;.</p>
-<h1>Typical errors</h1>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-remote-address</code>:    The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>already-attached</code>:          The socket is already bound to a different network. The <a href="#network"><code>network</code></a> passed to <a href="#connect"><code>connect</code></a> must be identical to the one passed to <a href="#bind"><code>bind</code></a>.</li>
+<li><code>already-attached</code>:          The socket is already bound to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+</ul>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
-<li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -377,13 +410,22 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="start_connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="finish_connect"><code>finish-connect: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive"><code>receive: func</code></a></h4>
 <p>Receive a message.</p>
@@ -396,6 +438,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <ul>
 <li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
 <li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
+<li><code>would-block</code>:        There is no pending data available to be read at the moment. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -424,10 +467,11 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><code>address-family-mismatch</code>: The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-remote-address</code>:  The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-remote-address</code>:  The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>already-connected</code>:       The socket is in &quot;connected&quot; mode and the <code>datagram.remote-address</code> does not match the address passed to <a href="#connect"><code>connect</code></a>. (EISCONN)</li>
+<li><code>already-connected</code>:       The socket is in &quot;connected&quot; mode and the <code>datagram.remote-address</code> does not match the address passed to <code>connect</code>. (EISCONN)</li>
 <li><code>not-bound</code>:               The socket is not bound to any local address. Unlike POSIX, this function does not perform an implicit bind.</li>
 <li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
 <li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
+<li><code>would-block</code>:             The send buffer is currently full. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -470,7 +514,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
-<p>Get the address set with <a href="#connect"><code>connect</code></a>.</p>
+<p>Get the address set with <code>connect</code>.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
@@ -509,7 +553,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
 <li><code>already-bound</code>:        (set) The socket is already bound.</li>
 <li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-<li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -533,7 +577,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -564,7 +608,7 @@ for internal metadata structures.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -602,35 +646,6 @@ for internal metadata structures.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the socket.</p>
-<p>By default a socket is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>would-block</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) Another <a href="#bind"><code>bind</code></a> or <a href="#connect"><code>connect</code></a> operation is already in progress. (EALREADY)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
@@ -672,8 +687,9 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <p>Create a new UDP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#connect"><code>connect</code></a> is called,
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
+<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-supported</code>:                The host does not support UDP sockets. (EOPNOTSUPP)</li>
@@ -992,21 +1008,27 @@ be used.</p>
 </ul>
 <hr />
 <h3>Functions</h3>
-<h4><a name="bind"><code>bind: func</code></a></h4>
+<h4><a name="start_bind"><code>start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>When a socket is not explicitly bound, the first invocation to a listen or connect operation will
 implicitly bind the socket.</p>
-<h1>Typical errors</h1>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
 <li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
 <li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
-<li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1017,35 +1039,49 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="connect"><code>connect: func</code></a></h4>
+<h4><a name="finish_bind"><code>finish-bind: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_connect"><code>start-connect: func</code></a></h4>
 <p>Connect to a remote endpoint.</p>
 <p>On success:</p>
 <ul>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<h1>Typical errors</h1>
+<h1>Typical <code>start</code> errors</h1>
+<ul>
+<li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
+<li><code>invalid-remote-address</code>:    The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EADDRNOTAVAIL on Windows)</li>
+<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN)</li>
+<li><code>already-listening</code>:         The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
+<h1>Typical <code>finish</code> errors</h1>
 <ul>
 <li><code>timeout</code>:                   Connection timed out. (ETIMEDOUT)</li>
 <li><code>connection-refused</code>:        The connection was forcefully rejected. (ECONNREFUSED)</li>
 <li><code>connection-reset</code>:          The connection was reset. (ECONNRESET)</li>
 <li><code>remote-unreachable</code>:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
-<li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
-<li><code>invalid-remote-address</code>:    The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EADDRNOTAVAIL on Windows)</li>
-<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <a href="#connect"><code>connect</code></a> must be identical to the one passed to <a href="#bind"><code>bind</code></a>.</li>
-<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN)</li>
-<li><code>already-listening</code>:         The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
-<li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1056,24 +1092,39 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="listen"><code>listen: func</code></a></h4>
+<h4><a name="finish_connect"><code>finish-connect: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_listen"><code>start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the Listener state.</p>
-<h1>Typical errors</h1>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <a href="#listen"><code>listen</code></a> must be identical to the one passed to <a href="#bind"><code>bind</code></a>.</li>
+<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>listen</code> must be identical to the one passed to <code>bind</code>.</li>
 <li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
 <li><code>already-listening</code>:         The socket is already in the Listener state.</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EINVAL on BSD)</li>
+</ul>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
 <li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
-<li><code>concurrency-conflict</code>:      Another <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EINVAL on BSD)</li>
+<li><code>not-in-progress</code>:           A <code>listen</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1084,12 +1135,21 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="start_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="finish_listen"><code>finish-listen: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="accept"><code>accept: func</code></a></h4>
 <p>Accept a new client socket.</p>
@@ -1099,6 +1159,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-listening</code>: Socket is not in the Listener state. (EINVAL)</li>
+<li><code>would-block</code>:   No pending connections at the moment. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <p>Host implementations must skip over transient errors returned by the native accept syscall.</p>
 <h1>References</h1>
@@ -1177,7 +1238,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
 <li><code>already-bound</code>:        (set) The socket is already bound.</li>
 <li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1202,7 +1263,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1217,7 +1278,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1241,7 +1302,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Equivalent to the TCP_NODELAY socket option.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1267,7 +1328,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
 <li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1299,7 +1360,7 @@ for internal metadata structures.</p>
 <ul>
 <li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
 <li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1338,35 +1399,6 @@ for internal metadata structures.</p>
 <ul>
 <li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the socket.</p>
-<p>By default a socket is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>would-block</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) A <a href="#bind"><code>bind</code></a>, <a href="#connect"><code>connect</code></a> or <a href="#listen"><code>listen</code></a> operation is already in progress. (EALREADY)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
 <p>Note: this function is here for WASI Preview2 only.
@@ -1380,7 +1412,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <h4><a name="shutdown"><code>shutdown: func</code></a></h4>
-<p>Gracefully shut down the connection.</p>
+<p>Initiate a graceful shutdown.</p>
 <ul>
 <li>receive: the socket is not expecting to receive any more data from the peer. All subsequent read
 operations on the <a href="#input_stream"><code>input-stream</code></a> associated with this socket will return an End Of Stream indication.
@@ -1439,8 +1471,9 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>Create a new TCP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#listen"><code>listen</code></a>/<a href="#connect"><code>connect</code></a>
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>listen</code>/<code>connect</code>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
+<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-supported</code>:                The host does not support TCP sockets. (EOPNOTSUPP)</li>
@@ -1539,6 +1572,7 @@ After which, you should release the stream with <a href="#drop_resolve_address_s
 <li><code>name-unresolvable</code>:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)</li>
 <li><code>temporary-resolver-failure</code>: A temporary failure in name resolution occurred. (EAI_AGAIN)</li>
 <li><code>permanent-resolver-failure</code>: A permanent failure in name resolution occurred. (EAI_FAIL)</li>
+<li><code>would-block</code>:                A result is not available yet. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1554,31 +1588,6 @@ After which, you should release the stream with <a href="#drop_resolve_address_s
 <h5>Params</h5>
 <ul>
 <li><a name="drop_resolve_address_stream.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-</ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the stream.</p>
-<p>By default a stream is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>again</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>

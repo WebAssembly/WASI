@@ -30,20 +30,27 @@ default interface udp {
 	/// 
 	/// When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.
 	/// 
-	/// # Typical errors
+	/// Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.
+	/// 
+	/// # Typical `start` errors
 	/// - `address-family-mismatch`:   The `local-address` has the wrong address family. (EINVAL)
 	/// - `already-bound`:             The socket is already bound. (EINVAL)
+	/// - `concurrency-conflict`:      Another `bind` or `connect` operation is already in progress. (EALREADY)
+	/// 
+	/// # Typical `finish` errors
 	/// - `ephemeral-ports-exhausted`: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)
 	/// - `address-in-use`:            Address is already in use. (EADDRINUSE)
 	/// - `address-not-bindable`:      `local-address` is not an address that the `network` can bind to. (EADDRNOTAVAIL)
-	/// - `concurrency-conflict`:      Another `bind` or `connect` operation is already in progress. (EALREADY)
+	/// - `not-in-progress`:           A `bind` operation is not in progress.
+	/// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html>
 	/// - <https://man7.org/linux/man-pages/man2/bind.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
-	bind: func(this: udp-socket, network: network, local-address: ip-socket-address) -> result<_, error-code>
+	start-bind: func(this: udp-socket, network: network, local-address: ip-socket-address) -> result<_, error-code>
+	finish-bind: func(this: udp-socket) -> result<_, error-code>
 
 	/// Set the destination address.
 	/// 
@@ -55,20 +62,27 @@ default interface udp {
 	/// 
 	/// Note that this function does not generate any network traffic and the peer is not aware of this "connection".
 	/// 
-	/// # Typical errors
+	/// Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.
+	/// 
+	/// # Typical `start` errors
 	/// - `address-family-mismatch`:   The `remote-address` has the wrong address family. (EAFNOSUPPORT)
 	/// - `invalid-remote-address`:    The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
 	/// - `invalid-remote-address`:    The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
 	/// - `already-attached`:          The socket is already bound to a different network. The `network` passed to `connect` must be identical to the one passed to `bind`.
-	/// - `ephemeral-ports-exhausted`: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
 	/// - `concurrency-conflict`:      Another `bind` or `connect` operation is already in progress. (EALREADY)
+	/// 
+	/// # Typical `finish` errors
+	/// - `ephemeral-ports-exhausted`: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
+	/// - `not-in-progress`:           A `connect` operation is not in progress.
+	/// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
 	/// - <https://man7.org/linux/man-pages/man2/connect.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
 	/// - <https://man.freebsd.org/cgi/man.cgi?connect>
-	connect: func(this: udp-socket, network: network, remote-address: ip-socket-address) -> result<_, error-code>
+	start-connect: func(this: udp-socket, network: network, remote-address: ip-socket-address) -> result<_, error-code>
+	finish-connect: func(this: udp-socket) -> result<_, error-code>
 
 	/// Receive a message.
 	/// 
@@ -79,6 +93,7 @@ default interface udp {
 	/// # Typical errors
 	/// - `not-bound`:          The socket is not bound to any local address. (EINVAL)
 	/// - `remote-unreachable`: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
+	/// - `would-block`:        There is no pending data available to be read at the moment. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
@@ -103,6 +118,7 @@ default interface udp {
 	/// - `not-bound`:               The socket is not bound to any local address. Unlike POSIX, this function does not perform an implicit bind.
 	/// - `remote-unreachable`:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)
 	/// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
+	/// - `would-block`:             The send buffer is currently full. (EWOULDBLOCK, EAGAIN)
 	/// 
 	/// # References
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
@@ -181,20 +197,6 @@ default interface udp {
 	set-receive-buffer-size: func(this: udp-socket, value: u64) -> result<_, error-code>
 	send-buffer-size: func(this: udp-socket) -> result<u64, error-code>
 	set-send-buffer-size: func(this: udp-socket, value: u64) -> result<_, error-code>
-
-	/// Get/set the blocking mode of the socket.
-	/// 
-	/// By default a socket is in "blocking" mode, meaning that any function blocks and waits for its completion.
-	/// When switched to "non-blocking" mode, operations that would block return an `would-block` error. After which
-	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
-	/// 
-	/// Note: these functions are here for WASI Preview2 only.
-	/// They're planned to be removed when `future` is natively supported in Preview3.
-	/// 
-	/// # Typical errors
-	/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
-	non-blocking: func(this: udp-socket) -> result<bool, error-code>
-	set-non-blocking: func(this: udp-socket, value: bool) -> result<_, error-code>
 
 	/// Create a `pollable` which will resolve once the socket is ready for I/O.
 	/// 

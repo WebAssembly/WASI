@@ -53,25 +53,13 @@ default interface ip-name-lookup {
 	/// - `name-unresolvable`:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)
 	/// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
 	/// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
+	/// - `would-block`:                A result is not available yet. (EWOULDBLOCK, EAGAIN)
 	resolve-next-address: func(this: resolve-address-stream) -> result<option<ip-address>, error-code>
-
-
 
 	/// Dispose of the specified `resolve-address-stream`, after which it may no longer be used.
 	/// 
 	/// Note: this function is scheduled to be removed when Resources are natively supported in Wit.
 	drop-resolve-address-stream: func(this: resolve-address-stream)
-
-	/// Get/set the blocking mode of the stream.
-	/// 
-	/// By default a stream is in "blocking" mode, meaning that any function blocks and waits for its completion.
-	/// When switched to "non-blocking" mode, operations that would block return an `again` error. After which
-	/// the API consumer is expected to call `subscribe` and wait for completion using the wasi-poll module.
-	/// 
-	/// Note: these functions are here for WASI Preview2 only.
-	/// They're planned to be removed when `future` is natively supported in Preview3.
-	non-blocking: func(this: resolve-address-stream) -> result<bool, error-code>
-	set-non-blocking: func(this: resolve-address-stream, value: bool) -> result<_, error-code>
 
 	/// Create a `pollable` which will resolve once the stream is ready for I/O.
 	/// 
