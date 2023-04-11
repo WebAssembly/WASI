@@ -20,9 +20,10 @@ wasm-tools component wit wit/ ...
 
 The `wit/deps` directory contains a live snapshot of the contents of several
 other WASI proposals upon which this proposal depends. It is automatically
-updated by running [`depit`](https://crates.io/crates/depit-cli) in the
-root directory, which fetches the `main` branch of each proposal. As things
-stablize, `wit/deps.toml` will be updated to refer to versioned releases.
+updated by running [`depit update`](https://crates.io/crates/depit-cli) in the
+root directory, which fetches the live contents of the `main` branch of each
+proposal. As things stablize, `wit/deps.toml` will be updated to refer to
+versioned releases.
 
 ### Current Phase
 
