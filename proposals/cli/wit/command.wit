@@ -1,8 +1,6 @@
 default world command {
   import wall-clock: clocks.wall-clock
   import monotonic-clock: clocks.monotonic-clock
-  import instance-wall-clock: clocks.instance-wall-clock
-  import instance-monotonic-clock: clocks.instance-monotonic-clock
   import timezone: clocks.timezone
   import filesystem: filesystem.types
   import instance-network: sockets.instance-network
