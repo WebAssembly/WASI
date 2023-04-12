@@ -4,23 +4,20 @@
 ///
 /// It is intended to be portable at least between Unix-family platforms and
 /// Windows.
+///
+/// A wall clock is a clock which measures the date and time according to
+/// some external reference.
+///
+/// External references may be reset, so this clock is not necessarily
+/// monotonic, making it unsuitable for measuring elapsed time.
+///
+/// It is intended for reporting the current date and time for humans.
 default interface wall-clock {
     /// A time and date in seconds plus nanoseconds.
     record datetime {
         seconds: u64,
         nanoseconds: u32,
     }
-
-    /// A wall clock is a clock which measures the date and time according to
-    /// some external reference.
-    ///
-    /// External references may be reset, so this clock is not necessarily
-    /// monotonic, making it unsuitable for measuring elapsed time.
-    ///
-    /// It is intended for reporting the current date and time for humans.
-    ///
-    /// This [represents a resource](https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources).
-    type wall-clock = u32
 
     /// Read the current value of the clock.
     ///
@@ -35,14 +32,10 @@ default interface wall-clock {
     ///
     /// [POSIX's Seconds Since the Epoch]: https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16
     /// [Unix Time]: https://en.wikipedia.org/wiki/Unix_time
-    now: func(this: wall-clock) -> datetime
+    now: func() -> datetime
 
     /// Query the resolution of the clock.
     ///
     /// The nanoseconds field of the output is always less than 1000000000.
-    resolution: func(this: wall-clock) -> datetime
-
-    /// Dispose of the specified `wall-clock`, after which it may no longer
-    /// be used.
-    drop-wall-clock: func(this: wall-clock)
+    resolution: func() -> datetime
 }
