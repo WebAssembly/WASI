@@ -1,0 +1,19 @@
+[io]
+url = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
+sha256 = "7450142aeb3f1688ee2b12853344e262caf6aee0718dc0296316f7f6b3afd91f"
+sha512 = "5cc0f60d190e16d6dd52a4ca2fc862f007465e7642e98061b41c90778e1f2b00aeb2543b6fadbb6a137dd548d86e9e55edcfb30388adcc6a160b4cdc29d378ec"
+
+[logging]
+url = "https://github.com/WebAssembly/wasi-logging/archive/main.tar.gz"
+sha256 = "f378a2b6a36af096528ec5e7031da474990cecaec1949c663befc5066d719f6f"
+sha512 = "ba09307b12f5428c3058d878001c9fb15df21933c6203328f785d5009a4fc0cf304950271590d4146305a2d8b8988595f396d955961168cb6bfa7ea9af1cc362"
+
+[poll]
+url = "https://github.com/WebAssembly/wasi-poll/archive/main.tar.gz"
+sha256 = "065422b0ea6ccb2a9facc6b87b902eef110c53d76fc31f341a6bc8d0b0285b6a"
+sha512 = "19a55cd3072a19ae6a1774723a4962e7a155a5ce89a27175e8c76020efb4d00bc92ebb78427d92bcb8effd4f0d03ebf0a0daa747ecd981b8d31d5abc2ad86423"
+
+[random]
+url = "https://github.com/WebAssembly/wasi-random/archive/main.tar.gz"
+sha256 = "79b6417bb1ab3c82c241c56021e717f258e2a0b3ab94db93907ca11d7f92ed66"
+sha512 = "1e657ac56420e65bde75eabea920a605a0ff4adc6f2ba8b7cf1c37a603710449bc1a29568dda2b61c04ae9889d2b1a82b9935d4b9d573eb48a83e0ecf9cad591"

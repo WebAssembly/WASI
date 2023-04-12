@@ -18,11 +18,12 @@ or can be manipulated in other ways with:
 wasm-tools component wit wit/ ...
 ```
 
-The HTTP proposal depends on the WASI IO and Logging proposals. For simplicity,
-the Wit files for these proposals are currently copied into the `wit/deps`
-directory and will be updated periodically to match their respective proposals.
-As the Wit tooling develops, we should be able to avoid this form of manual
-vendoring.
+The `wit/deps` directory contains a live snapshot of the contents of several
+other WASI proposals upon which this proposal depends. It is automatically
+updated by running [`wit-deps update`](https://crates.io/crates/wit-deps-cli)
+in the root directory, which fetches the live contents of the `main` branch of
+each proposal. As things stablize, `wit/deps.toml` will be updated to refer to
+versioned releases.
 
 ### Current Phase
 
