@@ -314,16 +314,13 @@ time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&qu
 is not necessarily monotonic as it may be reset.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="wall_clock"><code>type wall-clock</code></a></h4>
-<p><code>u32</code></p>
 <p>A wall clock is a clock which measures the date and time according to
-some external reference.
+some external reference.</p>
 <p>External references may be reset, so this clock is not necessarily
 monotonic, making it unsuitable for measuring elapsed time.</p>
 <p>It is intended for reporting the current date and time for humans.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<hr />
+<h3>Types</h3>
 <h4><a name="datetime"><code>record datetime</code></a></h4>
 <p>A time and date in seconds plus nanoseconds.</p>
 <h5>Record Fields</h5>
@@ -341,10 +338,6 @@ will not necessarily produce a sequence of non-decreasing values.</p>
 1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
 also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
 <p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="now.this"><code>this</code></a>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
-</ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
@@ -352,20 +345,9 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <h4><a name="resolution"><code>resolution: func</code></a></h4>
 <p>Query the resolution of the clock.</p>
 <p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="resolution.this"><code>this</code></a>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
-</ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
-</ul>
-<h4><a name="drop_wall_clock"><code>drop-wall-clock: func</code></a></h4>
-<p>Dispose of the specified <a href="#wall_clock"><code>wall-clock</code></a>, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_wall_clock.this"><code>this</code></a>: <a href="#wall_clock"><a href="#wall_clock"><code>wall-clock</code></a></a></li>
 </ul>
 <h2><a name="types">Import interface types</a></h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
