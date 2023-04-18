@@ -4,9 +4,10 @@
 // outgoing HTTP requests.
 default world proxy {
   // HTTP proxies have access to time and randomness.
+  import wall-clock: clocks.wall-clock
+  import monotonic-clock: clocks.monotonic-clock
+  import timezone: clocks.timezone
   import random: random.random
-  // TODO: add `import wall-clock: clocks.wall-clock`
-  // TODO: add `import monotonic-clock: clocks.monotonic-clock`
 
   // This is the default logging handler to use when user code simply wants to
   // log to a developer-facing console (e.g., via `console.log()`).
