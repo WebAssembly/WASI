@@ -43,11 +43,11 @@ default interface types {
   type fields = u32
   drop-fields: func(fields: fields)
   new-fields: func(entries: list<tuple<string,string>>) -> fields
-  fields-get: func(fields: fields, name: string) -> list<string>
-  fields-set: func(fields: fields, name: string, value: list<string>)
+  fields-get: func(fields: fields, name: string) -> list<list<u8>>
+  fields-set: func(fields: fields, name: string, value: list<list<u8>>)
   fields-delete: func(fields: fields, name: string)
-  fields-append: func(fields: fields, name: string, value: string)
-  fields-entries: func(fields: fields) -> list<tuple<string,string>>
+  fields-append: func(fields: fields, name: string, value: list<u8>)
+  fields-entries: func(fields: fields) -> list<tuple<string,list<u8>>>
   fields-clone: func(fields: fields) -> fields
 
   type headers = fields
