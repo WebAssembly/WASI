@@ -50,6 +50,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
+| [Patern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
 | [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
@@ -68,7 +69,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [singlestore-labs/wasi-data][wasi-data]                                        | Bailey Hayes                           |          |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
-| [wasi-pattern-match][wasi-pattern-match]    | Jianjun Zhu                           |          |
 
 ## Versioning
 
@@ -100,7 +100,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-message-queue]: https://github.com/WebAssembly/wasi-message-queue
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
-[wasi-pattern-match]: https://github.com/WebAssembly/meetings/blob/main/wasi/2023/presentations/2023-03-23-wasi-pattern-match.pdf
+[wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-pubsub]: https://github.com/WebAssembly/wasi-pubsub
