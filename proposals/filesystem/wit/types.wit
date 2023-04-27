@@ -154,6 +154,15 @@ default interface types {
         executable,
     }
 
+    /// Access type used by `access-at`.
+    variant access-type {
+        /// Test for readability, writeability, or executability.
+        access(modes),
+
+        /// Test whether the path exists.
+        exists,
+    }
+
     /// Number of hard links to an inode.
     type link-count = u64
 
@@ -601,6 +610,26 @@ default interface types {
         old-path: string,
         /// The relative destination path at which to create the symbolic link.
         new-path: string,
+    ) -> result<_, error-code>
+
+    /// Check accessibility of a filesystem path.
+    ///
+    /// Check whether the given filesystem path names an object which is
+    /// readable, writeable, or executable, or whether it exists.
+    ///
+    /// This does not a guarantee that subsequent accesses will succeed, as
+    /// filesystem permissions may be modified asynchronously by external
+    /// entities.
+    ///
+    /// Note: This is similar to `faccessat` with the `AT_EACCESS` flag in POSIX.
+    access-at: func(
+        this: descriptor,
+        /// Flags determining the method of how the path is resolved.
+        path-flags: path-flags,
+        /// The relative path to check.
+        path: string,
+        /// The type of check to perform.
+        %ype: access-type
     ) -> result<_, error-code>
 
     /// Unlink a filesystem object that is not a directory.

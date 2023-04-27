@@ -817,6 +817,19 @@ in the near future.
 not reuse it thereafter.
 </li>
 </ul>
+<h4><a name="access_type"><code>variant access-type</code></a></h4>
+<p>Access type used by <a href="#access_at"><code>access-at</code></a>.</p>
+<h5>Variant Cases</h5>
+<ul>
+<li>
+<p><a name="access_type.access"><code>access</code></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></p>
+<p>Test for readability, writeability, or executability.
+</li>
+<li>
+<p><a name="access_type.exists"><code>exists</code></a></p>
+<p>Test whether the path exists.
+</li>
+</ul>
 <hr />
 <h3>Functions</h3>
 <h4><a name="read_via_stream"><code>read-via-stream: func</code></a></h4>
@@ -1173,6 +1186,25 @@ filesystem, this function fails with <a href="#error_code.not_permitted"><code>e
 <h5>Return values</h5>
 <ul>
 <li><a name="symlink_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="access_at"><code>access-at: func</code></a></h4>
+<p>Check accessibility of a filesystem path.</p>
+<p>Check whether the given filesystem path names an object which is
+readable, writeable, or executable, or whether it exists.</p>
+<p>This does not a guarantee that subsequent accesses will succeed, as
+filesystem permissions may be modified asynchronously by external
+entities.</p>
+<p>Note: This is similar to <code>faccessat</code> with the <code>AT_EACCESS</code> flag in POSIX.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="access_at.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a name="access_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
+<li><a name="access_at.path"><code>path</code></a>: <code>string</code></li>
+<li><a name="access_at.ype"><code>ype</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="access_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="unlink_file_at"><code>unlink-file-at: func</code></a></h4>
 <p>Unlink a filesystem object that is not a directory.</p>
