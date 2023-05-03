@@ -19,14 +19,11 @@
 <li>interface <a href="#environment"><code>environment</code></a></li>
 <li>interface <a href="#environment_preopens"><code>environment-preopens</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
-<li>type <a href="#input_stream"><code>input-stream</code></a></li>
-<li>type <a href="#output_stream"><code>output-stream</code></a></li>
-<li>type <a href="#descriptor"><code>descriptor</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>function <a href="#main"><code>main</code></a></li>
+<li>interface <a href="#run"><code>run</code></a></li>
 </ul>
 </li>
 </ul>
@@ -2551,19 +2548,31 @@ values each time it is called.</p>
 <ul>
 <li><a name="get_environment.0"></a> list&lt;(<code>string</code>, <code>string</code>)&gt;</li>
 </ul>
+<h4><a name="get_arguments"><code>get-arguments: func</code></a></h4>
+<p>Get the POSIX-style arguments to the program.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
+</ul>
 <h2><a name="environment_preopens">Import interface environment-preopens</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="descriptor"><code>type descriptor</code></a></h4>
 <p><a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></p>
 <p>
+#### <a name="input_stream">`type input-stream`</a>
+[`input-stream`](#input_stream)
+<p>
+#### <a name="output_stream">`type output-stream`</a>
+[`output-stream`](#output_stream)
+<p>
 ----
 <h3>Functions</h3>
-<h4><a name="preopens"><code>preopens: func</code></a></h4>
-<p>Return a list of preopens for use in interpreting environment variables.</p>
+<h4><a name="get_directories"><code>get-directories: func</code></a></h4>
+<p>Return the set of of preopened directories, and their path.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="preopens.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
+<li><a name="get_directories.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
 </ul>
 <h2><a name="exit">Import interface exit</a></h2>
 <hr />
@@ -2574,29 +2583,12 @@ values each time it is called.</p>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
 </ul>
-<h2>Exported types from world <a href="#command"><code>command</code></a></h2>
+<h2><a name="run">Export interface run</a></h2>
 <hr />
-<h3>Types</h3>
-<h4><a name="input_stream"><code>type input-stream</code></a></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
-<p>
-#### <a name="output_stream">`type output-stream`</a>
-[`output-stream`](#output_stream)
-<p>
-#### <a name="descriptor">`type descriptor`</a>
-[`descriptor`](#descriptor)
-<p>
-## Exported functions from world `command`
-<h4><a name="main"><code>main: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="main.stdin"><code>stdin</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="main.stdout"><code>stdout</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="main.stderr"><code>stderr</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="main.args"><code>args</code></a>: list&lt;<code>string</code>&gt;</li>
-<li><a name="main.preopens"><a href="#preopens"><code>preopens</code></a></a>: list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
-</ul>
+<h3>Functions</h3>
+<h4><a name="run"><code>run: func</code></a></h4>
+<p>Run the program.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="main.0"></a> result</li>
+<li><a name="run.0"></a> result</li>
 </ul>
