@@ -19,6 +19,9 @@
 <li>interface <a href="#environment"><code>environment</code></a></li>
 <li>interface <a href="#environment_preopens"><code>environment-preopens</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
+<li>interface <a href="#stdin"><code>stdin</code></a></li>
+<li>interface <a href="#stdout"><code>stdout</code></a></li>
+<li>interface <a href="#stderr"><code>stderr</code></a></li>
 </ul>
 </li>
 <li>Exports:
@@ -2582,6 +2585,45 @@ values each time it is called.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
+</ul>
+<h2><a name="stdin">Import interface stdin</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="input_stream"><code>type input-stream</code></a></h4>
+<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdin"><code>get-stdin: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdin.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+</ul>
+<h2><a name="stdout">Import interface stdout</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"><code>type output-stream</code></a></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdout"><code>get-stdout: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdout.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h2><a name="stderr">Import interface stderr</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"><code>type output-stream</code></a></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stderr"><code>get-stderr: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stderr.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
 <h2><a name="run">Export interface run</a></h2>
 <hr />

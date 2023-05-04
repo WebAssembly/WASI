@@ -1,14 +1,17 @@
-default interface stdio {
-  use io.streams.{input-stream, output-stream}
+interface stdin {
+  use io.streams.{input-stream}
 
-  /// Stdio preopens: these are the resources that provide stdin, stdout, and
-  /// stderr.
-  record stdio-preopens {
-    stdin: input-stream,
-    stdout: output-stream,
-    stderr: output-stream,
-  }
+  get-stdin: func() -> input-stream
+}
 
-  /// Return the set of stdio preopens.
-  get-stdio: func() -> stdio-preopens
+interface stdout {
+  use io.streams.{output-stream}
+
+  get-stdout: func() -> output-stream
+}
+
+interface stderr {
+  use io.streams.{output-stream}
+
+  get-stderr: func() -> output-stream
 }

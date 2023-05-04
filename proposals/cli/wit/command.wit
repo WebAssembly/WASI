@@ -16,5 +16,8 @@ default world command {
   import environment: pkg.environment
   import environment-preopens: pkg.environment-preopens
   import exit: pkg.exit
+  import stdin: pkg.stdio.stdin
+  import stdout: pkg.stdio.stdout
+  import stderr: pkg.stdio.stderr
   export run: pkg.run
 }
