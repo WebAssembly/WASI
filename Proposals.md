@@ -67,7 +67,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [singlestore-labs/wasi-data][wasi-data]                                        | Bailey Hayes                           |          |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
 
 ## Versioning
