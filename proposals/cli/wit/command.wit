@@ -16,15 +16,8 @@ default world command {
   import environment: pkg.environment
   import environment-preopens: pkg.environment-preopens
   import exit: pkg.exit
-
-  use io.streams.{input-stream, output-stream}
-  use filesystem.types.{descriptor}
-
-  export main: func(
-    stdin: input-stream,
-    stdout: output-stream,
-    stderr: output-stream,
-    args: list<string>,
-    preopens: list<tuple<descriptor, string>>,
-  ) -> result
+  import stdin: pkg.stdio.stdin
+  import stdout: pkg.stdio.stdout
+  import stderr: pkg.stdio.stderr
+  export run: pkg.run
 }

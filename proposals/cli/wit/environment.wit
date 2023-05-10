@@ -8,4 +8,7 @@ default interface environment {
   /// in the component model, this import function should return the same
   /// values each time it is called.
   get-environment: func() -> list<tuple<string, string>>
+
+  /// Get the POSIX-style arguments to the program.
+  get-arguments: func() -> list<string>
 }
