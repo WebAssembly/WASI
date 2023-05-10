@@ -629,7 +629,7 @@ default interface types {
         /// The relative path to check.
         path: string,
         /// The type of check to perform.
-        %ype: access-type
+        %type: access-type
     ) -> result<_, error-code>
 
     /// Unlink a filesystem object that is not a directory.

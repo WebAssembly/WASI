@@ -1200,7 +1200,7 @@ entities.</p>
 <li><a name="access_at.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 <li><a name="access_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a name="access_at.path"><code>path</code></a>: <code>string</code></li>
-<li><a name="access_at.ype"><code>ype</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
+<li><a name="access_at.type"><code>type</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
