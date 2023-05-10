@@ -416,8 +416,8 @@ similar.</p>
 filesystem.
 </li>
 <li>
-<p><a name="modes.writeable"><code>writeable</code></a>: </p>
-<p>True if the resource is considered writeable by the containing
+<p><a name="modes.writable"><code>writable</code></a>: </p>
+<p>True if the resource is considered writable by the containing
 filesystem.
 </li>
 <li>
@@ -1190,7 +1190,7 @@ filesystem, this function fails with <a href="#error_code.not_permitted"><code>e
 <h4><a name="access_at"><code>access-at: func</code></a></h4>
 <p>Check accessibility of a filesystem path.</p>
 <p>Check whether the given filesystem path names an object which is
-readable, writeable, or executable, or whether it exists.</p>
+readable, writable, or executable, or whether it exists.</p>
 <p>This does not a guarantee that subsequent accesses will succeed, as
 filesystem permissions may be modified asynchronously by external
 entities.</p>

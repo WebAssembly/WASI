@@ -146,9 +146,9 @@ default interface types {
         /// True if the resource is considered readable by the containing
         /// filesystem.
         readable,
-        /// True if the resource is considered writeable by the containing
+        /// True if the resource is considered writable by the containing
         /// filesystem.
-        writeable,
+        writable,
         /// True if the resource is considered executable by the containing
         /// filesystem. This does not apply to directories.
         executable,
@@ -615,7 +615,7 @@ default interface types {
     /// Check accessibility of a filesystem path.
     ///
     /// Check whether the given filesystem path names an object which is
-    /// readable, writeable, or executable, or whether it exists.
+    /// readable, writable, or executable, or whether it exists.
     ///
     /// This does not a guarantee that subsequent accesses will succeed, as
     /// filesystem permissions may be modified asynchronously by external
