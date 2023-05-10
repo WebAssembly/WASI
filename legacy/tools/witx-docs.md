@@ -77,6 +77,10 @@ For example, the `poll_oneoff` function has these arguments:
 Pointer values are expected to be aligned, to the alignment of their pointee
 type. If a misaligned pointer is passed to a function, the function shall trap.
 
+If an out-of-bounds pointer is passed to a function and the function needs
+to dereference it, the function shall trap rather than returning
+`errno.fault`.
+
 [module linking proposal]: https://github.com/WebAssembly/module-linking/
 [interface types]: https://github.com/WebAssembly/interface-types/blob/main/proposals/interface-types/Explainer.md
 [wat format]: https://webassembly.github.io/spec/core/bikeshed/index.html#text-format%E2%91%A0
