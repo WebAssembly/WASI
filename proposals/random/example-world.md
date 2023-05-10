@@ -3,6 +3,8 @@
 <li>Imports:
 <ul>
 <li>interface <a href="#random"><code>random</code></a></li>
+<li>interface <a href="#insecure"><code>insecure</code></a></li>
+<li>interface <a href="#insecure_seed"><code>insecure-seed</code></a></li>
 </ul>
 </li>
 </ul>
@@ -37,7 +39,42 @@ deterministic data.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h4><a name="insecure_random"><code>insecure-random: func</code></a></h4>
+<h2><a name="insecure">Import interface insecure</a></h2>
+<p>The insecure interface for insecure pseudo-random numbers.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="get_insecure_random_bytes"><code>get-insecure-random-bytes: func</code></a></h4>
+<p>Return <code>len</code> insecure pseudo-random bytes.</p>
+<p>This function is not cryptographically secure. Do not use it for
+anything related to security.</p>
+<p>There are no requirements on the values of the returned bytes, however
+implementations are encouraged to return evenly distributed values with
+a long period.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="get_insecure_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_insecure_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h4><a name="get_insecure_random_u64"><code>get-insecure-random-u64: func</code></a></h4>
+<p>Return an insecure pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of pseudo-random data as
+<a href="#get_insecure_random_bytes"><code>get-insecure-random-bytes</code></a>, represented as a <code>u64</code>.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_insecure_random_u64.0"></a> <code>u64</code></li>
+</ul>
+<h2><a name="insecure_seed">Import interface insecure-seed</a></h2>
+<p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="insecure_seed"><code>insecure-seed: func</code></a></h4>
 <p>Return a 128-bit value that may contain a pseudo-random value.</p>
 <p>The returned value is not required to be computed from a CSPRNG, and may
 even be entirely deterministic. Host implementations are encouraged to
@@ -53,5 +90,5 @@ called multiple times and potentially used for purposes other than DoS
 protection.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="insecure_random.0"></a> (<code>u64</code>, <code>u64</code>)</li>
+<li><a name="insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
