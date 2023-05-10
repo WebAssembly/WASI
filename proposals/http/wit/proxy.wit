@@ -9,9 +9,10 @@ default world proxy {
   import timezone: clocks.timezone
   import random: random.random
 
-  // This is the default logging handler to use when user code simply wants to
-  // log to a developer-facing console (e.g., via `console.log()`).
-  import console: logging.logging
+  // Proxies have standard output and error streams which are expected to
+  // terminate in a developer-facing console provided by the host.
+  import stdout: cli.stdio.stdout
+  import stderr: cli.stdio.stderr
 
   // This is the default handler to use when user code simply wants to make an
   // HTTP request (e.g., via `fetch()`).
