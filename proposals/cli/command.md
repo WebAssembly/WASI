@@ -16,6 +16,8 @@
 <li>interface <a href="#udp"><code>udp</code></a></li>
 <li>interface <a href="#udp_create_socket"><code>udp-create-socket</code></a></li>
 <li>interface <a href="#random"><code>random</code></a></li>
+<li>interface <a href="#insecure_random"><code>insecure-random</code></a></li>
+<li>interface <a href="#insecure_random_seed"><code>insecure-random-seed</code></a></li>
 <li>interface <a href="#environment"><code>environment</code></a></li>
 <li>interface <a href="#environment_preopens"><code>environment-preopens</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
@@ -562,8 +564,8 @@ similar.</p>
 filesystem.
 </li>
 <li>
-<p><a name="modes.writeable"><code>writeable</code></a>: </p>
-<p>True if the resource is considered writeable by the containing
+<p><a name="modes.writable"><code>writable</code></a>: </p>
+<p>True if the resource is considered writable by the containing
 filesystem.
 </li>
 <li>
@@ -820,7 +822,7 @@ implementations which can set this to a non-none value should do so.</p>
 <p>Write mode: Data can be written to.
 </li>
 <li>
-<p><a name="descriptor_flags.non_blocking"><a href="#non_blocking"><code>non-blocking</code></a></a>: </p>
+<p><a name="descriptor_flags.non_blocking"><code>non-blocking</code></a>: </p>
 <p>Requests non-blocking operation.
 <p>When this flag is enabled, functions may return immediately with an
 <a href="#error_code.would_block"><code>error-code::would-block</code></a> error code in situations where they would
@@ -1075,7 +1077,7 @@ from <code>fdstat_get</code> in earlier versions of WASI.</p>
 </ul>
 <h4><a name="set_flags"><code>set-flags: func</code></a></h4>
 <p>Set status flags associated with a descriptor.</p>
-<p>This function may only change the <a href="#non_blocking"><code>non-blocking</code></a> flag.</p>
+<p>This function may only change the <code>non-blocking</code> flag.</p>
 <p>Note: This is similar to <code>fcntl(fd, F_SETFL, flags)</code> in POSIX.</p>
 <p>Note: This was called <code>fd_fdstat_set_flags</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
@@ -1336,7 +1338,7 @@ filesystem, this function fails with <a href="#error_code.not_permitted"><code>e
 <h4><a name="access_at"><code>access-at: func</code></a></h4>
 <p>Check accessibility of a filesystem path.</p>
 <p>Check whether the given filesystem path names an object which is
-readable, writeable, or executable, or whether it exists.</p>
+readable, writable, or executable, or whether it exists.</p>
 <p>This does not a guarantee that subsequent accesses will succeed, as
 filesystem permissions may be modified asynchronously by external
 entities.</p>
@@ -1346,7 +1348,7 @@ entities.</p>
 <li><a name="access_at.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 <li><a name="access_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a name="access_at.path"><code>path</code></a>: <code>string</code></li>
-<li><a name="access_at.ype"><code>ype</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
+<li><a name="access_at.type"><code>type</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -1596,11 +1598,154 @@ There is no need for this to map 1:1 to a physical network interface.
 <li><a name="ip_address.ipv4"><code>ipv4</code></a>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></li>
 <li><a name="ip_address.ipv6"><code>ipv6</code></a>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></li>
 </ul>
-<h4><a name="error"><code>enum error</code></a></h4>
+<h4><a name="error_code"><code>enum error-code</code></a></h4>
+<p>Error codes.</p>
+<p>In theory, every API can return any error code.
+In practice, API's typically only return the errors documented per API
+combined with a couple of errors that are always possible:</p>
+<ul>
+<li><code>unknown</code></li>
+<li><code>access-denied</code></li>
+<li><code>not-supported</code></li>
+<li><code>out-of-memory</code></li>
+</ul>
+<p>See each individual API for what the POSIX equivalents are. They sometimes differ per API.</p>
 <h5>Enum Cases</h5>
 <ul>
-<li><a name="error.unknown"><code>unknown</code></a></li>
-<li><a name="error.again"><code>again</code></a></li>
+<li>
+<p><a name="error_code.unknown"><code>unknown</code></a></p>
+<p>Unknown error
+</li>
+<li>
+<p><a name="error_code.access_denied"><code>access-denied</code></a></p>
+<p>Access denied.
+<p>POSIX equivalent: EACCES, EPERM</p>
+</li>
+<li>
+<p><a name="error_code.not_supported"><code>not-supported</code></a></p>
+<p>The operation is not supported.
+<p>POSIX equivalent: EOPNOTSUPP</p>
+</li>
+<li>
+<p><a name="error_code.out_of_memory"><code>out-of-memory</code></a></p>
+<p>Not enough memory to complete the operation.
+<p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY</p>
+</li>
+<li>
+<p><a name="error_code.timeout"><code>timeout</code></a></p>
+<p>The operation timed out before it could finish completely.
+</li>
+<li>
+<p><a name="error_code.concurrency_conflict"><code>concurrency-conflict</code></a></p>
+<p>This operation is incompatible with another asynchronous operation that is already in progress.
+</li>
+<li>
+<p><a name="error_code.not_in_progress"><code>not-in-progress</code></a></p>
+<p>Trying to finish an asynchronous operation that:
+- has not been started yet, or:
+- was already finished by a previous `finish-*` call.
+<p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
+</li>
+<li>
+<p><a name="error_code.would_block"><code>would-block</code></a></p>
+<p>The operation has been aborted because it could not be completed immediately.
+<p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
+</li>
+<li>
+<p><a name="error_code.address_family_not_supported"><code>address-family-not-supported</code></a></p>
+<p>The specified address-family is not supported.
+</li>
+<li>
+<p><a name="error_code.address_family_mismatch"><code>address-family-mismatch</code></a></p>
+<p>An IPv4 address was passed to an IPv6 resource, or vice versa.
+</li>
+<li>
+<p><a name="error_code.invalid_remote_address"><code>invalid-remote-address</code></a></p>
+<p>The socket address is not a valid remote address. E.g. the IP address is set to INADDR_ANY, or the port is set to 0.
+</li>
+<li>
+<p><a name="error_code.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
+<p>The operation is only supported on IPv4 resources.
+</li>
+<li>
+<p><a name="error_code.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
+<p>The operation is only supported on IPv6 resources.
+</li>
+<li>
+<p><a name="error_code.new_socket_limit"><code>new-socket-limit</code></a></p>
+<p>A new socket resource could not be created because of a system limit.
+</li>
+<li>
+<p><a name="error_code.already_attached"><code>already-attached</code></a></p>
+<p>The socket is already attached to another network.
+</li>
+<li>
+<p><a name="error_code.already_bound"><code>already-bound</code></a></p>
+<p>The socket is already bound.
+</li>
+<li>
+<p><a name="error_code.already_connected"><code>already-connected</code></a></p>
+<p>The socket is already in the Connection state.
+</li>
+<li>
+<p><a name="error_code.not_bound"><code>not-bound</code></a></p>
+<p>The socket is not bound to any local address.
+</li>
+<li>
+<p><a name="error_code.not_connected"><code>not-connected</code></a></p>
+<p>The socket is not in the Connection state.
+</li>
+<li>
+<p><a name="error_code.address_not_bindable"><code>address-not-bindable</code></a></p>
+<p>A bind operation failed because the provided address is not an address that the `network` can bind to.
+</li>
+<li>
+<p><a name="error_code.address_in_use"><code>address-in-use</code></a></p>
+<p>A bind operation failed because the provided address is already in use.
+</li>
+<li>
+<p><a name="error_code.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
+<p>A bind operation failed because there are no ephemeral ports available.
+</li>
+<li>
+<p><a name="error_code.remote_unreachable"><code>remote-unreachable</code></a></p>
+<p>The remote address is not reachable
+</li>
+<li>
+<p><a name="error_code.already_listening"><code>already-listening</code></a></p>
+<p>The socket is already in the Listener state.
+</li>
+<li>
+<p><a name="error_code.not_listening"><code>not-listening</code></a></p>
+<p>The socket is already in the Listener state.
+</li>
+<li>
+<p><a name="error_code.connection_refused"><code>connection-refused</code></a></p>
+<p>The connection was forcefully rejected
+</li>
+<li>
+<p><a name="error_code.connection_reset"><code>connection-reset</code></a></p>
+<p>The connection was reset.
+</li>
+<li>
+<p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
+</li>
+<li>
+<p><a name="error_code.invalid_name"><code>invalid-name</code></a></p>
+<p>The provided name is a syntactically invalid domain name.
+</li>
+<li>
+<p><a name="error_code.name_unresolvable"><code>name-unresolvable</code></a></p>
+<p>Name does not exist or has no suitable associated IP addresses.
+</li>
+<li>
+<p><a name="error_code.temporary_resolver_failure"><code>temporary-resolver-failure</code></a></p>
+<p>A temporary failure in name resolution occurred.
+</li>
+<li>
+<p><a name="error_code.permanent_resolver_failure"><code>permanent-resolver-failure</code></a></p>
+<p>A permanent failure in name resolution occurred.
+</li>
 </ul>
 <hr />
 <h3>Functions</h3>
@@ -1635,8 +1780,8 @@ There is no need for this to map 1:1 to a physical network interface.
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address">`type ip-address`</a>
 [`ip-address`](#ip_address)
@@ -1652,7 +1797,7 @@ There is no need for this to map 1:1 to a physical network interface.
 <h4><a name="resolve_addresses"><code>resolve-addresses: func</code></a></h4>
 <p>Resolve an internet host name to a list of IP addresses.</p>
 <p>See the wasi-socket proposal README.md for a comparison with getaddrinfo.</p>
-<p>Parameters:</p>
+<h1>Parameters</h1>
 <ul>
 <li><code>name</code>: The name to look up. IP addresses are not allowed. Unicode domain names are automatically converted
 to ASCII using IDNA encoding.</li>
@@ -1663,18 +1808,22 @@ systems without an active IPv6 interface. Notes:</li>
 <li>Even when no public IPv6 interfaces are present or active, names like &quot;localhost&quot; can still resolve to an IPv6 address.</li>
 <li>Whatever is &quot;available&quot; or &quot;unavailable&quot; is volatile and can change everytime a network cable is unplugged.</li>
 </ul>
-<p>This function never blocks. It either immediately returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>
-that can be used to (asynchronously) fetch the results.
-Or it immediately fails whenever <code>name</code> is:</p>
+<p>This function never blocks. It either immediately fails or immediately returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>
+that can be used to (asynchronously) fetch the results.</p>
+<p>At the moment, the stream never completes successfully with 0 items. Ie. the first call
+to <a href="#resolve_next_address"><code>resolve-next-address</code></a> never returns <code>ok(none)</code>. This may change in the future.</p>
+<h1>Typical errors</h1>
 <ul>
-<li>empty</li>
-<li>an IP address</li>
-<li>a syntactically invalid domain name in another way</li>
+<li><code>invalid-name</code>:                 <code>name</code> is a syntactically invalid domain name.</li>
+<li><code>invalid-name</code>:                 <code>name</code> is an IP address.</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAI_FAMILY)</li>
 </ul>
-<p>References:</p>
+<h1>References:</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo">https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3">https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1685,7 +1834,7 @@ Or it immediately fails whenever <code>name</code> is:</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolve_addresses.0"></a> result&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="resolve_addresses.0"></a> result&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="resolve_next_address"><code>resolve-next-address: func</code></a></h4>
 <p>Returns the next address from the resolver.</p>
@@ -1694,13 +1843,20 @@ return the next address in connection order preference. If all
 addresses have been exhausted, this function returns <code>none</code>.
 After which, you should release the stream with <a href="#drop_resolve_address_stream"><code>drop-resolve-address-stream</code></a>.</p>
 <p>This function never returns IPv4-mapped IPv6 addresses.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>name-unresolvable</code>:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)</li>
+<li><code>temporary-resolver-failure</code>: A temporary failure in name resolution occurred. (EAI_AGAIN)</li>
+<li><code>permanent-resolver-failure</code>: A permanent failure in name resolution occurred. (EAI_FAIL)</li>
+<li><code>would-block</code>:                A result is not available yet. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="resolve_next_address.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_resolve_address_stream"><code>drop-resolve-address-stream: func</code></a></h4>
 <p>Dispose of the specified <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>, after which it may no longer be used.</p>
@@ -1708,31 +1864,6 @@ After which, you should release the stream with <a href="#drop_resolve_address_s
 <h5>Params</h5>
 <ul>
 <li><a name="drop_resolve_address_stream.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-</ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the stream.</p>
-<p>By default a stream is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>again</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
@@ -1761,8 +1892,8 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_socket_address">`type ip-socket-address`</a>
 [`ip-socket-address`](#ip_socket_address)
@@ -1791,94 +1922,166 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 </ul>
 <hr />
 <h3>Functions</h3>
-<h4><a name="bind"><code>bind: func</code></a></h4>
+<h4><a name="start_bind"><code>start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <p>When a socket is not explicitly bound, the first invocation to a listen or connect operation will
 implicitly bind the socket.</p>
-<p>Fails when:</p>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li>the socket is already bound.</li>
+<li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
+<li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
+<li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
+<li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
+<li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
+<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html">https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="connect"><code>connect: func</code></a></h4>
+<h4><a name="finish_bind"><code>finish-bind: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_bind.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_connect"><code>start-connect: func</code></a></h4>
 <p>Connect to a remote endpoint.</p>
 <p>On success:</p>
 <ul>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<p>Fails when:</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li>the socket is already bound to a different network.</li>
-<li>the provided network does not allow connections to the specified endpoint.</li>
-<li>the socket is already in the Connection or Listener state.</li>
-<li>either the remote IP address or port is 0.</li>
+<li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
+<li><code>invalid-remote-address</code>:    The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EADDRNOTAVAIL on Windows)</li>
+<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN)</li>
+<li><code>already-listening</code>:         The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
+<li><code>timeout</code>:                   Connection timed out. (ETIMEDOUT)</li>
+<li><code>connection-refused</code>:        The connection was forcefully rejected. (ECONNREFUSED)</li>
+<li><code>connection-reset</code>:          The connection was reset. (ECONNRESET)</li>
+<li><code>remote-unreachable</code>:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
+<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
+<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?connect">https://man.freebsd.org/cgi/man.cgi?connect</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="listen"><code>listen: func</code></a></h4>
+<h4><a name="finish_connect"><code>finish-connect: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_connect.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_connect.0"></a> result&lt;(<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_listen"><code>start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the Listener state.</p>
-<p>Fails when:</p>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li>the socket is already bound to a different network.</li>
-<li>the provided network does not allow listening on the specified address.</li>
-<li>the socket is already in the Connection or Listener state.</li>
+<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>listen</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
+<li><code>already-listening</code>:         The socket is already in the Listener state.</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EINVAL on BSD)</li>
 </ul>
-<p>References</p>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
+<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
+<li><code>not-in-progress</code>:           A <code>listen</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/listen.2.html">https://man7.org/linux/man-pages/man2/listen.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=listen&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=listen&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+<li><a name="start_listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="start_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="finish_listen"><code>finish-listen: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="accept"><code>accept: func</code></a></h4>
 <p>Accept a new client socket.</p>
 <p>The returned socket is bound and in the Connection state.</p>
 <p>On success, this function returns the newly accepted client socket along with
 a pair of streams that can be used to read &amp; write to the connection.</p>
-<p>Fails when this socket is not in the Listening state.</p>
-<p>References:</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-listening</code>: Socket is not in the Listener state. (EINVAL)</li>
+<li><code>would-block</code>:   No pending connections at the moment. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<p>Host implementations must skip over transient errors returned by the native accept syscall.</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/accept.2.html">https://man7.org/linux/man-pages/man2/accept.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=accept&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=accept&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1886,15 +2089,20 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="accept.0"></a> result&lt;(<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="accept.0"></a> result&lt;(<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the bound local address.</p>
-<p>Returns an error if the socket is not bound.</p>
-<p>References</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-bound</code>: The socket is not bound to any local address.</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?getsockname">https://man.freebsd.org/cgi/man.cgi?getsockname</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1902,15 +2110,20 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
 <p>Get the bound remote address.</p>
-<p>Fails when the socket is not in the Connection state.</p>
-<p>References</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1">https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1918,7 +2131,7 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="address_family"><code>address-family: func</code></a></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
@@ -1929,20 +2142,25 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.
-Implementations are not required to support dual-stack mode. Calling <code>set-ipv6-only(false)</code> might fail.</p>
-<p>Fails when called on an IPv4 socket.</p>
+<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
+<li><code>already-bound</code>:        (set) The socket is already bound.</li>
+<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="ipv6_only.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_ipv6_only"><code>set-ipv6-only: func</code></a></h4>
 <h5>Params</h5>
@@ -1952,10 +2170,15 @@ Implementations are not required to support dual-stack mode. Calling <code>set-i
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_listen_backlog_size"><code>set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="set_listen_backlog_size.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
@@ -1963,17 +2186,21 @@ Implementations are not required to support dual-stack mode. Calling <code>set-i
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_listen_backlog_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_listen_backlog_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="keep_alive"><code>keep-alive: func</code></a></h4>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="keep_alive.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="keep_alive.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="keep_alive.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_keep_alive"><code>set-keep-alive: func</code></a></h4>
 <h5>Params</h5>
@@ -1983,17 +2210,21 @@ Implementations are not required to support dual-stack mode. Calling <code>set-i
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_keep_alive.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_keep_alive.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="no_delay"><code>no-delay: func</code></a></h4>
 <p>Equivalent to the TCP_NODELAY socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="no_delay.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="no_delay.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="no_delay.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_no_delay"><code>set-no-delay: func</code></a></h4>
 <h5>Params</h5>
@@ -2003,17 +2234,23 @@ Implementations are not required to support dual-stack mode. Calling <code>set-i
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_no_delay.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_no_delay.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
+<li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="unicast_hop_limit.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_unicast_hop_limit"><code>set-unicast-hop-limit: func</code></a></h4>
 <h5>Params</h5>
@@ -2023,7 +2260,7 @@ Implementations are not required to support dual-stack mode. Calling <code>set-i
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive_buffer_size"><code>receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
@@ -2032,15 +2269,20 @@ In other words, after setting a value, reading the same setting back may return 
 <p>Note #2: there is not necessarily a direct relationship between the kernel buffer size and the bytes of
 actual data to be sent/received by the application, because the kernel might also use the buffer space
 for internal metadata structures.</p>
-<p>Fails when this socket is in the Listening state.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
+<li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
+<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="receive_buffer_size.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_receive_buffer_size"><code>set-receive-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2050,7 +2292,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send_buffer_size"><code>send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2059,7 +2301,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_send_buffer_size"><code>set-send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2069,32 +2311,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the socket.</p>
-<p>By default a socket is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>again</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
@@ -2109,7 +2326,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <h4><a name="shutdown"><code>shutdown: func</code></a></h4>
-<p>Gracefully shut down the connection.</p>
+<p>Initiate a graceful shutdown.</p>
 <ul>
 <li>receive: the socket is not expecting to receive any more data from the peer. All subsequent read
 operations on the <a href="#input_stream"><code>input-stream</code></a> associated with this socket will return an End Of Stream indication.
@@ -2118,12 +2335,17 @@ Any data still in the receive queue at time of calling <a href="#shutdown"><code
 operations on the <a href="#output_stream"><code>output-stream</code></a> associated with this socket will return an error.</li>
 <li>both: same effect as receive &amp; send combined.</li>
 </ul>
-<p>The shutdown function does not close the socket.</p>
-<p>Fails when the socket is not in the Connection state.</p>
-<p>References</p>
+<p>The shutdown function does not close (drop) the socket.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-connected</code>: The socket is not in the Connection state. (ENOTCONN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/shutdown.2.html">https://man7.org/linux/man-pages/man2/shutdown.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=shutdown&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=shutdown&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2132,10 +2354,11 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="shutdown.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_tcp_socket"><code>drop-tcp-socket: func</code></a></h4>
 <p>Dispose of the specified <a href="#tcp_socket"><code>tcp-socket</code></a>, after which it may no longer be used.</p>
+<p>Similar to the POSIX <code>close</code> function.</p>
 <p>Note: this function is scheduled to be removed when Resources are natively supported in Wit.</p>
 <h5>Params</h5>
 <ul>
@@ -2147,8 +2370,8 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <h4><a name="network"><code>type network</code></a></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address_family">`type ip-address-family`</a>
 [`ip-address-family`](#ip_address_family)
@@ -2162,12 +2385,21 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>Create a new TCP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#listen"><code>listen</code></a>/<a href="#connect"><code>connect</code></a>
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>listen</code>/<code>connect</code>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
-<p>References:</p>
+<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-supported</code>:                The host does not support TCP sockets. (EOPNOTSUPP)</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2175,7 +2407,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="udp">Import interface udp</a></h2>
 <hr />
@@ -2186,8 +2418,8 @@ is called, the socket is effectively an in-memory configuration object, unable t
 #### <a name="network">`type network`</a>
 [`network`](#network)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_socket_address">`type ip-socket-address`</a>
 [`ip-socket-address`](#ip_socket_address)
@@ -2206,33 +2438,54 @@ is called, the socket is effectively an in-memory configuration object, unable t
 </ul>
 <hr />
 <h3>Functions</h3>
-<h4><a name="bind"><code>bind: func</code></a></h4>
+<h4><a name="start_bind"><code>start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
-<p>When a socket is not explicitly bound, the first invocation to a connect, send or receive operation will
-implicitly bind the socket.</p>
-<p>Fails when:</p>
+<p>When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.</p>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li>the socket is already bound.</li>
+<li><code>address-family-mismatch</code>:   The <a href="#local_address"><code>local-address</code></a> has the wrong address family. (EINVAL)</li>
+<li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
+<li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
+<li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
+<li><code>address-not-bindable</code>:      <a href="#local_address"><code>local-address</code></a> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
+<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html">https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="start_bind.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_bind.local_address"><a href="#local_address"><code>local-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="bind.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="connect"><code>connect: func</code></a></h4>
+<h4><a name="finish_bind"><code>finish-bind: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_bind.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="start_connect"><code>start-connect: func</code></a></h4>
 <p>Set the destination address.</p>
 <p>The local-address is updated based on the best network path to <a href="#remote_address"><code>remote-address</code></a>.</p>
 <p>When a destination address is set:</p>
@@ -2241,24 +2494,46 @@ implicitly bind the socket.</p>
 <li>the <a href="#send"><code>send</code></a> function can only be used to send to this destination.</li>
 </ul>
 <p>Note that this function does not generate any network traffic and the peer is not aware of this &quot;connection&quot;.</p>
-<p>Fails when:</p>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li>the socket is already bound to a different network.</li>
+<li><code>address-family-mismatch</code>:   The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-remote-address</code>:    The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-remote-address</code>:    The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>already-attached</code>:          The socket is already bound to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
-<p>References</p>
+<h1>Typical <code>finish</code> errors</h1>
+<ul>
+<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
+<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?connect">https://man.freebsd.org/cgi/man.cgi?connect</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
-<li><a name="connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="start_connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="start_connect.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
+<li><a name="start_connect.remote_address"><a href="#remote_address"><code>remote-address</code></a></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="connect.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="finish_connect"><code>finish-connect: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_connect.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive"><code>receive: func</code></a></h4>
 <p>Receive a message.</p>
@@ -2267,15 +2542,21 @@ implicitly bind the socket.</p>
 <li>The sender address of the datagram</li>
 <li>The number of bytes read.</li>
 </ul>
-<p>Fails when:</p>
+<h1>Typical errors</h1>
 <ul>
-<li>the socket is not bound.</li>
+<li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
+<li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
+<li><code>would-block</code>:        There is no pending data available to be read at the moment. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
+<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2283,22 +2564,32 @@ implicitly bind the socket.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send"><code>send: func</code></a></h4>
 <p>Send a message to a specific destination address.</p>
 <p>The remote address option is required. To send a message to the &quot;connected&quot; peer,
 call <a href="#remote_address"><code>remote-address</code></a> to get their address.</p>
-<p>Fails when:</p>
+<h1>Typical errors</h1>
 <ul>
-<li>the socket is not bound. Unlike POSIX, this function does not perform an implicit bind.</li>
-<li>the socket is in &quot;connected&quot; mode and the <code>datagram.remote-address</code> does not match the address passed to <a href="#connect"><code>connect</code></a>.</li>
+<li><code>address-family-mismatch</code>: The <a href="#remote_address"><code>remote-address</code></a> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-remote-address</code>:  The IP address in <a href="#remote_address"><code>remote-address</code></a> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-remote-address</code>:  The port in <a href="#remote_address"><code>remote-address</code></a> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>already-connected</code>:       The socket is in &quot;connected&quot; mode and the <code>datagram.remote-address</code> does not match the address passed to <code>connect</code>. (EISCONN)</li>
+<li><code>not-bound</code>:               The socket is not bound to any local address. Unlike POSIX, this function does not perform an implicit bind.</li>
+<li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
+<li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
+<li><code>would-block</code>:             The send buffer is currently full. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
-<p>References</p>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2307,15 +2598,20 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
-<p>Returns an error if the socket is not bound.</p>
-<p>References</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-bound</code>: The socket is not bound to any local address.</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?getsockname">https://man.freebsd.org/cgi/man.cgi?getsockname</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2323,14 +2619,20 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="remote_address"><code>remote-address: func</code></a></h4>
-<p>Get the address set with <a href="#connect"><code>connect</code></a>.</p>
-<p>References</p>
+<p>Get the address set with <code>connect</code>.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
+</ul>
+<h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1">https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2338,7 +2640,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="address_family"><code>address-family: func</code></a></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
@@ -2349,20 +2651,25 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="address_family.0"></a> result&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h4><a name="ipv6_only"><code>ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.
-Implementations are not required to support dual-stack mode, so calling <code>set-ipv6-only(false)</code> might fail.</p>
-<p>Fails when called on an IPv4 socket.</p>
+<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
+<li><code>already-bound</code>:        (set) The socket is already bound.</li>
+<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="ipv6_only.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_ipv6_only"><code>set-ipv6-only: func</code></a></h4>
 <h5>Params</h5>
@@ -2372,17 +2679,21 @@ Implementations are not required to support dual-stack mode, so calling <code>se
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="unicast_hop_limit"><code>unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="unicast_hop_limit.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_unicast_hop_limit"><code>set-unicast-hop-limit: func</code></a></h4>
 <h5>Params</h5>
@@ -2392,7 +2703,7 @@ Implementations are not required to support dual-stack mode, so calling <code>se
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive_buffer_size"><code>receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
@@ -2403,13 +2714,17 @@ actual data to be sent/received by the application, because the kernel might als
 for internal metadata structures.</p>
 <p>Fails when this socket is in the Listening state.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="receive_buffer_size.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_receive_buffer_size"><code>set-receive-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2419,7 +2734,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send_buffer_size"><code>send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2428,7 +2743,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_send_buffer_size"><code>set-send-buffer-size: func</code></a></h4>
 <h5>Params</h5>
@@ -2438,32 +2753,7 @@ for internal metadata structures.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="non_blocking"><code>non-blocking: func</code></a></h4>
-<p>Get/set the blocking mode of the socket.</p>
-<p>By default a socket is in &quot;blocking&quot; mode, meaning that any function blocks and waits for its completion.
-When switched to &quot;non-blocking&quot; mode, operations that would block return an <code>again</code> error. After which
-the API consumer is expected to call <a href="#subscribe"><code>subscribe</code></a> and wait for completion using the wasi-poll module.</p>
-<p>Note: these functions are here for WASI Preview2 only.
-They're planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="non_blocking.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="non_blocking.0"></a> result&lt;<code>bool</code>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_non_blocking"><code>set-non-blocking: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_non_blocking.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="set_non_blocking.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_non_blocking.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe"><code>subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
@@ -2490,8 +2780,8 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h4><a name="network"><code>type network</code></a></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 #### <a name="ip_address_family">`type ip-address-family`</a>
 [`ip-address-family`](#ip_address_family)
@@ -2505,12 +2795,21 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <p>Create a new UDP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <a href="#bind"><code>bind</code></a>/<a href="#connect"><code>connect</code></a> is called,
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
-<p>References:</p>
+<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-supported</code>:                The host does not support UDP sockets. (EOPNOTSUPP)</li>
+<li><code>address-family-not-supported</code>: The specified <a href="#address_family"><code>address-family</code></a> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+</ul>
+<h1>References:</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -2518,7 +2817,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="random">Import interface random</a></h2>
 <p>WASI Random is a random data API.</p>
@@ -2551,7 +2850,42 @@ deterministic data.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h4><a name="insecure_random"><code>insecure-random: func</code></a></h4>
+<h2><a name="insecure_random">Import interface insecure-random</a></h2>
+<p>The insecure interface for insecure pseudo-random numbers.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="get_insecure_random_bytes"><code>get-insecure-random-bytes: func</code></a></h4>
+<p>Return <code>len</code> insecure pseudo-random bytes.</p>
+<p>This function is not cryptographically secure. Do not use it for
+anything related to security.</p>
+<p>There are no requirements on the values of the returned bytes, however
+implementations are encouraged to return evenly distributed values with
+a long period.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="get_insecure_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_insecure_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h4><a name="get_insecure_random_u64"><code>get-insecure-random-u64: func</code></a></h4>
+<p>Return an insecure pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of pseudo-random data as
+<a href="#get_insecure_random_bytes"><code>get-insecure-random-bytes</code></a>, represented as a <code>u64</code>.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_insecure_random_u64.0"></a> <code>u64</code></li>
+</ul>
+<h2><a name="insecure_random_seed">Import interface insecure-random-seed</a></h2>
+<p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="insecure_seed"><code>insecure-seed: func</code></a></h4>
 <p>Return a 128-bit value that may contain a pseudo-random value.</p>
 <p>The returned value is not required to be computed from a CSPRNG, and may
 even be entirely deterministic. Host implementations are encouraged to
@@ -2567,7 +2901,7 @@ called multiple times and potentially used for purposes other than DoS
 protection.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="insecure_random.0"></a> (<code>u64</code>, <code>u64</code>)</li>
+<li><a name="insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
 <h2><a name="environment">Import interface environment</a></h2>
 <hr />
