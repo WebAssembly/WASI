@@ -90,7 +90,7 @@ default interface tcp {
 	/// Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.
 	/// 
 	/// # Typical `start` errors
-	/// - `already-attached`:          The socket is already attached to a different network. The `network` passed to `listen` must be identical to the one passed to `bind`.
+	/// - `not-bound`:                 The socket is not bound to any local address.
 	/// - `already-connected`:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)
 	/// - `already-listening`:         The socket is already in the Listener state.
 	/// - `concurrency-conflict`:      Another `bind`, `connect` or `listen` operation is already in progress. (EINVAL on BSD)
@@ -105,7 +105,7 @@ default interface tcp {
 	/// - <https://man7.org/linux/man-pages/man2/listen.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2>
-	start-listen: func(this: tcp-socket, network: network) -> result<_, error-code>
+	start-listen: func(this: tcp-socket) -> result<_, error-code>
 	finish-listen: func(this: tcp-socket) -> result<_, error-code>
 
 	/// Accept a new client socket.
