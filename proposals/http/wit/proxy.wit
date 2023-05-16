@@ -14,6 +14,12 @@ default world proxy {
   import stdout: cli.stdio.stdout
   import stderr: cli.stdio.stderr
 
+  // TODO: this is a temporary workaround until component tooling is able to
+  // gracefully handle the absence of stdin. Hosts must return an eof stream
+  // for this import, which is what wasi-libc + tooling will do automatically
+  // when this import is properly removed.
+  import stdin: cli.stdio.stdin
+
   // This is the default handler to use when user code simply wants to make an
   // HTTP request (e.g., via `fetch()`).
   import default-outgoing-HTTP: pkg.outgoing-handler
