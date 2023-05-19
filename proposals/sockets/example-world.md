@@ -1112,10 +1112,14 @@ implicitly bind the socket.</p>
 <h4><a name="start_listen"><code>start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the Listener state.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<p>Unlike POSIX:</p>
+<ul>
+<li>this function is async. This enables interactive WASI hosts to inject permission prompts.</li>
+<li>the socket must already be explicitly bound.</li>
+</ul>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>listen</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>not-bound</code>:                 The socket is not bound to any local address. (EDESTADDRREQ)</li>
 <li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
 <li><code>already-listening</code>:         The socket is already in the Listener state.</li>
 <li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EINVAL on BSD)</li>
@@ -1136,7 +1140,6 @@ implicitly bind the socket.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="start_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="start_listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
