@@ -87,7 +87,9 @@ default interface tcp {
 	/// 
 	/// Transitions the socket into the Listener state.
 	/// 
-	/// Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.
+	/// Unlike POSIX:
+	/// - this function is async. This enables interactive WASI hosts to inject permission prompts.
+	/// - the socket must already be explicitly bound.
 	/// 
 	/// # Typical `start` errors
 	/// - `not-bound`:                 The socket is not bound to any local address. (EDESTADDRREQ)
