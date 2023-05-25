@@ -16,7 +16,7 @@ default world command {
   import poll: poll.poll
   import streams: io.streams
   import environment: pkg.environment
-  import environment-preopens: pkg.environment-preopens
+  import preopens: pkg.preopens
   import exit: pkg.exit
   import stdin: pkg.stdio.stdin
   import stdout: pkg.stdio.stdout

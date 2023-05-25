@@ -19,7 +19,7 @@
 <li>interface <a href="#insecure_random"><code>insecure-random</code></a></li>
 <li>interface <a href="#insecure_random_seed"><code>insecure-random-seed</code></a></li>
 <li>interface <a href="#environment"><code>environment</code></a></li>
-<li>interface <a href="#environment_preopens"><code>environment-preopens</code></a></li>
+<li>interface <a href="#preopens"><code>preopens</code></a></li>
 <li>interface <a href="#exit"><code>exit</code></a></li>
 <li>interface <a href="#stdin"><code>stdin</code></a></li>
 <li>interface <a href="#stdout"><code>stdout</code></a></li>
@@ -2923,7 +2923,7 @@ values each time it is called.</p>
 <ul>
 <li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="environment_preopens">Import interface environment-preopens</a></h2>
+<h2><a name="preopens">Import interface preopens</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="descriptor"><code>type descriptor</code></a></h4>
