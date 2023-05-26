@@ -1,3 +1,5 @@
-default world example-world {
-    import types: pkg.types
+package wasi:filesystem
+
+world example-world {
+    import types
 }
