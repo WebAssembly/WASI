@@ -1,5 +1,5 @@
-default interface timezone {
-    use pkg.wall-clock.{datetime}
+interface timezone {
+    use wall-clock.{datetime}
 
     /// A timezone.
     ///
