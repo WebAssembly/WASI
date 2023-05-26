@@ -1,7 +1,7 @@
 
-default interface tcp-create-socket {
-	use pkg.network.{network, error-code, ip-address-family}
-	use pkg.tcp.{tcp-socket}
+interface tcp-create-socket {
+	use network.{network, error-code, ip-address-family}
+	use tcp.{tcp-socket}
 
 	/// Create a new TCP socket.
 	/// 
