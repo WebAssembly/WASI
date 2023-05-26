@@ -1,8 +1,8 @@
 
-default interface tcp {
-	use io.streams.{input-stream, output-stream}
-	use poll.poll.{pollable}
-	use pkg.network.{network, error-code, ip-socket-address, ip-address-family}
+interface tcp {
+	use wasi:io/streams.{input-stream, output-stream}
+	use wasi:poll/poll.{pollable}
+	use network.{network, error-code, ip-socket-address, ip-address-family}
 
 	/// A TCP socket handle.
 	type tcp-socket = u32

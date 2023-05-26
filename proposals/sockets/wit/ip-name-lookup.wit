@@ -1,7 +1,7 @@
 
-default interface ip-name-lookup {
-	use poll.poll.{pollable}
-	use pkg.network.{network, error-code, ip-address, ip-address-family}
+interface ip-name-lookup {
+	use wasi:poll/poll.{pollable}
+	use network.{network, error-code, ip-address, ip-address-family}
 
 
 	/// Resolve an internet host name to a list of IP addresses.
