@@ -1,5 +1,7 @@
-default world example-world {
-    import random: pkg.random
-    import insecure: pkg.insecure
-    import insecure-seed: pkg.insecure-seed
+package wasi:random
+
+world example-world {
+    import random
+    import insecure
+    import insecure-seed
 }

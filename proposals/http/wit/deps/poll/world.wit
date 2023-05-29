@@ -1,3 +1,5 @@
-default world example-world {
-    import poll: pkg.poll
+package wasi:poll
+
+world example-world {
+    import poll
 }
