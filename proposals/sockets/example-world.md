@@ -2,19 +2,19 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#network"><code>network</code></a></li>
-<li>interface <a href="#instance_network"><code>instance-network</code></a></li>
-<li>interface <a href="#poll"><code>poll</code></a></li>
-<li>interface <a href="#udp"><code>udp</code></a></li>
-<li>interface <a href="#udp_create_socket"><code>udp-create-socket</code></a></li>
-<li>interface <a href="#streams"><code>streams</code></a></li>
-<li>interface <a href="#tcp"><code>tcp</code></a></li>
-<li>interface <a href="#tcp_create_socket"><code>tcp-create-socket</code></a></li>
-<li>interface <a href="#ip_name_lookup"><code>ip-name-lookup</code></a></li>
+<li>interface <a href="#wasi:sockets_network"><code>wasi:sockets/network</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network"><code>wasi:sockets/instance-network</code></a></li>
+<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:sockets_udp"><code>wasi:sockets/udp</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket"><code>wasi:sockets/udp-create-socket</code></a></li>
+<li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp"><code>wasi:sockets/tcp</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket"><code>wasi:sockets/tcp-create-socket</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup"><code>wasi:sockets/ip-name-lookup</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="network">Import interface network</a></h2>
+<h2><a name="wasi:sockets_network">Import interface wasi:sockets/network</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -239,7 +239,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="drop_network.this"><code>this</code></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
-<h2><a name="instance_network">Import interface instance-network</a></h2>
+<h2><a name="wasi:sockets_instance_network">Import interface wasi:sockets/instance-network</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -254,7 +254,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="instance_network.0"></a> <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
-<h2><a name="poll">Import interface poll</a></h2>
+<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -301,7 +301,7 @@ mean &quot;ready&quot;.</p>
 <ul>
 <li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
-<h2><a name="udp">Import interface udp</a></h2>
+<h2><a name="wasi:sockets_udp">Import interface wasi:sockets/udp</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -666,7 +666,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="drop_udp_socket.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
 </ul>
-<h2><a name="udp_create_socket">Import interface udp-create-socket</a></h2>
+<h2><a name="wasi:sockets_udp_create_socket">Import interface wasi:sockets/udp-create-socket</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -711,7 +711,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="streams">Import interface streams</a></h2>
+<h2><a name="wasi:io_streams">Import interface wasi:io/streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -963,7 +963,7 @@ be used.</p>
 <ul>
 <li><a name="drop_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
-<h2><a name="tcp">Import interface tcp</a></h2>
+<h2><a name="wasi:sockets_tcp">Import interface wasi:sockets/tcp</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -1453,7 +1453,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <ul>
 <li><a name="drop_tcp_socket.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
-<h2><a name="tcp_create_socket">Import interface tcp-create-socket</a></h2>
+<h2><a name="wasi:sockets_tcp_create_socket">Import interface wasi:sockets/tcp-create-socket</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -1498,7 +1498,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="ip_name_lookup">Import interface ip-name-lookup</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup">Import interface wasi:sockets/ip-name-lookup</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
