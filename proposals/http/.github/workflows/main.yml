@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  abi-up-to-date:
+    name: Check ABI files are up-to-date
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: ensure `./wit/deps` are in sync
+      run: |
+        curl -Lo 'wit-deps' https://github.com/bytecodealliance/wit-deps/releases/download/v0.3.0/wit-deps-x86_64-unknown-linux-musl
+        chmod +x wit-deps
+        ./wit-deps lock
+        git add -N wit/deps
+        git diff --exit-code
+    
+    # wit-abi needs to be updated in order to verify the newest wit package syntax
+    
+    # - uses: WebAssembly/wit-abi-up-to-date@v6
+    #   with:
+    #     wit-abi-tag: wit-abi-0.6.0
