@@ -1,5 +1,5 @@
 
-default interface network {
+interface network {
     /// An opaque resource that represents access to (a subset of) the network.
 	/// This enables context-based security for networking.
 	/// There is no need for this to map 1:1 to a physical network interface.

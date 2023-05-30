@@ -17,9 +17,9 @@
 /// `..` and symbolic link steps, reaches a directory outside of the base
 /// directory, or reaches a symlink to an absolute or rooted path in the
 /// underlying filesystem, the function fails with `error-code::not-permitted`.
-default interface types {
-    use io.streams.{input-stream, output-stream}
-    use clocks.wall-clock.{datetime}
+interface types {
+    use wasi:io/streams.{input-stream, output-stream}
+    use wasi:clocks/wall-clock.{datetime}
 
     /// File size or length of a region within a file.
     type filesize = u64
@@ -146,9 +146,9 @@ default interface types {
         /// True if the resource is considered readable by the containing
         /// filesystem.
         readable,
-        /// True if the resource is considered writeable by the containing
+        /// True if the resource is considered writable by the containing
         /// filesystem.
-        writeable,
+        writable,
         /// True if the resource is considered executable by the containing
         /// filesystem. This does not apply to directories.
         executable,
@@ -615,7 +615,7 @@ default interface types {
     /// Check accessibility of a filesystem path.
     ///
     /// Check whether the given filesystem path names an object which is
-    /// readable, writeable, or executable, or whether it exists.
+    /// readable, writable, or executable, or whether it exists.
     ///
     /// This does not a guarantee that subsequent accesses will succeed, as
     /// filesystem permissions may be modified asynchronously by external
@@ -629,7 +629,7 @@ default interface types {
         /// The relative path to check.
         path: string,
         /// The type of check to perform.
-        %ype: access-type
+        %type: access-type
     ) -> result<_, error-code>
 
     /// Unlink a filesystem object that is not a directory.

@@ -2,7 +2,7 @@
 ///
 /// It is intended to be portable at least between Unix-family platforms and
 /// Windows.
-default interface random {
+interface random {
     /// Return `len` cryptographically-secure pseudo-random bytes.
     ///
     /// This function must produce data from an adequately seeded

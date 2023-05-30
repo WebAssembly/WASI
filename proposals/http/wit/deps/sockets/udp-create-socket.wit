@@ -1,7 +1,7 @@
 
-default interface udp-create-socket {
-	use pkg.network.{network, error-code, ip-address-family}
-	use pkg.udp.{udp-socket}
+interface udp-create-socket {
+	use network.{network, error-code, ip-address-family}
+	use udp.{udp-socket}
 
 	/// Create a new UDP socket.
 	/// 

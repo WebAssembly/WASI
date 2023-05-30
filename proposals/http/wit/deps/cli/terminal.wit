@@ -31,7 +31,7 @@ interface terminal-output {
 /// An interface providing an optional `terminal-input` for stdin as a
 /// link-time authority.
 interface terminal-stdin {
-    use self.terminal-input.{terminal-input}
+    use terminal-input.{terminal-input}
 
     /// If stdin is connected to a terminal, return a `terminal-input` handle
     /// allowing further interaction with it.
@@ -41,7 +41,7 @@ interface terminal-stdin {
 /// An interface providing an optional `terminal-output` for stdout as a
 /// link-time authority.
 interface terminal-stdout {
-    use self.terminal-output.{terminal-output}
+    use terminal-output.{terminal-output}
 
     /// If stdout is connected to a terminal, return a `terminal-output` handle
     /// allowing further interaction with it.
@@ -51,7 +51,7 @@ interface terminal-stdout {
 /// An interface providing an optional `terminal-output` for stderr as a
 /// link-time authority.
 interface terminal-stderr {
-    use self.terminal-output.{terminal-output}
+    use terminal-output.{terminal-output}
 
     /// If stderr is connected to a terminal, return a `terminal-output` handle
     /// allowing further interaction with it.

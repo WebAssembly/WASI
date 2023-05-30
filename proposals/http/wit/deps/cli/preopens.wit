@@ -1,0 +1,11 @@
+interface preopens {
+  use wasi:filesystem/types.{descriptor}
+  use wasi:io/streams.{input-stream, output-stream}
+
+  /// Return the set of of preopened directories, and their path.
+  get-directories: func() -> list<tuple<descriptor, string>>
+
+  /// Return a path that programs should use as their initial current working
+  /// directory, interpreting `.` as shorthand for this.
+  initial-cwd: func() -> option<string>
+}

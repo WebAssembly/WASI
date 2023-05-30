@@ -1,3 +1,5 @@
-default world example-world {
-    import streams: pkg.streams
+package wasi:io
+
+world example-world {
+    import streams
 }

@@ -1,5 +1,7 @@
-default world example-world {
-    import monotonic-clock: pkg.monotonic-clock
-    import wall-clock: pkg.wall-clock
-    import timezone: pkg.timezone
+package wasi:clocks
+
+world example-world {
+    import monotonic-clock
+    import wall-clock
+    import timezone
 }

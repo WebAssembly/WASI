@@ -12,7 +12,7 @@
 /// monotonic, making it unsuitable for measuring elapsed time.
 ///
 /// It is intended for reporting the current date and time for humans.
-default interface wall-clock {
+interface wall-clock {
     /// A time and date in seconds plus nanoseconds.
     record datetime {
         seconds: u64,
