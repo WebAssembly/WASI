@@ -1,0 +1,3 @@
+io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
+poll = "https://github.com/WebAssembly/wasi-poll/archive/main.tar.gz"
+clocks = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz"
