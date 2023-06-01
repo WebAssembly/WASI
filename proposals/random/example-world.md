@@ -15,14 +15,16 @@ Windows.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_random_bytes"><code>get-random-bytes: func</code></a></h4>
-<p>Return <code>len</code> cryptographically-secure pseudo-random bytes.</p>
-<p>This function must produce data from an adequately seeded
-cryptographically-secure pseudo-random number generator (CSPRNG), so it
-must not block, from the perspective of the calling program, and the
-returned data is always unpredictable.</p>
-<p>This function must always return fresh pseudo-random data. Deterministic
-environments must omit this function, rather than implementing it with
-deterministic data.</p>
+<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
+<p>This function must produce data at least as cryptographically secure and
+fast as an adequately seeded cryptographically-secure pseudo-random
+number generator (CSPRNG). It must not block, from the perspective of
+the calling program, under any circumstances, including on the first
+request and on requests for numbers of bytes. The returned data must
+always be unpredictable.</p>
+<p>This function must always return fresh data. Deterministic environments
+must omit this function, rather than implementing it with deterministic
+data.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="get_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
@@ -32,9 +34,9 @@ deterministic data.</p>
 <li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h4><a name="get_random_u64"><code>get-random-u64: func</code></a></h4>
-<p>Return a cryptographically-secure pseudo-random <code>u64</code> value.</p>
-<p>This function returns the same type of pseudo-random data as
-<a href="#get_random_bytes"><code>get-random-bytes</code></a>, represented as a <code>u64</code>.</p>
+<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
+represented as a <code>u64</code>.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
