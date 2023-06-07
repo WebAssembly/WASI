@@ -6,6 +6,7 @@
 <li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock"><code>wasi:clocks/wall-clock</code></a></li>
 <li>interface <a href="#wasi:filesystem_types"><code>wasi:filesystem/types</code></a></li>
+<li>interface <a href="#wasi:filesystem_preopens"><code>wasi:filesystem/preopens</code></a></li>
 </ul>
 </li>
 </ul>
@@ -1382,4 +1383,18 @@ be used.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="drop_directory_entry_stream.this"><code>this</code></a>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
+</ul>
+<h2><a name="wasi:filesystem_preopens">Import interface wasi:filesystem/preopens</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="descriptor"><code>type descriptor</code></a></h4>
+<p><a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_directories"><code>get-directories: func</code></a></h4>
+<p>Return the set of preopened directories, and their path.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_directories.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
 </ul>
