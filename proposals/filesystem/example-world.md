@@ -833,7 +833,8 @@ not reuse it thereafter.
 <hr />
 <h3>Functions</h3>
 <h4><a name="read_via_stream"><code>read-via-stream: func</code></a></h4>
-<p>Return a stream for reading from a file.</p>
+<p>Return a stream for reading from a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be read.</p>
 <p>Multiple read, write, and append streams may be active on the same open
 file and they do not interfere with each other.</p>
 <p>Note: This allows using <code>read-stream</code>, which is similar to <a href="#read"><code>read</code></a> in POSIX.</p>
@@ -844,10 +845,11 @@ file and they do not interfere with each other.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read_via_stream.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="read_via_stream.0"></a> result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="write_via_stream"><code>write-via-stream: func</code></a></h4>
-<p>Return a stream for writing to a file.</p>
+<p>Return a stream for writing to a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be written.</p>
 <p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> in
 POSIX.</p>
 <h5>Params</h5>
@@ -857,10 +859,11 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="write_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="append_via_stream"><code>append-via-stream: func</code></a></h4>
-<p>Return a stream for appending to a file.</p>
+<p>Return a stream for appending to a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be appended.</p>
 <p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> with
 <code>O_APPEND</code> in in POSIX.</p>
 <h5>Params</h5>
@@ -869,7 +872,7 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="append_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="append_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="advise"><code>advise: func</code></a></h4>
 <p>Provide file advisory information on a descriptor.</p>
