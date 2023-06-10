@@ -2,14 +2,14 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#poll"><code>poll</code></a></li>
-<li>interface <a href="#monotonic_clock"><code>monotonic-clock</code></a></li>
-<li>interface <a href="#wall_clock"><code>wall-clock</code></a></li>
-<li>interface <a href="#timezone"><code>timezone</code></a></li>
+<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:clocks_monotonic_clock"><code>wasi:clocks/monotonic-clock</code></a></li>
+<li>interface <a href="#wasi:clocks_wall_clock"><code>wasi:clocks/wall-clock</code></a></li>
+<li>interface <a href="#wasi:clocks_timezone"><code>wasi:clocks/timezone</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="poll">Import interface poll</a></h2>
+<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -56,7 +56,7 @@ mean &quot;ready&quot;.</p>
 <ul>
 <li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
-<h2><a name="monotonic_clock">Import interface monotonic-clock</a></h2>
+<h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -100,7 +100,7 @@ reached.</p>
 <ul>
 <li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
-<h2><a name="wall_clock">Import interface wall-clock</a></h2>
+<h2><a name="wasi:clocks_wall_clock">Import interface wasi:clocks/wall-clock</a></h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -141,7 +141,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="timezone">Import interface timezone</a></h2>
+<h2><a name="wasi:clocks_timezone">Import interface wasi:clocks/timezone</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="datetime"><code>type datetime</code></a></h4>
