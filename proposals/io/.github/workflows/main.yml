@@ -16,6 +16,6 @@ jobs:
         curl -Lo 'wit-deps' https://github.com/bytecodealliance/wit-deps/releases/download/v0.3.2/wit-deps-x86_64-unknown-linux-musl
         chmod +x wit-deps
         ./wit-deps lock --check
-    - uses: WebAssembly/wit-abi-up-to-date@v12
+    - uses: WebAssembly/wit-abi-up-to-date@v13
       with:
-        wit-abi-tag: wit-abi-0.10.0
+        wit-abi-tag: wit-abi-0.11.0

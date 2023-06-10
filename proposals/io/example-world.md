@@ -2,12 +2,12 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#poll"><code>poll</code></a></li>
-<li>interface <a href="#streams"><code>streams</code></a></li>
+<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="poll">Import interface poll</a></h2>
+<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -54,7 +54,7 @@ mean &quot;ready&quot;.</p>
 <ul>
 <li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
-<h2><a name="streams">Import interface streams</a></h2>
+<h2><a name="wasi:io_streams">Import interface wasi:io/streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
