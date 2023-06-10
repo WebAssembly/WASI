@@ -2,37 +2,37 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wall_clock"><code>wall-clock</code></a></li>
-<li>interface <a href="#poll"><code>poll</code></a></li>
-<li>interface <a href="#monotonic_clock"><code>monotonic-clock</code></a></li>
-<li>interface <a href="#timezone"><code>timezone</code></a></li>
-<li>interface <a href="#streams"><code>streams</code></a></li>
-<li>interface <a href="#filesystem"><code>filesystem</code></a></li>
-<li>interface <a href="#network"><code>network</code></a></li>
-<li>interface <a href="#instance_network"><code>instance-network</code></a></li>
-<li>interface <a href="#ip_name_lookup"><code>ip-name-lookup</code></a></li>
-<li>interface <a href="#tcp"><code>tcp</code></a></li>
-<li>interface <a href="#tcp_create_socket"><code>tcp-create-socket</code></a></li>
-<li>interface <a href="#udp"><code>udp</code></a></li>
-<li>interface <a href="#udp_create_socket"><code>udp-create-socket</code></a></li>
-<li>interface <a href="#random"><code>random</code></a></li>
-<li>interface <a href="#insecure_random"><code>insecure-random</code></a></li>
-<li>interface <a href="#insecure_random_seed"><code>insecure-random-seed</code></a></li>
-<li>interface <a href="#environment"><code>environment</code></a></li>
-<li>interface <a href="#preopens"><code>preopens</code></a></li>
-<li>interface <a href="#exit"><code>exit</code></a></li>
-<li>interface <a href="#stdin"><code>stdin</code></a></li>
-<li>interface <a href="#stdout"><code>stdout</code></a></li>
-<li>interface <a href="#stderr"><code>stderr</code></a></li>
+<li>interface <a href="#wasi:clocks_wall_clock"><code>wasi:clocks/wall-clock</code></a></li>
+<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:clocks_monotonic_clock"><code>wasi:clocks/monotonic-clock</code></a></li>
+<li>interface <a href="#wasi:clocks_timezone"><code>wasi:clocks/timezone</code></a></li>
+<li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
+<li>interface <a href="#wasi:filesystem_types"><code>wasi:filesystem/types</code></a></li>
+<li>interface <a href="#wasi:sockets_network"><code>wasi:sockets/network</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network"><code>wasi:sockets/instance-network</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup"><code>wasi:sockets/ip-name-lookup</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp"><code>wasi:sockets/tcp</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket"><code>wasi:sockets/tcp-create-socket</code></a></li>
+<li>interface <a href="#wasi:sockets_udp"><code>wasi:sockets/udp</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket"><code>wasi:sockets/udp-create-socket</code></a></li>
+<li>interface <a href="#wasi:random_random"><code>wasi:random/random</code></a></li>
+<li>interface <a href="#wasi:random_insecure"><code>wasi:random/insecure</code></a></li>
+<li>interface <a href="#wasi:random_insecure_seed"><code>wasi:random/insecure-seed</code></a></li>
+<li>interface <a href="#wasi:cli_environment"><code>wasi:cli/environment</code></a></li>
+<li>interface <a href="#wasi:cli_preopens"><code>wasi:cli/preopens</code></a></li>
+<li>interface <a href="#wasi:cli_exit"><code>wasi:cli/exit</code></a></li>
+<li>interface <a href="#wasi:cli_stdin"><code>wasi:cli/stdin</code></a></li>
+<li>interface <a href="#wasi:cli_stdout"><code>wasi:cli/stdout</code></a></li>
+<li>interface <a href="#wasi:cli_stderr"><code>wasi:cli/stderr</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#run"><code>run</code></a></li>
+<li>interface <a href="#wasi:cli_run"><code>wasi:cli/run</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wall_clock">Import interface wall-clock</a></h2>
+<h2><a name="wasi:clocks_wall_clock">Import interface wasi:clocks/wall-clock</a></h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -73,7 +73,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="poll">Import interface poll</a></h2>
+<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -120,7 +120,7 @@ mean &quot;ready&quot;.</p>
 <ul>
 <li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
-<h2><a name="monotonic_clock">Import interface monotonic-clock</a></h2>
+<h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -164,7 +164,7 @@ reached.</p>
 <ul>
 <li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
-<h2><a name="timezone">Import interface timezone</a></h2>
+<h2><a name="wasi:clocks_timezone">Import interface wasi:clocks/timezone</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="datetime"><code>type datetime</code></a></h4>
@@ -245,7 +245,7 @@ be used.</p>
 <ul>
 <li><a name="drop_timezone.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 </ul>
-<h2><a name="streams">Import interface streams</a></h2>
+<h2><a name="wasi:io_streams">Import interface wasi:io/streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -497,7 +497,7 @@ be used.</p>
 <ul>
 <li><a name="drop_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
-<h2><a name="filesystem">Import interface filesystem</a></h2>
+<h2><a name="wasi:filesystem_types">Import interface wasi:filesystem/types</a></h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -945,7 +945,7 @@ to the specified data.
 from lower offsets to higher offsets.
 </li>
 <li>
-<p><a name="advice.random"><a href="#random"><code>random</code></a></a></p>
+<p><a name="advice.random"><code>random</code></a></p>
 <p>The application expects to access the specified data in a random
 order.
 </li>
@@ -1531,7 +1531,7 @@ be used.</p>
 <ul>
 <li><a name="drop_directory_entry_stream.this"><code>this</code></a>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
 </ul>
-<h2><a name="network">Import interface network</a></h2>
+<h2><a name="wasi:sockets_network">Import interface wasi:sockets/network</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -1756,7 +1756,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="drop_network.this"><code>this</code></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
-<h2><a name="instance_network">Import interface instance-network</a></h2>
+<h2><a name="wasi:sockets_instance_network">Import interface wasi:sockets/instance-network</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -1771,7 +1771,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="instance_network.0"></a> <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
-<h2><a name="ip_name_lookup">Import interface ip-name-lookup</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup">Import interface wasi:sockets/ip-name-lookup</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -1877,7 +1877,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
-<h2><a name="tcp">Import interface tcp</a></h2>
+<h2><a name="wasi:sockets_tcp">Import interface wasi:sockets/tcp</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -2026,10 +2026,14 @@ implicitly bind the socket.</p>
 <h4><a name="start_listen"><code>start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the Listener state.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<p>Unlike POSIX:</p>
+<ul>
+<li>this function is async. This enables interactive WASI hosts to inject permission prompts.</li>
+<li>the socket must already be explicitly bound.</li>
+</ul>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>listen</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>not-bound</code>:                 The socket is not bound to any local address. (EDESTADDRREQ)</li>
 <li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
 <li><code>already-listening</code>:         The socket is already in the Listener state.</li>
 <li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EINVAL on BSD)</li>
@@ -2050,7 +2054,6 @@ implicitly bind the socket.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="start_listen.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
-<li><a name="start_listen.network"><a href="#network"><code>network</code></a></a>: <a href="#network"><a href="#network"><code>network</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -2364,7 +2367,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <ul>
 <li><a name="drop_tcp_socket.this"><code>this</code></a>: <a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></li>
 </ul>
-<h2><a name="tcp_create_socket">Import interface tcp-create-socket</a></h2>
+<h2><a name="wasi:sockets_tcp_create_socket">Import interface wasi:sockets/tcp-create-socket</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -2409,7 +2412,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="udp">Import interface udp</a></h2>
+<h2><a name="wasi:sockets_udp">Import interface wasi:sockets/udp</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -2774,7 +2777,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="drop_udp_socket.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
 </ul>
-<h2><a name="udp_create_socket">Import interface udp-create-socket</a></h2>
+<h2><a name="wasi:sockets_udp_create_socket">Import interface wasi:sockets/udp-create-socket</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -2819,7 +2822,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a name="create_udp_socket.0"></a> result&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="random">Import interface random</a></h2>
+<h2><a name="wasi:random_random">Import interface wasi:random/random</a></h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2850,7 +2853,7 @@ deterministic data.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="insecure_random">Import interface insecure-random</a></h2>
+<h2><a name="wasi:random_insecure">Import interface wasi:random/insecure</a></h2>
 <p>The insecure interface for insecure pseudo-random numbers.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2879,7 +2882,7 @@ a long period.</p>
 <ul>
 <li><a name="get_insecure_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="insecure_random_seed">Import interface insecure-random-seed</a></h2>
+<h2><a name="wasi:random_insecure_seed">Import interface wasi:random/insecure-seed</a></h2>
 <p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2903,7 +2906,7 @@ protection.</p>
 <ul>
 <li><a name="insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
-<h2><a name="environment">Import interface environment</a></h2>
+<h2><a name="wasi:cli_environment">Import interface wasi:cli/environment</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_environment"><code>get-environment: func</code></a></h4>
@@ -2923,7 +2926,7 @@ values each time it is called.</p>
 <ul>
 <li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="preopens">Import interface preopens</a></h2>
+<h2><a name="wasi:cli_preopens">Import interface wasi:cli/preopens</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="descriptor"><code>type descriptor</code></a></h4>
@@ -2950,7 +2953,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="exit">Import interface exit</a></h2>
+<h2><a name="wasi:cli_exit">Import interface wasi:cli/exit</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="exit"><code>exit: func</code></a></h4>
@@ -2959,7 +2962,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
 </ul>
-<h2><a name="stdin">Import interface stdin</a></h2>
+<h2><a name="wasi:cli_stdin">Import interface wasi:cli/stdin</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -2972,7 +2975,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="get_stdin.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
 </ul>
-<h2><a name="stdout">Import interface stdout</a></h2>
+<h2><a name="wasi:cli_stdout">Import interface wasi:cli/stdout</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -2985,7 +2988,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="get_stdout.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
-<h2><a name="stderr">Import interface stderr</a></h2>
+<h2><a name="wasi:cli_stderr">Import interface wasi:cli/stderr</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -2998,7 +3001,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="get_stderr.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
 </ul>
-<h2><a name="run">Export interface run</a></h2>
+<h2><a name="wasi:cli_run">Export interface wasi:cli/run</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="run"><code>run: func</code></a></h4>
