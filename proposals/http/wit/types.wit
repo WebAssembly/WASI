@@ -59,11 +59,30 @@ interface types {
   // build on separate resource types defined by `wasi:io/streams`. The
   // `finish-` functions emulate the stream's result value and MUST be called
   // exactly once after the final read/write from/to the stream before dropping
-  // the stream.
+  // the stream. The optional `future-` types describe the asynchronous result of
+  // reading/writing the optional HTTP trailers and MUST be waited on and dropped
+  // to complete streaming the request/response.
   type incoming-stream = input-stream
   type outgoing-stream = output-stream
-  finish-incoming-stream: func(s: incoming-stream) -> option<trailers>
-  finish-outgoing-stream: func(s: outgoing-stream, trailers: option<trailers>)
+  finish-incoming-stream: func(s: incoming-stream) -> option<future-trailers>
+  finish-outgoing-stream: func(s: outgoing-stream)
+  finish-outgoing-stream-with-trailers: func(s: outgoing-stream, trailers: trailers) -> future-write-trailers-result
+
+  // The following block defines the `future-trailers` resource, which is
+  // returned when finishing an `incoming-stream` to asychronously produce the
+  // final trailers.
+  type future-trailers = u32
+  drop-future-trailers: func(f: future-trailers)
+  future-trailers-get: func(f: future-trailers) -> option<result<trailers, error>>
+  listen-to-future-trailers: func(f: future-trailers) -> pollable
+
+  // The following block defines the `future-write-trailers-result` resource,
+  // which is returned when finishing an `outgoing-stream` and asychronously
+  // indicates the success or failure of writing the trailers.
+  type future-write-trailers-result = u32
+  drop-future-write-trailers-result: func(f: future-write-trailers-result)
+  future-write-trailers-result-get: func(f: future-write-trailers-result) -> option<result<_, error>>
+  listen-to-future-write-trailers-result: func(f: future-write-trailers-result) -> pollable
 
   // The following block defines the `incoming-request` and `outgoing-request`
   // resource types that correspond to HTTP standard Requests. Soon, when
