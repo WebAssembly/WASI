@@ -67,12 +67,15 @@ interface types {
 
   // The following block defines the `incoming-request` and `outgoing-request`
   // resource types that correspond to HTTP standard Requests. Soon, when
-  // resource types are added, the `u32` type aliases can be replaced by
-  // proper `resource` type definitions containing all the functions as
-  // methods. Later, Preview2 will allow both types to be merged together into
-  // a single `request` type (that uses the single `stream` type mentioned
-  // above). The `consume` and `write` methods may only be called once (and
-  // return failure thereafter).
+  // resource types are added, the `u32` type aliases can be replaced by proper
+  // `resource` type definitions containing all the functions as methods.
+  // Later, Preview2 will allow both types to be merged together into a single
+  // `request` type (that uses the single `stream` type mentioned above). The
+  // `consume` and `write` methods may only be called once (and return failure
+  // thereafter). The `headers` and `trailers` passed into and out of requests
+  // are shared with the request, with all mutations visible to all uses.
+  // Components MUST avoid updating `headers` and `trailers` after passing a
+  // request that points to them to the outside world.
   type incoming-request = u32
   type outgoing-request = u32
   drop-incoming-request: func(request: incoming-request)
@@ -128,6 +131,10 @@ interface types {
   // Preview2 will allow both types to be merged together into a single `response`
   // type (that uses the single `stream` type mentioned above). The `consume` and
   // `write` methods may only be called once (and return failure thereafter).
+  // The `headers` and `trailers` passed into and out of responses are shared
+  // with the response, with all mutations visible to all uses. Components MUST
+  // avoid updating `headers` and `trailers` after passing a response that
+  // points to them to the outside world.
   type incoming-response = u32
   type outgoing-response = u32
   drop-incoming-response: func(response: incoming-response)
