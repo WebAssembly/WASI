@@ -42,7 +42,7 @@ interface types {
   // definition containing all the functions using the method syntactic sugar.
   type fields = u32
   drop-fields: func(fields: fields)
-  new-fields: func(entries: list<tuple<string,string>>) -> fields
+  new-fields: func(entries: list<tuple<string,list<u8>>>) -> fields
   fields-get: func(fields: fields, name: string) -> list<list<u8>>
   fields-set: func(fields: fields, name: string, value: list<list<u8>>)
   fields-delete: func(fields: fields, name: string)
