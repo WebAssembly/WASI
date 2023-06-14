@@ -650,7 +650,7 @@ be used.</p>
 <h4><a name="new_fields"><code>new-fields: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="new_fields.entries"><code>entries</code></a>: list&lt;(<code>string</code>, <code>string</code>)&gt;</li>
+<li><a name="new_fields.entries"><code>entries</code></a>: list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
