@@ -620,6 +620,12 @@ be used.</p>
 #### <a name="incoming_request">`type incoming-request`</a>
 `u32`
 <p>
+#### <a name="future_write_trailers_result">`type future-write-trailers-result`</a>
+`u32`
+<p>
+#### <a name="future_trailers">`type future-trailers`</a>
+`u32`
+<p>
 #### <a name="future_incoming_response">`type future-incoming-response`</a>
 `u32`
 <p>
@@ -711,13 +717,68 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="finish_incoming_stream.0"></a> option&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;</li>
+<li><a name="finish_incoming_stream.0"></a> option&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="finish_outgoing_stream"><code>finish-outgoing-stream: func</code></a></h4>
 <h5>Params</h5>
 <ul>
 <li><a name="finish_outgoing_stream.s"><code>s</code></a>: <a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a></li>
-<li><a name="finish_outgoing_stream.trailers"><a href="#trailers"><code>trailers</code></a></a>: option&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;</li>
+</ul>
+<h4><a name="finish_outgoing_stream_with_trailers"><code>finish-outgoing-stream-with-trailers: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="finish_outgoing_stream_with_trailers.s"><code>s</code></a>: <a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a></li>
+<li><a name="finish_outgoing_stream_with_trailers.trailers"><a href="#trailers"><code>trailers</code></a></a>: <a href="#trailers"><a href="#trailers"><code>trailers</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="finish_outgoing_stream_with_trailers.0"></a> <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+</ul>
+<h4><a name="drop_future_trailers"><code>drop-future-trailers: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="drop_future_trailers.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
+</ul>
+<h4><a name="future_trailers_get"><code>future-trailers-get: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="future_trailers_get.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="future_trailers_get.0"></a> option&lt;result&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+</ul>
+<h4><a name="listen_to_future_trailers"><code>listen-to-future-trailers: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="listen_to_future_trailers.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="listen_to_future_trailers.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+</ul>
+<h4><a name="drop_future_write_trailers_result"><code>drop-future-write-trailers-result: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="drop_future_write_trailers_result.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+</ul>
+<h4><a name="future_write_trailers_result_get"><code>future-write-trailers-result-get: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="future_write_trailers_result_get.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="future_write_trailers_result_get.0"></a> option&lt;result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+</ul>
+<h4><a name="listen_to_future_write_trailers_result"><code>listen-to-future-write-trailers-result: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="listen_to_future_write_trailers_result.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="listen_to_future_write_trailers_result.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <h4><a name="drop_incoming_request"><code>drop-incoming-request: func</code></a></h4>
 <h5>Params</h5>
