@@ -855,7 +855,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="new_outgoing_request.0"></a> <a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a></li>
+<li><a name="new_outgoing_request.0"></a> result&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="outgoing_request_write"><code>outgoing-request-write: func</code></a></h4>
 <h5>Params</h5>
@@ -926,7 +926,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="new_outgoing_response.0"></a> <a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a></li>
+<li><a name="new_outgoing_response.0"></a> result&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="outgoing_response_write"><code>outgoing-response-write: func</code></a></h4>
 <h5>Params</h5>

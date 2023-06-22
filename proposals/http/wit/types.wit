@@ -111,7 +111,7 @@ interface types {
     scheme: option<scheme>,
     authority: option<string>,
     headers: headers
-  ) -> outgoing-request
+  ) -> result<outgoing-request, error>
   outgoing-request-write: func(request: outgoing-request) -> result<outgoing-stream>
 
   // Additional optional parameters that can be set when making a request.
@@ -164,7 +164,7 @@ interface types {
   new-outgoing-response: func(
     status-code: status-code,
     headers: headers
-  ) -> outgoing-response
+  ) -> result<outgoing-response, error>
   outgoing-response-write: func(response: outgoing-response) -> result<outgoing-stream>
 
   // The following block defines a special resource type used by the
