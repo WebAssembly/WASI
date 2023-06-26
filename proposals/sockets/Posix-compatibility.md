@@ -143,6 +143,7 @@ Columns:
 	- ✅ = Option is provided by the platform / depended upon by the application.
 	- ❌ = Option is not provided / not used.
 
+> Note: GitHub clips the table content. Scroll left and right to see all columns, or use the Code View.
 
 | Option                          | WASI      | POSIX  | Linux  | Windows | MacOS   | FreeBSD | JVM   | .NET   | Rust  | Node.js | Go  | OpenSSL  | nginx | curl  | msquic | exim  | Notes |
 |---------------------------------|-----------|--------|--------|---------|---------|---------|-------|--------|-------|---------|-----|----------|-------|-------|--------|-------|-|
