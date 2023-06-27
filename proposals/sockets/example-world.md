@@ -428,12 +428,10 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><a name="finish_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive"><code>receive: func</code></a></h4>
-<p>Receive a message.</p>
-<p>Returns:</p>
-<ul>
-<li>The sender address of the datagram</li>
-<li>The number of bytes read.</li>
-</ul>
+<p>Receive messages on the socket.</p>
+<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
+The returned list may contain fewer elements than requested, but never more.
+If <code>max-results</code> is 0, this function returns successfully with an empty list.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
@@ -445,6 +443,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
 <li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
@@ -453,13 +452,20 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="receive.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="receive.0"></a> result&lt;list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send"><code>send: func</code></a></h4>
-<p>Send a message to a specific destination address.</p>
+<p>Send messages on the socket.</p>
+<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
+returns how many messages were actually sent (or queued for sending).</p>
+<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
+sending each individual datagram until either the end of the list has been reached or the first error occurred.
+If at least one datagram has been sent successfully, this function never returns an error.</p>
+<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
 <p>The remote address option is required. To send a message to the &quot;connected&quot; peer,
 call <a href="#remote_address"><code>remote-address</code></a> to get their address.</p>
 <h1>Typical errors</h1>
@@ -478,6 +484,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
@@ -486,11 +493,11 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <h5>Params</h5>
 <ul>
 <li><a name="send.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="send.datagram"><a href="#datagram"><code>datagram</code></a></a>: <a href="#datagram"><a href="#datagram"><code>datagram</code></a></a></li>
+<li><a name="send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
