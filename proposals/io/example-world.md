@@ -64,7 +64,24 @@ when it does, they are expected to subsume this API.</p>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="stream_error">`record stream-error`</a>
+#### <a name="stream_status">`enum stream-status`</a>
+<p>Streams provide a sequence of data and then end; once they end, they
+no longer provide any further data.</p>
+<p>For example, a stream reading from a file ends when the stream reaches
+the end of the file. For another example, a stream reading from a
+socket ends when the socket is closed.</p>
+<h5>Enum Cases</h5>
+<ul>
+<li>
+<p><a name="stream_status.open"><code>open</code></a></p>
+<p>The stream is open and may produce further data.
+</li>
+<li>
+<p><a name="stream_status.ended"><code>ended</code></a></p>
+<p>The stream has ended and will not produce any further data.
+</li>
+</ul>
+<h4><a name="stream_error"><code>record stream-error</code></a></h4>
 <p>An error type returned from a stream operation. Currently this
 doesn't provide any additional information.</p>
 <h5>Record Fields</h5>
@@ -103,9 +120,9 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <h4><a name="read"><code>read: func</code></a></h4>
 <p>Read bytes from a stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a bool which, when true, indicates that the end of the
-stream was reached. The returned list will contain up to <code>len</code> bytes; it
-may return fewer than requested, but not more.</p>
+read, along with a <a href="#stream_status"><code>stream-status</code></a> which indicates whether the end of
+the stream was reached. The returned list will contain up to <code>len</code>
+bytes; it may return fewer than requested, but not more.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
@@ -122,7 +139,7 @@ FIXME: describe what happens if allocation fails.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_read"><code>blocking-read: func</code></a></h4>
 <p>Read bytes from a stream, with blocking.</p>
@@ -135,7 +152,7 @@ byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="skip"><code>skip: func</code></a></h4>
 <p>Skip bytes from a stream.</p>
@@ -144,9 +161,9 @@ bytes into the instance.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
-<p>This function returns the number of bytes skipped, along with a bool
-indicating whether the end of the stream was reached. The returned
-value will be at most <code>len</code>; it may be less.</p>
+<p>This function returns the number of bytes skipped, along with a
+<a href="#stream_status"><code>stream-status</code></a> indicating whether the end of the stream was
+reached. The returned value will be at most <code>len</code>; it may be less.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
@@ -154,7 +171,7 @@ value will be at most <code>len</code>; it may be less.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_skip"><code>blocking-skip: func</code></a></h4>
 <p>Skip bytes from a stream, with blocking.</p>
@@ -167,7 +184,7 @@ byte can be consumed.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_to_input_stream"><code>subscribe-to-input-stream: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
@@ -254,7 +271,7 @@ read from the input stream has been written to the output stream.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_splice"><code>blocking-splice: func</code></a></h4>
 <p>Read from one stream and write to another, with blocking.</p>
@@ -268,7 +285,7 @@ one byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="forward"><code>forward: func</code></a></h4>
 <p>Forward the entire contents of an input stream to an output stream.</p>
