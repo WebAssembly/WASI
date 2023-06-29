@@ -33,6 +33,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
 | [Random][wasi-random]                                                          | Dan Gohman                             |          |
 | [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
+| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
 
 ### Phase 1 - Feature Proposal (CG)
@@ -50,9 +51,8 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Patern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
+| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [SQL Embed][wasi-sql-embed]                                                                | Kyle Brown |          |
