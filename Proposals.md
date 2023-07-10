@@ -33,6 +33,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
 | [Random][wasi-random]                                                          | Dan Gohman                             |          |
 | [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
+| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
 
 ### Phase 1 - Feature Proposal (CG)
@@ -43,7 +44,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [gRPC][wasi-grpc]                                                              | Jiaxiao Zhou, Dan Chiarlone, David Justice, Piotr Sikora |          |
 | [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [I2C][wasi-i2c]                      | Emiel Van Severen |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
@@ -51,9 +51,8 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
+| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [SQL Embed][wasi-sql-embed]                                                                | Kyle Brown |          |
@@ -91,7 +90,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-digital-io]: https://github.com/WebAssembly/wasi-digital-io
 [wasi-distributed-lock-service]: https://github.com/WebAssembly/wasi-distributed-lock-service
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
-[wasi-grpc]: https://github.com/WebAssembly/wasi-grpc
 [wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-i2c]: https://github.com/WebAssembly/wasi-i2c
 [wasi-io]: https://github.com/WebAssembly/wasi-io
