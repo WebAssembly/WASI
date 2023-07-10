@@ -4,21 +4,23 @@
 
 ![WASI](WASI.png)
 
-The WebAssembly System Interface is not a monolithic standard system interface,
-but is instead a modular collection of standardized APIs. None of the APIs are
-required to be implemented to have a compliant runtime. Instead, host
-environments can choose which APIs make sense for their use cases.
+The WebAssembly System Interface (WASI) is a set of APIs for WASI being
+developed for eventual standardization by the WASI Subgroup, which is a
+subgroup of the WebAssembly Community Group.
 
----
-## Important Note: WASI is in transition
+WASI started with launching what is now called [Preview 1], an API using
+the witx IDL, and it is now widely used. Its major incluences are POSIX and
+CloudABI.
 
-WASI is transitioning away from the `witx` format and its early experimental ABI. We are transitioning to Interface Types using the `wit` format and the canonical ABI.
+[WASI Preview 2] is now in development, which is a modular collection of
+APIs defined with the [Wit IDL], and it incorporates many of the lessons
+learned from Preview 1, including adding support for a wider range of
+source languages, modularity, a more expressive type system,
+virtualizability, and more.
 
-All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
-
-See the [Wit in WASI](docs/WitInWasi.md) document for more information about using Wit for WASI proposals.
-
----
+[Preview 1]: https://github.com/WebAssembly/WASI/tree/main/legacy/README.md
+[WASI Preview 2]: https://github.com/WebAssembly/WASI/tree/main/preview2/README.md
+[Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 
 ## Find the APIs
 
@@ -32,6 +34,10 @@ and high-level goals.
 
 If you would like to create a new proposal, get started with our
 [Contributing guide](Contributing.md).
+
+All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
+
+See the [Wit in WASI](docs/WitInWasi.md) document for more information about using Wit for WASI proposals.
 
 ## WASI High Level Goals
 
@@ -129,3 +135,10 @@ API in WASI, so we don't need to exclude APIs just because some host
 environments can't implement them. We prefer APIs which can run across
 a wide variety of engines when feasible, but we'll ultimately decide
 whether something is "portable enough" on an API-by-API basis.
+
+### Modularity
+
+WASI will include many interfaces that are not appropriate for every host
+environment, so WASI uses the component model's worlds mechanism to allow
+specific sets of APIs to be described which meet the needs of different
+environments.
