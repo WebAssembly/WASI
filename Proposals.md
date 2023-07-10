@@ -50,7 +50,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
-| [Patern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
+| [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
 | [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
