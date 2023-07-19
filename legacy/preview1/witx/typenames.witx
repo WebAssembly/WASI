@@ -476,10 +476,16 @@
     ;;; For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
     (field $size $filesize)
     ;;; Last data access timestamp.
+    ;;; This can be 0 if the underlying platform doesn't provide suitable
+    ;;; timestamp for this file.
     (field $atim $timestamp)
     ;;; Last data modification timestamp.
+    ;;; This can be 0 if the underlying platform doesn't provide suitable
+    ;;; timestamp for this file.
     (field $mtim $timestamp)
     ;;; Last file status change timestamp.
+    ;;; This can be 0 if the underlying platform doesn't provide suitable
+    ;;; timestamp for this file.
     (field $ctim $timestamp)
   )
 )
