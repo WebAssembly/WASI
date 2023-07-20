@@ -427,12 +427,23 @@ filesystem.
 filesystem. This does not apply to directories.
 </li>
 </ul>
+<h4><a name="metadata_hash_value"><code>record metadata-hash-value</code></a></h4>
+<p>A 128-bit hash value, split into parts because wasm doesn't have a
+128-bit integer type.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="metadata_hash_value.lower"><code>lower</code></a>: <code>u64</code></p>
+<p>64 bits of a 128-bit hash value.
+</li>
+<li>
+<p><a name="metadata_hash_value.upper"><code>upper</code></a>: <code>u64</code></p>
+<p>Another 64 bits of a 128-bit hash value.
+</li>
+</ul>
 <h4><a name="link_count"><code>type link-count</code></a></h4>
 <p><code>u64</code></p>
 <p>Number of hard links to an inode.
-<h4><a name="inode"><code>type inode</code></a></h4>
-<p><code>u64</code></p>
-<p>Filesystem object serial number that is unique within its file system.
 <h4><a name="filesize"><code>type filesize</code></a></h4>
 <p><code>u64</code></p>
 <p>File size or length of a region within a file.
@@ -596,11 +607,6 @@ merely for alignment with POSIX.</p>
 <p><code>u32</code></p>
 <p>A stream of directory entries.
 <p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Streams">represents a stream of <code>dir-entry</code></a>.</p>
-<h4><a name="device"><code>type device</code></a></h4>
-<p><code>u64</code></p>
-<p>Identifier for a device containing a file system. Can be used in
-combination with `inode` to uniquely identify a file or directory in
-the filesystem.
 <h4><a name="descriptor_type"><code>enum descriptor-type</code></a></h4>
 <p>The type of a filesystem object referenced by a descriptor.</p>
 <p>Note: This was called <code>filetype</code> in earlier versions of WASI.</p>
@@ -644,14 +650,6 @@ any of the other types specified.
 <p>A directory entry.</p>
 <h5>Record Fields</h5>
 <ul>
-<li>
-<p><a name="directory_entry.inode"><a href="#inode"><code>inode</code></a></a>: option&lt;<a href="#inode"><a href="#inode"><code>inode</code></a></a>&gt;</p>
-<p>The serial number of the object referred to by this directory entry.
-May be none if the inode value is not known.
-<p>When this is none, libc implementations might do an extra <a href="#stat_at"><code>stat-at</code></a>
-call to retrieve the inode number to fill their <code>d_ino</code> fields, so
-implementations which can set this to a non-none value should do so.</p>
-</li>
 <li>
 <p><a name="directory_entry.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>The type of the file referred to by this directory entry.
@@ -749,14 +747,6 @@ with the filesystem.
 <p>Note: This was called <code>filestat</code> in earlier versions of WASI.</p>
 <h5>Record Fields</h5>
 <ul>
-<li>
-<p><a name="descriptor_stat.device"><a href="#device"><code>device</code></a></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
-<p>Device ID of device containing the file.
-</li>
-<li>
-<p><a name="descriptor_stat.inode"><a href="#inode"><code>inode</code></a></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
-<p>File serial number.
-</li>
 <li>
 <p><a name="descriptor_stat.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>File type.
@@ -1051,7 +1041,11 @@ opened for writing.</p>
 </ul>
 <h4><a name="stat"><code>stat: func</code></a></h4>
 <p>Return the attributes of an open file or directory.</p>
-<p>Note: This is similar to <code>fstat</code> in POSIX.</p>
+<p>Note: This is similar to <code>fstat</code> in POSIX, except that it does not return
+device and inode information. For testing whether two descriptors refer to
+the same underlying filesystem object, use <a href="#is_same_object"><code>is-same-object</code></a>. To obtain
+additional data that can be used do determine whether a file has been
+modified, use <a href="#metadata_hash"><code>metadata-hash</code></a>.</p>
 <p>Note: This was called <code>fd_filestat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
@@ -1063,7 +1057,9 @@ opened for writing.</p>
 </ul>
 <h4><a name="stat_at"><code>stat-at: func</code></a></h4>
 <p>Return the attributes of a file or directory.</p>
-<p>Note: This is similar to <code>fstatat</code> in POSIX.</p>
+<p>Note: This is similar to <code>fstatat</code> in POSIX, except that it does not
+return device and inode information. See the <a href="#stat"><code>stat</code></a> description for a
+discussion of alternatives.</p>
 <p>Note: This was called <code>path_filestat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
@@ -1386,6 +1382,55 @@ be used.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="drop_directory_entry_stream.this"><code>this</code></a>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
+</ul>
+<h4><a name="is_same_object"><code>is-same-object: func</code></a></h4>
+<p>Test whether two descriptors refer to the same filesystem object.</p>
+<p>In POSIX, this corresponds to testing whether the two descriptors have the
+same device (<code>st_dev</code>) and inode (<code>st_ino</code> or <code>d_ino</code>) numbers.
+wasi-filesystem does not expose device and inode numbers, so this function
+may be used instead.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="is_same_object.other"><code>other</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="is_same_object.0"></a> <code>bool</code></li>
+</ul>
+<h4><a name="metadata_hash"><code>metadata-hash: func</code></a></h4>
+<p>Return a hash of the metadata associated with a filesystem object referred
+to by a descriptor.</p>
+<p>This returns a hash of the last-modification timestamp and file size, and
+may also include the inode number, device number, birth timestamp, and
+other metadata fields that may change when the file is modified or
+replaced. It may also include a secret value chosen by the
+implementation and not otherwise exposed.</p>
+<p>Implementations are encourated to provide the following properties:</p>
+<ul>
+<li>If the file is not modified or replaced, the computed hash value should
+usually not change.</li>
+<li>If the object is modified or replaced, the computed hash value should
+usually change.</li>
+<li>The inputs to the hash should not be easily computable from the
+computed hash.</li>
+</ul>
+<p>However, none of these is required.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="metadata_hash.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="metadata_hash_at"><code>metadata-hash-at: func</code></a></h4>
+<p>Return a hash of the metadata associated with a filesystem object referred
+to by a directory descriptor and a relative path.</p>
+<p>This performs the same hash computation as <a href="#metadata_hash"><code>metadata-hash</code></a>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="metadata_hash_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
+<li><a name="metadata_hash_at.path"><code>path</code></a>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="metadata_hash_at.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:filesystem_preopens">Import interface wasi:filesystem/preopens</a></h2>
 <hr />
