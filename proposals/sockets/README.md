@@ -153,37 +153,7 @@ A downside of this approach is that functions that do *not* differ per protocol 
 
 #### POSIX compatibility
 
-The [wasi-socket](./wasi-socket.wit) module exports a `kind` function that can be called on any kind of socket.
-The return value can be used to dispatch calls to the correct WASI module.
-
-In pseudo code:
-
-```rs
-fn socket(address_family: i32, socket_type: i32, protocol: i32) {
-
-    let ambient_network_capability = // Pluck it out of thin air.
-
-    match (socket_type, protocol) {
-        (SOCK_STREAM, 0) => wasi_socket_tcp::create_tcp_socket(ambient_network_capability, address_family),
-        (SOCK_DGRAM, 0) => wasi_socket_udp::create_udp_socket(ambient_network_capability, address_family),
-        _ => EINVAL,
-    }
-}
-
-fn recvfrom(socket: i32, flags: i32) {
-    
-    let kind = wasi_socket::kind(socket);
-    let peek = flags & MSG_PEEK;
-
-    match (kind, peek) {
-        (Udp, false) => wasi_socket_udp::receive_from(socket),
-        (Udp, true) => wasi_socket_udp::peek_from(socket),
-        (Tcp, false) => (wasi_io_streams::read(socket), address: 0, truncated: false),
-        (Tcp, true) => (wasi_socket_tcp::peek(socket), address: 0, truncated: false),
-        _ => EBADF,
-    }
-}
-```
+See [Posix-compatibility.md](./Posix-compatibility.md).
 
 
 #### Why not getaddrinfo?
