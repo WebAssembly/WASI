@@ -54,7 +54,7 @@ During this phase:
 Entry requirements:
 
   * There is general interest within the SG in this API.
-  * The CG believes the API is in-scope and will plausibly be workable.
+  * The SG believes the API is in-scope and will plausibly be workable.
 
 During this phase:
 
