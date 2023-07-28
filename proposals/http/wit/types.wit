@@ -95,6 +95,12 @@ interface types {
   // are shared with the request, with all mutations visible to all uses.
   // Components MUST avoid updating `headers` and `trailers` after passing a
   // request that points to them to the outside world.
+  // The streams returned by `consume` and `write` are owned by the request and
+  // response objects. The streams are destroyed when the request/response is
+  // dropped, thus a client MUST drop any handle referring to a request/response stream
+  // before dropping the request/response or passing ownership of the request/response
+  // to the outside world. The caller can also call drop on the stream before the 
+  // request/response is dropped if they want to release resources earlier.
   type incoming-request = u32
   type outgoing-request = u32
   drop-incoming-request: func(request: incoming-request)
