@@ -55,14 +55,6 @@ interface types {
         read,
         /// Write mode: Data can be written to.
         write,
-        /// Requests non-blocking operation.
-        ///
-        /// When this flag is enabled, functions may return immediately with an
-        /// `error-code::would-block` error code in situations where they would
-        /// otherwise block. However, this non-blocking behavior is not
-        /// required. Implementations are permitted to ignore this flag and
-        /// block. This is similar to `O_NONBLOCK` in POSIX.
-        non-blocking,
         /// Request that writes be performed according to synchronized I/O file
         /// integrity completion. The data stored in the file and the file's
         /// metadata are synchronized. This is similar to `O_SYNC` in POSIX.
@@ -377,15 +369,6 @@ interface types {
     /// Note: This returns the value that was the `fs_filetype` value returned
     /// from `fdstat_get` in earlier versions of WASI.
     get-type: func(this: descriptor) -> result<descriptor-type, error-code>
-
-    /// Set status flags associated with a descriptor.
-    ///
-    /// This function may only change the `non-blocking` flag.
-    ///
-    /// Note: This is similar to `fcntl(fd, F_SETFL, flags)` in POSIX.
-    ///
-    /// Note: This was called `fd_fdstat_set_flags` in earlier versions of WASI.
-    set-flags: func(this: descriptor, %flags: descriptor-flags) -> result<_, error-code>
 
     /// Adjust the size of an open file. If this increases the file's size, the
     /// extra bytes are filled with zeros.
