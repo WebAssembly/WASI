@@ -1391,6 +1391,7 @@ wasi-filesystem does not expose device and inode numbers, so this function
 may be used instead.</p>
 <h5>Params</h5>
 <ul>
+<li><a name="is_same_object.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 <li><a name="is_same_object.other"><code>other</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 </ul>
 <h5>Return values</h5>
@@ -1415,6 +1416,10 @@ usually change.</li>
 computed hash.</li>
 </ul>
 <p>However, none of these is required.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="metadata_hash.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+</ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="metadata_hash.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
@@ -1425,6 +1430,7 @@ to by a directory descriptor and a relative path.</p>
 <p>This performs the same hash computation as <a href="#metadata_hash"><code>metadata-hash</code></a>.</p>
 <h5>Params</h5>
 <ul>
+<li><a name="metadata_hash_at.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
 <li><a name="metadata_hash_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
 <li><a name="metadata_hash_at.path"><code>path</code></a>: <code>string</code></li>
 </ul>

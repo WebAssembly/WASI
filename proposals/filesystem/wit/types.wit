@@ -802,7 +802,7 @@ interface types {
     /// same device (`st_dev`) and inode (`st_ino` or `d_ino`) numbers.
     /// wasi-filesystem does not expose device and inode numbers, so this function
     /// may be used instead.
-    is-same-object: func(other: descriptor) -> bool
+    is-same-object: func(this: descriptor, other: descriptor) -> bool
 
     /// Return a hash of the metadata associated with a filesystem object referred
     /// to by a descriptor.
@@ -823,13 +823,16 @@ interface types {
     ///    computed hash.
     ///
     /// However, none of these is required.
-    metadata-hash: func() -> result<metadata-hash-value, error-code>
+    metadata-hash: func(
+        this: descriptor,
+    ) -> result<metadata-hash-value, error-code>
 
     /// Return a hash of the metadata associated with a filesystem object referred
     /// to by a directory descriptor and a relative path.
     ///
     /// This performs the same hash computation as `metadata-hash`.
     metadata-hash-at: func(
+        this: descriptor,
         /// Flags determining the method of how the path is resolved.
         path-flags: path-flags,
         /// The relative path of the file or directory to inspect.
