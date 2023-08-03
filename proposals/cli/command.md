@@ -8,6 +8,7 @@
 <li>interface <a href="#wasi:clocks_timezone"><code>wasi:clocks/timezone</code></a></li>
 <li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
 <li>interface <a href="#wasi:filesystem_types"><code>wasi:filesystem/types</code></a></li>
+<li>interface <a href="#wasi:filesystem_preopens"><code>wasi:filesystem/preopens</code></a></li>
 <li>interface <a href="#wasi:sockets_network"><code>wasi:sockets/network</code></a></li>
 <li>interface <a href="#wasi:sockets_instance_network"><code>wasi:sockets/instance-network</code></a></li>
 <li>interface <a href="#wasi:sockets_ip_name_lookup"><code>wasi:sockets/ip-name-lookup</code></a></li>
@@ -19,7 +20,6 @@
 <li>interface <a href="#wasi:random_insecure"><code>wasi:random/insecure</code></a></li>
 <li>interface <a href="#wasi:random_insecure_seed"><code>wasi:random/insecure-seed</code></a></li>
 <li>interface <a href="#wasi:cli_environment"><code>wasi:cli/environment</code></a></li>
-<li>interface <a href="#wasi:cli_preopens"><code>wasi:cli/preopens</code></a></li>
 <li>interface <a href="#wasi:cli_exit"><code>wasi:cli/exit</code></a></li>
 <li>interface <a href="#wasi:cli_stdin"><code>wasi:cli/stdin</code></a></li>
 <li>interface <a href="#wasi:cli_stdout"><code>wasi:cli/stdout</code></a></li>
@@ -101,24 +101,31 @@ be used.</p>
 </ul>
 <h4><a name="poll_oneoff"><code>poll-oneoff: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
+<p>This function takes a list of pollables, which identify I/O sources of
+interest, and waits until one or more of the events is ready for I/O.</p>
+<p>The result <code>list&lt;bool&gt;</code> is the same length as the argument
+<code>list&lt;pollable&gt;</code>, and indicates the readiness of each corresponding
+element in that list, with true indicating ready. A single call can
+return multiple true elements.</p>
+<p>A timeout can be implemented by adding a pollable from the
+wasi-clocks API to the list.</p>
+<p>This function does not return a <code>result</code>; polling in itself does not
+do any I/O so it doesn't fail. If any of the I/O sources identified by
+the pollables has an error, it is indicated by marking the source as
+ready in the <code>list&lt;bool&gt;</code>.</p>
 <p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
 many times. In the future, this is expected to be obsoleted by the
 component model async proposal, which will include a scalable waiting
 facility.</p>
-<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
-be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
-See <a href="https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061">https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061</a>
-for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
-mean &quot;ready&quot;.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll_oneoff.in"><code>in</code></a>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
+<li><a name="poll_oneoff.0"></a> list&lt;<code>bool</code>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
@@ -255,7 +262,24 @@ when it does, they are expected to subsume this API.</p>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="stream_error">`record stream-error`</a>
+#### <a name="stream_status">`enum stream-status`</a>
+<p>Streams provide a sequence of data and then end; once they end, they
+no longer provide any further data.</p>
+<p>For example, a stream reading from a file ends when the stream reaches
+the end of the file. For another example, a stream reading from a
+socket ends when the socket is closed.</p>
+<h5>Enum Cases</h5>
+<ul>
+<li>
+<p><a name="stream_status.open"><code>open</code></a></p>
+<p>The stream is open and may produce further data.
+</li>
+<li>
+<p><a name="stream_status.ended"><code>ended</code></a></p>
+<p>The stream has ended and will not produce any further data.
+</li>
+</ul>
+<h4><a name="stream_error"><code>record stream-error</code></a></h4>
 <p>An error type returned from a stream operation. Currently this
 doesn't provide any additional information.</p>
 <h5>Record Fields</h5>
@@ -294,9 +318,9 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <h4><a name="read"><code>read: func</code></a></h4>
 <p>Read bytes from a stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a bool which, when true, indicates that the end of the
-stream was reached. The returned list will contain up to <code>len</code> bytes; it
-may return fewer than requested, but not more.</p>
+read, along with a <a href="#stream_status"><code>stream-status</code></a> which indicates whether the end of
+the stream was reached. The returned list will contain up to <code>len</code>
+bytes; it may return fewer than requested, but not more.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
@@ -313,7 +337,7 @@ FIXME: describe what happens if allocation fails.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_read"><code>blocking-read: func</code></a></h4>
 <p>Read bytes from a stream, with blocking.</p>
@@ -326,7 +350,7 @@ byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="skip"><code>skip: func</code></a></h4>
 <p>Skip bytes from a stream.</p>
@@ -335,9 +359,9 @@ bytes into the instance.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
-<p>This function returns the number of bytes skipped, along with a bool
-indicating whether the end of the stream was reached. The returned
-value will be at most <code>len</code>; it may be less.</p>
+<p>This function returns the number of bytes skipped, along with a
+<a href="#stream_status"><code>stream-status</code></a> indicating whether the end of the stream was
+reached. The returned value will be at most <code>len</code>; it may be less.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
@@ -345,7 +369,7 @@ value will be at most <code>len</code>; it may be less.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_skip"><code>blocking-skip: func</code></a></h4>
 <p>Skip bytes from a stream, with blocking.</p>
@@ -358,7 +382,7 @@ byte can be consumed.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_to_input_stream"><code>subscribe-to-input-stream: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
@@ -445,7 +469,7 @@ read from the input stream has been written to the output stream.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_splice"><code>blocking-splice: func</code></a></h4>
 <p>Read from one stream and write to another, with blocking.</p>
@@ -459,7 +483,7 @@ one byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="forward"><code>forward: func</code></a></h4>
 <p>Forward the entire contents of an input stream to an output stream.</p>
@@ -574,12 +598,23 @@ filesystem.
 filesystem. This does not apply to directories.
 </li>
 </ul>
+<h4><a name="metadata_hash_value"><code>record metadata-hash-value</code></a></h4>
+<p>A 128-bit hash value, split into parts because wasm doesn't have a
+128-bit integer type.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="metadata_hash_value.lower"><code>lower</code></a>: <code>u64</code></p>
+<p>64 bits of a 128-bit hash value.
+</li>
+<li>
+<p><a name="metadata_hash_value.upper"><code>upper</code></a>: <code>u64</code></p>
+<p>Another 64 bits of a 128-bit hash value.
+</li>
+</ul>
 <h4><a name="link_count"><code>type link-count</code></a></h4>
 <p><code>u64</code></p>
 <p>Number of hard links to an inode.
-<h4><a name="inode"><code>type inode</code></a></h4>
-<p><code>u64</code></p>
-<p>Filesystem object serial number that is unique within its file system.
 <h4><a name="filesize"><code>type filesize</code></a></h4>
 <p><code>u64</code></p>
 <p>File size or length of a region within a file.
@@ -743,11 +778,6 @@ merely for alignment with POSIX.</p>
 <p><code>u32</code></p>
 <p>A stream of directory entries.
 <p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Streams">represents a stream of <code>dir-entry</code></a>.</p>
-<h4><a name="device"><code>type device</code></a></h4>
-<p><code>u64</code></p>
-<p>Identifier for a device containing a file system. Can be used in
-combination with `inode` to uniquely identify a file or directory in
-the filesystem.
 <h4><a name="descriptor_type"><code>enum descriptor-type</code></a></h4>
 <p>The type of a filesystem object referenced by a descriptor.</p>
 <p>Note: This was called <code>filetype</code> in earlier versions of WASI.</p>
@@ -791,14 +821,6 @@ any of the other types specified.
 <p>A directory entry.</p>
 <h5>Record Fields</h5>
 <ul>
-<li>
-<p><a name="directory_entry.inode"><a href="#inode"><code>inode</code></a></a>: option&lt;<a href="#inode"><a href="#inode"><code>inode</code></a></a>&gt;</p>
-<p>The serial number of the object referred to by this directory entry.
-May be none if the inode value is not known.
-<p>When this is none, libc implementations might do an extra <a href="#stat_at"><code>stat-at</code></a>
-call to retrieve the inode number to fill their <code>d_ino</code> fields, so
-implementations which can set this to a non-none value should do so.</p>
-</li>
 <li>
 <p><a name="directory_entry.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>The type of the file referred to by this directory entry.
@@ -897,14 +919,6 @@ with the filesystem.
 <h5>Record Fields</h5>
 <ul>
 <li>
-<p><a name="descriptor_stat.device"><a href="#device"><code>device</code></a></a>: <a href="#device"><a href="#device"><code>device</code></a></a></p>
-<p>Device ID of device containing the file.
-</li>
-<li>
-<p><a name="descriptor_stat.inode"><a href="#inode"><code>inode</code></a></a>: <a href="#inode"><a href="#inode"><code>inode</code></a></a></p>
-<p>File serial number.
-</li>
-<li>
 <p><a name="descriptor_stat.type"><code>type</code></a>: <a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a></p>
 <p>File type.
 </li>
@@ -981,7 +995,8 @@ not reuse it thereafter.
 <hr />
 <h3>Functions</h3>
 <h4><a name="read_via_stream"><code>read-via-stream: func</code></a></h4>
-<p>Return a stream for reading from a file.</p>
+<p>Return a stream for reading from a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be read.</p>
 <p>Multiple read, write, and append streams may be active on the same open
 file and they do not interfere with each other.</p>
 <p>Note: This allows using <code>read-stream</code>, which is similar to <a href="#read"><code>read</code></a> in POSIX.</p>
@@ -992,10 +1007,11 @@ file and they do not interfere with each other.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read_via_stream.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="read_via_stream.0"></a> result&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="write_via_stream"><code>write-via-stream: func</code></a></h4>
-<p>Return a stream for writing to a file.</p>
+<p>Return a stream for writing to a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be written.</p>
 <p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> in
 POSIX.</p>
 <h5>Params</h5>
@@ -1005,10 +1021,11 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="write_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="append_via_stream"><code>append-via-stream: func</code></a></h4>
-<p>Return a stream for appending to a file.</p>
+<p>Return a stream for appending to a file, if available.</p>
+<p>May fail with an error-code describing why the file cannot be appended.</p>
 <p>Note: This allows using <code>write-stream</code>, which is similar to <a href="#write"><code>write</code></a> with
 <code>O_APPEND</code> in in POSIX.</p>
 <h5>Params</h5>
@@ -1017,7 +1034,7 @@ POSIX.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="append_via_stream.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="append_via_stream.0"></a> result&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="advise"><code>advise: func</code></a></h4>
 <p>Provide file advisory information on a descriptor.</p>
@@ -1195,7 +1212,11 @@ opened for writing.</p>
 </ul>
 <h4><a name="stat"><code>stat: func</code></a></h4>
 <p>Return the attributes of an open file or directory.</p>
-<p>Note: This is similar to <code>fstat</code> in POSIX.</p>
+<p>Note: This is similar to <code>fstat</code> in POSIX, except that it does not return
+device and inode information. For testing whether two descriptors refer to
+the same underlying filesystem object, use <a href="#is_same_object"><code>is-same-object</code></a>. To obtain
+additional data that can be used do determine whether a file has been
+modified, use <a href="#metadata_hash"><code>metadata-hash</code></a>.</p>
 <p>Note: This was called <code>fd_filestat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
@@ -1207,7 +1228,9 @@ opened for writing.</p>
 </ul>
 <h4><a name="stat_at"><code>stat-at: func</code></a></h4>
 <p>Return the attributes of a file or directory.</p>
-<p>Note: This is similar to <code>fstatat</code> in POSIX.</p>
+<p>Note: This is similar to <code>fstatat</code> in POSIX, except that it does not
+return device and inode information. See the <a href="#stat"><code>stat</code></a> description for a
+discussion of alternatives.</p>
 <p>Note: This was called <code>path_filestat_get</code> in earlier versions of WASI.</p>
 <h5>Params</h5>
 <ul>
@@ -1530,6 +1553,75 @@ be used.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="drop_directory_entry_stream.this"><code>this</code></a>: <a href="#directory_entry_stream"><a href="#directory_entry_stream"><code>directory-entry-stream</code></a></a></li>
+</ul>
+<h4><a name="is_same_object"><code>is-same-object: func</code></a></h4>
+<p>Test whether two descriptors refer to the same filesystem object.</p>
+<p>In POSIX, this corresponds to testing whether the two descriptors have the
+same device (<code>st_dev</code>) and inode (<code>st_ino</code> or <code>d_ino</code>) numbers.
+wasi-filesystem does not expose device and inode numbers, so this function
+may be used instead.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="is_same_object.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a name="is_same_object.other"><code>other</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="is_same_object.0"></a> <code>bool</code></li>
+</ul>
+<h4><a name="metadata_hash"><code>metadata-hash: func</code></a></h4>
+<p>Return a hash of the metadata associated with a filesystem object referred
+to by a descriptor.</p>
+<p>This returns a hash of the last-modification timestamp and file size, and
+may also include the inode number, device number, birth timestamp, and
+other metadata fields that may change when the file is modified or
+replaced. It may also include a secret value chosen by the
+implementation and not otherwise exposed.</p>
+<p>Implementations are encourated to provide the following properties:</p>
+<ul>
+<li>If the file is not modified or replaced, the computed hash value should
+usually not change.</li>
+<li>If the object is modified or replaced, the computed hash value should
+usually change.</li>
+<li>The inputs to the hash should not be easily computable from the
+computed hash.</li>
+</ul>
+<p>However, none of these is required.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="metadata_hash.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="metadata_hash.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="metadata_hash_at"><code>metadata-hash-at: func</code></a></h4>
+<p>Return a hash of the metadata associated with a filesystem object referred
+to by a directory descriptor and a relative path.</p>
+<p>This performs the same hash computation as <a href="#metadata_hash"><code>metadata-hash</code></a>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="metadata_hash_at.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
+<li><a name="metadata_hash_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
+<li><a name="metadata_hash_at.path"><code>path</code></a>: <code>string</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="metadata_hash_at.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:filesystem_preopens">Import interface wasi:filesystem/preopens</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="descriptor"><code>type descriptor</code></a></h4>
+<p><a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_directories"><code>get-directories: func</code></a></h4>
+<p>Return the set of preopened directories, and their path.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_directories.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
 </ul>
 <h2><a name="wasi:sockets_network">Import interface wasi:sockets/network</a></h2>
 <hr />
@@ -2539,12 +2631,10 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><a name="finish_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="receive"><code>receive: func</code></a></h4>
-<p>Receive a message.</p>
-<p>Returns:</p>
-<ul>
-<li>The sender address of the datagram</li>
-<li>The number of bytes read.</li>
-</ul>
+<p>Receive messages on the socket.</p>
+<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
+The returned list may contain fewer elements than requested, but never more.
+If <code>max-results</code> is 0, this function returns successfully with an empty list.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
@@ -2556,6 +2646,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
 <li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
@@ -2564,13 +2655,20 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="receive.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
+<li><a name="receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="receive.0"></a> result&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="receive.0"></a> result&lt;list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="send"><code>send: func</code></a></h4>
-<p>Send a message to a specific destination address.</p>
+<p>Send messages on the socket.</p>
+<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
+returns how many messages were actually sent (or queued for sending).</p>
+<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
+sending each individual datagram until either the end of the list has been reached or the first error occurred.
+If at least one datagram has been sent successfully, this function never returns an error.</p>
+<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
 <p>The remote address option is required. To send a message to the &quot;connected&quot; peer,
 call <a href="#remote_address"><code>remote-address</code></a> to get their address.</p>
 <h1>Typical errors</h1>
@@ -2589,6 +2687,7 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
 <li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
 <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
@@ -2597,11 +2696,11 @@ call <a href="#remote_address"><code>remote-address</code></a> to get their addr
 <h5>Params</h5>
 <ul>
 <li><a name="send.this"><code>this</code></a>: <a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></li>
-<li><a name="send.datagram"><a href="#datagram"><code>datagram</code></a></a>: <a href="#datagram"><a href="#datagram"><code>datagram</code></a></a></li>
+<li><a name="send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="send.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="local_address"><code>local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
@@ -2829,14 +2928,16 @@ Windows.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_random_bytes"><code>get-random-bytes: func</code></a></h4>
-<p>Return <code>len</code> cryptographically-secure pseudo-random bytes.</p>
-<p>This function must produce data from an adequately seeded
-cryptographically-secure pseudo-random number generator (CSPRNG), so it
-must not block, from the perspective of the calling program, and the
-returned data is always unpredictable.</p>
-<p>This function must always return fresh pseudo-random data. Deterministic
-environments must omit this function, rather than implementing it with
-deterministic data.</p>
+<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
+<p>This function must produce data at least as cryptographically secure and
+fast as an adequately seeded cryptographically-secure pseudo-random
+number generator (CSPRNG). It must not block, from the perspective of
+the calling program, under any circumstances, including on the first
+request and on requests for numbers of bytes. The returned data must
+always be unpredictable.</p>
+<p>This function must always return fresh data. Deterministic environments
+must omit this function, rather than implementing it with deterministic
+data.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="get_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
@@ -2846,9 +2947,9 @@ deterministic data.</p>
 <li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h4><a name="get_random_u64"><code>get-random-u64: func</code></a></h4>
-<p>Return a cryptographically-secure pseudo-random <code>u64</code> value.</p>
-<p>This function returns the same type of pseudo-random data as
-<a href="#get_random_bytes"><code>get-random-bytes</code></a>, represented as a <code>u64</code>.</p>
+<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
+represented as a <code>u64</code>.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
@@ -2926,26 +3027,6 @@ values each time it is called.</p>
 <ul>
 <li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_preopens">Import interface wasi:cli/preopens</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="descriptor"><code>type descriptor</code></a></h4>
-<p><a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></p>
-<p>
-#### <a name="input_stream">`type input-stream`</a>
-[`input-stream`](#input_stream)
-<p>
-#### <a name="output_stream">`type output-stream`</a>
-[`output-stream`](#output_stream)
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_directories"><code>get-directories: func</code></a></h4>
-<p>Return the set of of preopened directories, and their path.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_directories.0"></a> list&lt;(<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>, <code>string</code>)&gt;</li>
-</ul>
 <h4><a name="initial_cwd"><code>initial-cwd: func</code></a></h4>
 <p>Return a path that programs should use as their initial current working
 directory, interpreting <code>.</code> as shorthand for this.</p>
@@ -2957,7 +3038,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="exit"><code>exit: func</code></a></h4>
-<p>Exit the curerent instance and any linked instances.</p>
+<p>Exit the current instance and any linked instances.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
