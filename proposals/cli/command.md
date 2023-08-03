@@ -24,6 +24,11 @@
 <li>interface <a href="#wasi:cli_stdin"><code>wasi:cli/stdin</code></a></li>
 <li>interface <a href="#wasi:cli_stdout"><code>wasi:cli/stdout</code></a></li>
 <li>interface <a href="#wasi:cli_stderr"><code>wasi:cli/stderr</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_input"><code>wasi:cli/terminal-input</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_output"><code>wasi:cli/terminal-output</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdin"><code>wasi:cli/terminal-stdin</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdout"><code>wasi:cli/terminal-stdout</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stderr"><code>wasi:cli/terminal-stderr</code></a></li>
 </ul>
 </li>
 <li>Exports:
@@ -2957,7 +2962,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="exit"><code>exit: func</code></a></h4>
-<p>Exit the curerent instance and any linked instances.</p>
+<p>Exit the current instance and any linked instances.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="exit.status"><code>status</code></a>: result</li>
@@ -3000,6 +3005,89 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_stderr.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h2><a name="wasi:cli_terminal_input">Import interface wasi:cli/terminal-input</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_input"><code>type terminal-input</code></a></h4>
+<p><code>u32</code></p>
+<p>The input side of a terminal.
+<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="drop_terminal_input"><code>drop-terminal-input: func</code></a></h4>
+<p>Dispose of the specified terminal-input after which it may no longer
+be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="drop_terminal_input.this"><code>this</code></a>: <a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a></li>
+</ul>
+<h2><a name="wasi:cli_terminal_output">Import interface wasi:cli/terminal-output</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
+<p><code>u32</code></p>
+<p>The output side of a terminal.
+<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="drop_terminal_output"><code>drop-terminal-output: func</code></a></h4>
+<p>Dispose of the specified terminal-output, after which it may no longer
+be used.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="drop_terminal_output.this"><code>this</code></a>: <a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></li>
+</ul>
+<h2><a name="wasi:cli_terminal_stdin">Import interface wasi:cli/terminal-stdin</a></h2>
+<p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_input"><code>type terminal-input</code></a></h4>
+<p><a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stdin"><code>get-terminal-stdin: func</code></a></h4>
+<p>If stdin is connected to a terminal, return a <a href="#terminal_input"><code>terminal-input</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stdin.0"></a> option&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_terminal_stdout">Import interface wasi:cli/terminal-stdout</a></h2>
+<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
+<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stdout"><code>get-terminal-stdout: func</code></a></h4>
+<p>If stdout is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stdout.0"></a> option&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_terminal_stderr">Import interface wasi:cli/terminal-stderr</a></h2>
+<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
+<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stderr"><code>get-terminal-stderr: func</code></a></h4>
+<p>If stderr is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stderr.0"></a> option&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:cli_run">Export interface wasi:cli/run</a></h2>
 <hr />

@@ -23,5 +23,10 @@ world command {
   import stdin
   import stdout
   import stderr
+  import terminal-input
+  import terminal-output
+  import terminal-stdin
+  import terminal-stdout
+  import terminal-stderr
   export run
 }
