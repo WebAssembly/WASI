@@ -10,6 +10,19 @@ interface streams {
     /// doesn't provide any additional information.
     record stream-error {}
 
+    /// Streams provide a sequence of data and then end; once they end, they
+    /// no longer provide any further data.
+    ///
+    /// For example, a stream reading from a file ends when the stream reaches
+    /// the end of the file. For another example, a stream reading from a
+    /// socket ends when the socket is closed.
+    enum stream-status {
+        /// The stream is open and may produce further data.
+        open,
+        /// The stream has ended and will not produce any further data.
+        ended,
+    }
+
     /// An input bytestream. In the future, this will be replaced by handle
     /// types.
     ///
@@ -32,9 +45,9 @@ interface streams {
     /// Read bytes from a stream.
     ///
     /// This function returns a list of bytes containing the data that was
-    /// read, along with a bool which, when true, indicates that the end of the
-    /// stream was reached. The returned list will contain up to `len` bytes; it
-    /// may return fewer than requested, but not more.
+    /// read, along with a `stream-status` which indicates whether the end of
+    /// the stream was reached. The returned list will contain up to `len`
+    /// bytes; it may return fewer than requested, but not more.
     ///
     /// Once a stream has reached the end, subsequent calls to read or
     /// `skip` will always report end-of-stream rather than producing more
@@ -51,7 +64,7 @@ interface streams {
         this: input-stream,
         /// The maximum number of bytes to read
         len: u64
-    ) -> result<tuple<list<u8>, bool>, stream-error>
+    ) -> result<tuple<list<u8>, stream-status>, stream-error>
 
     /// Read bytes from a stream, with blocking.
     ///
@@ -61,7 +74,7 @@ interface streams {
         this: input-stream,
         /// The maximum number of bytes to read
         len: u64
-    ) -> result<tuple<list<u8>, bool>, stream-error>
+    ) -> result<tuple<list<u8>, stream-status>, stream-error>
 
     /// Skip bytes from a stream.
     ///
@@ -72,14 +85,14 @@ interface streams {
     /// `skip` will always report end-of-stream rather than producing more
     /// data.
     ///
-    /// This function returns the number of bytes skipped, along with a bool
-    /// indicating whether the end of the stream was reached. The returned
-    /// value will be at most `len`; it may be less.
+    /// This function returns the number of bytes skipped, along with a
+    /// `stream-status` indicating whether the end of the stream was
+    /// reached. The returned value will be at most `len`; it may be less.
     skip: func(
         this: input-stream,
         /// The maximum number of bytes to skip.
         len: u64,
-    ) -> result<tuple<u64, bool>, stream-error>
+    ) -> result<tuple<u64, stream-status>, stream-error>
 
     /// Skip bytes from a stream, with blocking.
     ///
@@ -89,7 +102,7 @@ interface streams {
         this: input-stream,
         /// The maximum number of bytes to skip.
         len: u64,
-    ) -> result<tuple<u64, bool>, stream-error>
+    ) -> result<tuple<u64, stream-status>, stream-error>
 
     /// Create a `pollable` which will resolve once either the specified stream
     /// has bytes available to read or the other end of the stream has been
@@ -172,7 +185,7 @@ interface streams {
         src: input-stream,
         /// The number of bytes to splice
         len: u64,
-    ) -> result<tuple<u64, bool>, stream-error>
+    ) -> result<tuple<u64, stream-status>, stream-error>
 
     /// Read from one stream and write to another, with blocking.
     ///
@@ -184,7 +197,7 @@ interface streams {
         src: input-stream,
         /// The number of bytes to splice
         len: u64,
-    ) -> result<tuple<u64, bool>, stream-error>
+    ) -> result<tuple<u64, stream-status>, stream-error>
 
     /// Forward the entire contents of an input stream to an output stream.
     ///

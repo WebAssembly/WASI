@@ -90,24 +90,31 @@ be used.</p>
 </ul>
 <h4><a name="poll_oneoff"><code>poll-oneoff: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
+<p>This function takes a list of pollables, which identify I/O sources of
+interest, and waits until one or more of the events is ready for I/O.</p>
+<p>The result <code>list&lt;bool&gt;</code> is the same length as the argument
+<code>list&lt;pollable&gt;</code>, and indicates the readiness of each corresponding
+element in that list, with true indicating ready. A single call can
+return multiple true elements.</p>
+<p>A timeout can be implemented by adding a pollable from the
+wasi-clocks API to the list.</p>
+<p>This function does not return a <code>result</code>; polling in itself does not
+do any I/O so it doesn't fail. If any of the I/O sources identified by
+the pollables has an error, it is indicated by marking the source as
+ready in the <code>list&lt;bool&gt;</code>.</p>
 <p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
 many times. In the future, this is expected to be obsoleted by the
 component model async proposal, which will include a scalable waiting
 facility.</p>
-<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
-be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
-See <a href="https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061">https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061</a>
-for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
-mean &quot;ready&quot;.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll_oneoff.in"><code>in</code></a>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
+<li><a name="poll_oneoff.0"></a> list&lt;<code>bool</code>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
@@ -241,14 +248,16 @@ Windows.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_random_bytes"><code>get-random-bytes: func</code></a></h4>
-<p>Return <code>len</code> cryptographically-secure pseudo-random bytes.</p>
-<p>This function must produce data from an adequately seeded
-cryptographically-secure pseudo-random number generator (CSPRNG), so it
-must not block, from the perspective of the calling program, and the
-returned data is always unpredictable.</p>
-<p>This function must always return fresh pseudo-random data. Deterministic
-environments must omit this function, rather than implementing it with
-deterministic data.</p>
+<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
+<p>This function must produce data at least as cryptographically secure and
+fast as an adequately seeded cryptographically-secure pseudo-random
+number generator (CSPRNG). It must not block, from the perspective of
+the calling program, under any circumstances, including on the first
+request and on requests for numbers of bytes. The returned data must
+always be unpredictable.</p>
+<p>This function must always return fresh data. Deterministic environments
+must omit this function, rather than implementing it with deterministic
+data.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="get_random_bytes.len"><code>len</code></a>: <code>u64</code></li>
@@ -258,9 +267,9 @@ deterministic data.</p>
 <li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h4><a name="get_random_u64"><code>get-random-u64: func</code></a></h4>
-<p>Return a cryptographically-secure pseudo-random <code>u64</code> value.</p>
-<p>This function returns the same type of pseudo-random data as
-<a href="#get_random_bytes"><code>get-random-bytes</code></a>, represented as a <code>u64</code>.</p>
+<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
+represented as a <code>u64</code>.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
@@ -275,7 +284,24 @@ when it does, they are expected to subsume this API.</p>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="stream_error">`record stream-error`</a>
+#### <a name="stream_status">`enum stream-status`</a>
+<p>Streams provide a sequence of data and then end; once they end, they
+no longer provide any further data.</p>
+<p>For example, a stream reading from a file ends when the stream reaches
+the end of the file. For another example, a stream reading from a
+socket ends when the socket is closed.</p>
+<h5>Enum Cases</h5>
+<ul>
+<li>
+<p><a name="stream_status.open"><code>open</code></a></p>
+<p>The stream is open and may produce further data.
+</li>
+<li>
+<p><a name="stream_status.ended"><code>ended</code></a></p>
+<p>The stream has ended and will not produce any further data.
+</li>
+</ul>
+<h4><a name="stream_error"><code>record stream-error</code></a></h4>
 <p>An error type returned from a stream operation. Currently this
 doesn't provide any additional information.</p>
 <h5>Record Fields</h5>
@@ -314,9 +340,9 @@ the wit-bindgen implementation of handles and resources is ready.</p>
 <h4><a name="read"><code>read: func</code></a></h4>
 <p>Read bytes from a stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a bool which, when true, indicates that the end of the
-stream was reached. The returned list will contain up to <code>len</code> bytes; it
-may return fewer than requested, but not more.</p>
+read, along with a <a href="#stream_status"><code>stream-status</code></a> which indicates whether the end of
+the stream was reached. The returned list will contain up to <code>len</code>
+bytes; it may return fewer than requested, but not more.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
@@ -333,7 +359,7 @@ FIXME: describe what happens if allocation fails.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_read"><code>blocking-read: func</code></a></h4>
 <p>Read bytes from a stream, with blocking.</p>
@@ -346,7 +372,7 @@ byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="skip"><code>skip: func</code></a></h4>
 <p>Skip bytes from a stream.</p>
@@ -355,9 +381,9 @@ bytes into the instance.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
 <a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
 data.</p>
-<p>This function returns the number of bytes skipped, along with a bool
-indicating whether the end of the stream was reached. The returned
-value will be at most <code>len</code>; it may be less.</p>
+<p>This function returns the number of bytes skipped, along with a
+<a href="#stream_status"><code>stream-status</code></a> indicating whether the end of the stream was
+reached. The returned value will be at most <code>len</code>; it may be less.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
@@ -365,7 +391,7 @@ value will be at most <code>len</code>; it may be less.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_skip"><code>blocking-skip: func</code></a></h4>
 <p>Skip bytes from a stream, with blocking.</p>
@@ -378,7 +404,7 @@ byte can be consumed.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_to_input_stream"><code>subscribe-to-input-stream: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
@@ -465,7 +491,7 @@ read from the input stream has been written to the output stream.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="blocking_splice"><code>blocking-splice: func</code></a></h4>
 <p>Read from one stream and write to another, with blocking.</p>
@@ -479,7 +505,7 @@ one byte can be read.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <code>bool</code>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="forward"><code>forward: func</code></a></h4>
 <p>Forward the entire contents of an input stream to an output stream.</p>

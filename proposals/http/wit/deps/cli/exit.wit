@@ -1,4 +1,4 @@
 interface exit {
-  /// Exit the curerent instance and any linked instances.
+  /// Exit the current instance and any linked instances.
   exit: func(status: result)
 }
