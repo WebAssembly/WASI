@@ -35,24 +35,31 @@ be used.</p>
 </ul>
 <h4><a name="poll_oneoff"><code>poll-oneoff: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
+<p>This function takes a list of pollables, which identify I/O sources of
+interest, and waits until one or more of the events is ready for I/O.</p>
+<p>The result <code>list&lt;bool&gt;</code> is the same length as the argument
+<code>list&lt;pollable&gt;</code>, and indicates the readiness of each corresponding
+element in that list, with true indicating ready. A single call can
+return multiple true elements.</p>
+<p>A timeout can be implemented by adding a pollable from the
+wasi-clocks API to the list.</p>
+<p>This function does not return a <code>result</code>; polling in itself does not
+do any I/O so it doesn't fail. If any of the I/O sources identified by
+the pollables has an error, it is indicated by marking the source as
+ready in the <code>list&lt;bool&gt;</code>.</p>
 <p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
 linear scan through the entire list of subscriptions, which may be
 inefficient if the number is large and the same subscriptions are used
 many times. In the future, this is expected to be obsoleted by the
 component model async proposal, which will include a scalable waiting
 facility.</p>
-<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
-be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
-See <a href="https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061">https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061</a>
-for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
-mean &quot;ready&quot;.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll_oneoff.in"><code>in</code></a>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
+<li><a name="poll_oneoff.0"></a> list&lt;<code>bool</code>&gt;</li>
 </ul>
 <h2><a name="wasi:io_streams">Import interface wasi:io/streams</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
