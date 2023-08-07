@@ -33,13 +33,13 @@ WASI Preview 2 contains the following APIs:
 To be included in Preview 2, a proposal must:
 
  - Reach phase 3 in the [WASI Subgroup Phase Process]
- - Satisfy its own [phase 4 acceptance criteria]
+ - Satisfy its own [portability criteria]
  - Be voted for inclusion by the WASI Subgroup
 
 Proposals may be added to WASI Preview 2 at any time until WASI Preview 3
 is launched.
 
 [WASI Subgroup Phase Process]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#the-phase-process
-[phase 4 acceptance criteria]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#2-feature-description-available-wasi-subgroup
+[portability criteria]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#2-feature-description-available-wasi-subgroup
 [worlds]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-worlds
 [launch criteria]: #wasi-preview-2-launch-criteria
