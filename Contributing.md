@@ -66,7 +66,7 @@ During this phase:
 
 Additionally during this phase:
 
- * The champions define the acceptance criteria for Phase 4.
+ * The champions define the *portability criteria* for Phase 4.
 
    This is intended to translate the spirit of the CG Phase Process' "Two or more Web VMs" requirement to meet WASI's needs. The criteria should establish at least:
     - Portability: WASI APIs should be portable, however that can mean different things to different use cases, and no one definition covers everything. Consequently, each proposal should define criteria establishing its specific portability requirements.
@@ -77,7 +77,7 @@ Additionally during this phase:
 
 Entry requirements:
 
-   * The phase 4 acceptance criteria are documented in the proposal.
+   * The portability criteria are documented in the proposal.
    * Precise and complete overview document is available in a proposal repo around which a reasonably high level of consensus exists.
    * A [wit](https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md) description of the API exists.
    * All dependencies of the wit description must have reached phase 2.
@@ -85,13 +85,13 @@ Entry requirements:
 During this phase:
 
    * One or more implementations proceed on prototyping the API.
-   * A plan is developed for how the phase 4 acceptance criteria will be met.
+   * A plan is developed for how the portability criteria will be met.
 
 ## 3. Implementation Phase [WASI Subgroup]
 
 Entry requirements:
 
-   * The phase 4 acceptance criteria must be either met or there must be a plan for how they're expected to be met.
+   * The portability criteria must be either met or there must be a plan for how they're expected to be met.
    * All dependencies of the wit descriptions must have reached phase 3.
 
 During this phase, the following proceeds in parallel:
@@ -99,7 +99,7 @@ During this phase, the following proceeds in parallel:
    * Implementations are built
    * Toolchains, libraries, and other tools using the API are built
    * Remaining open questions are resolved.
-   * The plan for satisfying the phase 4 acceptance criteria is followed, though the plan may change over time.
+   * The plan for satisfying the portability criteria is followed, though the plan may change over time.
 
 ### Phases 4 & 5: To be determined
 
