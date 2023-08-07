@@ -69,6 +69,7 @@ Additionally during this phase:
  * The champions define the *portability criteria* for Phase 4.
 
    This is intended to translate the spirit of the CG Phase Process' "Two or more Web VMs" requirement to meet WASI's needs. The criteria should establish at least:
+    - Two or more implementations: Each proposal should say what kinds of implementations.
     - Portability: WASI APIs should be portable, however that can mean different things to different use cases, and no one definition covers everything. Consequently, each proposal should define criteria establishing its specific portability requirements.
     - Practicality: It's important that WASI APIs be implementable and usable in real-world use cases, so each proposal should define criteria establishing a sufficient level of confidence.
     - Testing: APIs will have different needs in terms of environments needed to test them, so each proposal should define criteria establishing what form the testing will take.
