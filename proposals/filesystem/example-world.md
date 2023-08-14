@@ -673,15 +673,6 @@ any of the other types specified.
 <p>Write mode: Data can be written to.
 </li>
 <li>
-<p><a name="descriptor_flags.non_blocking"><code>non-blocking</code></a>: </p>
-<p>Requests non-blocking operation.
-<p>When this flag is enabled, functions may return immediately with an
-<a href="#error_code.would_block"><code>error-code::would-block</code></a> error code in situations where they would
-otherwise block. However, this non-blocking behavior is not
-required. Implementations are permitted to ignore this flag and
-block. This is similar to <code>O_NONBLOCK</code> in POSIX.</p>
-</li>
-<li>
 <p><a name="descriptor_flags.file_integrity_sync"><code>file-integrity-sync</code></a>: </p>
 <p>Request that writes be performed according to synchronized I/O file
 integrity completion. The data stored in the file and the file's
@@ -920,20 +911,6 @@ from <code>fdstat_get</code> in earlier versions of WASI.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_type.0"></a> result&lt;<a href="#descriptor_type"><a href="#descriptor_type"><code>descriptor-type</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="set_flags"><code>set-flags: func</code></a></h4>
-<p>Set status flags associated with a descriptor.</p>
-<p>This function may only change the <code>non-blocking</code> flag.</p>
-<p>Note: This is similar to <code>fcntl(fd, F_SETFL, flags)</code> in POSIX.</p>
-<p>Note: This was called <code>fd_fdstat_set_flags</code> in earlier versions of WASI.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="set_flags.this"><code>this</code></a>: <a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a></li>
-<li><a name="set_flags.flags"><code>flags</code></a>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="set_flags.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="set_size"><code>set-size: func</code></a></h4>
 <p>Adjust the size of an open file. If this increases the file's size, the
