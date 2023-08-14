@@ -84,11 +84,11 @@ interface udp {
 	start-connect: func(this: udp-socket, network: network, remote-address: ip-socket-address) -> result<_, error-code>
 	finish-connect: func(this: udp-socket) -> result<_, error-code>
 
-	/// Receive a message.
+	/// Receive messages on the socket.
 	/// 
-	/// Returns:
-	/// - The sender address of the datagram
-	/// - The number of bytes read.
+	/// This function attempts to receive up to `max-results` datagrams on the socket without blocking.
+	/// The returned list may contain fewer elements than requested, but never more.
+	/// If `max-results` is 0, this function returns successfully with an empty list.
 	/// 
 	/// # Typical errors
 	/// - `not-bound`:          The socket is not bound to any local address. (EINVAL)
@@ -99,13 +99,23 @@ interface udp {
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html>
 	/// - <https://man7.org/linux/man-pages/man2/recv.2.html>
+	/// - <https://man7.org/linux/man-pages/man2/recvmmsg.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom>
 	/// - <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
-	receive: func(this: udp-socket) -> result<datagram, error-code>
+	receive: func(this: udp-socket, max-results: u64) -> result<list<datagram>, error-code>
 
-	/// Send a message to a specific destination address.
+	/// Send messages on the socket.
+	/// 
+	/// This function attempts to send all provided `datagrams` on the socket without blocking and
+	/// returns how many messages were actually sent (or queued for sending).
+	/// 
+	/// This function semantically behaves the same as iterating the `datagrams` list and sequentially
+	/// sending each individual datagram until either the end of the list has been reached or the first error occurred.
+	/// If at least one datagram has been sent successfully, this function never returns an error.
+	/// 
+	/// If the input list is empty, the function returns `ok(0)`.
 	/// 
 	/// The remote address option is required. To send a message to the "connected" peer,
 	/// call `remote-address` to get their address.
@@ -124,11 +134,12 @@ interface udp {
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
 	/// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html>
 	/// - <https://man7.org/linux/man-pages/man2/send.2.html>
+	/// - <https://man7.org/linux/man-pages/man2/sendmmsg.2.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
-	send: func(this: udp-socket, datagram: datagram) -> result<_, error-code>
+	send: func(this: udp-socket, datagrams: list<datagram>) -> result<u64, error-code>
 
 	/// Get the current bound address.
 	/// 

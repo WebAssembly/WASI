@@ -5,6 +5,7 @@ world command {
   import wasi:clocks/monotonic-clock
   import wasi:clocks/timezone
   import wasi:filesystem/types
+  import wasi:filesystem/preopens
   import wasi:sockets/instance-network
   import wasi:sockets/ip-name-lookup
   import wasi:sockets/network
@@ -18,7 +19,6 @@ world command {
   import wasi:poll/poll
   import wasi:io/streams
   import environment
-  import preopens
   import exit
   import stdin
   import stdout
