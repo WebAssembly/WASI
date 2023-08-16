@@ -41,7 +41,7 @@ Wasi-cli a [World] proposal for a Command-Line Interface (CLI) environment. It p
 
 Wasi-cli aims to be useful for:
 
- - Interfactive command-line argument programs.
+ - Interactive command-line argument programs.
 
  - Servers that use filesystems, sockets, and related APIs and expect to be started with
    a CLI-style command-line.
