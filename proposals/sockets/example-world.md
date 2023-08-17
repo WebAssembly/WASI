@@ -611,7 +611,6 @@ In other words, after setting a value, reading the same setting back may return 
 <p>Note #2: there is not necessarily a direct relationship between the kernel buffer size and the bytes of
 actual data to be sent/received by the application, because the kernel might also use the buffer space
 for internal metadata structures.</p>
-<p>Fails when this socket is in the Listening state.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
 <h1>Typical errors</h1>
 <ul>
