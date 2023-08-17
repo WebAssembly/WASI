@@ -18,6 +18,6 @@ jobs:
         ./wit-deps lock
         git add -N wit/deps
         git diff --exit-code
-    - uses: WebAssembly/wit-abi-up-to-date@v12
+    - uses: WebAssembly/wit-abi-up-to-date@v13
       with:
-        wit-abi-tag: wit-abi-0.10.0
+        wit-abi-tag: wit-abi-0.11.0
