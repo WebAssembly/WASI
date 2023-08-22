@@ -17,6 +17,11 @@
 /// `..` and symbolic link steps, reaches a directory outside of the base
 /// directory, or reaches a symlink to an absolute or rooted path in the
 /// underlying filesystem, the function fails with `error-code::not-permitted`.
+///
+/// For more information about WASI path resolution and sandboxing, see
+/// [WASI filesystem path resolution].
+///
+/// [WASI filesystem path resolution]: https://github.com/WebAssembly/wasi-filesystem/blob/main/path-resolution.md
 interface types {
     use wasi:io/streams.{input-stream, output-stream}
     use wasi:clocks/wall-clock.{datetime}

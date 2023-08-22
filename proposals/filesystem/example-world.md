@@ -366,6 +366,8 @@ function starts with <code>/</code>, or if any step of resolving a <code>path</c
 <code>..</code> and symbolic link steps, reaches a directory outside of the base
 directory, or reaches a symlink to an absolute or rooted path in the
 underlying filesystem, the function fails with <a href="#error_code.not_permitted"><code>error-code::not-permitted</code></a>.</p>
+<p>For more information about WASI path resolution and sandboxing, see
+<a href="https://github.com/WebAssembly/wasi-filesystem/blob/main/path-resolution.md">WASI filesystem path resolution</a>.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>

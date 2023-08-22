@@ -46,7 +46,8 @@ Unlike many filesystem APIs, WASI filesystem is capability-oriented. Instead
 of having functions that implicitly reference a filesystem namespace,
 WASI filesystems' APIs are passed a directory handle along with a path, and
 the path is looked up relative to the given handle, and sandboxed to be
-resolved within that directory.
+resolved within that directory. For more information about sandbox, see
+[WASI filesystem path resolution](path-resolution.md).
 
 WASI filesystem hides some of the surface differences between Windows and
 Unix-style filesystems, however much of its behavior, indluding the
