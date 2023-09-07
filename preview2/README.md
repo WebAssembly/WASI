@@ -39,6 +39,12 @@ To be included in Preview 2, a proposal must:
 Proposals may be added to WASI Preview 2 at any time until WASI Preview 3
 is launched.
 
+## Looking forward to Preview 3
+
+Preview 3 will add the new `stream` and `future` keywords. The
+release criteria of Preview 3 will include that performance will be
+measured and addressed.
+
 [WASI Subgroup Phase Process]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#the-phase-process
 [portability criteria]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#2-feature-description-available-wasi-subgroup
 [worlds]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-worlds
