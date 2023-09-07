@@ -39,6 +39,12 @@ To be included in Preview 2, a proposal must:
 Proposals may be added to WASI Preview 2 at any time until WASI Preview 3
 is launched.
 
+## Witx and Wit
+
+Witx files can be derived from Wit files according to the Canonical ABI. Wasm
+engines can implement single-module components using just these derived Witx files
+and their existing Witx machinery.
+
 ## Looking forward to Preview 3
 
 Preview 3 will add the new `stream` and `future` keywords. The
