@@ -1,5 +1,5 @@
 package wasi:io
 
-world example-world {
+world imports {
     import streams
 }
