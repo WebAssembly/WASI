@@ -71,7 +71,24 @@ when it does, they are expected to subsume this API.</p>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="stream_status">`enum stream-status`</a>
+#### <a name="write_error">`enum write-error`</a>
+<p>An error for output-stream operations.</p>
+<p>Contrary to input-streams, a closed output-stream is reported using
+an error.</p>
+<h5>Enum Cases</h5>
+<ul>
+<li>
+<p><a name="write_error.last_operation_failed"><code>last-operation-failed</code></a></p>
+<p>The last operation (a write or flush) failed before completion.
+</li>
+<li>
+<p><a name="write_error.closed"><code>closed</code></a></p>
+<p>The stream is closed: no more input will be accepted by the
+stream. A closed output-stream will return this error on all
+future operations.
+</li>
+</ul>
+<h4><a name="stream_status"><code>enum stream-status</code></a></h4>
 <p>Streams provide a sequence of data and then end; once they end, they
 no longer provide any further data.</p>
 <p>For example, a stream reading from a file ends when the stream reaches
@@ -216,46 +233,119 @@ corresponding <a href="#output_stream"><code>output-stream</code></a> has <code>
 <ul>
 <li><a name="drop_input_stream.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
 </ul>
+<h4><a name="check_write"><code>check-write: func</code></a></h4>
+<p>Check readiness for writing. This function never blocks.</p>
+<p>Returns the number of bytes permitted for the next call to <a href="#write"><code>write</code></a>,
+or an error. Calling <a href="#write"><code>write</code></a> with more bytes than this function has
+permitted will trap.</p>
+<p>When this function returns 0 bytes, the <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a>
+pollable will become ready when this function will report at least
+1 byte, or an error.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="check_write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="check_write.0"></a> result&lt;<code>u64</code>, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="write"><code>write: func</code></a></h4>
-<p>Perform a non-blocking write of bytes to a stream.</p>
-<p>This function returns a <code>u64</code> and a <a href="#stream_status"><code>stream-status</code></a>. The <code>u64</code> indicates
-the number of bytes from <code>buf</code> that were written, which may be less than
-the length of <code>buf</code>. The <a href="#stream_status"><code>stream-status</code></a> indicates if further writes to
-the stream are expected to be read.</p>
-<p>When the returned <a href="#stream_status"><code>stream-status</code></a> is <code>open</code>, the <code>u64</code> return value may
-be less than the length of <code>buf</code>. This indicates that no more bytes may
-be written to the stream promptly. In that case the
-<a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a> pollable will indicate when additional bytes
-may be promptly written.</p>
-<p>Writing an empty list must return a non-error result with <code>0</code> for the
-<code>u64</code> return value, and the current <a href="#stream_status"><code>stream-status</code></a>.</p>
+<p>Perform a write. This function never blocks.</p>
+<p>Precondition: check-write gave permit of Ok(n) and contents has a
+length of less than or equal to n. Otherwise, this function will trap.</p>
+<p>returns Err(closed) without writing if the stream has closed since
+the last call to check-write provided a permit.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="write.buf"><code>buf</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="write.contents"><code>contents</code></a>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
+<li><a name="write.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="blocking_write"><code>blocking-write: func</code></a></h4>
-<p>Blocking write of bytes to a stream.</p>
-<p>This is similar to <a href="#write"><code>write</code></a>, except that it blocks until at least one
-byte can be written.</p>
+<h4><a name="blocking_write_and_flush"><code>blocking-write-and-flush: func</code></a></h4>
+<p>Perform a write of up to 4096 bytes, and then flush the stream. Block
+until all of these operations are complete, or an error occurs.</p>
+<p>This is a convenience wrapper around the use of <a href="#check_write"><code>check-write</code></a>,
+<a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a>, <a href="#write"><code>write</code></a>, and <a href="#flush"><code>flush</code></a>, and is implemented
+with the following pseudo-code:</p>
+<pre><code class="language-text">let pollable = subscribe-to-output-stream(this);
+while !contents.is_empty() {
+  // Wait for the stream to become writable
+  poll-oneoff(pollable);
+  let Ok(n) = check-write(this); // eliding error handling
+  let len = min(n, contents.len());
+  let (chunk, rest) = contents.split_at(len);
+  write(this, chunk);            // eliding error handling
+  contents = rest;
+}
+flush(this);
+// Wait for completion of `flush`
+poll-oneoff(pollable);
+// Check for any errors that arose during `flush`
+let _ = check-write(this);       // eliding error handling
+</code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="blocking_write.buf"><code>buf</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="blocking_write_and_flush.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="blocking_write_and_flush.contents"><code>contents</code></a>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_write.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
+<li><a name="blocking_write_and_flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="flush"><code>flush: func</code></a></h4>
+<p>Request to flush buffered output. This function never blocks.</p>
+<p>This tells the output-stream that the caller intends any buffered
+output to be flushed. the output which is expected to be flushed
+is all that has been passed to <a href="#write"><code>write</code></a> prior to this call.</p>
+<p>Upon calling this function, the <a href="#output_stream"><code>output-stream</code></a> will not accept any
+writes (<a href="#check_write"><code>check-write</code></a> will return <code>ok(0)</code>) until the flush has
+completed. The <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a> pollable will become ready
+when the flush has completed and the stream can accept more writes.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="flush.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="blocking_flush"><code>blocking-flush: func</code></a></h4>
+<p>Request to flush buffered output, and block until flush completes
+and stream is ready for writing again.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="blocking_flush.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="blocking_flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="subscribe_to_output_stream"><code>subscribe-to-output-stream: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
+is ready for more writing, or an error has occured. When this
+pollable is ready, <a href="#check_write"><code>check-write</code></a> will return <code>ok(n)</code> with n&gt;0, or an
+error.</p>
+<p>If the stream is closed, this pollable is always ready immediately.</p>
+<p>The created <a href="#pollable"><code>pollable</code></a> is a child resource of the <a href="#output_stream"><code>output-stream</code></a>.
+Implementations may trap if the <a href="#output_stream"><code>output-stream</code></a> is dropped before
+all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_to_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_to_output_stream.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <h4><a name="write_zeroes"><code>write-zeroes: func</code></a></h4>
-<p>Write multiple zero-bytes to a stream.</p>
-<p>This function returns a <code>u64</code> indicating the number of zero-bytes
-that were written; it may be less than <code>len</code>. Equivelant to a call to
-<a href="#write"><code>write</code></a> with a list of zeroes of the given length.</p>
+<p>Write zeroes to a stream.</p>
+<p>this should be used precisely like <a href="#write"><code>write</code></a> with the exact same
+preconditions (must use check-write first), but instead of
+passing a list of bytes, you simply pass the number of zero-bytes
+that should be written.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="write_zeroes.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
@@ -263,21 +353,7 @@ that were written; it may be less than <code>len</code>. Equivelant to a call to
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write_zeroes.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
-</ul>
-<h4><a name="blocking_write_zeroes"><code>blocking-write-zeroes: func</code></a></h4>
-<p>Write multiple zero bytes to a stream, with blocking.</p>
-<p>This is similar to <a href="#write_zeroes"><code>write-zeroes</code></a>, except that it blocks until at least
-one byte can be written. Equivelant to a call to <a href="#blocking_write"><code>blocking-write</code></a> with
-a list of zeroes of the given length.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="blocking_write_zeroes.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="blocking_write_zeroes.len"><code>len</code></a>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="blocking_write_zeroes.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
+<li><a name="write_zeroes.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="splice"><code>splice: func</code></a></h4>
 <p>Read from one stream and write to another.</p>
@@ -327,22 +403,6 @@ the output stream.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="forward.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
-</ul>
-<h4><a name="subscribe_to_output_stream"><code>subscribe-to-output-stream: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
-is ready to accept bytes or the <code>stream-state</code> has become closed.</p>
-<p>Once the stream-state is closed, this pollable is always ready
-immediately.</p>
-<p>The created <a href="#pollable"><code>pollable</code></a> is a child resource of the <a href="#output_stream"><code>output-stream</code></a>.
-Implementations may trap if the <a href="#output_stream"><code>output-stream</code></a> is dropped before
-all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_to_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_to_output_stream.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
 </ul>
 <h4><a name="drop_output_stream"><code>drop-output-stream: func</code></a></h4>
 <p>Dispose of the specified <a href="#output_stream"><code>output-stream</code></a>, after which it may no longer
