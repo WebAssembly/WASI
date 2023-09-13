@@ -107,11 +107,20 @@ interface types {
         /// length in bytes of the pathname contained in the symbolic link.
         size: filesize,
         /// Last data access timestamp.
-        data-access-timestamp: datetime,
+        ///
+        /// If the `option` is none, the platform doesn't maintain an access
+        /// timestamp for this file.
+        data-access-timestamp: option<datetime>,
         /// Last data modification timestamp.
-        data-modification-timestamp: datetime,
-        /// Last file status change timestamp.
-        status-change-timestamp: datetime,
+        ///
+        /// If the `option` is none, the platform doesn't maintain a
+        /// modification timestamp for this file.
+        data-modification-timestamp: option<datetime>,
+        /// Last file status-change timestamp.
+        ///
+        /// If the `option` is none, the platform doesn't maintain a
+        /// status-change timestamp for this file.
+        status-change-timestamp: option<datetime>,
     }
 
     /// Flags determining the method of how paths are resolved.

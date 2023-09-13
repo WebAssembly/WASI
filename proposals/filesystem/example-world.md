@@ -754,16 +754,22 @@ with the filesystem.
 length in bytes of the pathname contained in the symbolic link.
 </li>
 <li>
-<p><a name="descriptor_stat.data_access_timestamp"><code>data-access-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p><a name="descriptor_stat.data_access_timestamp"><code>data-access-timestamp</code></a>: option&lt;<a href="#datetime"><a href="#datetime"><code>datetime</code></a></a>&gt;</p>
 <p>Last data access timestamp.
+<p>If the <code>option</code> is none, the platform doesn't maintain an access
+timestamp for this file.</p>
 </li>
 <li>
-<p><a name="descriptor_stat.data_modification_timestamp"><code>data-modification-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p><a name="descriptor_stat.data_modification_timestamp"><code>data-modification-timestamp</code></a>: option&lt;<a href="#datetime"><a href="#datetime"><code>datetime</code></a></a>&gt;</p>
 <p>Last data modification timestamp.
+<p>If the <code>option</code> is none, the platform doesn't maintain a
+modification timestamp for this file.</p>
 </li>
 <li>
-<p><a name="descriptor_stat.status_change_timestamp"><code>status-change-timestamp</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
-<p>Last file status change timestamp.
+<p><a name="descriptor_stat.status_change_timestamp"><code>status-change-timestamp</code></a>: option&lt;<a href="#datetime"><a href="#datetime"><code>datetime</code></a></a>&gt;</p>
+<p>Last file status-change timestamp.
+<p>If the <code>option</code> is none, the platform doesn't maintain a
+status-change timestamp for this file.</p>
 </li>
 </ul>
 <h4><a name="advice"><code>enum advice</code></a></h4>
