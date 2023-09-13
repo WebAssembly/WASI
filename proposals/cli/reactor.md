@@ -1,4 +1,4 @@
-<h1><a name="command">World command</a></h1>
+<h1><a name="reactor">World reactor</a></h1>
 <ul>
 <li>Imports:
 <ul>
@@ -29,11 +29,6 @@
 <li>interface <a href="#wasi:cli_terminal_stdin"><code>wasi:cli/terminal-stdin</code></a></li>
 <li>interface <a href="#wasi:cli_terminal_stdout"><code>wasi:cli/terminal-stdout</code></a></li>
 <li>interface <a href="#wasi:cli_terminal_stderr"><code>wasi:cli/terminal-stderr</code></a></li>
-</ul>
-</li>
-<li>Exports:
-<ul>
-<li>interface <a href="#wasi:cli_run"><code>wasi:cli/run</code></a></li>
 </ul>
 </li>
 </ul>
@@ -3169,13 +3164,4 @@ allowing further interaction with it.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="get_terminal_stderr.0"></a> option&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_run">Export interface wasi:cli/run</a></h2>
-<hr />
-<h3>Functions</h3>
-<h4><a name="run"><code>run: func</code></a></h4>
-<p>Run the program.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="run.0"></a> result</li>
 </ul>
