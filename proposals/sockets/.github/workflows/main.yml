@@ -10,7 +10,7 @@ jobs:
     name: Check ABI files are up-to-date
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: ensure `./wit/deps` are in sync
       run: |
         curl -Lo 'wit-deps' https://github.com/bytecodealliance/wit-deps/releases/download/v0.3.0/wit-deps-x86_64-unknown-linux-musl
@@ -18,6 +18,4 @@ jobs:
         ./wit-deps lock
         git add -N wit/deps
         git diff --exit-code
-    - uses: WebAssembly/wit-abi-up-to-date@v13
-      with:
-        wit-abi-tag: wit-abi-0.11.0
+    - uses: WebAssembly/wit-abi-up-to-date@v14

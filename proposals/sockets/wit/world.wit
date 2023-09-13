@@ -1,6 +1,6 @@
 package wasi:sockets
 
-world example-world {
+world imports {
     import instance-network
     import network
     import udp

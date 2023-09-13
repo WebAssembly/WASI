@@ -1,2 +1,3 @@
-io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
-poll = "https://github.com/WebAssembly/wasi-poll/archive/main.tar.gz"
+# Temporarily use the resources branches.
+#io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
+io = "https://github.com/sunfishcode/wasi-io/archive/resources.tar.gz"
