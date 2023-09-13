@@ -1,6 +1,6 @@
 package wasi:random
 
-world example-world {
+world imports {
     import random
     import insecure
     import insecure-seed
