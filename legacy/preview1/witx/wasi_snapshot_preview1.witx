@@ -386,7 +386,9 @@
   )
 
   ;;; Read the contents of a symbolic link.
-  ;;; Note: This is similar to `readlinkat` in POSIX.
+  ;;; Note: This is similar to `readlinkat` in POSIX. If `buf` is not large
+  ;;; enough to contain the contents of the link, the first `buf_len` bytes will be
+  ;;; be written to `buf`.
   (@interface func (export "path_readlink")
     (param $fd $fd)
     ;;; The path of the symbolic link from which to read.
