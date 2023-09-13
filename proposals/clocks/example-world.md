@@ -149,7 +149,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <p>
 #### <a name="timezone_display">`record timezone-display`</a>
 <p>Information useful for displaying the timezone of a specific <a href="#datetime"><code>datetime</code></a>.</p>
-<p>This information may vary within a single <a href="#timezone"><code>timezone</code></a> to reflect daylight
+<p>This information may vary within a single <code>timezone</code> to reflect daylight
 saving time adjustments.</p>
 <h5>Record Fields</h5>
 <ul>
@@ -179,13 +179,6 @@ representation of the UTC offset may be returned, such as <code>-04:00</code>.</
 should return false.</p>
 </li>
 </ul>
-<h4><a name="timezone"><code>type timezone</code></a></h4>
-<p><code>u32</code></p>
-<p>A timezone.
-<p>In timezones that recognize daylight saving time, also known as daylight
-time and summer time, the information returned from the functions varies
-over time to reflect these adjustments.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="display"><code>display: func</code></a></h4>
@@ -197,7 +190,6 @@ daylight saving time is active.</p>
 saving time.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="display.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 <li><a name="display.when"><code>when</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h5>Return values</h5>
@@ -208,17 +200,9 @@ saving time.</p>
 <p>The same as <a href="#display"><code>display</code></a>, but only return the UTC offset.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="utc_offset.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 <li><a name="utc_offset.when"><code>when</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="utc_offset.0"></a> <code>s32</code></li>
-</ul>
-<h4><a name="drop_timezone"><code>drop-timezone: func</code></a></h4>
-<p>Dispose of the specified input-stream, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_timezone.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 </ul>

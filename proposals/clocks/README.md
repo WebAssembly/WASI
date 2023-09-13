@@ -52,8 +52,7 @@ read the current time and to measure elapsed time.
 
 ### Non-goals
 
-WASI Clocks is not aiming to cover timezones, daylight savings time, date
-formatting, or modifying the time of a clock.
+WASI Clocks is not aiming to cover date formatting, or modifying the time of a clock.
 
 ### API walk-through
 
@@ -66,13 +65,11 @@ default-monotonic-clock: monotonic-clock
 ```
 
 ```rust
-   let clock: MonotonicClock = default_monotonic_clock();
-
-   let start: Instant = monotonic_clock_now(clock);
+   let start: Instant = monotonic_clock::now(clock);
 
    // some stuff
 
-   let stop: Instant = monotonic_clock_now(clock);
+   let stop: Instant = monotonic_clock::now(clock);
 
    let elapsed: Instant = stop - start;
 ```
@@ -81,11 +78,19 @@ default-monotonic-clock: monotonic-clock
 #### Telling the current human time:
 
 ```rust
-    let clock: WallClock = default_wall_clock();
-
-    let the_current_time = wall_clock_now();
+    let the_current_time = wall_clock::now();
 
     println!("it has been {} seconds and {} nanoseconds since the Unix epoch!", the_current_time.seconds, the_current_time.nanoseconds);
+```
+
+#### Retrieving the timezone:
+
+```rust
+    let datetime: Datetime = wall_clock::now();
+
+    let timezone_display: TimezoneDisplay = timezone::display(datetime);
+
+    println!("the timezone is {}", timezone_display.name);
 ```
 
 ### Detailed design discussion
