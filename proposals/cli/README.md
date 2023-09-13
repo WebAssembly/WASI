@@ -14,7 +14,10 @@ wasi-cli is currently in [Phase 1].
 
 ### Phase 4 Advancement Criteria
 
-TODO before entering Phase 2.
+WASI CLI must have host implementations which can pass the testsuite
+on at least Windows, macOS, and Linux.
+
+WASI CLI must have at least two complete independent implementations.
 
 ## Table of Contents
 
