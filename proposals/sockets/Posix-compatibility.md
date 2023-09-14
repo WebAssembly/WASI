@@ -104,8 +104,7 @@ None of the flags are directly present in WASI Sockets:
 - UDP: N/A
 
 ### `close`
-- TCP: [`tcp::drop-tcp-socket`](tcp)
-- UDP: [`udp::drop-udp-socket`](udp)
+Dropping a handle performs an effective `close`.
 
 ### `socketpair`, `connectat` (non-standard), `bindat` (non-standard)
 Specifically for UNIX domain sockets. Out of scope for this proposal.
