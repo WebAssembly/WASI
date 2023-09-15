@@ -61,7 +61,7 @@ any time.
 Environments shall not access exports named `__heap_base` or `__data_end`.
 Toolchains are encouraged to avoid providing these exports.
 
-In the future, as the underlying WebAssembly platform offers more features, we
+In the future, as the underlying WebAssembly platform offers more features,
 we hope to eliminate the requirement to export all of linear memory or all of
 the indirect function table.
 
