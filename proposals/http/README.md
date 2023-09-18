@@ -16,7 +16,13 @@ wasi-http is currently in [Phase 1](https://github.com/WebAssembly/WASI/blob/mai
 
 ### Phase 4 Advancement Criteria
 
-TODO
+WASI-http must have at least two complete independent implementations. One
+implementation must execute in a browser and may be implemented in terms of the
+[Fetch API] using JavaScript. The other implementation must be implemented
+in a non-browser WebAssembly runtime and demonstrate embeddability in a
+Web server.
+
+[Fetch API]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 
 ### Introduction
 
