@@ -1,4 +1,4 @@
-<h1><a name="example_world">World example-world</a></h1>
+<h1><a name="imports">World imports</a></h1>
 <ul>
 <li>Imports:
 <ul>
