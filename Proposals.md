@@ -35,6 +35,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
+| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -44,7 +45,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 | [I2C][wasi-i2c]                      | Emiel Van Severen |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
