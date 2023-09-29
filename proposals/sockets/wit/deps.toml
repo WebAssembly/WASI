@@ -1,3 +1,1 @@
-# Temporarily use the resources branches.
-#io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
-io = "https://github.com/sunfishcode/wasi-io/archive/resources.tar.gz"
+io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
