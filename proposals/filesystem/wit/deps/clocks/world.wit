@@ -1,6 +1,6 @@
 package wasi:clocks
 
-world example-world {
+world imports {
     import monotonic-clock
     import wall-clock
     import timezone
