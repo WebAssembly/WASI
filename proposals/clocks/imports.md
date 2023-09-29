@@ -1,60 +1,51 @@
-<h1><a name="example_world">World example-world</a></h1>
+<h1><a name="imports">World imports</a></h1>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:io_poll"><code>wasi:io/poll</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock"><code>wasi:clocks/monotonic-clock</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock"><code>wasi:clocks/wall-clock</code></a></li>
 <li>interface <a href="#wasi:clocks_timezone"><code>wasi:clocks/timezone</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
+<h2><a name="wasi:io_poll">Import interface wasi:io/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"><code>type pollable</code></a></h4>
-<p><code>u32</code></p>
-<p>A "pollable" handle.
-<p>This is conceptually represents a <code>stream&lt;_, _&gt;</code>, or in other words,
-a stream that one can wait on, repeatedly, but which does not itself
-produce any data. It's temporary scaffolding until component-model's
-async features are ready.</p>
-<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
-the wit-bindgen implementation of handles and resources is ready.</p>
-<p><a href="#pollable"><code>pollable</code></a> lifetimes are not automatically managed. Users must ensure
-that they do not outlive the resource they reference.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<h4><a name="pollable"><code>resource pollable</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="drop_pollable"><code>drop-pollable: func</code></a></h4>
-<p>Dispose of the specified <a href="#pollable"><code>pollable</code></a>, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_pollable.this"><code>this</code></a>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
-</ul>
-<h4><a name="poll_oneoff"><code>poll-oneoff: func</code></a></h4>
+<h4><a name="poll_list"><code>poll-list: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
-<p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
-linear scan through the entire list of subscriptions, which may be
-inefficient if the number is large and the same subscriptions are used
-many times. In the future, this is expected to be obsoleted by the
-component model async proposal, which will include a scalable waiting
-facility.</p>
-<p>Note that the return type would ideally be <code>list&lt;bool&gt;</code>, but that would
-be more difficult to polyfill given the current state of <code>wit-bindgen</code>.
-See <a href="https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061">https://github.com/bytecodealliance/preview2-prototyping/pull/11#issuecomment-1329873061</a>
-for details.  For now, we use zero to mean &quot;not ready&quot; and non-zero to
-mean &quot;ready&quot;.</p>
+<p>This function takes a list of pollables, which identify I/O sources of
+interest, and waits until one or more of the events is ready for I/O.</p>
+<p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
+argument list that is ready for I/O.</p>
+<p>If the list contains more elements than can be indexed with a <code>u32</code>
+value, this function traps.</p>
+<p>A timeout can be implemented by adding a pollable from the
+wasi-clocks API to the list.</p>
+<p>This function does not return a <code>result</code>; polling in itself does not
+do any I/O so it doesn't fail. If any of the I/O sources identified by
+the pollables has an error, it is indicated by marking the source as
+being reaedy for I/O.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="poll_oneoff.in"><code>in</code></a>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="poll_list.in"><code>in</code></a>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_oneoff.0"></a> list&lt;<code>u8</code>&gt;</li>
+<li><a name="poll_list.0"></a> list&lt;<code>u32</code>&gt;</li>
+</ul>
+<h4><a name="poll_one"><code>poll-one: func</code></a></h4>
+<p>Poll for completion on a single pollable.</p>
+<p>This function is similar to <a href="#poll_list"><code>poll-list</code></a>, but operates on only a single
+pollable. When it returns, the handle is ready for I/O.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="poll_one.in"><code>in</code></a>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
@@ -98,7 +89,7 @@ reached.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_wall_clock">Import interface wasi:clocks/wall-clock</a></h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
