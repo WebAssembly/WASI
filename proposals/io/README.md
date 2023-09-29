@@ -69,7 +69,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
            // If we didn't get any data promptly, wait for it.
            if data.len() == 0 {
-               let _ = poll_oneoff(&wait_input[..]);
+               let _ = poll_list(&wait_input[..]);
                (data, eos) = input.read(BUFFER_LEN)?;
            }
 
@@ -79,7 +79,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
                // If we didn't put any data promptly, wait for it.
                if num_written == 0 {
-                   let _ = poll_oneoff(&wait_output[..]);
+                   let _ = poll_list(&wait_output[..]);
                    num_written = output.write(remaining)?;
                }
 
@@ -108,7 +108,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 
            // If we didn't get any data promptly, wait for it.
            if num_copied == 0 {
-               let _ = poll_oneoff(&wait_input[..]);
+               let _ = poll_list(&wait_input[..]);
            }
        }
        Ok(())
