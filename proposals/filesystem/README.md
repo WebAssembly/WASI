@@ -50,7 +50,7 @@ resolved within that directory. For more information about sandbox, see
 [WASI filesystem path resolution](path-resolution.md).
 
 WASI filesystem hides some of the surface differences between Windows and
-Unix-style filesystems, however much of its behavior, indluding the
+Unix-style filesystems, however much of its behavior, including the
 semantics of path lookup, and the semantics of files, directories, and
 symlinks, and the constraints on filesystem paths, is host-dependent.
 
@@ -102,7 +102,7 @@ fn write_hello_world_to_a_file(dir: Descriptor) -> Result<(), Errno> {
 
 Perhaps the biggest change from the preview1 version of openat, called
 `path_open`, is the removal of the *rights* flags. Preview1 associates
-a set of flags with every file descriptor enumerating which operatings
+a set of flags with every file descriptor enumerating which operations
 may be performed on it, such as reading, writing, appending, truncating,
 and many other operations. In practice, this created a lot of ambiguity
 about how it mapped to POSIX semantics, as it doesn't directly correspond
