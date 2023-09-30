@@ -1,4 +1,4 @@
 [io]
-url = "https://github.com/sunfishcode/wasi-io/archive/resources.tar.gz"
+url = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
 sha256 = "6e20bcf4d4f5466b60c05ea8da7289ca361a7febdd22ab1a531e5ef7e394ab8d"
 sha512 = "21f6689bce6ed6d9e3bd96372e5c7ed003a7aefbf8d49b4eea949dfbd265cf57a0d7dc67aa71e3de75d48fcc2c0cfe5f06f7e9e7959a23bc98f77da85f4161b9"
