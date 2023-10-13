@@ -36,6 +36,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
 | [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
+| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -58,7 +59,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [SQL Embed][wasi-sql-embed]                                                                | Kyle Brown |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | Radu Matei       |          |
-| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
