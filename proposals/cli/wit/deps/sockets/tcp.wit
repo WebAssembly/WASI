@@ -1,8 +1,8 @@
 
 interface tcp {
-	use wasi:io/streams.{input-stream, output-stream}
-	use wasi:io/poll.{pollable}
-	use network.{network, error-code, ip-socket-address, ip-address-family}
+	use wasi:io/streams.{input-stream, output-stream};
+	use wasi:io/poll.{pollable};
+	use network.{network, error-code, ip-socket-address, ip-address-family};
 
 	enum shutdown-type {
 		/// Similar to `SHUT_RD` in POSIX.
@@ -46,8 +46,8 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/bind.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
-		start-bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>
-		finish-bind: func() -> result<_, error-code>
+		start-bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>;
+		finish-bind: func() -> result<_, error-code>;
 
 		/// Connect to a remote endpoint.
 		/// 
@@ -78,8 +78,8 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/connect.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
 		/// - <https://man.freebsd.org/cgi/man.cgi?connect>
-		start-connect: func(network: borrow<network>, remote-address: ip-socket-address) -> result<_, error-code>
-		finish-connect: func() -> result<tuple<input-stream, output-stream>, error-code>
+		start-connect: func(network: borrow<network>, remote-address: ip-socket-address) -> result<_, error-code>;
+		finish-connect: func() -> result<tuple<input-stream, output-stream>, error-code>;
 
 		/// Start listening for new connections.
 		/// 
@@ -105,8 +105,8 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/listen.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2>
-		start-listen: func() -> result<_, error-code>
-		finish-listen: func() -> result<_, error-code>
+		start-listen: func() -> result<_, error-code>;
+		finish-listen: func() -> result<_, error-code>;
 
 		/// Accept a new client socket.
 		/// 
@@ -126,7 +126,7 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/accept.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=accept&sektion=2>
-		accept: func() -> result<tuple<tcp-socket, input-stream, output-stream>, error-code>
+		accept: func() -> result<tuple<tcp-socket, input-stream, output-stream>, error-code>;
 
 		/// Get the bound local address.
 		/// 
@@ -138,7 +138,7 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/getsockname.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname>
 		/// - <https://man.freebsd.org/cgi/man.cgi?getsockname>
-		local-address: func() -> result<ip-socket-address, error-code>
+		local-address: func() -> result<ip-socket-address, error-code>;
 
 		/// Get the bound remote address.
 		/// 
@@ -150,12 +150,12 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/getpeername.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=getpeername&sektion=2&n=1>
-		remote-address: func() -> result<ip-socket-address, error-code>
+		remote-address: func() -> result<ip-socket-address, error-code>;
 
 		/// Whether this is a IPv4 or IPv6 socket.
 		/// 
 		/// Equivalent to the SO_DOMAIN socket option.
-		address-family: func() -> ip-address-family
+		address-family: func() -> ip-address-family;
 	
 		/// Whether IPv4 compatibility (dual-stack) mode is disabled or not.
 		/// 
@@ -166,29 +166,29 @@ interface tcp {
 		/// - `already-bound`:        (set) The socket is already bound.
 		/// - `not-supported`:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		ipv6-only: func() -> result<bool, error-code>
-		set-ipv6-only: func(value: bool) -> result<_, error-code>
+		ipv6-only: func() -> result<bool, error-code>;
+		set-ipv6-only: func(value: bool) -> result<_, error-code>;
 
 		/// Hints the desired listen queue size. Implementations are free to ignore this.
 		/// 
 		/// # Typical errors
 		/// - `already-connected`:    (set) The socket is already in the Connection state.
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		set-listen-backlog-size: func(value: u64) -> result<_, error-code>
+		set-listen-backlog-size: func(value: u64) -> result<_, error-code>;
 
 		/// Equivalent to the SO_KEEPALIVE socket option.
 		/// 
 		/// # Typical errors
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		keep-alive: func() -> result<bool, error-code>
-		set-keep-alive: func(value: bool) -> result<_, error-code>
+		keep-alive: func() -> result<bool, error-code>;
+		set-keep-alive: func(value: bool) -> result<_, error-code>;
 
 		/// Equivalent to the TCP_NODELAY socket option.
 		/// 
 		/// # Typical errors
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		no-delay: func() -> result<bool, error-code>
-		set-no-delay: func(value: bool) -> result<_, error-code>
+		no-delay: func() -> result<bool, error-code>;
+		set-no-delay: func(value: bool) -> result<_, error-code>;
 	
 		/// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
 		/// 
@@ -196,8 +196,8 @@ interface tcp {
 		/// - `already-connected`:    (set) The socket is already in the Connection state.
 		/// - `already-listening`:    (set) The socket is already in the Listener state.
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		unicast-hop-limit: func() -> result<u8, error-code>
-		set-unicast-hop-limit: func(value: u8) -> result<_, error-code>
+		unicast-hop-limit: func() -> result<u8, error-code>;
+		set-unicast-hop-limit: func(value: u8) -> result<_, error-code>;
 
 		/// The kernel buffer space reserved for sends/receives on this socket.
 		/// 
@@ -214,16 +214,16 @@ interface tcp {
 		/// - `already-connected`:    (set) The socket is already in the Connection state.
 		/// - `already-listening`:    (set) The socket is already in the Listener state.
 		/// - `concurrency-conflict`: (set) A `bind`, `connect` or `listen` operation is already in progress. (EALREADY)
-		receive-buffer-size: func() -> result<u64, error-code>
-		set-receive-buffer-size: func(value: u64) -> result<_, error-code>
-		send-buffer-size: func() -> result<u64, error-code>
-		set-send-buffer-size: func(value: u64) -> result<_, error-code>
+		receive-buffer-size: func() -> result<u64, error-code>;
+		set-receive-buffer-size: func(value: u64) -> result<_, error-code>;
+		send-buffer-size: func() -> result<u64, error-code>;
+		set-send-buffer-size: func(value: u64) -> result<_, error-code>;
 
 		/// Create a `pollable` which will resolve once the socket is ready for I/O.
 		/// 
 		/// Note: this function is here for WASI Preview2 only.
 		/// It's planned to be removed when `future` is natively supported in Preview3.
-		subscribe: func() -> pollable
+		subscribe: func() -> pollable;
 
 		/// Initiate a graceful shutdown.
 		/// 
@@ -244,6 +244,6 @@ interface tcp {
 		/// - <https://man7.org/linux/man-pages/man2/shutdown.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=shutdown&sektion=2>
-		shutdown: func(shutdown-type: shutdown-type) -> result<_, error-code>
+		shutdown: func(shutdown-type: shutdown-type) -> result<_, error-code>;
 	}
 }

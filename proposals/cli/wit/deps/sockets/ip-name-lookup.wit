@@ -1,7 +1,7 @@
 
 interface ip-name-lookup {
-	use wasi:io/poll.{pollable}
-	use network.{network, error-code, ip-address, ip-address-family}
+	use wasi:io/poll.{pollable};
+	use network.{network, error-code, ip-address, ip-address-family};
 
 
 	/// Resolve an internet host name to a list of IP addresses.
@@ -34,7 +34,7 @@ interface ip-name-lookup {
 	/// - <https://man7.org/linux/man-pages/man3/getaddrinfo.3.html>
 	/// - <https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo>
 	/// - <https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&sektion=3>
-	resolve-addresses: func(network: borrow<network>, name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> result<resolve-address-stream, error-code>
+	resolve-addresses: func(network: borrow<network>, name: string, address-family: option<ip-address-family>, include-unavailable: bool) -> result<resolve-address-stream, error-code>;
 
 	resource resolve-address-stream {
 		/// Returns the next address from the resolver.
@@ -50,12 +50,12 @@ interface ip-name-lookup {
 		/// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
 		/// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
 		/// - `would-block`:                A result is not available yet. (EWOULDBLOCK, EAGAIN)
-		resolve-next-address: func() -> result<option<ip-address>, error-code>
+		resolve-next-address: func() -> result<option<ip-address>, error-code>;
 
 		/// Create a `pollable` which will resolve once the stream is ready for I/O.
 		/// 
 		/// Note: this function is here for WASI Preview2 only.
 		/// It's planned to be removed when `future` is natively supported in Preview3.
-		subscribe: func() -> pollable
+		subscribe: func() -> pollable;
 	}
 }

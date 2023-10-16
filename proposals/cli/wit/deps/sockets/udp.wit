@@ -1,7 +1,7 @@
 
 interface udp {
-	use wasi:io/poll.{pollable}
-	use network.{network, error-code, ip-socket-address, ip-address-family}
+	use wasi:io/poll.{pollable};
+	use network.{network, error-code, ip-socket-address, ip-address-family};
 
 
 	record datagram {
@@ -47,8 +47,8 @@ interface udp {
 		/// - <https://man7.org/linux/man-pages/man2/bind.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
-		start-bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>
-		finish-bind: func() -> result<_, error-code>
+		start-bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>;
+		finish-bind: func() -> result<_, error-code>;
 
 		/// Set the destination address.
 		/// 
@@ -79,8 +79,8 @@ interface udp {
 		/// - <https://man7.org/linux/man-pages/man2/connect.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
 		/// - <https://man.freebsd.org/cgi/man.cgi?connect>
-		start-connect: func(network: borrow<network>, remote-address: ip-socket-address) -> result<_, error-code>
-		finish-connect: func() -> result<_, error-code>
+		start-connect: func(network: borrow<network>, remote-address: ip-socket-address) -> result<_, error-code>;
+		finish-connect: func() -> result<_, error-code>;
 
 		/// Receive messages on the socket.
 		/// 
@@ -102,7 +102,7 @@ interface udp {
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom>
 		/// - <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
-		receive: func(max-results: u64) -> result<list<datagram>, error-code>
+		receive: func(max-results: u64) -> result<list<datagram>, error-code>;
 
 		/// Send messages on the socket.
 		/// 
@@ -137,7 +137,7 @@ interface udp {
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
-		send: func(datagrams: list<datagram>) -> result<u64, error-code>
+		send: func(datagrams: list<datagram>) -> result<u64, error-code>;
 
 		/// Get the current bound address.
 		/// 
@@ -149,7 +149,7 @@ interface udp {
 		/// - <https://man7.org/linux/man-pages/man2/getsockname.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname>
 		/// - <https://man.freebsd.org/cgi/man.cgi?getsockname>
-		local-address: func() -> result<ip-socket-address, error-code>
+		local-address: func() -> result<ip-socket-address, error-code>;
 
 		/// Get the address set with `connect`.
 		/// 
@@ -161,12 +161,12 @@ interface udp {
 		/// - <https://man7.org/linux/man-pages/man2/getpeername.2.html>
 		/// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername>
 		/// - <https://man.freebsd.org/cgi/man.cgi?query=getpeername&sektion=2&n=1>
-		remote-address: func() -> result<ip-socket-address, error-code>
+		remote-address: func() -> result<ip-socket-address, error-code>;
 
 		/// Whether this is a IPv4 or IPv6 socket.
 		/// 
 		/// Equivalent to the SO_DOMAIN socket option.
-		address-family: func() -> ip-address-family
+		address-family: func() -> ip-address-family;
 
 		/// Whether IPv4 compatibility (dual-stack) mode is disabled or not.
 		/// 
@@ -177,15 +177,15 @@ interface udp {
 		/// - `already-bound`:        (set) The socket is already bound.
 		/// - `not-supported`:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)
 		/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
-		ipv6-only: func() -> result<bool, error-code>
-		set-ipv6-only: func(value: bool) -> result<_, error-code>
+		ipv6-only: func() -> result<bool, error-code>;
+		set-ipv6-only: func(value: bool) -> result<_, error-code>;
 
 		/// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
 		/// 
 		/// # Typical errors
 		/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
-		unicast-hop-limit: func() -> result<u8, error-code>
-		set-unicast-hop-limit: func(value: u8) -> result<_, error-code>
+		unicast-hop-limit: func() -> result<u8, error-code>;
+		set-unicast-hop-limit: func(value: u8) -> result<_, error-code>;
 
 		/// The kernel buffer space reserved for sends/receives on this socket.
 		/// 
@@ -200,15 +200,15 @@ interface udp {
 		/// 
 		/// # Typical errors
 		/// - `concurrency-conflict`: (set) Another `bind` or `connect` operation is already in progress. (EALREADY)
-		receive-buffer-size: func() -> result<u64, error-code>
-		set-receive-buffer-size: func(value: u64) -> result<_, error-code>
-		send-buffer-size: func() -> result<u64, error-code>
-		set-send-buffer-size: func(value: u64) -> result<_, error-code>
+		receive-buffer-size: func() -> result<u64, error-code>;
+		set-receive-buffer-size: func(value: u64) -> result<_, error-code>;
+		send-buffer-size: func() -> result<u64, error-code>;
+		set-send-buffer-size: func(value: u64) -> result<_, error-code>;
 
 		/// Create a `pollable` which will resolve once the socket is ready for I/O.
 		/// 
 		/// Note: this function is here for WASI Preview2 only.
 		/// It's planned to be removed when `future` is natively supported in Preview3.
-		subscribe: func() -> pollable
+		subscribe: func() -> pollable;
 	}
 }
