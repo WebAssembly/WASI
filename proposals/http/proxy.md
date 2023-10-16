@@ -3,7 +3,7 @@
 <li>Imports:
 <ul>
 <li>interface <a href="#wasi:clocks_wall_clock"><code>wasi:clocks/wall-clock</code></a></li>
-<li>interface <a href="#wasi:poll_poll"><code>wasi:poll/poll</code></a></li>
+<li>interface <a href="#wasi:io_poll"><code>wasi:io/poll</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock"><code>wasi:clocks/monotonic-clock</code></a></li>
 <li>interface <a href="#wasi:clocks_timezone"><code>wasi:clocks/timezone</code></a></li>
 <li>interface <a href="#wasi:random_random"><code>wasi:random/random</code></a></li>
@@ -62,59 +62,43 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi:poll_poll">Import interface wasi:poll/poll</a></h2>
+<h2><a name="wasi:io_poll">Import interface wasi:io/poll</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"><code>type pollable</code></a></h4>
-<p><code>u32</code></p>
-<p>A "pollable" handle.
-<p>This is conceptually represents a <code>stream&lt;_, _&gt;</code>, or in other words,
-a stream that one can wait on, repeatedly, but which does not itself
-produce any data. It's temporary scaffolding until component-model's
-async features are ready.</p>
-<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
-the wit-bindgen implementation of handles and resources is ready.</p>
-<p><a href="#pollable"><code>pollable</code></a> lifetimes are not automatically managed. Users must ensure
-that they do not outlive the resource they reference.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<h4><a name="pollable"><code>resource pollable</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="drop_pollable"><code>drop-pollable: func</code></a></h4>
-<p>Dispose of the specified <a href="#pollable"><code>pollable</code></a>, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_pollable.this"><code>this</code></a>: <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
-</ul>
-<h4><a name="poll_oneoff"><code>poll-oneoff: func</code></a></h4>
+<h4><a name="poll_list"><code>poll-list: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
 <p>This function takes a list of pollables, which identify I/O sources of
 interest, and waits until one or more of the events is ready for I/O.</p>
-<p>The result <code>list&lt;bool&gt;</code> is the same length as the argument
-<code>list&lt;pollable&gt;</code>, and indicates the readiness of each corresponding
-element in that list, with true indicating ready. A single call can
-return multiple true elements.</p>
+<p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
+argument list that is ready for I/O.</p>
+<p>If the list contains more elements than can be indexed with a <code>u32</code>
+value, this function traps.</p>
 <p>A timeout can be implemented by adding a pollable from the
 wasi-clocks API to the list.</p>
 <p>This function does not return a <code>result</code>; polling in itself does not
 do any I/O so it doesn't fail. If any of the I/O sources identified by
 the pollables has an error, it is indicated by marking the source as
-ready in the <code>list&lt;bool&gt;</code>.</p>
-<p>The &quot;oneoff&quot; in the name refers to the fact that this function must do a
-linear scan through the entire list of subscriptions, which may be
-inefficient if the number is large and the same subscriptions are used
-many times. In the future, this is expected to be obsoleted by the
-component model async proposal, which will include a scalable waiting
-facility.</p>
+being reaedy for I/O.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="poll_oneoff.in"><code>in</code></a>: list&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="poll_list.in"><code>in</code></a>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_oneoff.0"></a> list&lt;<code>bool</code>&gt;</li>
+<li><a name="poll_list.0"></a> list&lt;<code>u32</code>&gt;</li>
+</ul>
+<h4><a name="poll_one"><code>poll-one: func</code></a></h4>
+<p>Poll for completion on a single pollable.</p>
+<p>This function is similar to <a href="#poll_list"><code>poll-list</code></a>, but operates on only a single
+pollable. When it returns, the handle is ready for I/O.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="poll_one.in"><code>in</code></a>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
@@ -158,7 +142,7 @@ reached.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_timezone">Import interface wasi:clocks/timezone</a></h2>
 <hr />
@@ -168,7 +152,7 @@ reached.</p>
 <p>
 #### <a name="timezone_display">`record timezone-display`</a>
 <p>Information useful for displaying the timezone of a specific <a href="#datetime"><code>datetime</code></a>.</p>
-<p>This information may vary within a single <a href="#timezone"><code>timezone</code></a> to reflect daylight
+<p>This information may vary within a single <code>timezone</code> to reflect daylight
 saving time adjustments.</p>
 <h5>Record Fields</h5>
 <ul>
@@ -198,13 +182,6 @@ representation of the UTC offset may be returned, such as <code>-04:00</code>.</
 should return false.</p>
 </li>
 </ul>
-<h4><a name="timezone"><code>type timezone</code></a></h4>
-<p><code>u32</code></p>
-<p>A timezone.
-<p>In timezones that recognize daylight saving time, also known as daylight
-time and summer time, the information returned from the functions varies
-over time to reflect these adjustments.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
 <hr />
 <h3>Functions</h3>
 <h4><a name="display"><code>display: func</code></a></h4>
@@ -216,7 +193,6 @@ daylight saving time is active.</p>
 saving time.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="display.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 <li><a name="display.when"><code>when</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h5>Return values</h5>
@@ -227,19 +203,11 @@ saving time.</p>
 <p>The same as <a href="#display"><code>display</code></a>, but only return the UTC offset.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="utc_offset.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 <li><a name="utc_offset.when"><code>when</code></a>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="utc_offset.0"></a> <code>s32</code></li>
-</ul>
-<h4><a name="drop_timezone"><code>drop-timezone: func</code></a></h4>
-<p>Dispose of the specified input-stream, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_timezone.this"><code>this</code></a>: <a href="#timezone"><a href="#timezone"><code>timezone</code></a></a></li>
 </ul>
 <h2><a name="wasi:random_random">Import interface wasi:random/random</a></h2>
 <p>WASI Random is a random data API.</p>
@@ -298,186 +266,273 @@ socket ends when the socket is closed.</p>
 </li>
 <li>
 <p><a name="stream_status.ended"><code>ended</code></a></p>
-<p>The stream has ended and will not produce any further data.
+<p>When reading, this indicates that the stream will not produce
+further data.
+When writing, this indicates that the stream will no longer be read.
+Further writes are still permitted.
 </li>
 </ul>
-<h4><a name="stream_error"><code>record stream-error</code></a></h4>
-<p>An error type returned from a stream operation. Currently this
-doesn't provide any additional information.</p>
-<h5>Record Fields</h5>
-<h4><a name="output_stream"><code>type output-stream</code></a></h4>
-<p><code>u32</code></p>
-<p>An output bytestream. In the future, this will be replaced by handle
-types.
-<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
-scaffolding until component-model's async features are ready.</p>
-<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
-underlying platforms. Except where specified otherwise, I/O operations also
-always return promptly, after the number of bytes that can be written
-promptly, which could even be zero. To wait for the stream to be ready to
-accept data, the <a href="#subscribe_to_output_stream"><code>subscribe-to-output-stream</code></a> function to obtain a
-<a href="#pollable"><code>pollable</code></a> which can be polled for using <code>wasi_poll</code>.</p>
-<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
-the wit-bindgen implementation of handles and resources is ready.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
-<h4><a name="input_stream"><code>type input-stream</code></a></h4>
-<p><code>u32</code></p>
-<p>An input bytestream. In the future, this will be replaced by handle
-types.
-<p>This conceptually represents a <code>stream&lt;u8, _&gt;</code>. It's temporary
-scaffolding until component-model's async features are ready.</p>
-<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
-platforms. I/O operations always return promptly; if fewer bytes are
-promptly available than requested, they return the number of bytes promptly
-available, which could even be zero. To wait for data to be available,
-use the <a href="#subscribe_to_input_stream"><code>subscribe-to-input-stream</code></a> function to obtain a <a href="#pollable"><code>pollable</code></a> which
-can be polled for using <code>wasi_poll</code>.</p>
-<p>And at present, it is a <code>u32</code> instead of being an actual handle, until
-the wit-bindgen implementation of handles and resources is ready.</p>
-<p>This <a href="https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources">represents a resource</a>.</p>
+<h4><a name="input_stream"><code>resource input-stream</code></a></h4>
+<h4><a name="write_error"><code>enum write-error</code></a></h4>
+<p>An error for output-stream operations.</p>
+<p>Contrary to input-streams, a closed output-stream is reported using
+an error.</p>
+<h5>Enum Cases</h5>
+<ul>
+<li>
+<p><a name="write_error.last_operation_failed"><code>last-operation-failed</code></a></p>
+<p>The last operation (a write or flush) failed before completion.
+</li>
+<li>
+<p><a name="write_error.closed"><code>closed</code></a></p>
+<p>The stream is closed: no more input will be accepted by the
+stream. A closed output-stream will return this error on all
+future operations.
+</li>
+</ul>
+<h4><a name="output_stream"><code>resource output-stream</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="read"><code>read: func</code></a></h4>
-<p>Read bytes from a stream.</p>
+<h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
+<p>Perform a non-blocking read from the stream.</p>
 <p>This function returns a list of bytes containing the data that was
-read, along with a <a href="#stream_status"><code>stream-status</code></a> which indicates whether the end of
-the stream was reached. The returned list will contain up to <code>len</code>
-bytes; it may return fewer than requested, but not more.</p>
-<p>Once a stream has reached the end, subsequent calls to read or
-<a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
+read, along with a <a href="#stream_status"><code>stream-status</code></a> which, indicates whether further
+reads are expected to produce data. The returned list will contain up to
+<code>len</code> bytes; it may return fewer than requested, but not more. An
+empty list and <code>stream-status:open</code> indicates no more data is
+available at this time, and that the pollable given by <a href="#subscribe"><code>subscribe</code></a>
+will be ready when more data is available.</p>
+<p>Once a stream has reached the end, subsequent calls to <code>read</code> or
+<code>skip</code> will always report <code>stream-status:ended</code> rather than producing more
 data.</p>
-<p>If <code>len</code> is 0, it represents a request to read 0 bytes, which should
-always succeed, assuming the stream hasn't reached its end yet, and
-return an empty list.</p>
-<p>The len here is a <code>u64</code>, but some callees may not be able to allocate
-a buffer as large as that would imply.
-FIXME: describe what happens if allocation fails.</p>
+<p>When the caller gives a <code>len</code> of 0, it represents a request to read 0
+bytes. This read should  always succeed and return an empty list and
+the current <a href="#stream_status"><code>stream-status</code></a>.</p>
+<p>The <code>len</code> parameter is a <code>u64</code>, which could represent a list of u8 which
+is not possible to allocate in wasm32, or not desirable to allocate as
+as a return value by the callee. The callee may return a list of bytes
+less than <code>len</code> in size while more bytes are available for reading.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="read.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="read.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_input_stream.read.self"><code>self</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream.read.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream.read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="blocking_read"><code>blocking-read: func</code></a></h4>
-<p>Read bytes from a stream, with blocking.</p>
-<p>This is similar to <a href="#read"><code>read</code></a>, except that it blocks until at least one
-byte can be read.</p>
+<h4><a name="method_input_stream.blocking_read"><code>[method]input-stream.blocking-read: func</code></a></h4>
+<p>Read bytes from a stream, after blocking until at least one byte can
+be read. Except for blocking, identical to <code>read</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_read.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="blocking_read.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_input_stream.blocking_read.self"><code>self</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream.blocking_read.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream.blocking_read.0"></a> result&lt;(list&lt;<code>u8</code>&gt;, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="skip"><code>skip: func</code></a></h4>
+<h4><a name="method_input_stream.skip"><code>[method]input-stream.skip: func</code></a></h4>
 <p>Skip bytes from a stream.</p>
-<p>This is similar to the <a href="#read"><code>read</code></a> function, but avoids copying the
+<p>This is similar to the <code>read</code> function, but avoids copying the
 bytes into the instance.</p>
 <p>Once a stream has reached the end, subsequent calls to read or
-<a href="#skip"><code>skip</code></a> will always report end-of-stream rather than producing more
+<code>skip</code> will always report end-of-stream rather than producing more
 data.</p>
 <p>This function returns the number of bytes skipped, along with a
 <a href="#stream_status"><code>stream-status</code></a> indicating whether the end of the stream was
 reached. The returned value will be at most <code>len</code>; it may be less.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="skip.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_input_stream.skip.self"><code>self</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream.skip.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream.skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="blocking_skip"><code>blocking-skip: func</code></a></h4>
-<p>Skip bytes from a stream, with blocking.</p>
-<p>This is similar to <a href="#skip"><code>skip</code></a>, except that it blocks until at least one
-byte can be consumed.</p>
+<h4><a name="method_input_stream.blocking_skip"><code>[method]input-stream.blocking-skip: func</code></a></h4>
+<p>Skip bytes from a stream, after blocking until at least one byte
+can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_skip.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="blocking_skip.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_input_stream.blocking_skip.self"><code>self</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream.blocking_skip.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream.blocking_skip.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="subscribe_to_input_stream"><code>subscribe-to-input-stream: func</code></a></h4>
+<h4><a name="method_input_stream.subscribe"><code>[method]input-stream.subscribe: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
 has bytes available to read or the other end of the stream has been
-closed.</p>
+closed.
+The created <a href="#pollable"><code>pollable</code></a> is a child resource of the <a href="#input_stream"><code>input-stream</code></a>.
+Implementations may trap if the <a href="#input_stream"><code>input-stream</code></a> is dropped before
+all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="subscribe_to_input_stream.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="method_input_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe_to_input_stream.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="method_input_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="drop_input_stream"><code>drop-input-stream: func</code></a></h4>
-<p>Dispose of the specified <a href="#input_stream"><code>input-stream</code></a>, after which it may no longer
-be used.</p>
+<h4><a name="method_output_stream.check_write"><code>[method]output-stream.check-write: func</code></a></h4>
+<p>Check readiness for writing. This function never blocks.</p>
+<p>Returns the number of bytes permitted for the next call to <code>write</code>,
+or an error. Calling <code>write</code> with more bytes than this function has
+permitted will trap.</p>
+<p>When this function returns 0 bytes, the <a href="#subscribe"><code>subscribe</code></a> pollable will
+become ready when this function will report at least 1 byte, or an
+error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_input_stream.this"><code>this</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-</ul>
-<h4><a name="write"><code>write: func</code></a></h4>
-<p>Write bytes to a stream.</p>
-<p>This function returns a <code>u64</code> indicating the number of bytes from
-<code>buf</code> that were written; it may be less than the full list.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="write.buf"><code>buf</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_output_stream.check_write.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.check_write.0"></a> result&lt;<code>u64</code>, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="blocking_write"><code>blocking-write: func</code></a></h4>
-<p>Write bytes to a stream, with blocking.</p>
-<p>This is similar to <a href="#write"><code>write</code></a>, except that it blocks until at least one
-byte can be written.</p>
+<h4><a name="method_output_stream.write"><code>[method]output-stream.write: func</code></a></h4>
+<p>Perform a write. This function never blocks.</p>
+<p>Precondition: check-write gave permit of Ok(n) and contents has a
+length of less than or equal to n. Otherwise, this function will trap.</p>
+<p>returns Err(closed) without writing if the stream has closed since
+the last call to check-write provided a permit.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_write.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="blocking_write.buf"><code>buf</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_output_stream.write.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.write.contents"><code>contents</code></a>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.write.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="write_zeroes"><code>write-zeroes: func</code></a></h4>
-<p>Write multiple zero bytes to a stream.</p>
-<p>This function returns a <code>u64</code> indicating the number of zero bytes
-that were written; it may be less than <code>len</code>.</p>
+<h4><a name="method_output_stream.blocking_write_and_flush"><code>[method]output-stream.blocking-write-and-flush: func</code></a></h4>
+<p>Perform a write of up to 4096 bytes, and then flush the stream. Block
+until all of these operations are complete, or an error occurs.</p>
+<p>This is a convenience wrapper around the use of <code>check-write</code>,
+<a href="#subscribe"><code>subscribe</code></a>, <code>write</code>, and <code>flush</code>, and is implemented with the
+following pseudo-code:</p>
+<pre><code class="language-text">let pollable = this.subscribe();
+while !contents.is_empty() {
+  // Wait for the stream to become writable
+  poll-one(pollable);
+  let Ok(n) = this.check-write(); // eliding error handling
+  let len = min(n, contents.len());
+  let (chunk, rest) = contents.split_at(len);
+  this.write(chunk  );            // eliding error handling
+  contents = rest;
+}
+this.flush();
+// Wait for completion of `flush`
+poll-one(pollable);
+// Check for any errors that arose during `flush`
+let _ = this.check-write();         // eliding error handling
+</code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="write_zeroes.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="write_zeroes.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_output_stream.blocking_write_and_flush.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_write_and_flush.contents"><code>contents</code></a>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="write_zeroes.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_write_and_flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="blocking_write_zeroes"><code>blocking-write-zeroes: func</code></a></h4>
-<p>Write multiple zero bytes to a stream, with blocking.</p>
-<p>This is similar to <a href="#write_zeroes"><code>write-zeroes</code></a>, except that it blocks until at least
-one byte can be written.</p>
+<h4><a name="method_output_stream.flush"><code>[method]output-stream.flush: func</code></a></h4>
+<p>Request to flush buffered output. This function never blocks.</p>
+<p>This tells the output-stream that the caller intends any buffered
+output to be flushed. the output which is expected to be flushed
+is all that has been passed to <code>write</code> prior to this call.</p>
+<p>Upon calling this function, the <a href="#output_stream"><code>output-stream</code></a> will not accept any
+writes (<code>check-write</code> will return <code>ok(0)</code>) until the flush has
+completed. The <a href="#subscribe"><code>subscribe</code></a> pollable will become ready when the
+flush has completed and the stream can accept more writes.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_write_zeroes.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="blocking_write_zeroes.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_output_stream.flush.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_write_zeroes.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="splice"><code>splice: func</code></a></h4>
+<h4><a name="method_output_stream.blocking_flush"><code>[method]output-stream.blocking-flush: func</code></a></h4>
+<p>Request to flush buffered output, and block until flush completes
+and stream is ready for writing again.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_output_stream.blocking_flush.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_output_stream.blocking_flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_output_stream.subscribe"><code>[method]output-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
+is ready for more writing, or an error has occured. When this
+pollable is ready, <code>check-write</code> will return <code>ok(n)</code> with n&gt;0, or an
+error.</p>
+<p>If the stream is closed, this pollable is always ready immediately.</p>
+<p>The created <a href="#pollable"><code>pollable</code></a> is a child resource of the <a href="#output_stream"><code>output-stream</code></a>.
+Implementations may trap if the <a href="#output_stream"><code>output-stream</code></a> is dropped before
+all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_output_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_output_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_output_stream.write_zeroes"><code>[method]output-stream.write-zeroes: func</code></a></h4>
+<p>Write zeroes to a stream.</p>
+<p>this should be used precisely like <code>write</code> with the exact same
+preconditions (must use check-write first), but instead of
+passing a list of bytes, you simply pass the number of zero-bytes
+that should be written.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_output_stream.write_zeroes.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.write_zeroes.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_output_stream.write_zeroes.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_output_stream.blocking_write_zeroes_and_flush"><code>[method]output-stream.blocking-write-zeroes-and-flush: func</code></a></h4>
+<p>Perform a write of up to 4096 zeroes, and then flush the stream.
+Block until all of these operations are complete, or an error
+occurs.</p>
+<p>This is a convenience wrapper around the use of <code>check-write</code>,
+<a href="#subscribe"><code>subscribe</code></a>, <code>write-zeroes</code>, and <code>flush</code>, and is implemented with
+the following pseudo-code:</p>
+<pre><code class="language-text">let pollable = this.subscribe();
+while num_zeroes != 0 {
+  // Wait for the stream to become writable
+  poll-one(pollable);
+  let Ok(n) = this.check-write(); // eliding error handling
+  let len = min(n, num_zeroes);
+  this.write-zeroes(len);         // eliding error handling
+  num_zeroes -= len;
+}
+this.flush();
+// Wait for completion of `flush`
+poll-one(pollable);
+// Check for any errors that arose during `flush`
+let _ = this.check-write();         // eliding error handling
+</code></pre>
+<h5>Params</h5>
+<ul>
+<li><a name="method_output_stream.blocking_write_zeroes_and_flush.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_write_zeroes_and_flush.len"><code>len</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_output_stream.blocking_write_zeroes_and_flush.0"></a> result&lt;_, <a href="#write_error"><a href="#write_error"><code>write-error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_output_stream.splice"><code>[method]output-stream.splice: func</code></a></h4>
 <p>Read from one stream and write to another.</p>
 <p>This function returns the number of bytes transferred; it may be less
 than <code>len</code>.</p>
@@ -485,29 +540,29 @@ than <code>len</code>.</p>
 read from the input stream has been written to the output stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="splice.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="splice.src"><code>src</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="splice.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_output_stream.splice.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.splice.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.splice.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="blocking_splice"><code>blocking-splice: func</code></a></h4>
+<h4><a name="method_output_stream.blocking_splice"><code>[method]output-stream.blocking-splice: func</code></a></h4>
 <p>Read from one stream and write to another, with blocking.</p>
-<p>This is similar to <a href="#splice"><code>splice</code></a>, except that it blocks until at least
+<p>This is similar to <code>splice</code>, except that it blocks until at least
 one byte can be read.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="blocking_splice.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="blocking_splice.src"><code>src</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
-<li><a name="blocking_splice.len"><code>len</code></a>: <code>u64</code></li>
+<li><a name="method_output_stream.blocking_splice.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_splice.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_splice.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="blocking_splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>), <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_splice.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="forward"><code>forward: func</code></a></h4>
+<h4><a name="method_output_stream.forward"><code>[method]output-stream.forward: func</code></a></h4>
 <p>Forward the entire contents of an input stream to an output stream.</p>
 <p>This function repeatedly reads from the input stream and writes
 the data to the output stream, until the end of the input stream
@@ -515,33 +570,16 @@ is reached, or an error is encountered.</p>
 <p>Unlike other I/O functions, this function blocks until the end
 of the input stream is seen and all the data has been written to
 the output stream.</p>
-<p>This function returns the number of bytes transferred.</p>
+<p>This function returns the number of bytes transferred, and the status of
+the output stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="forward.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-<li><a name="forward.src"><code>src</code></a>: <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="method_output_stream.forward.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.forward.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="forward.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="subscribe_to_output_stream"><code>subscribe-to-output-stream: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
-is ready to accept bytes or the other end of the stream has been closed.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_to_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_to_output_stream.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
-</ul>
-<h4><a name="drop_output_stream"><code>drop-output-stream: func</code></a></h4>
-<p>Dispose of the specified <a href="#output_stream"><code>output-stream</code></a>, after which it may no longer
-be used.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_output_stream.this"><code>this</code></a>: <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="method_output_stream.forward.0"></a> result&lt;(<code>u64</code>, <a href="#stream_status"><a href="#stream_status"><code>stream-status</code></a></a>)&gt;</li>
 </ul>
 <h2><a name="wasi:cli_stdout">Import interface wasi:cli/stdout</a></h2>
 <hr />
@@ -554,7 +592,7 @@ be used.</p>
 <h4><a name="get_stdout"><code>get-stdout: func</code></a></h4>
 <h5>Return values</h5>
 <ul>
-<li><a name="get_stdout.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:cli_stderr">Import interface wasi:cli/stderr</a></h2>
 <hr />
@@ -567,7 +605,7 @@ be used.</p>
 <h4><a name="get_stderr"><code>get-stderr: func</code></a></h4>
 <h5>Return values</h5>
 <ul>
-<li><a name="get_stderr.0"></a> <a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></li>
+<li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:cli_stdin">Import interface wasi:cli/stdin</a></h2>
 <hr />
@@ -580,7 +618,7 @@ be used.</p>
 <h4><a name="get_stdin"><code>get-stdin: func</code></a></h4>
 <h5>Return values</h5>
 <ul>
-<li><a name="get_stdin.0"></a> <a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></li>
+<li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_types">Import interface wasi:http/types</a></h2>
 <hr />
@@ -593,35 +631,6 @@ be used.</p>
 <p>
 #### <a name="pollable">`type pollable`</a>
 [`pollable`](#pollable)
-<p>
-#### <a name="status_code">`type status-code`</a>
-`u16`
-<p>
-#### <a name="scheme">`variant scheme`</a>
-<h5>Variant Cases</h5>
-<ul>
-<li><a name="scheme.http"><code>HTTP</code></a></li>
-<li><a name="scheme.https"><code>HTTPS</code></a></li>
-<li><a name="scheme.other"><code>other</code></a>: <code>string</code></li>
-</ul>
-<h4><a name="response_outparam"><code>type response-outparam</code></a></h4>
-<p><code>u32</code></p>
-<p>
-#### <a name="request_options">`record request-options`</a>
-<h5>Record Fields</h5>
-<ul>
-<li><a name="request_options.connect_timeout_ms"><code>connect-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
-<li><a name="request_options.first_byte_timeout_ms"><code>first-byte-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
-<li><a name="request_options.between_bytes_timeout_ms"><code>between-bytes-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
-</ul>
-<h4><a name="outgoing_stream"><code>type outgoing-stream</code></a></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-#### <a name="outgoing_response">`type outgoing-response`</a>
-`u32`
-<p>
-#### <a name="outgoing_request">`type outgoing-request`</a>
-`u32`
 <p>
 #### <a name="method">`variant method`</a>
 <h5>Variant Cases</h5>
@@ -637,34 +646,14 @@ be used.</p>
 <li><a name="method.patch"><code>patch</code></a></li>
 <li><a name="method.other"><code>other</code></a>: <code>string</code></li>
 </ul>
-<h4><a name="incoming_stream"><code>type incoming-stream</code></a></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
-<p>
-#### <a name="incoming_response">`type incoming-response`</a>
-`u32`
-<p>
-#### <a name="incoming_request">`type incoming-request`</a>
-`u32`
-<p>
-#### <a name="future_write_trailers_result">`type future-write-trailers-result`</a>
-`u32`
-<p>
-#### <a name="future_trailers">`type future-trailers`</a>
-`u32`
-<p>
-#### <a name="future_incoming_response">`type future-incoming-response`</a>
-`u32`
-<p>
-#### <a name="fields">`type fields`</a>
-`u32`
-<p>
-#### <a name="trailers">`type trailers`</a>
-[`fields`](#fields)
-<p>
-#### <a name="headers">`type headers`</a>
-[`fields`](#fields)
-<p>
-#### <a name="error">`variant error`</a>
+<h4><a name="scheme"><code>variant scheme</code></a></h4>
+<h5>Variant Cases</h5>
+<ul>
+<li><a name="scheme.http"><code>HTTP</code></a></li>
+<li><a name="scheme.https"><code>HTTPS</code></a></li>
+<li><a name="scheme.other"><code>other</code></a>: <code>string</code></li>
+</ul>
+<h4><a name="error"><code>variant error</code></a></h4>
 <h5>Variant Cases</h5>
 <ul>
 <li><a name="error.invalid_url"><code>invalid-url</code></a>: <code>string</code></li>
@@ -672,7 +661,56 @@ be used.</p>
 <li><a name="error.protocol_error"><code>protocol-error</code></a>: <code>string</code></li>
 <li><a name="error.unexpected_error"><code>unexpected-error</code></a>: <code>string</code></li>
 </ul>
-<hr />
+<h4><a name="fields"><code>type fields</code></a></h4>
+<p><code>u32</code></p>
+<p>
+#### <a name="headers">`type headers`</a>
+[`fields`](#fields)
+<p>
+#### <a name="trailers">`type trailers`</a>
+[`fields`](#fields)
+<p>
+#### <a name="incoming_stream">`type incoming-stream`</a>
+[`input-stream`](#input_stream)
+<p>
+#### <a name="outgoing_stream">`type outgoing-stream`</a>
+[`output-stream`](#output_stream)
+<p>
+#### <a name="future_trailers">`type future-trailers`</a>
+`u32`
+<p>
+#### <a name="future_write_trailers_result">`type future-write-trailers-result`</a>
+`u32`
+<p>
+#### <a name="incoming_request">`type incoming-request`</a>
+`u32`
+<p>
+#### <a name="outgoing_request">`type outgoing-request`</a>
+`u32`
+<p>
+#### <a name="request_options">`record request-options`</a>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="request_options.connect_timeout_ms"><code>connect-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="request_options.first_byte_timeout_ms"><code>first-byte-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="request_options.between_bytes_timeout_ms"><code>between-bytes-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
+</ul>
+<h4><a name="response_outparam"><code>type response-outparam</code></a></h4>
+<p><code>u32</code></p>
+<p>
+#### <a name="status_code">`type status-code`</a>
+`u16`
+<p>
+#### <a name="incoming_response">`type incoming-response`</a>
+`u32`
+<p>
+#### <a name="outgoing_response">`type outgoing-response`</a>
+`u32`
+<p>
+#### <a name="future_incoming_response">`type future-incoming-response`</a>
+`u32`
+<p>
+----
 <h3>Functions</h3>
 <h4><a name="drop_fields"><code>drop-fields: func</code></a></h4>
 <h5>Params</h5>
@@ -739,7 +777,7 @@ be used.</p>
 <h4><a name="finish_incoming_stream"><code>finish-incoming-stream: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="finish_incoming_stream.s"><code>s</code></a>: <a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a></li>
+<li><a name="finish_incoming_stream.s"><code>s</code></a>: own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -748,12 +786,12 @@ be used.</p>
 <h4><a name="finish_outgoing_stream"><code>finish-outgoing-stream: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="finish_outgoing_stream.s"><code>s</code></a>: <a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a></li>
+<li><a name="finish_outgoing_stream.s"><code>s</code></a>: own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
 </ul>
 <h4><a name="finish_outgoing_stream_with_trailers"><code>finish-outgoing-stream-with-trailers: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="finish_outgoing_stream_with_trailers.s"><code>s</code></a>: <a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a></li>
+<li><a name="finish_outgoing_stream_with_trailers.s"><code>s</code></a>: own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
 <li><a name="finish_outgoing_stream_with_trailers.trailers"><a href="#trailers"><code>trailers</code></a></a>: <a href="#trailers"><a href="#trailers"><code>trailers</code></a></a></li>
 </ul>
 <h5>Return values</h5>
@@ -781,7 +819,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen_to_future_trailers.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="listen_to_future_trailers.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_future_write_trailers_result"><code>drop-future-write-trailers-result: func</code></a></h4>
 <h5>Params</h5>
@@ -804,7 +842,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen_to_future_write_trailers_result.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="listen_to_future_write_trailers_result.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="drop_incoming_request"><code>drop-incoming-request: func</code></a></h4>
 <h5>Params</h5>
@@ -868,7 +906,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_consume.0"></a> result&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;</li>
+<li><a name="incoming_request_consume.0"></a> result&lt;own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="new_outgoing_request"><code>new-outgoing-request: func</code></a></h4>
 <h5>Params</h5>
@@ -890,7 +928,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="outgoing_request_write.0"></a> result&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
+<li><a name="outgoing_request_write.0"></a> result&lt;own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="drop_response_outparam"><code>drop-response-outparam: func</code></a></h4>
 <h5>Params</h5>
@@ -942,7 +980,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_response_consume.0"></a> result&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;</li>
+<li><a name="incoming_response_consume.0"></a> result&lt;own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="new_outgoing_response"><code>new-outgoing-response: func</code></a></h4>
 <h5>Params</h5>
@@ -961,7 +999,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="outgoing_response_write.0"></a> result&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
+<li><a name="outgoing_response_write.0"></a> result&lt;own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="drop_future_incoming_response"><code>drop-future-incoming-response: func</code></a></h4>
 <h5>Params</h5>
@@ -984,7 +1022,7 @@ be used.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen_to_future_incoming_response.0"></a> <a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></li>
+<li><a name="listen_to_future_incoming_response.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_outgoing_handler">Import interface wasi:http/outgoing-handler</a></h2>
 <hr />
