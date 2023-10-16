@@ -18,6 +18,6 @@ jobs:
         ./wit-deps lock
         git add -N wit/deps
         git diff --exit-code
-    - uses: WebAssembly/wit-abi-up-to-date@v15
+    - uses: WebAssembly/wit-abi-up-to-date@v16
       with:
         worlds: "command reactor"
