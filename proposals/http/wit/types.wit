@@ -2,8 +2,8 @@
 // define the HTTP resource types and operations used by the component's
 // imported and exported interfaces.
 interface types {
-  use wasi:io/streams.{input-stream, output-stream}
-  use wasi:poll/poll.{pollable}
+  use wasi:io/streams.{input-stream, output-stream};
+  use wasi:io/poll.{pollable};
   
   // This type corresponds to HTTP standard Methods.
   variant method {
@@ -40,19 +40,19 @@ interface types {
   // HTTP standard Fields. Soon, when resource types are added, the `type
   // fields = u32` type alias can be replaced by a proper `resource fields`
   // definition containing all the functions using the method syntactic sugar.
-  type fields = u32
-  drop-fields: func(fields: fields)
-  new-fields: func(entries: list<tuple<string,list<u8>>>) -> fields
+  type fields = u32;
+  drop-fields: func(fields: fields);
+  new-fields: func(entries: list<tuple<string,list<u8>>>) -> fields;
   // Returns an empty list if `name` is not present.
-  fields-get: func(fields: fields, name: string) -> list<list<u8>>
-  fields-set: func(fields: fields, name: string, value: list<list<u8>>)
-  fields-delete: func(fields: fields, name: string)
-  fields-append: func(fields: fields, name: string, value: list<u8>)
-  fields-entries: func(fields: fields) -> list<tuple<string,list<u8>>>
-  fields-clone: func(fields: fields) -> fields
+  fields-get: func(fields: fields, name: string) -> list<list<u8>>;
+  fields-set: func(fields: fields, name: string, value: list<list<u8>>);
+  fields-delete: func(fields: fields, name: string);
+  fields-append: func(fields: fields, name: string, value: list<u8>);
+  fields-entries: func(fields: fields) -> list<tuple<string,list<u8>>>;
+  fields-clone: func(fields: fields) -> fields;
 
-  type headers = fields
-  type trailers = fields
+  type headers = fields;
+  type trailers = fields;
 
   // The following block defines stream types which corresponds to the HTTP
   // standard Contents and Trailers. With Preview3, all of these fields can be
@@ -63,27 +63,27 @@ interface types {
   // the stream. The optional `future-` types describe the asynchronous result of
   // reading/writing the optional HTTP trailers and MUST be waited on and dropped
   // to complete streaming the request/response.
-  type incoming-stream = input-stream
-  type outgoing-stream = output-stream
-  finish-incoming-stream: func(s: incoming-stream) -> option<future-trailers>
-  finish-outgoing-stream: func(s: outgoing-stream)
-  finish-outgoing-stream-with-trailers: func(s: outgoing-stream, trailers: trailers) -> future-write-trailers-result
+  type incoming-stream = input-stream;
+  type outgoing-stream = output-stream;
+  finish-incoming-stream: func(s: incoming-stream) -> option<future-trailers>;
+  finish-outgoing-stream: func(s: outgoing-stream);
+  finish-outgoing-stream-with-trailers: func(s: outgoing-stream, trailers: trailers) -> future-write-trailers-result;
 
   // The following block defines the `future-trailers` resource, which is
   // returned when finishing an `incoming-stream` to asychronously produce the
   // final trailers.
-  type future-trailers = u32
-  drop-future-trailers: func(f: future-trailers)
-  future-trailers-get: func(f: future-trailers) -> option<result<trailers, error>>
-  listen-to-future-trailers: func(f: future-trailers) -> pollable
+  type future-trailers = u32;
+  drop-future-trailers: func(f: future-trailers);
+  future-trailers-get: func(f: future-trailers) -> option<result<trailers, error>>;
+  listen-to-future-trailers: func(f: future-trailers) -> pollable;
 
   // The following block defines the `future-write-trailers-result` resource,
   // which is returned when finishing an `outgoing-stream` and asychronously
   // indicates the success or failure of writing the trailers.
-  type future-write-trailers-result = u32
-  drop-future-write-trailers-result: func(f: future-write-trailers-result)
-  future-write-trailers-result-get: func(f: future-write-trailers-result) -> option<result<_, error>>
-  listen-to-future-write-trailers-result: func(f: future-write-trailers-result) -> pollable
+  type future-write-trailers-result = u32;
+  drop-future-write-trailers-result: func(f: future-write-trailers-result);
+  future-write-trailers-result-get: func(f: future-write-trailers-result) -> option<result<_, error>>;
+  listen-to-future-write-trailers-result: func(f: future-write-trailers-result) -> pollable;
 
   // The following block defines the `incoming-request` and `outgoing-request`
   // resource types that correspond to HTTP standard Requests. Soon, when
@@ -102,24 +102,24 @@ interface types {
   // before dropping the request/response or passing ownership of the request/response
   // to the outside world. The caller can also call drop on the stream before the 
   // request/response is dropped if they want to release resources earlier.
-  type incoming-request = u32
-  type outgoing-request = u32
-  drop-incoming-request: func(request: incoming-request)
-  drop-outgoing-request: func(request: outgoing-request)
-  incoming-request-method: func(request: incoming-request) -> method
-  incoming-request-path-with-query: func(request: incoming-request) -> option<string>
-  incoming-request-scheme: func(request: incoming-request) -> option<scheme>
-  incoming-request-authority: func(request: incoming-request) -> option<string>
-  incoming-request-headers: func(request: incoming-request) -> headers
-  incoming-request-consume: func(request: incoming-request) -> result<incoming-stream>
+  type incoming-request = u32;
+  type outgoing-request = u32;
+  drop-incoming-request: func(request: incoming-request);
+  drop-outgoing-request: func(request: outgoing-request);
+  incoming-request-method: func(request: incoming-request) -> method;
+  incoming-request-path-with-query: func(request: incoming-request) -> option<string>;
+  incoming-request-scheme: func(request: incoming-request) -> option<scheme>;
+  incoming-request-authority: func(request: incoming-request) -> option<string>;
+  incoming-request-headers: func(request: incoming-request) -> headers;
+  incoming-request-consume: func(request: incoming-request) -> result<incoming-stream>;
   new-outgoing-request: func(
     method: method,
     path-with-query: option<string>,
     scheme: option<scheme>,
     authority: option<string>,
     headers: headers
-  ) -> result<outgoing-request, error>
-  outgoing-request-write: func(request: outgoing-request) -> result<outgoing-stream>
+  ) -> result<outgoing-request, error>;
+  outgoing-request-write: func(request: outgoing-request) -> result<outgoing-stream>;
 
   // Additional optional parameters that can be set when making a request.
   record request-options {
@@ -143,12 +143,12 @@ interface types {
   // definition. Later, with Preview3, the need for an outparam goes away entirely
   // (the `wasi:http/handler` interface used for both incoming and outgoing can
   // simply return a `stream`).
-  type response-outparam = u32
-  drop-response-outparam: func(response: response-outparam)
-  set-response-outparam: func(param: response-outparam, response: result<outgoing-response, error>) -> result
+  type response-outparam = u32;
+  drop-response-outparam: func(response: response-outparam);
+  set-response-outparam: func(param: response-outparam, response: result<outgoing-response, error>) -> result;
 
   // This type corresponds to the HTTP standard Status Code.
-  type status-code = u16
+  type status-code = u16;
 
   // The following block defines the `incoming-response` and `outgoing-response`
   // resource types that correspond to HTTP standard Responses. Soon, when
@@ -161,18 +161,18 @@ interface types {
   // with the response, with all mutations visible to all uses. Components MUST
   // avoid updating `headers` and `trailers` after passing a response that
   // points to them to the outside world.
-  type incoming-response = u32
-  type outgoing-response = u32
-  drop-incoming-response: func(response: incoming-response)
-  drop-outgoing-response: func(response: outgoing-response)
-  incoming-response-status: func(response: incoming-response) -> status-code
-  incoming-response-headers: func(response: incoming-response) -> headers
-  incoming-response-consume: func(response: incoming-response) -> result<incoming-stream>
+  type incoming-response = u32;
+  type outgoing-response = u32;
+  drop-incoming-response: func(response: incoming-response);
+  drop-outgoing-response: func(response: outgoing-response);
+  incoming-response-status: func(response: incoming-response) -> status-code;
+  incoming-response-headers: func(response: incoming-response) -> headers;
+  incoming-response-consume: func(response: incoming-response) -> result<incoming-stream>;
   new-outgoing-response: func(
     status-code: status-code,
     headers: headers
-  ) -> result<outgoing-response, error>
-  outgoing-response-write: func(response: outgoing-response) -> result<outgoing-stream>
+  ) -> result<outgoing-response, error>;
+  outgoing-response-write: func(response: outgoing-response) -> result<outgoing-stream>;
 
   // The following block defines a special resource type used by the
   // `wasi:http/outgoing-handler` interface to emulate
@@ -181,8 +181,8 @@ interface types {
   // method to get the result if it is available. If the result is not available,
   // the client can call `listen` to get a `pollable` that can be passed to
   // `io.poll.poll-oneoff`.
-  type future-incoming-response = u32
-  drop-future-incoming-response: func(f: future-incoming-response)
-  future-incoming-response-get: func(f: future-incoming-response) -> option<result<incoming-response, error>>
-  listen-to-future-incoming-response: func(f: future-incoming-response) -> pollable
+  type future-incoming-response = u32;
+  drop-future-incoming-response: func(f: future-incoming-response);
+  future-incoming-response-get: func(f: future-incoming-response) -> option<result<incoming-response, error>>;
+  listen-to-future-incoming-response: func(f: future-incoming-response) -> pollable;
 }
