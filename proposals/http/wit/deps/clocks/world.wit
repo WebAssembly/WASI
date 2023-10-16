@@ -1,7 +1,7 @@
-package wasi:clocks
+package wasi:clocks;
 
-world example-world {
-    import monotonic-clock
-    import wall-clock
-    import timezone
+world imports {
+    import monotonic-clock;
+    import wall-clock;
+    import timezone;
 }

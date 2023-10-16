@@ -1,5 +1,6 @@
-package wasi:io
+package wasi:io;
 
-world example-world {
-    import streams
+world imports {
+    import streams;
+    import poll;
 }
