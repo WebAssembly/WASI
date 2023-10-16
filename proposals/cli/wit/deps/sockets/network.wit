@@ -3,7 +3,7 @@ interface network {
 	/// An opaque resource that represents access to (a subset of) the network.
 	/// This enables context-based security for networking.
 	/// There is no need for this to map 1:1 to a physical network interface.
-	resource network
+	resource network;
 
 	/// Error codes.
 	/// 
@@ -150,8 +150,8 @@ interface network {
 		ipv6,
 	}
 
-	type ipv4-address = tuple<u8, u8, u8, u8>
-	type ipv6-address = tuple<u16, u16, u16, u16, u16, u16, u16, u16>
+	type ipv4-address = tuple<u8, u8, u8, u8>;
+	type ipv6-address = tuple<u16, u16, u16, u16, u16, u16, u16, u16>;
 
 	variant ip-address {
 		ipv4(ipv4-address),
