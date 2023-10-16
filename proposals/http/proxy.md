@@ -661,368 +661,304 @@ the output stream.</p>
 <li><a name="error.protocol_error"><code>protocol-error</code></a>: <code>string</code></li>
 <li><a name="error.unexpected_error"><code>unexpected-error</code></a>: <code>string</code></li>
 </ul>
-<h4><a name="fields"><code>type fields</code></a></h4>
-<p><code>u32</code></p>
-<p>
-#### <a name="headers">`type headers`</a>
-[`fields`](#fields)
+<h4><a name="fields"><code>resource fields</code></a></h4>
+<h4><a name="headers"><code>type headers</code></a></h4>
+<p><a href="#fields"><a href="#fields"><code>fields</code></a></a></p>
 <p>
 #### <a name="trailers">`type trailers`</a>
 [`fields`](#fields)
 <p>
-#### <a name="incoming_stream">`type incoming-stream`</a>
-[`input-stream`](#input_stream)
-<p>
-#### <a name="outgoing_stream">`type outgoing-stream`</a>
-[`output-stream`](#output_stream)
-<p>
-#### <a name="future_trailers">`type future-trailers`</a>
-`u32`
-<p>
-#### <a name="future_write_trailers_result">`type future-write-trailers-result`</a>
-`u32`
-<p>
-#### <a name="incoming_request">`type incoming-request`</a>
-`u32`
-<p>
-#### <a name="outgoing_request">`type outgoing-request`</a>
-`u32`
-<p>
-#### <a name="request_options">`record request-options`</a>
+#### <a name="incoming_request">`resource incoming-request`</a>
+<h4><a name="outgoing_request"><code>resource outgoing-request</code></a></h4>
+<h4><a name="request_options"><code>record request-options</code></a></h4>
 <h5>Record Fields</h5>
 <ul>
 <li><a name="request_options.connect_timeout_ms"><code>connect-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
 <li><a name="request_options.first_byte_timeout_ms"><code>first-byte-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
 <li><a name="request_options.between_bytes_timeout_ms"><code>between-bytes-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</li>
 </ul>
-<h4><a name="response_outparam"><code>type response-outparam</code></a></h4>
-<p><code>u32</code></p>
+<h4><a name="response_outparam"><code>resource response-outparam</code></a></h4>
+<h4><a name="status_code"><code>type status-code</code></a></h4>
+<p><code>u16</code></p>
 <p>
-#### <a name="status_code">`type status-code`</a>
-`u16`
-<p>
-#### <a name="incoming_response">`type incoming-response`</a>
-`u32`
-<p>
-#### <a name="outgoing_response">`type outgoing-response`</a>
-`u32`
-<p>
-#### <a name="future_incoming_response">`type future-incoming-response`</a>
-`u32`
-<p>
-----
+#### <a name="incoming_response">`resource incoming-response`</a>
+<h4><a name="incoming_body"><code>resource incoming-body</code></a></h4>
+<h4><a name="future_trailers"><code>resource future-trailers</code></a></h4>
+<h4><a name="outgoing_response"><code>resource outgoing-response</code></a></h4>
+<h4><a name="outgoing_body"><code>resource outgoing-body</code></a></h4>
+<h4><a name="future_incoming_response"><code>resource future-incoming-response</code></a></h4>
+<hr />
 <h3>Functions</h3>
-<h4><a name="drop_fields"><code>drop-fields: func</code></a></h4>
+<h4><a name="constructor_fields"><code>[constructor]fields: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_fields.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
-</ul>
-<h4><a name="new_fields"><code>new-fields: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="new_fields.entries"><code>entries</code></a>: list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
+<li><a name="constructor_fields.entries"><code>entries</code></a>: list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="new_fields.0"></a> <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
+<li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
-<h4><a name="fields_get"><code>fields-get: func</code></a></h4>
+<h4><a name="method_fields.get"><code>[method]fields.get: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_get.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
-<li><a name="fields_get.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.get.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields.get.name"><code>name</code></a>: <code>string</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="fields_get.0"></a> list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
+<li><a name="method_fields.get.0"></a> list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
 </ul>
-<h4><a name="fields_set"><code>fields-set: func</code></a></h4>
+<h4><a name="method_fields.set"><code>[method]fields.set: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_set.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
-<li><a name="fields_set.name"><code>name</code></a>: <code>string</code></li>
-<li><a name="fields_set.value"><code>value</code></a>: list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
+<li><a name="method_fields.set.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields.set.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.set.value"><code>value</code></a>: list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
 </ul>
-<h4><a name="fields_delete"><code>fields-delete: func</code></a></h4>
+<h4><a name="method_fields.delete"><code>[method]fields.delete: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_delete.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
-<li><a name="fields_delete.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.delete.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields.delete.name"><code>name</code></a>: <code>string</code></li>
 </ul>
-<h4><a name="fields_append"><code>fields-append: func</code></a></h4>
+<h4><a name="method_fields.append"><code>[method]fields.append: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_append.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
-<li><a name="fields_append.name"><code>name</code></a>: <code>string</code></li>
-<li><a name="fields_append.value"><code>value</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_fields.append.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields.append.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.append.value"><code>value</code></a>: list&lt;<code>u8</code>&gt;</li>
 </ul>
-<h4><a name="fields_entries"><code>fields-entries: func</code></a></h4>
+<h4><a name="method_fields.entries"><code>[method]fields.entries: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_entries.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
+<li><a name="method_fields.entries.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="fields_entries.0"></a> list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
+<li><a name="method_fields.entries.0"></a> list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
 </ul>
-<h4><a name="fields_clone"><code>fields-clone: func</code></a></h4>
+<h4><a name="method_fields.clone"><code>[method]fields.clone: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="fields_clone.fields"><a href="#fields"><code>fields</code></a></a>: <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
+<li><a name="method_fields.clone.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="fields_clone.0"></a> <a href="#fields"><a href="#fields"><code>fields</code></a></a></li>
+<li><a name="method_fields.clone.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
-<h4><a name="finish_incoming_stream"><code>finish-incoming-stream: func</code></a></h4>
+<h4><a name="method_incoming_request.method"><code>[method]incoming-request.method: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="finish_incoming_stream.s"><code>s</code></a>: own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;</li>
+<li><a name="method_incoming_request.method.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="finish_incoming_stream.0"></a> option&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
+<li><a name="method_incoming_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
-<h4><a name="finish_outgoing_stream"><code>finish-outgoing-stream: func</code></a></h4>
+<h4><a name="method_incoming_request.path_with_query"><code>[method]incoming-request.path-with-query: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="finish_outgoing_stream.s"><code>s</code></a>: own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
-</ul>
-<h4><a name="finish_outgoing_stream_with_trailers"><code>finish-outgoing-stream-with-trailers: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="finish_outgoing_stream_with_trailers.s"><code>s</code></a>: own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;</li>
-<li><a name="finish_outgoing_stream_with_trailers.trailers"><a href="#trailers"><code>trailers</code></a></a>: <a href="#trailers"><a href="#trailers"><code>trailers</code></a></a></li>
+<li><a name="method_incoming_request.path_with_query.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="finish_outgoing_stream_with_trailers.0"></a> <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+<li><a name="method_incoming_request.path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="drop_future_trailers"><code>drop-future-trailers: func</code></a></h4>
+<h4><a name="method_incoming_request.scheme"><code>[method]incoming-request.scheme: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_future_trailers.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
-</ul>
-<h4><a name="future_trailers_get"><code>future-trailers-get: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="future_trailers_get.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
+<li><a name="method_incoming_request.scheme.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="future_trailers_get.0"></a> option&lt;result&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_request.scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
-<h4><a name="listen_to_future_trailers"><code>listen-to-future-trailers: func</code></a></h4>
+<h4><a name="method_incoming_request.authority"><code>[method]incoming-request.authority: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="listen_to_future_trailers.f"><code>f</code></a>: <a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a></li>
+<li><a name="method_incoming_request.authority.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen_to_future_trailers.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_incoming_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="drop_future_write_trailers_result"><code>drop-future-write-trailers-result: func</code></a></h4>
+<h4><a name="method_incoming_request.headers"><code>[method]incoming-request.headers: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_future_write_trailers_result.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
-</ul>
-<h4><a name="future_write_trailers_result_get"><code>future-write-trailers-result-get: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="future_write_trailers_result_get.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+<li><a name="method_incoming_request.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="future_write_trailers_result_get.0"></a> option&lt;result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="listen_to_future_write_trailers_result"><code>listen-to-future-write-trailers-result: func</code></a></h4>
+<h4><a name="method_incoming_request.consume"><code>[method]incoming-request.consume: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="listen_to_future_write_trailers_result.f"><code>f</code></a>: <a href="#future_write_trailers_result"><a href="#future_write_trailers_result"><code>future-write-trailers-result</code></a></a></li>
+<li><a name="method_incoming_request.consume.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="listen_to_future_write_trailers_result.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_incoming_request.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="drop_incoming_request"><code>drop-incoming-request: func</code></a></h4>
+<h4><a name="constructor_outgoing_request"><code>[constructor]outgoing-request: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_incoming_request.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
-</ul>
-<h4><a name="drop_outgoing_request"><code>drop-outgoing-request: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_outgoing_request.request"><code>request</code></a>: <a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a></li>
-</ul>
-<h4><a name="incoming_request_method"><code>incoming-request-method: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="incoming_request_method.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="constructor_outgoing_request.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
+<li><a name="constructor_outgoing_request.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="constructor_outgoing_request.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+<li><a name="constructor_outgoing_request.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="constructor_outgoing_request.headers"><a href="#headers"><code>headers</code></a></a>: borrow&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
+<li><a name="constructor_outgoing_request.0"></a> own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
-<h4><a name="incoming_request_path_with_query"><code>incoming-request-path-with-query: func</code></a></h4>
+<h4><a name="method_outgoing_request.write"><code>[method]outgoing-request.write: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_request_path_with_query.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="method_outgoing_request.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_outgoing_request.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="incoming_request_scheme"><code>incoming-request-scheme: func</code></a></h4>
+<h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_request_scheme.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
+<li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_incoming_response.status.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+<li><a name="method_incoming_response.status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
-<h4><a name="incoming_request_authority"><code>incoming-request-authority: func</code></a></h4>
+<h4><a name="method_incoming_response.headers"><code>[method]incoming-response.headers: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_request_authority.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="method_incoming_response.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_authority.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_incoming_response.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="incoming_request_headers"><code>incoming-request-headers: func</code></a></h4>
+<h4><a name="method_incoming_response.consume"><code>[method]incoming-response.consume: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_request_headers.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="method_incoming_response.consume.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_headers.0"></a> <a href="#headers"><a href="#headers"><code>headers</code></a></a></li>
+<li><a name="method_incoming_response.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="incoming_request_consume"><code>incoming-request-consume: func</code></a></h4>
+<h4><a name="method_incoming_body.stream"><code>[method]incoming-body.stream: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_request_consume.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
+<li><a name="method_incoming_body.stream.self"><code>self</code></a>: borrow&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_request_consume.0"></a> result&lt;own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_body.stream.0"></a> result&lt;own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="new_outgoing_request"><code>new-outgoing-request: func</code></a></h4>
+<h4><a name="static_incoming_body.finish"><code>[static]incoming-body.finish: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="new_outgoing_request.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
-<li><a name="new_outgoing_request.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
-<li><a name="new_outgoing_request.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
-<li><a name="new_outgoing_request.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
-<li><a name="new_outgoing_request.headers"><a href="#headers"><code>headers</code></a></a>: <a href="#headers"><a href="#headers"><code>headers</code></a></a></li>
+<li><a name="static_incoming_body.finish.this"><code>this</code></a>: own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="new_outgoing_request.0"></a> result&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="static_incoming_body.finish.0"></a> own&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="outgoing_request_write"><code>outgoing-request-write: func</code></a></h4>
+<h4><a name="method_future_trailers.subscribe"><code>[method]future-trailers.subscribe: func</code></a></h4>
+<p>Pollable that resolves when the body has been fully read, and the trailers
+are ready to be consumed.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="outgoing_request_write.request"><code>request</code></a>: <a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a></li>
+<li><a name="method_future_trailers.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="outgoing_request_write.0"></a> result&lt;own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;&gt;</li>
+<li><a name="method_future_trailers.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="drop_response_outparam"><code>drop-response-outparam: func</code></a></h4>
+<h4><a name="method_future_trailers.get"><code>[method]future-trailers.get: func</code></a></h4>
+<p>Retrieve reference to trailers, if they are ready.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_response_outparam.response"><code>response</code></a>: <a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a></li>
-</ul>
-<h4><a name="set_response_outparam"><code>set-response-outparam: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="set_response_outparam.param"><code>param</code></a>: <a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a></li>
-<li><a name="set_response_outparam.response"><code>response</code></a>: result&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="method_future_trailers.get.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="set_response_outparam.0"></a> result</li>
+<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="drop_incoming_response"><code>drop-incoming-response: func</code></a></h4>
+<h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="drop_incoming_response.response"><code>response</code></a>: <a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a></li>
-</ul>
-<h4><a name="drop_outgoing_response"><code>drop-outgoing-response: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_outgoing_response.response"><code>response</code></a>: <a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a></li>
-</ul>
-<h4><a name="incoming_response_status"><code>incoming-response-status: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="incoming_response_status.response"><code>response</code></a>: <a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a></li>
+<li><a name="constructor_outgoing_response.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+<li><a name="constructor_outgoing_response.headers"><a href="#headers"><code>headers</code></a></a>: borrow&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_response_status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+<li><a name="constructor_outgoing_response.0"></a> own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
-<h4><a name="incoming_response_headers"><code>incoming-response-headers: func</code></a></h4>
+<h4><a name="method_outgoing_response.write"><code>[method]outgoing-response.write: func</code></a></h4>
+<p>Will give the child outgoing-response at most once. subsequent calls will
+return an error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_response_headers.response"><code>response</code></a>: <a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a></li>
+<li><a name="method_outgoing_response.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_response_headers.0"></a> <a href="#headers"><a href="#headers"><code>headers</code></a></a></li>
+<li><a name="method_outgoing_response.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="incoming_response_consume"><code>incoming-response-consume: func</code></a></h4>
+<h4><a name="method_outgoing_body.write"><code>[method]outgoing-body.write: func</code></a></h4>
+<p>Will give the child output-stream at most once. subsequent calls will
+return an error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="incoming_response_consume.response"><code>response</code></a>: <a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a></li>
+<li><a name="method_outgoing_body.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="incoming_response_consume.0"></a> result&lt;own&lt;<a href="#incoming_stream"><a href="#incoming_stream"><code>incoming-stream</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_body.write.0"></a> result&lt;own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="new_outgoing_response"><code>new-outgoing-response: func</code></a></h4>
+<h4><a name="static_outgoing_body.finish"><code>[static]outgoing-body.finish: func</code></a></h4>
+<p>Finalize an outgoing body, optionally providing trailers. This must be
+called to signal that the response is complete. If the <a href="#outgoing_body"><code>outgoing-body</code></a> is
+dropped without calling <code>outgoing-body-finalize</code>, the implementation
+should treat the body as corrupted.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="new_outgoing_response.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
-<li><a name="new_outgoing_response.headers"><a href="#headers"><code>headers</code></a></a>: <a href="#headers"><a href="#headers"><code>headers</code></a></a></li>
+<li><a name="static_outgoing_body.finish.this"><code>this</code></a>: own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
+<li><a name="static_outgoing_body.finish.trailers"><a href="#trailers"><code>trailers</code></a></a>: option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;</li>
+</ul>
+<h4><a name="method_future_incoming_response.get"><code>[method]future-incoming-response.get: func</code></a></h4>
+<p>option indicates readiness.
+outer result indicates you are allowed to get the
+incoming-response-or-error at most once. subsequent calls after ready
+will return an error here.
+inner result indicates whether the incoming-response was available, or an
+error occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_future_incoming_response.get.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="new_outgoing_response.0"></a> result&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h4><a name="outgoing_response_write"><code>outgoing-response-write: func</code></a></h4>
+<h4><a name="method_future_incoming_response.subscribe"><code>[method]future-incoming-response.subscribe: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="outgoing_response_write.response"><code>response</code></a>: <a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a></li>
+<li><a name="method_future_incoming_response.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="outgoing_response_write.0"></a> result&lt;own&lt;<a href="#outgoing_stream"><a href="#outgoing_stream"><code>outgoing-stream</code></a></a>&gt;&gt;</li>
-</ul>
-<h4><a name="drop_future_incoming_response"><code>drop-future-incoming-response: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="drop_future_incoming_response.f"><code>f</code></a>: <a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a></li>
-</ul>
-<h4><a name="future_incoming_response_get"><code>future-incoming-response-get: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="future_incoming_response_get.f"><code>f</code></a>: <a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="future_incoming_response_get.0"></a> option&lt;result&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
-</ul>
-<h4><a name="listen_to_future_incoming_response"><code>listen-to-future-incoming-response: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="listen_to_future_incoming_response.f"><code>f</code></a>: <a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="listen_to_future_incoming_response.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_future_incoming_response.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_outgoing_handler">Import interface wasi:http/outgoing-handler</a></h2>
 <hr />
@@ -1036,17 +972,20 @@ the output stream.</p>
 #### <a name="future_incoming_response">`type future-incoming-response`</a>
 [`future-incoming-response`](#future_incoming_response)
 <p>
+#### <a name="error">`type error`</a>
+[`error`](#error)
+<p>
 ----
 <h3>Functions</h3>
 <h4><a name="handle"><code>handle: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="handle.request"><code>request</code></a>: <a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a></li>
+<li><a name="handle.request"><code>request</code></a>: own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 <li><a name="handle.options"><code>options</code></a>: option&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="handle.0"></a> <a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a></li>
+<li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_incoming_handler">Export interface wasi:http/incoming-handler</a></h2>
 <hr />
@@ -1062,6 +1001,6 @@ the output stream.</p>
 <h4><a name="handle"><code>handle: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="handle.request"><code>request</code></a>: <a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></li>
-<li><a name="handle.response_out"><code>response-out</code></a>: <a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a></li>
+<li><a name="handle.request"><code>request</code></a>: own&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="handle.response_out"><code>response-out</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 </ul>
