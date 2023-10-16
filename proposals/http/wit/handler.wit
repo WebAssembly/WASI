@@ -7,7 +7,7 @@
 //   that takes a `request` parameter and returns a `response` result.
 //
 interface incoming-handler {
-  use types.{incoming-request, response-outparam}
+  use types.{incoming-request, response-outparam};
 
   // The `handle` function takes an outparam instead of returning its response
   // so that the component may stream its response while streaming any other
@@ -22,7 +22,7 @@ interface incoming-handler {
   handle: func(
     request: incoming-request,
     response-out: response-outparam
-  )
+  );
 }
 
 // The `wasi:http/outgoing-handler` interface is meant to be imported by
@@ -33,7 +33,7 @@ interface incoming-handler {
 //   that takes a `request` parameter and returns a `response` result.
 //
 interface outgoing-handler {
-  use types.{outgoing-request, request-options, future-incoming-response}
+  use types.{outgoing-request, request-options, future-incoming-response};
 
   // The parameter and result types of the `handle` function allow the caller
   // to concurrently stream the bodies of the outgoing request and the incoming
@@ -41,5 +41,5 @@ interface outgoing-handler {
   handle: func(
     request: outgoing-request,
     options: option<request-options>
-  ) -> future-incoming-response
+  ) -> future-incoming-response;
 }
