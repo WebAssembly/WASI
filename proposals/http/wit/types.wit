@@ -123,17 +123,21 @@ interface types {
   /// an outparam goes away entirely (the `wasi:http/handler` interface used for
   /// both incoming and outgoing can simply return a `stream`).
   resource response-outparam {
-    set: static func(param: response-outparam, response: result<outgoing-response, error>);
+    set: static func(
+      param: response-outparam,
+      response: result<outgoing-response, error>,
+    );
   }
 
   /// This type corresponds to the HTTP standard Status Code.
   type status-code = u16;
 
-  /// The following block defines the `incoming-response` and `outgoing-response`
-  /// resource types that correspond to HTTP standard Responses. Later, Preview3
-  /// will allow both types to be merged together into a single `response` type
-  /// (that uses the single `stream` type mentioned above). The `consume` and
-  /// `write` methods may only be called once (and return failure thereafter).
+  /// The following block defines the `incoming-response` and
+  /// `outgoing-response` resource types that correspond to HTTP standard
+  /// Responses. Later, Preview3 will allow both types to be merged together
+  /// into a single `response` type (that uses the single `stream` type
+  /// mentioned above). The `consume` and `write` methods may only be called
+  /// once (and return failure thereafter).
   resource incoming-response {
     status: func() -> status-code;
 
@@ -166,8 +170,8 @@ interface types {
   resource outgoing-response {
     constructor(status-code: status-code, headers: borrow<headers>);
 
-    /// Will give the child outgoing-response at most once. subsequent calls will
-    /// return an error.
+    /// Will give the child outgoing-response at most once. subsequent calls
+    /// will return an error.
     write: func() -> result<outgoing-body>;
   }
 
@@ -177,23 +181,22 @@ interface types {
     write: func() -> result<output-stream>;
 
     /// Finalize an outgoing body, optionally providing trailers. This must be
-    /// called to signal that the response is complete. If the `outgoing-body` is
-    /// dropped without calling `outgoing-body.finalize`, the implementation
+    /// called to signal that the response is complete. If the `outgoing-body`
+    /// is dropped without calling `outgoing-body.finalize`, the implementation
     /// should treat the body as corrupted.
     finish: static func(this: outgoing-body, trailers: option<trailers>);
   }
 
   /// The following block defines a special resource type used by the
-  /// `wasi:http/outgoing-handler` interface to emulate
-  /// `future<result<response, error>>` in advance of Preview3. Given a
-  /// `future-incoming-response`, the client can call the non-blocking `get`
-  /// method to get the result if it is available. If the result is not available,
-  /// the client can call `listen` to get a `pollable` that can be passed to
-  /// `wasi:io/poll.poll-list`.
+  /// `wasi:http/outgoing-handler` interface to emulate `future<result<response,
+  /// error>>` in advance of Preview3. Given a `future-incoming-response`, the
+  /// client can call the non-blocking `get` method to get the result if it is
+  /// available. If the result is not available, the client can call `listen` to
+  /// get a `pollable` that can be passed to `wasi:io/poll.poll-list`.
   resource future-incoming-response {
-    /// The option indicates readiness. The outer result must return failure if `get`
-    /// is called after returning a non-empty result.  The inner result indicates whether
-    /// the incoming response successfully started.
+    /// The option indicates readiness. The outer result must return failure if
+    /// `get` is called after returning a non-empty result.  The inner result
+    /// indicates whether the incoming response successfully started.
     get: func() -> option<result<result<incoming-response, error>>>;
 
     subscribe: func() -> pollable;
