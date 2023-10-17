@@ -12,13 +12,11 @@ interface incoming-handler {
   // The `handle` function takes an outparam instead of returning its response
   // so that the component may stream its response while streaming any other
   // request or response bodies. The callee MUST write a response to the
-  // `response-out` and then finish the response before returning. The caller
-  // is expected to start streaming the response once `set-response-outparam`
-  // is called and finish streaming the response when `drop-response-outparam`
-  // is called. The `handle` function is then allowed to continue executing
-  // any post-response logic before returning. While this post-response
-  // execution is taken off the critical path, since there is no return value,
-  // there is no way to report its success or failure.
+  // `response-outparam` and then finish the response before returning. The `handle`
+  // function is allowed to continue execution after finishing the response's
+  // output stream. While this post-response execution is taken off the
+  // critical path, since there is no return value, there is no way to report
+  // its success or failure.
   handle: func(
     request: incoming-request,
     response-out: response-outparam
@@ -33,13 +31,15 @@ interface incoming-handler {
 //   that takes a `request` parameter and returns a `response` result.
 //
 interface outgoing-handler {
-  use types.{outgoing-request, request-options, future-incoming-response};
+  use types.{outgoing-request, request-options, future-incoming-response, error};
 
   // The parameter and result types of the `handle` function allow the caller
   // to concurrently stream the bodies of the outgoing request and the incoming
   // response.
+  // Consumes the outgoing-request. Gives an error if the outgoing-request
+  // is invalid or cannot be satisfied by this handler.
   handle: func(
     request: outgoing-request,
     options: option<request-options>
-  ) -> future-incoming-response;
+  ) -> result<future-incoming-response, error>;
 }
