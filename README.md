@@ -9,7 +9,7 @@ developed for eventual standardization by the WASI Subgroup, which is a
 subgroup of the WebAssembly Community Group.
 
 WASI started with launching what is now called [Preview 1], an API using
-the witx IDL, and it is now widely used. Its major incluences are POSIX and
+the witx IDL, and it is now widely used. Its major influences are POSIX and
 CloudABI.
 
 [WASI Preview 2] is now in development, which is a modular collection of
