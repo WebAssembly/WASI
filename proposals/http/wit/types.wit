@@ -65,22 +65,24 @@ interface types {
   type trailers = fields;
 
   /// The following block defines the `incoming-request` and `outgoing-request`
-  /// resource types that correspond to HTTP standard Requests. Soon, when
-  /// resource types are added, the `u32` type aliases can be replaced by
-  /// proper `resource` type definitions containing all the functions as
-  /// methods. Later, Preview2 will allow both types to be merged together into
-  /// a single `request` type (that uses the single `stream` type mentioned
-  /// above). The `consume` and `write` methods may only be called once (and
-  /// return failure thereafter).
+  /// resource types that correspond to HTTP standard Requests. Later, Preview3
+  /// will allow both types to be merged together into a single `request` type
+  /// (that uses the single `stream` type mentioned above). The `consume` and
+  /// `write` methods may only be called once (and return failure thereafter).
   resource incoming-request {
+    /// Returns the method of the incoming request.
     method: func() -> method;
 
+    /// Returns the path with query parameters from the request, as a string.
     path-with-query: func() -> option<string>;
 
+    /// Returns the protocol scheme from the request.
     scheme: func() -> option<scheme>;
 
+    /// Returns the authority from the request, if it was present.
     authority: func() -> option<string>;
 
+    /// Returns the headers from the request.
     headers: func() -> headers;
 
     /// Will return the incoming-body child at most once. If called more than
@@ -89,6 +91,7 @@ interface types {
   }
 
   resource outgoing-request {
+    /// Construct a new `outgoing-request`.
     constructor(
       method: method,
       path-with-query: option<string>,
@@ -123,6 +126,8 @@ interface types {
   /// an outparam goes away entirely (the `wasi:http/handler` interface used for
   /// both incoming and outgoing can simply return a `stream`).
   resource response-outparam {
+    /// Set the value of the `response-outparam` to indicate either a response,
+    /// or an error.
     set: static func(
       param: response-outparam,
       response: result<outgoing-response, error>,
@@ -139,8 +144,10 @@ interface types {
   /// mentioned above). The `consume` and `write` methods may only be called
   /// once (and return failure thereafter).
   resource incoming-response {
+    /// Returns the status code from the `incoming-response`.
     status: func() -> status-code;
 
+    /// Returns the headers from the `incoming-response`.
     headers: func() -> headers;
 
     /// May be called at most once. returns error if called additional times.
@@ -168,6 +175,7 @@ interface types {
   }
 
   resource outgoing-response {
+    /// Construct an `outgoing-response`.
     constructor(status-code: status-code, headers: borrow<headers>);
 
     /// Will give the child outgoing-response at most once. subsequent calls
@@ -199,6 +207,8 @@ interface types {
     /// indicates whether the incoming response successfully started.
     get: func() -> option<result<result<incoming-response, error>>>;
 
+    /// Pollable that resolves when the `get` method will resolve to a `Some`
+    /// result.
     subscribe: func() -> pollable;
   }
 }

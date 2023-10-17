@@ -777,6 +777,7 @@ list<u8> instead of string.</p>
 <li><a name="method_fields.clone.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.method"><code>[method]incoming-request.method: func</code></a></h4>
+<p>Returns the method of the incoming request.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.method.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -786,6 +787,7 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
 <h4><a name="method_incoming_request.path_with_query"><code>[method]incoming-request.path-with-query: func</code></a></h4>
+<p>Returns the path with query parameters from the request, as a string.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.path_with_query.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -795,6 +797,7 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.scheme"><code>[method]incoming-request.scheme: func</code></a></h4>
+<p>Returns the protocol scheme from the request.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.scheme.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -804,6 +807,7 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.authority"><code>[method]incoming-request.authority: func</code></a></h4>
+<p>Returns the authority from the request, if it was present.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.authority.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -813,6 +817,7 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.headers"><code>[method]incoming-request.headers: func</code></a></h4>
+<p>Returns the headers from the request.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -833,6 +838,7 @@ once, subsequent calls will return error.</p>
 <li><a name="method_incoming_request.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_request"><code>[constructor]outgoing-request: func</code></a></h4>
+<p>Construct a new <a href="#outgoing_request"><code>outgoing-request</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="constructor_outgoing_request.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
@@ -857,12 +863,15 @@ once, subsequent calls will return error.</p>
 <li><a name="method_outgoing_request.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
+<p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to indicate either a response,
+or an error.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 <li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
+<p>Returns the status code from the <a href="#incoming_response"><code>incoming-response</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.status.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -872,6 +881,7 @@ once, subsequent calls will return error.</p>
 <li><a name="method_incoming_response.status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
 <h4><a name="method_incoming_response.headers"><code>[method]incoming-response.headers: func</code></a></h4>
+<p>Returns the headers from the <a href="#incoming_response"><code>incoming-response</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -935,6 +945,7 @@ input-stream child is still alive.</p>
 <li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
+<p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="constructor_outgoing_response.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
@@ -989,6 +1000,8 @@ indicates whether the incoming response successfully started.</p>
 <li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;&gt;</li>
 </ul>
 <h4><a name="method_future_incoming_response.subscribe"><code>[method]future-incoming-response.subscribe: func</code></a></h4>
+<p>Pollable that resolves when the <code>get</code> method will resolve to a <code>Some</code>
+result.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_incoming_response.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
