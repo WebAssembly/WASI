@@ -154,18 +154,17 @@ interface types {
   resource incoming-body {
     // returned input-stream is a child - the implementation may trap if
     // incoming-body is dropped (or consumed by call to
-    // incoming-body-finish) before the input-stream is dropped.
-    // May be called at most once. returns error if called additional times.
+    // incoming-body.finish) before the input-stream is dropped.
+    // May be called at most once. Returns error if called additional times.
     %stream: func() -> result<input-stream>;
 
-    // takes ownership of incoming-body. this will trap if the
-    // incoming-body-stream child is still alive!
+    // Takes ownership of incoming-body and will trap if the
+    // input-stream child is still alive.
     finish: static func(this: incoming-body) -> future-trailers;
   }
 
   resource future-trailers {
-    /// Pollable that resolves when the body has been fully read, and the trailers
-    /// are ready to be consumed.
+    /// Pollable that resolves when the the trailers are ready to be consumed.
     subscribe: func() -> pollable;
 
     /// Retrieve reference to trailers, if they are ready.
@@ -187,7 +186,7 @@ interface types {
 
     /// Finalize an outgoing body, optionally providing trailers. This must be
     /// called to signal that the response is complete. If the `outgoing-body` is
-    /// dropped without calling `outgoing-body-finalize`, the implementation
+    /// dropped without calling `outgoing-body.finalize`, the implementation
     /// should treat the body as corrupted.
     finish: static func(this: outgoing-body, trailers: option<trailers>);
   }
@@ -200,12 +199,9 @@ interface types {
   /// the client can call `listen` to get a `pollable` that can be passed to
   /// `wasi:io/poll.poll-list`.
   resource future-incoming-response {
-    /// option indicates readiness.
-    /// outer result indicates you are allowed to get the
-    /// incoming-response-or-error at most once. subsequent calls after ready
-    /// will return an error here.
-    /// inner result indicates whether the incoming-response was available, or an
-    /// error occured.
+    /// The option indicates readiness. The outer result must return failure if `get`
+    /// is called after returning a non-empty result.  The inner result indicates whether
+    /// the incoming response successfully started.
     get: func() -> option<result<result<incoming-response, error>>>;
 
     subscribe: func() -> pollable;
