@@ -194,7 +194,7 @@ interface types {
     /// Returns the headers from the incoming response.
     headers: func() -> headers;
 
-    /// Returns the incoming body. May be called at most once. returns error
+    /// Returns the incoming body. May be called at most once. Returns error
     /// if called additional times.
     consume: func() -> result<incoming-body>;
   }
