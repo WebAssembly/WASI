@@ -39,7 +39,7 @@ interface types {
   /// Field keys are always strings.
   type field-key = string;
 
-  /// Field values should always be UTF-8 encoded strings. However, in
+  /// Field values should always be ASCII strings. However, in
   /// reality, HTTP implementations often have to interpret malformed values,
   /// so they are provided as a list of bytes.
   type field-value = list<u8>;
