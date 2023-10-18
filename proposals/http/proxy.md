@@ -1,4 +1,8 @@
 <h1><a name="proxy">World proxy</a></h1>
+<p>The <code>wasi:http/proxy</code> world captures a widely-implementable intersection of
+hosts that includes HTTP forward and reverse proxies. Components targeting
+this world may concurrently stream in and out any number of incoming and
+outgoing HTTP requests.</p>
 <ul>
 <li>Imports:
 <ul>
@@ -621,9 +625,9 @@ the output stream.</p>
 <li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_types">Import interface wasi:http/types</a></h2>
-<p>The <a href="#wasi:http_types"><code>wasi:http/types</code></a> interface is meant to be imported by components to
-define the HTTP resource types and operations used by the component's
-imported and exported interfaces.</p>
+<p>This interface defines all of the types and methods for implementing
+HTTP Requests and Responses, both incoming and outgoing, as well as
+their headers, trailers, and bodies.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -669,33 +673,46 @@ initially returning a response.</p>
 <li><a name="error.protocol_error"><code>protocol-error</code></a>: <code>string</code></li>
 <li><a name="error.unexpected_error"><code>unexpected-error</code></a>: <code>string</code></li>
 </ul>
+<h4><a name="field_key"><code>type field-key</code></a></h4>
+<p><code>string</code></p>
+<p>Field keys are always strings.
+<h4><a name="field_value"><code>type field-value</code></a></h4>
+<p><a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></p>
+<p>Field values should always be ASCII strings. However, in
+reality, HTTP implementations often have to interpret malformed values,
+so they are provided as a list of bytes.
 <h4><a name="fields"><code>resource fields</code></a></h4>
 <h4><a name="headers"><code>type headers</code></a></h4>
 <p><a href="#fields"><a href="#fields"><code>fields</code></a></a></p>
-<p>
-#### <a name="trailers">`type trailers`</a>
-[`fields`](#fields)
-<p>
-#### <a name="incoming_request">`resource incoming-request`</a>
+<p>Headers is an alias for Fields.
+<h4><a name="trailers"><code>type trailers</code></a></h4>
+<p><a href="#fields"><a href="#fields"><code>fields</code></a></a></p>
+<p>Trailers is an alias for Fields.
+<h4><a name="incoming_request"><code>resource incoming-request</code></a></h4>
 <h4><a name="outgoing_request"><code>resource outgoing-request</code></a></h4>
 <h4><a name="request_options"><code>record request-options</code></a></h4>
-<p>Additional optional parameters that can be set when making a request.</p>
+<p>Parameters for making an HTTP Request. Each of these parameters is an
+optional timeout, with the unit in milliseconds, applicable to the
+transport layer of the HTTP protocol.</p>
+<p>These timeouts are separate from any the user may use to bound a
+blocking call to <code>wasi:io/poll.poll-list</code>.</p>
+<p>FIXME: Make this a resource to allow it to be optionally extended by
+future evolution of the standard and/or other interfaces at some later
+date?</p>
 <h5>Record Fields</h5>
 <ul>
 <li>
 <p><a name="request_options.connect_timeout_ms"><code>connect-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The following timeouts are specific to the HTTP protocol and work
-independently of the overall timeouts passed to `io.poll.poll-list`.
-The timeout for the initial connect.
+<p>The timeout for the initial connect to the HTTP Server.
 </li>
 <li>
 <p><a name="request_options.first_byte_timeout_ms"><code>first-byte-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The timeout for receiving the first byte of the response body.
+<p>The timeout for receiving the first byte of the Response body.
 </li>
 <li>
 <p><a name="request_options.between_bytes_timeout_ms"><code>between-bytes-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The timeout for receiving the next chunk of bytes in the response body
-stream.
+<p>The timeout for receiving subsequent chunks of bytes in the Response
+body stream.
 </li>
 </ul>
 <h4><a name="response_outparam"><code>resource response-outparam</code></a></h4>
@@ -711,63 +728,76 @@ stream.
 <hr />
 <h3>Functions</h3>
 <h4><a name="constructor_fields"><code>[constructor]fields: func</code></a></h4>
-<p>Multiple values for a header are multiple entries in the list with the
-same key.</p>
+<p>Construct an HTTP Fields.</p>
+<p>The list represents each key-value pair in the Fields. Keys
+which have multiple values are represented by multiple entries in this
+list with the same key.</p>
+<p>The tuple is a pair of the field key, represented as a string, and
+Value, represented as a list of bytes. In a valid Fields, all keys
+and values are valid UTF-8 strings. However, values are not always
+well-formed, so they are represented as a raw list of bytes.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="constructor_fields.entries"><code>entries</code></a>: list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
+<li><a name="constructor_fields.entries"><code>entries</code></a>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.get"><code>[method]fields.get: func</code></a></h4>
-<p>Values off wire are not necessarily well formed, so they are given by
-list<u8> instead of string.</p>
+<p>Get all of the values corresponding to a key.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.get.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.get.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.get.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.get.0"></a> list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
+<li><a name="method_fields.get.0"></a> list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.set"><code>[method]fields.set: func</code></a></h4>
-<p>Values off wire are not necessarily well formed, so they are given by
-list<u8> instead of string.</p>
+<p>Set all of the values for a key. Clears any existing values for that
+key, if they have been set.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.set.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.set.name"><code>name</code></a>: <code>string</code></li>
-<li><a name="method_fields.set.value"><code>value</code></a>: list&lt;list&lt;<code>u8</code>&gt;&gt;</li>
+<li><a name="method_fields.set.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields.set.value"><code>value</code></a>: list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.delete"><code>[method]fields.delete: func</code></a></h4>
+<p>Delete all values for a key. Does nothing if no values for the key
+exist.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.delete.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.delete.name"><code>name</code></a>: <code>string</code></li>
+<li><a name="method_fields.delete.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
 <h4><a name="method_fields.append"><code>[method]fields.append: func</code></a></h4>
+<p>Append a value for a key. Does not change or delete any existing
+values for that key.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.append.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.append.name"><code>name</code></a>: <code>string</code></li>
-<li><a name="method_fields.append.value"><code>value</code></a>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_fields.append.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields.append.value"><code>value</code></a>: <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></li>
 </ul>
 <h4><a name="method_fields.entries"><code>[method]fields.entries: func</code></a></h4>
-<p>Values off wire are not necessarily well formed, so they are given by
-list<u8> instead of string.</p>
+<p>Retrieve the full set of keys and values in the Fields. Like the
+constructor, the list represents each key-value pair.</p>
+<p>The outer list represents each key-value pair in the Fields. Keys
+which have multiple values are represented by multiple entries in this
+list with the same key.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.entries.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.entries.0"></a> list&lt;(<code>string</code>, list&lt;<code>u8</code>&gt;)&gt;</li>
+<li><a name="method_fields.entries.0"></a> list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
 <h4><a name="method_fields.clone"><code>[method]fields.clone: func</code></a></h4>
-<p>Deep copy of all contents in a fields.</p>
+<p>Make a deep copy of the Fields. Equivelant in behavior to calling the
+<a href="#fields"><code>fields</code></a> constructor on the return value of <code>entries</code></p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.clone.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -817,7 +847,10 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.headers"><code>[method]incoming-request.headers: func</code></a></h4>
-<p>Returns the headers from the request.</p>
+<p>Returns the <a href="#headers"><code>headers</code></a> from the request.</p>
+<p>The <a href="#headers"><code>headers</code></a> returned are a child resource: it must be dropped before
+the parent <a href="#incoming_request"><code>incoming-request</code></a> is dropped. Dropping this
+<a href="#incoming_request"><code>incoming-request</code></a> before all children are dropped will trap.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -827,8 +860,8 @@ list<u8> instead of string.</p>
 <li><a name="method_incoming_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.consume"><code>[method]incoming-request.consume: func</code></a></h4>
-<p>Will return the incoming-body child at most once. If called more than
-once, subsequent calls will return error.</p>
+<p>Gives the <a href="#incoming_body"><code>incoming-body</code></a> associated with this request. Will only
+return success at most once, and subsequent calls will return error.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request.consume.self"><code>self</code></a>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -863,15 +896,18 @@ once, subsequent calls will return error.</p>
 <li><a name="method_outgoing_request.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
-<p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to indicate either a response,
-or an error.</p>
+<p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
+or indicate an error.</p>
+<p>This method consumes the <a href="#response_outparam"><code>response-outparam</code></a> to ensure that it is
+called at most once. If it is never called, the implementation
+will respond with an error.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 <li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
-<p>Returns the status code from the <a href="#incoming_response"><code>incoming-response</code></a>.</p>
+<p>Returns the status code from the incoming response.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.status.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -881,7 +917,7 @@ or an error.</p>
 <li><a name="method_incoming_response.status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
 <h4><a name="method_incoming_response.headers"><code>[method]incoming-response.headers: func</code></a></h4>
-<p>Returns the headers from the <a href="#incoming_response"><code>incoming-response</code></a>.</p>
+<p>Returns the headers from the incoming response.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -891,7 +927,8 @@ or an error.</p>
 <li><a name="method_incoming_response.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.consume"><code>[method]incoming-response.consume: func</code></a></h4>
-<p>May be called at most once. returns error if called additional times.</p>
+<p>Returns the incoming body. May be called at most once. Returns error
+if called additional times.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.consume.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -901,10 +938,18 @@ or an error.</p>
 <li><a name="method_incoming_response.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="method_incoming_body.stream"><code>[method]incoming-body.stream: func</code></a></h4>
-<p>returned input-stream is a child - the implementation may trap if
-incoming-body is dropped (or consumed by call to
-incoming-body.finish) before the input-stream is dropped.
-May be called at most once. Returns error if called additional times.</p>
+<p>Returns the contents of the body, as a stream of bytes.</p>
+<p>Returns success on first call: the stream representing the contents
+can be retrieved at most once. Subsequent calls will return error.</p>
+<p>The returned <a href="#input_stream"><code>input-stream</code></a> resource is a child: it must be dropped
+before the parent <a href="#incoming_body"><code>incoming-body</code></a> is dropped, or consumed by
+<code>incoming-body.finish</code>.</p>
+<p>This invariant ensures that the implementation can determine whether
+the user is consuming the contents of the body, waiting on the
+<a href="#future_trailers"><code>future-trailers</code></a> to be ready, or neither. This allows for network
+backpressure is to be applied when the user is consuming the body,
+and for that backpressure to not inhibit delivery of the trailers if
+the user does not read the entire body.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_body.stream.self"><code>self</code></a>: borrow&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
@@ -914,8 +959,8 @@ May be called at most once. Returns error if called additional times.</p>
 <li><a name="method_incoming_body.stream.0"></a> result&lt;own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="static_incoming_body.finish"><code>[static]incoming-body.finish: func</code></a></h4>
-<p>Takes ownership of incoming-body and will trap if the
-input-stream child is still alive.</p>
+<p>Takes ownership of <a href="#incoming_body"><code>incoming-body</code></a>, and returns a <a href="#future_trailers"><code>future-trailers</code></a>.
+This function will trap if the <a href="#input_stream"><code>input-stream</code></a> child is still alive.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_incoming_body.finish.this"><code>this</code></a>: own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
@@ -925,7 +970,9 @@ input-stream child is still alive.</p>
 <li><a name="static_incoming_body.finish.0"></a> own&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_future_trailers.subscribe"><code>[method]future-trailers.subscribe: func</code></a></h4>
-<p>Pollable that resolves when the the trailers are ready to be consumed.</p>
+<p>Returns a pollable which becomes ready when either the trailers have
+been received, or an error has occured. When this pollable is ready,
+the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_trailers.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
@@ -935,7 +982,13 @@ input-stream child is still alive.</p>
 <li><a name="method_future_trailers.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_future_trailers.get"><code>[method]future-trailers.get: func</code></a></h4>
-<p>Retrieve reference to trailers, if they are ready.</p>
+<p>Returns the contents of the trailers, or an error which occured,
+once the future is ready.</p>
+<p>The outer <code>option</code> represents future readiness. Users can wait on this
+<code>option</code> to become <code>some</code> using the <a href="#subscribe"><code>subscribe</code></a> method.</p>
+<p>The <code>result</code> represents that either the HTTP Request or Response body,
+as well as any trailers, were received successfully, or that an error
+occured receiving them.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_trailers.get.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
@@ -956,8 +1009,11 @@ input-stream child is still alive.</p>
 <li><a name="constructor_outgoing_response.0"></a> own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_outgoing_response.write"><code>[method]outgoing-response.write: func</code></a></h4>
-<p>Will give the child outgoing-response at most once. subsequent calls
-will return an error.</p>
+<p>Returns the resource corresponding to the outgoing Body for this Response.</p>
+<p>Returns success on the first call: the <a href="#outgoing_body"><code>outgoing-body</code></a> resource for
+this <a href="#outgoing_response"><code>outgoing-response</code></a> can be retrieved at most once. Sunsequent
+calls will return error.</p>
+<p>FIXME: rename this method to <code>body</code>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_response.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
@@ -967,8 +1023,13 @@ will return an error.</p>
 <li><a name="method_outgoing_response.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="method_outgoing_body.write"><code>[method]outgoing-body.write: func</code></a></h4>
-<p>Will give the child output-stream at most once. subsequent calls will
-return an error.</p>
+<p>Returns a stream for writing the body contents.</p>
+<p>The returned <a href="#output_stream"><code>output-stream</code></a> is a child resource: it must be dropped
+before the parent <a href="#outgoing_body"><code>outgoing-body</code></a> resource is dropped (or finished),
+otherwise the <a href="#outgoing_body"><code>outgoing-body</code></a> drop or <code>finish</code> will trap.</p>
+<p>Returns success on the first call: the <a href="#output_stream"><code>output-stream</code></a> resource for
+this <a href="#outgoing_body"><code>outgoing-body</code></a> may be retrieved at most once. Subsequent calls
+will return error.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_body.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
@@ -987,21 +1048,10 @@ should treat the body as corrupted.</p>
 <li><a name="static_outgoing_body.finish.this"><code>this</code></a>: own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
 <li><a name="static_outgoing_body.finish.trailers"><a href="#trailers"><code>trailers</code></a></a>: option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="method_future_incoming_response.get"><code>[method]future-incoming-response.get: func</code></a></h4>
-<p>The option indicates readiness. The outer result must return failure if
-<code>get</code> is called after returning a non-empty result.  The inner result
-indicates whether the incoming response successfully started.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_future_incoming_response.get.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;&gt;</li>
-</ul>
 <h4><a name="method_future_incoming_response.subscribe"><code>[method]future-incoming-response.subscribe: func</code></a></h4>
-<p>Pollable that resolves when the <code>get</code> method will resolve to a <code>Some</code>
-result.</p>
+<p>Returns a pollable which becomes ready when either the Response has
+been received, or an error has occured. When this pollable is ready,
+the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_incoming_response.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
@@ -1010,7 +1060,29 @@ result.</p>
 <ul>
 <li><a name="method_future_incoming_response.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
+<h4><a name="method_future_incoming_response.get"><code>[method]future-incoming-response.get: func</code></a></h4>
+<p>Returns the incoming HTTP Response, or an error, once one is ready.</p>
+<p>The outer <code>option</code> represents future readiness. Users can wait on this
+<code>option</code> to become <code>some</code> using the <a href="#subscribe"><code>subscribe</code></a> method.</p>
+<p>The outer <code>result</code> is used to retrieve the response or error at most
+once. It will be success on the first call in which the outer option
+is <code>some</code>, and error on subsequent calls.</p>
+<p>The inner <code>result</code> represents that either the incoming HTTP Response
+status and headers have recieved successfully, or that an error
+occured. Errors may also occur while consuming the response body,
+but those will be reported by the <a href="#incoming_body"><code>incoming-body</code></a> and its
+<a href="#output_stream"><code>output-stream</code></a> child.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_future_incoming_response.get.self"><code>self</code></a>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;&gt;</li>
+</ul>
 <h2><a name="wasi:http_outgoing_handler">Import interface wasi:http/outgoing-handler</a></h2>
+<p>This interface defines a handler of outgoing HTTP Requests. It should be
+imported by components which wish to make HTTP Requests.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="outgoing_request"><code>type outgoing-request</code></a></h4>
@@ -1028,6 +1100,14 @@ result.</p>
 ----
 <h3>Functions</h3>
 <h4><a name="handle"><code>handle: func</code></a></h4>
+<p>This function is invoked with an outgoing HTTP Request, and it returns
+a resource <a href="#future_incoming_response"><code>future-incoming-response</code></a> which represents an HTTP Response
+which may arrive in the future.</p>
+<p>The <code>options</code> argument accepts optional parameters for the HTTP
+protocol's transport layer.</p>
+<p>This function may return an error if the <a href="#outgoing_request"><code>outgoing-request</code></a> is invalid
+or not allowed to be made. Otherwise, protocol errors are reported
+through the <a href="#future_incoming_response"><code>future-incoming-response</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="handle.request"><code>request</code></a>: own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
@@ -1049,6 +1129,15 @@ result.</p>
 ----
 <h3>Functions</h3>
 <h4><a name="handle"><code>handle: func</code></a></h4>
+<p>This function is invoked with an incoming HTTP Request, and a resource
+<a href="#response_outparam"><code>response-outparam</code></a> which provides the capability to reply with an HTTP
+Response. The response is sent by calling the <code>response-outparam.set</code>
+method, which allows execution to continue after the response has been
+sent. This enables both streaming to the response body, and performing other
+work.</p>
+<p>The implementor of this function must write a response to the
+<a href="#response_outparam"><code>response-outparam</code></a> before returning, or else the caller will respond
+with an error on its behalf.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="handle.request"><code>request</code></a>: own&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
