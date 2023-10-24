@@ -884,16 +884,19 @@ return success at most once, and subsequent calls will return error.</p>
 <ul>
 <li><a name="constructor_outgoing_request.0"></a> own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.write"><code>[method]outgoing-request.write: func</code></a></h4>
-<p>Will return the outgoing-body child at most once. If called more than
-once, subsequent calls will return error.</p>
+<h4><a name="method_outgoing_request.body"><code>[method]outgoing-request.body: func</code></a></h4>
+<p>Returns the resource corresponding to the outgoing Body for this
+Request.</p>
+<p>Returns success on the first call: the <a href="#outgoing_body"><code>outgoing-body</code></a> resource for
+this <a href="#outgoing_response"><code>outgoing-response</code></a> can be retrieved at most once. Subsequent
+calls will return error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request.body.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_request.body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
@@ -1008,19 +1011,18 @@ occured receiving them.</p>
 <ul>
 <li><a name="constructor_outgoing_response.0"></a> own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_response.write"><code>[method]outgoing-response.write: func</code></a></h4>
+<h4><a name="method_outgoing_response.body"><code>[method]outgoing-response.body: func</code></a></h4>
 <p>Returns the resource corresponding to the outgoing Body for this Response.</p>
 <p>Returns success on the first call: the <a href="#outgoing_body"><code>outgoing-body</code></a> resource for
-this <a href="#outgoing_response"><code>outgoing-response</code></a> can be retrieved at most once. Sunsequent
+this <a href="#outgoing_response"><code>outgoing-response</code></a> can be retrieved at most once. Subsequent
 calls will return error.</p>
-<p>FIXME: rename this method to <code>body</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_response.write.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response.body.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_response.write.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_response.body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="method_outgoing_body.write"><code>[method]outgoing-body.write: func</code></a></h4>
 <p>Returns a stream for writing the body contents.</p>
