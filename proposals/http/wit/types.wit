@@ -135,9 +135,13 @@ interface types {
       headers: borrow<headers>
     );
 
-    /// Will return the outgoing-body child at most once. If called more than
-    /// once, subsequent calls will return error.
-    write: func() -> result<outgoing-body>;
+    /// Returns the resource corresponding to the outgoing Body for this
+    /// Request.
+    ///
+    /// Returns success on the first call: the `outgoing-body` resource for
+    /// this `outgoing-response` can be retrieved at most once. Subsequent
+    /// calls will return error.
+    body: func() -> result<outgoing-body>;
   }
 
   /// Parameters for making an HTTP Request. Each of these parameters is an
@@ -264,11 +268,9 @@ interface types {
     /// Returns the resource corresponding to the outgoing Body for this Response.
     ///
     /// Returns success on the first call: the `outgoing-body` resource for
-    /// this `outgoing-response` can be retrieved at most once. Sunsequent
+    /// this `outgoing-response` can be retrieved at most once. Subsequent
     /// calls will return error.
-    ///
-    /// FIXME: rename this method to `body`.
-    write: func() -> result<outgoing-body>;
+    body: func() -> result<outgoing-body>;
   }
 
   /// Represents an outgoing HTTP Request or Response's Body.
