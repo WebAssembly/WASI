@@ -13,7 +13,7 @@ at once.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>resource pollable</code></a></h4>
-<h2>A &quot;pollable&quot; handle.</h2>
+<hr />
 <h3>Functions</h3>
 <h4><a name="poll_list"><code>poll-list: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
@@ -56,14 +56,6 @@ when it does, they are expected to subsume this API.</p>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
 #### <a name="error">`resource error`</a>
-<p>Contextual error information about the last failure that happened on
-a read, write, or flush from an <a href="#input_stream"><code>input-stream</code></a> or <a href="#output_stream"><code>output-stream</code></a>.</p>
-<p>This type is returned through the <a href="#stream_error"><code>stream-error</code></a> type whenever an
-operation on a stream directly fails or an error is discovered
-after-the-fact, for example when a write's failure shows up through a
-later <code>flush</code> or <code>check-write</code>.</p>
-<p>Interfaces such as <code>wasi:filesystem/types</code> provide functionality to
-further &quot;downcast&quot; this error into interface-specific error information.</p>
 <h4><a name="stream_error"><code>variant stream-error</code></a></h4>
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
@@ -81,21 +73,8 @@ future operations.
 </li>
 </ul>
 <h4><a name="input_stream"><code>resource input-stream</code></a></h4>
-<p>An input bytestream.</p>
-<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
-platforms. I/O operations always return promptly; if fewer bytes are
-promptly available than requested, they return the number of bytes promptly
-available, which could even be zero. To wait for data to be available,
-use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be polled
-for using <a href="#wasi:io_poll"><code>wasi:io/poll</code></a>.</p>
 <h4><a name="output_stream"><code>resource output-stream</code></a></h4>
-<p>An output bytestream.</p>
-<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
-underlying platforms. Except where specified otherwise, I/O operations also
-always return promptly, after the number of bytes that can be written
-promptly, which could even be zero. To wait for the stream to be ready to
-accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
-polled for using <a href="#wasi:io_poll"><code>wasi:io/poll</code></a>.</h2>
+<hr />
 <h3>Functions</h3>
 <h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
 <p>Returns a string that's suitable to assist humans in debugging this
@@ -345,14 +324,21 @@ let _ = this.check-write();         // eliding error handling
 </ul>
 <h4><a name="method_output_stream.splice"><code>[method]output-stream.splice: func</code></a></h4>
 <p>Read from one stream and write to another.</p>
+<p>The behavior of splice is equivelant to:</p>
+<ol>
+<li>calling <code>check-write</code> on the <a href="#output_stream"><code>output-stream</code></a></li>
+<li>calling <code>read</code> on the <a href="#input_stream"><code>input-stream</code></a> with the smaller of the
+<code>check-write</code> permitted length and the <code>len</code> provided to <code>splice</code></li>
+<li>calling <code>write</code> on the <a href="#output_stream"><code>output-stream</code></a> with that read data.</li>
+</ol>
+<p>Any error reported by the call to <code>check-write</code>, <code>read</code>, or
+<code>write</code> ends the splice and reports that error.</p>
 <p>This function returns the number of bytes transferred; it may be less
 than <code>len</code>.</p>
-<p>Unlike other I/O functions, this function blocks until all the data
-read from the input stream has been written to the output stream.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_output_stream.splice.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.splice.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.splice.src"><code>src</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 <li><a name="method_output_stream.splice.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
@@ -361,34 +347,16 @@ read from the input stream has been written to the output stream.</p>
 </ul>
 <h4><a name="method_output_stream.blocking_splice"><code>[method]output-stream.blocking-splice: func</code></a></h4>
 <p>Read from one stream and write to another, with blocking.</p>
-<p>This is similar to <code>splice</code>, except that it blocks until at least
-one byte can be read.</p>
+<p>This is similar to <code>splice</code>, except that it blocks until the
+<a href="#output_stream"><code>output-stream</code></a> is ready for writing, and the <a href="#input_stream"><code>input-stream</code></a>
+is ready for reading, before performing the <code>splice</code>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_output_stream.blocking_splice.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.blocking_splice.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream.blocking_splice.src"><code>src</code></a>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 <li><a name="method_output_stream.blocking_splice.len"><code>len</code></a>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_output_stream.forward"><code>[method]output-stream.forward: func</code></a></h4>
-<p>Forward the entire contents of an input stream to an output stream.</p>
-<p>This function repeatedly reads from the input stream and writes
-the data to the output stream, until the end of the input stream
-is reached, or an error is encountered.</p>
-<p>Unlike other I/O functions, this function blocks until the end
-of the input stream is seen and all the data has been written to
-the output stream.</p>
-<p>This function returns the number of bytes transferred, and the status of
-the output stream.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_output_stream.forward.self"><code>self</code></a>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.forward.src"><code>src</code></a>: own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_output_stream.forward.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
