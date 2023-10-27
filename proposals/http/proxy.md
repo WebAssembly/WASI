@@ -872,13 +872,30 @@ return success at most once, and subsequent calls will return error.</p>
 </ul>
 <h4><a name="constructor_outgoing_request"><code>[constructor]outgoing-request: func</code></a></h4>
 <p>Construct a new <a href="#outgoing_request"><code>outgoing-request</code></a>.</p>
+<ul>
+<li><a href="#method"><code>method</code></a> represents the HTTP Method for the Request.</li>
+<li><code>path-with-query</code> is the combination of the HTTP Path and Query for
+the Request. When <code>none</code>, this represents an empty Path and empty
+Query.</li>
+<li><a href="#scheme"><code>scheme</code></a> is the HTTP Related Scheme for the Request. When <code>none</code>,
+the implementation may choose an appropriate default scheme.</li>
+<li><code>authority</code> is the HTTP Authority for the Request. A value of <code>none</code>
+may be used with Related Schemes which do not require an Authority.
+The HTTP and HTTPS schemes always require an authority.</li>
+<li><a href="#headers"><code>headers</code></a> is the HTTP Headers for the Request.</li>
+</ul>
+<p>It is possible to construct, or manipulate with the accessor functions
+below, an <a href="#outgoing_request"><code>outgoing-request</code></a> with an invalid combination of <a href="#scheme"><code>scheme</code></a>
+and <code>authority</code>, or <a href="#headers"><code>headers</code></a> which are not permitted to be sent.
+It is the obligation of the <code>outgoing-handler.handle</code> implementation
+to reject invalid constructions of <a href="#outgoing_request"><code>outgoing-request</code></a>.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="constructor_outgoing_request.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
 <li><a name="constructor_outgoing_request.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
 <li><a name="constructor_outgoing_request.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 <li><a name="constructor_outgoing_request.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
-<li><a name="constructor_outgoing_request.headers"><a href="#headers"><code>headers</code></a></a>: borrow&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="constructor_outgoing_request.headers"><a href="#headers"><code>headers</code></a></a>: own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -898,16 +915,114 @@ calls will return error.</p>
 <ul>
 <li><a name="method_outgoing_request.body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
+<h4><a name="method_outgoing_request.method"><code>[method]outgoing-request.method: func</code></a></h4>
+<p>Get the Method for the Request.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.method.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
+</ul>
+<h4><a name="method_outgoing_request.set_method"><code>[method]outgoing-request.set-method: func</code></a></h4>
+<p>Set the Method for the Request.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.set_method.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request.set_method.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
+</ul>
+<h4><a name="method_outgoing_request.path_with_query"><code>[method]outgoing-request.path-with-query: func</code></a></h4>
+<p>Get the combination of the HTTP Path and Query for the Request.
+When <code>none</code>, this represents an empty Path and empty Query.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.path_with_query.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.set_path_with_query"><code>[method]outgoing-request.set-path-with-query: func</code></a></h4>
+<p>Set the combination of the HTTP Path and Query for the Request.
+When <code>none</code>, this represents an empty Path and empty Query.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.set_path_with_query.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request.set_path_with_query.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.scheme"><code>[method]outgoing-request.scheme: func</code></a></h4>
+<p>Get the HTTP Related Scheme for the Request. When <code>none</code>, the
+implementation may choose an appropriate default scheme.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.scheme.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.set_scheme"><code>[method]outgoing-request.set-scheme: func</code></a></h4>
+<p>Set the HTTP Related Scheme for the Request. When <code>none</code>, the
+implementation may choose an appropriate default scheme.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.set_scheme.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request.set_scheme.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.authority"><code>[method]outgoing-request.authority: func</code></a></h4>
+<p>Get the HTTP Authority for the Request. A value of <code>none</code> may be used
+with Related Schemes which do not require an Authority. The HTTP and
+HTTPS schemes always require an authority.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.authority.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.set_authority"><code>[method]outgoing-request.set-authority: func</code></a></h4>
+<p>Set the HTTP Authority for the Request. A value of <code>none</code> may be used
+with Related Schemes which do not require an Authority. The HTTP and
+HTTPS schemes always require an authority.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.set_authority.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request.set_authority.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_request.headers"><code>[method]outgoing-request.headers: func</code></a></h4>
+<p>Get the headers associated with the Request.</p>
+<p>This headers resource is a child: it must be dropped before the parent
+<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
+another component by e.g. <code>outgoing-handler.handle</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_request.headers.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+</ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
 or indicate an error.</p>
 <p>This method consumes the <a href="#response_outparam"><code>response-outparam</code></a> to ensure that it is
 called at most once. If it is never called, the implementation
 will respond with an error.</p>
+<p>The user may provide an <a href="#error"><code>error</code></a> to <code>response</code> to allow the
+implementation determine how to respond with an HTTP error response.</p>
+<p>This method may return an error when the <a href="#outgoing_response"><code>outgoing-response</code></a> contains
+a <a href="#status_code"><code>status-code</code></a> or anything else the implementation does not permit or
+support.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 <li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="static_response_outparam.set.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
 <p>Returns the status code from the incoming response.</p>
@@ -1002,14 +1117,48 @@ occured receiving them.</p>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
 <p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>.</p>
+<ul>
+<li><a href="#status_code"><code>status-code</code></a> is the HTTP Status Code for the Response.</li>
+<li><a href="#headers"><code>headers</code></a> is the HTTP Headers for the Response.</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="constructor_outgoing_response.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
-<li><a name="constructor_outgoing_response.headers"><a href="#headers"><code>headers</code></a></a>: borrow&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="constructor_outgoing_response.headers"><a href="#headers"><code>headers</code></a></a>: own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
 <li><a name="constructor_outgoing_response.0"></a> own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_response.status_code"><code>[method]outgoing-response.status-code: func</code></a></h4>
+<p>Get the HTTP Status Code for the Response.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_response.status_code.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_response.status_code.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+</ul>
+<h4><a name="method_outgoing_response.set_status_code"><code>[method]outgoing-response.set-status-code: func</code></a></h4>
+<p>Set the HTTP Status Code for the Response.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_response.set_status_code.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response.set_status_code.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+</ul>
+<h4><a name="method_outgoing_response.headers"><code>[method]outgoing-response.headers: func</code></a></h4>
+<p>Get the headers associated with the Request.</p>
+<p>This headers resource is a child: it must be dropped before the parent
+<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
+another component by e.g. <code>outgoing-handler.handle</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_response.headers.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_response.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_outgoing_response.body"><code>[method]outgoing-response.body: func</code></a></h4>
 <p>Returns the resource corresponding to the outgoing Body for this Response.</p>
