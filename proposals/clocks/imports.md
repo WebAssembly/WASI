@@ -62,7 +62,12 @@ successive reads of the clock will produce non-decreasing values.</p>
 <p>
 #### <a name="instant">`type instant`</a>
 `u64`
-<p>A timestamp in nanoseconds.
+<p>An instant in time, in nanoseconds. An instant is relative to an
+unspecified initial value, and can only be compared to instances from
+the same monotonic-clock.
+<h4><a name="duration"><code>type duration</code></a></h4>
+<p><code>u64</code></p>
+<p>A duration of time, in nanoseconds.
 <hr />
 <h3>Functions</h3>
 <h4><a name="now"><code>now: func</code></a></h4>
@@ -74,22 +79,34 @@ produce a sequence of non-decreasing values.</p>
 <li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
 </ul>
 <h4><a name="resolution"><code>resolution: func</code></a></h4>
-<p>Query the resolution of the clock.</p>
+<p>Query the resolution of the clock. Returns the duration of time
+corresponding to a clock tick.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolution.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h4><a name="subscribe"><code>subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified time has been
-reached.</p>
+<h4><a name="subscribe_instant"><code>subscribe-instant: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
+occured.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="subscribe.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
-<li><a name="subscribe.absolute"><code>absolute</code></a>: <code>bool</code></li>
+<li><a name="subscribe_instant.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="subscribe_duration"><code>subscribe-duration: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
+elapsed, starting at the time at which this function was called.
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_duration.when"><code>when</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_wall_clock">Import interface wasi:clocks/wall-clock</a></h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
