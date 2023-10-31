@@ -2,6 +2,7 @@
 /// HTTP Requests and Responses, both incoming and outgoing, as well as
 /// their headers, trailers, and bodies.
 interface types {
+  use wasi:clocks/monotonic-clock.{duration};
   use wasi:io/streams.{input-stream, output-stream};
   use wasi:io/poll.{pollable};
 
@@ -36,6 +37,13 @@ interface types {
     unexpected-error(string)
   }
 
+  /// This tyep enumerates the different kinds of errors that may occur when
+  /// setting or appending to a `fields` resource.
+  variant header-error {
+    invalid-syntax,
+    forbidden,
+  }
+
   /// Field keys are always strings.
   type field-key = string;
 
@@ -49,6 +57,9 @@ interface types {
   /// Headers and Trailers.
   resource fields {
 
+    /// Construct an empty HTTP Fields.
+    constructor();
+
     /// Construct an HTTP Fields.
     ///
     /// The list represents each key-value pair in the Fields. Keys
@@ -59,14 +70,22 @@ interface types {
     /// Value, represented as a list of bytes. In a valid Fields, all keys
     /// and values are valid UTF-8 strings. However, values are not always
     /// well-formed, so they are represented as a raw list of bytes.
-    constructor(entries: list<tuple<field-key,field-value>>);
+    ///
+    /// An error result will be returned if any header or value was
+    /// syntactically invalid, or if a header was forbidden.
+    from-list: static func(
+      entries: list<tuple<field-key,field-value>>
+    ) -> result<fields, header-error>;
 
     /// Get all of the values corresponding to a key.
     get: func(name: field-key) -> list<field-value>;
 
     /// Set all of the values for a key. Clears any existing values for that
     /// key, if they have been set.
-    set: func(name: field-key, value: list<field-value>);
+    ///
+    /// The operation can fail if the name or value arguments are invalid, or if
+    /// the name is forbidden.
+    set: func(name: field-key, value: list<field-value>) -> result<_, header-error>;
 
     /// Delete all values for a key. Does nothing if no values for the key
     /// exist.
@@ -74,7 +93,10 @@ interface types {
 
     /// Append a value for a key. Does not change or delete any existing
     /// values for that key.
-    append: func(name: field-key, value: field-value);
+    ///
+    /// The operation can fail if the name or value arguments are invalid, or if
+    /// the name is forbidden.
+    append: func(name: field-key, value: field-value) -> result<_, header-error>;
 
 
     /// Retrieve the full set of keys and values in the Fields. Like the
@@ -202,21 +224,32 @@ interface types {
   ///
   /// These timeouts are separate from any the user may use to bound a
   /// blocking call to `wasi:io/poll.poll-list`.
-  ///
-  /// FIXME: Make this a resource to allow it to be optionally extended by
-  /// future evolution of the standard and/or other interfaces at some later
-  /// date?
-  record request-options {
+  resource request-options {
+    /// Construct a default `request-options` value.
+    constructor();
 
     /// The timeout for the initial connect to the HTTP Server.
-    connect-timeout-ms: option<u32>,
+    connect-timeout-ms: func() -> option<duration>;
+
+    /// Set the timeout for the initial connect to the HTTP Server. An error
+    /// return value indicates that this timeout is not supported.
+    set-connect-timeout-ms: func(ms: option<duration>) -> result;
 
     /// The timeout for receiving the first byte of the Response body.
-    first-byte-timeout-ms: option<u32>,
+    first-byte-timeout-ms: func() -> option<duration>;
+
+    /// Set the timeout for receiving the first byte of the Response body. An
+    /// error return value indicates that this timeout is not supported.
+    set-first-byte-timeout-ms: func(ms: option<duration>) -> result;
 
     /// The timeout for receiving subsequent chunks of bytes in the Response
     /// body stream.
-    between-bytes-timeout-ms: option<u32>
+    between-bytes-timeout-ms: func() -> option<duration>;
+
+    /// Set the timeout for receiving subsequent chunks of bytes in the Response
+    /// body stream. An error return value indicates that this timeout is not
+    /// supported.
+    set-between-bytes-timeout-ms: func(ms: option<duration>) -> result;
   }
 
   /// Represents the ability to send an HTTP Response.
@@ -235,14 +268,10 @@ interface types {
     ///
     /// The user may provide an `error` to `response` to allow the
     /// implementation determine how to respond with an HTTP error response.
-    ///
-    /// This method may return an error when the `outgoing-response` contains
-    /// a `status-code` or anything else the implementation does not permit or
-    /// support.
     set: static func(
       param: response-outparam,
       response: result<outgoing-response, error>,
-    ) -> result<_, error>;
+    );
   }
 
   /// This type corresponds to the HTTP standard Status Code.
@@ -314,8 +343,9 @@ interface types {
     ///
     /// The `result` represents that either the HTTP Request or Response body,
     /// as well as any trailers, were received successfully, or that an error
-    /// occured receiving them.
-    get: func() -> option<result<trailers, error>>;
+    /// occured receiving them. The optional `trailers` indicates whether or not
+    /// trailers were present in the body.
+    get: func() -> option<result<option<trailers>, error>>;
   }
 
   /// Represents an outgoing HTTP Response.
