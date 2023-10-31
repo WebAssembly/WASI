@@ -37,10 +37,16 @@ interface types {
     unexpected-error(string)
   }
 
-  /// This tyep enumerates the different kinds of errors that may occur when
+  /// This type enumerates the different kinds of errors that may occur when
   /// setting or appending to a `fields` resource.
   variant header-error {
+    /// This error indicates that a `field-key` or `field-value` was
+    /// syntactically invalid when used with an operation that sets headers in a
+    /// `fields`.
     invalid-syntax,
+
+    /// This error indicates that a forbidden `field-key` was used when trying
+    /// to set a header in a `fields`.
     forbidden,
   }
 
@@ -82,9 +88,6 @@ interface types {
 
     /// Set all of the values for a key. Clears any existing values for that
     /// key, if they have been set.
-    ///
-    /// The operation can fail if the name or value arguments are invalid, or if
-    /// the name is forbidden.
     set: func(name: field-key, value: list<field-value>) -> result<_, header-error>;
 
     /// Delete all values for a key. Does nothing if no values for the key
@@ -93,9 +96,6 @@ interface types {
 
     /// Append a value for a key. Does not change or delete any existing
     /// values for that key.
-    ///
-    /// The operation can fail if the name or value arguments are invalid, or if
-    /// the name is forbidden.
     append: func(name: field-key, value: field-value) -> result<_, header-error>;
 
 
