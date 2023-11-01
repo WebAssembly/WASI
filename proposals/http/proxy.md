@@ -635,8 +635,11 @@ HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="input_stream"><code>type input-stream</code></a></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+<h4><a name="duration"><code>type duration</code></a></h4>
+<p><a href="#duration"><a href="#duration"><code>duration</code></a></a></p>
+<p>
+#### <a name="input_stream">`type input-stream`</a>
+[`input-stream`](#input_stream)
 <p>
 #### <a name="output_stream">`type output-stream`</a>
 [`output-stream`](#output_stream)
@@ -678,6 +681,23 @@ initially returning a response.</p>
 <li><a name="error.protocol_error"><code>protocol-error</code></a>: <code>string</code></li>
 <li><a name="error.unexpected_error"><code>unexpected-error</code></a>: <code>string</code></li>
 </ul>
+<h4><a name="header_error"><code>variant header-error</code></a></h4>
+<p>This type enumerates the different kinds of errors that may occur when
+setting or appending to a <a href="#fields"><code>fields</code></a> resource.</p>
+<h5>Variant Cases</h5>
+<ul>
+<li>
+<p><a name="header_error.invalid_syntax"><code>invalid-syntax</code></a></p>
+<p>This error indicates that a `field-key` or `field-value` was
+syntactically invalid when used with an operation that sets headers in a
+`fields`.
+</li>
+<li>
+<p><a name="header_error.forbidden"><code>forbidden</code></a></p>
+<p>This error indicates that a forbidden `field-key` was used when trying
+to set a header in a `fields`.
+</li>
+</ul>
 <h4><a name="field_key"><code>type field-key</code></a></h4>
 <p><code>string</code></p>
 <p>Field keys are always strings.
@@ -695,31 +715,7 @@ so they are provided as a list of bytes.
 <p>Trailers is an alias for Fields.
 <h4><a name="incoming_request"><code>resource incoming-request</code></a></h4>
 <h4><a name="outgoing_request"><code>resource outgoing-request</code></a></h4>
-<h4><a name="request_options"><code>record request-options</code></a></h4>
-<p>Parameters for making an HTTP Request. Each of these parameters is an
-optional timeout, with the unit in milliseconds, applicable to the
-transport layer of the HTTP protocol.</p>
-<p>These timeouts are separate from any the user may use to bound a
-blocking call to <code>wasi:io/poll.poll-list</code>.</p>
-<p>FIXME: Make this a resource to allow it to be optionally extended by
-future evolution of the standard and/or other interfaces at some later
-date?</p>
-<h5>Record Fields</h5>
-<ul>
-<li>
-<p><a name="request_options.connect_timeout_ms"><code>connect-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The timeout for the initial connect to the HTTP Server.
-</li>
-<li>
-<p><a name="request_options.first_byte_timeout_ms"><code>first-byte-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The timeout for receiving the first byte of the Response body.
-</li>
-<li>
-<p><a name="request_options.between_bytes_timeout_ms"><code>between-bytes-timeout-ms</code></a>: option&lt;<code>u32</code>&gt;</p>
-<p>The timeout for receiving subsequent chunks of bytes in the Response
-body stream.
-</li>
-</ul>
+<h4><a name="request_options"><code>resource request-options</code></a></h4>
 <h4><a name="response_outparam"><code>resource response-outparam</code></a></h4>
 <h4><a name="status_code"><code>type status-code</code></a></h4>
 <p><code>u16</code></p>
@@ -733,6 +729,12 @@ body stream.
 <hr />
 <h3>Functions</h3>
 <h4><a name="constructor_fields"><code>[constructor]fields: func</code></a></h4>
+<p>Construct an empty HTTP Fields.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+</ul>
+<h4><a name="static_fields.from_list"><code>[static]fields.from-list: func</code></a></h4>
 <p>Construct an HTTP Fields.</p>
 <p>The list represents each key-value pair in the Fields. Keys
 which have multiple values are represented by multiple entries in this
@@ -741,13 +743,15 @@ list with the same key.</p>
 Value, represented as a list of bytes. In a valid Fields, all keys
 and values are valid UTF-8 strings. However, values are not always
 well-formed, so they are represented as a raw list of bytes.</p>
+<p>An error result will be returned if any header or value was
+syntactically invalid, or if a header was forbidden.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="constructor_fields.entries"><code>entries</code></a>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
+<li><a name="static_fields.from_list.entries"><code>entries</code></a>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="static_fields.from_list.0"></a> result&lt;own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.get"><code>[method]fields.get: func</code></a></h4>
 <p>Get all of the values corresponding to a key.</p>
@@ -769,6 +773,10 @@ key, if they have been set.</p>
 <li><a name="method_fields.set.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 <li><a name="method_fields.set.value"><code>value</code></a>: list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_fields.set.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="method_fields.delete"><code>[method]fields.delete: func</code></a></h4>
 <p>Delete all values for a key. Does nothing if no values for the key
 exist.</p>
@@ -785,6 +793,10 @@ values for that key.</p>
 <li><a name="method_fields.append.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 <li><a name="method_fields.append.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 <li><a name="method_fields.append.value"><code>value</code></a>: <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_fields.append.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.entries"><code>[method]fields.entries: func</code></a></h4>
 <p>Retrieve the full set of keys and values in the Fields. Like the
@@ -1009,6 +1021,80 @@ another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <ul>
 <li><a name="method_outgoing_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
+<h4><a name="constructor_request_options"><code>[constructor]request-options: func</code></a></h4>
+<p>Construct a default <a href="#request_options"><code>request-options</code></a> value.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="constructor_request_options.0"></a> own&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_request_options.connect_timeout_ms"><code>[method]request-options.connect-timeout-ms: func</code></a></h4>
+<p>The timeout for the initial connect to the HTTP Server.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.connect_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.connect_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_request_options.set_connect_timeout_ms"><code>[method]request-options.set-connect-timeout-ms: func</code></a></h4>
+<p>Set the timeout for the initial connect to the HTTP Server. An error
+return value indicates that this timeout is not supported.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.set_connect_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_connect_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.set_connect_timeout_ms.0"></a> result</li>
+</ul>
+<h4><a name="method_request_options.first_byte_timeout_ms"><code>[method]request-options.first-byte-timeout-ms: func</code></a></h4>
+<p>The timeout for receiving the first byte of the Response body.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.first_byte_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.first_byte_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_request_options.set_first_byte_timeout_ms"><code>[method]request-options.set-first-byte-timeout-ms: func</code></a></h4>
+<p>Set the timeout for receiving the first byte of the Response body. An
+error return value indicates that this timeout is not supported.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.set_first_byte_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_first_byte_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.set_first_byte_timeout_ms.0"></a> result</li>
+</ul>
+<h4><a name="method_request_options.between_bytes_timeout_ms"><code>[method]request-options.between-bytes-timeout-ms: func</code></a></h4>
+<p>The timeout for receiving subsequent chunks of bytes in the Response
+body stream.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.between_bytes_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.between_bytes_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_request_options.set_between_bytes_timeout_ms"><code>[method]request-options.set-between-bytes-timeout-ms: func</code></a></h4>
+<p>Set the timeout for receiving subsequent chunks of bytes in the Response
+body stream. An error return value indicates that this timeout is not
+supported.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_request_options.set_between_bytes_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_between_bytes_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_request_options.set_between_bytes_timeout_ms.0"></a> result</li>
+</ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
 or indicate an error.</p>
@@ -1017,17 +1103,10 @@ called at most once. If it is never called, the implementation
 will respond with an error.</p>
 <p>The user may provide an <a href="#error"><code>error</code></a> to <code>response</code> to allow the
 implementation determine how to respond with an HTTP error response.</p>
-<p>This method may return an error when the <a href="#outgoing_response"><code>outgoing-response</code></a> contains
-a <a href="#status_code"><code>status-code</code></a> or anything else the implementation does not permit or
-support.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 <li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="static_response_outparam.set.0"></a> result&lt;_, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
 <p>Returns the status code from the incoming response.</p>
@@ -1111,14 +1190,15 @@ once the future is ready.</p>
 <code>option</code> to become <code>some</code> using the <code>subscribe</code> method.</p>
 <p>The <code>result</code> represents that either the HTTP Request or Response body,
 as well as any trailers, were received successfully, or that an error
-occured receiving them.</p>
+occured receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether or not
+trailers were present in the body.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_trailers.get.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
 <p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>.</p>
@@ -1267,7 +1347,7 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 <h5>Params</h5>
 <ul>
 <li><a name="handle.request"><code>request</code></a>: own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
-<li><a name="handle.options"><code>options</code></a>: option&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="handle.options"><code>options</code></a>: option&lt;own&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
