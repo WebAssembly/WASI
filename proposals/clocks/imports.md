@@ -17,7 +17,27 @@ at once.</p>
 <h4><a name="pollable"><code>resource pollable</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="poll_list"><code>poll-list: func</code></a></h4>
+<h4><a name="method_pollable.ready"><code>[method]pollable.ready: func</code></a></h4>
+<p>Return the readiness of a pollable. This function never blocks.</p>
+<p>Returns <code>true</code> when the pollable is ready, and <code>false</code> otherwise.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_pollable.ready.self"><code>self</code></a>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_pollable.ready.0"></a> <code>bool</code></li>
+</ul>
+<h4><a name="method_pollable.block"><code>[method]pollable.block: func</code></a></h4>
+<p><code>block</code> returns immediately if the pollable is ready, and otherwise
+blocks until ready.</p>
+<p>This function is equivalent to calling <code>poll.poll</code> on a list
+containing only this pollable.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_pollable.block.self"><code>self</code></a>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="poll"><code>poll: func</code></a></h4>
 <p>Poll for completion on a set of pollables.</p>
 <p>This function takes a list of pollables, which identify I/O sources of
 interest, and waits until one or more of the events is ready for I/O.</p>
@@ -33,19 +53,11 @@ the pollables has an error, it is indicated by marking the source as
 being reaedy for I/O.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="poll_list.in"><code>in</code></a>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
+<li><a name="poll.in"><code>in</code></a>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll_list.0"></a> list&lt;<code>u32</code>&gt;</li>
-</ul>
-<h4><a name="poll_one"><code>poll-one: func</code></a></h4>
-<p>Poll for completion on a single pollable.</p>
-<p>This function is similar to <a href="#poll_list"><code>poll-list</code></a>, but operates on only a single
-pollable. When it returns, the handle is ready for I/O.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="poll_one.in"><code>in</code></a>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
 <h2><a name="wasi:clocks_monotonic_clock">Import interface wasi:clocks/monotonic-clock</a></h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
