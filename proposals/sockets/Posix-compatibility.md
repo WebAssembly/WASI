@@ -135,12 +135,12 @@ Additionally, most columns have been populated semi-automatically by grepping th
 Columns:
 - "Socket option": The native option constant.
 - "WASI":
-	- ✅ = Included in proposal.
-	- ⛔ = Consciously decided _not_ to include in WASI. See notes for explanation.
-	- ❔ = Not included (yet), for no particular reason.
+    - ✅ = Included in proposal.
+    - ⛔ = Consciously decided _not_ to include in WASI. See notes for explanation.
+    - ❔ = Not included (yet), for no particular reason.
 - The rest:
-	- ✅ = Option is provided by the platform / depended upon by the application.
-	- ❌ = Option is not provided / not used.
+    - ✅ = Option is provided by the platform / depended upon by the application.
+    - ❌ = Option is not provided / not used.
 
 > Note: GitHub clips the table content. Scroll left and right to see all columns, or use the Code View.
 
