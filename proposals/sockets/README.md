@@ -88,13 +88,13 @@ finish-operation: func(this) -> result<the-outputs..., error-code>
 
 The semantics are as follows:
 - When `start-*` completes successfully:
-	- The operation should be considered "in progress".
-	- This is the POSIX equivalent of EINPROGRESS.
-	- The socket can be polled for completion of the just started operation, using `wasi-poll`.
-	- Its corresponding `finish-*` function can be called until it returns something other than the `would-block` error code.
+    - The operation should be considered "in progress".
+    - This is the POSIX equivalent of EINPROGRESS.
+    - The socket can be polled for completion of the just started operation, using `wasi-poll`.
+    - Its corresponding `finish-*` function can be called until it returns something other than the `would-block` error code.
 - When `finish-*` returns anything other than `would-block`:
-	- The asynchronous operation should be considered "finished" (either successful or failed)
-	- Future calls to `finish-*` return the `not-in-progress` error code.
+    - The asynchronous operation should be considered "finished" (either successful or failed)
+    - Future calls to `finish-*` return the `not-in-progress` error code.
 
 Runtimes that don't need asynchrony, can simply validate the arguments provided to the `start` function and stash them on their internal socket instance and perform the actual syscall in the `finish` function. Conveniently, sockets only allow one of these `start/finish` asynchronous operation to be active at a time.
 
@@ -103,22 +103,22 @@ Example of how to recover blocking semantics in guest code:
 ```rs
 // Pseudo code:
 fn blocking-connect(sock: tcp-socket, addr: ip-socket-address) -> result<tuple<input-stream, output-stream>, error-code> {
-	
-	let pollable = tcp::subscribe(tcp-socket);
+    
+    let pollable = tcp::subscribe(tcp-socket);
 
-	let start-result = tcp::start-connect(sock, addr);
-	if (start-result is error) {
-		return error;
-	}
+    let start-result = tcp::start-connect(sock, addr);
+    if (start-result is error) {
+        return error;
+    }
 
-	while (true) {
-		poll::poll-oneoff([ pollable ]);
+    while (true) {
+        poll::poll-oneoff([ pollable ]);
 
-		let finish-result = tcp::finish-connect(sock);
-		if (finish-result is NOT error(would-block)) {
-			return finish-result;
-		}
-	}
+        let finish-result = tcp::finish-connect(sock);
+        if (finish-result is NOT error(would-block)) {
+            return finish-result;
+        }
+    }
 }
 
 ```
