@@ -59,7 +59,7 @@ Wasi-cli is not aiming to significantly re-imagine the concept of command-line i
 
 ### API walk-through
 
-The full API documentation can be found [here](cli.md).
+The full API documentation can be found [here](command.md).
 
 TODO [Walk through of how someone would use this API.]
 
