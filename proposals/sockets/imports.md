@@ -28,6 +28,7 @@ combined with a couple of errors that are always possible:</p>
 <li><code>access-denied</code></li>
 <li><code>not-supported</code></li>
 <li><code>out-of-memory</code></li>
+<li><code>concurrency-conflict</code></li>
 </ul>
 <p>See each individual API for what the POSIX equivalents are. They sometimes differ per API.</p>
 <h5>Enum Cases</h5>
@@ -47,6 +48,11 @@ combined with a couple of errors that are always possible:</p>
 <p>POSIX equivalent: EOPNOTSUPP</p>
 </li>
 <li>
+<p><a name="error_code.invalid_argument"><code>invalid-argument</code></a></p>
+<p>One of the arguments is invalid.
+<p>POSIX equivalent: EINVAL</p>
+</li>
+<li>
 <p><a name="error_code.out_of_memory"><code>out-of-memory</code></a></p>
 <p>Not enough memory to complete the operation.
 <p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY</p>
@@ -58,6 +64,7 @@ combined with a couple of errors that are always possible:</p>
 <li>
 <p><a name="error_code.concurrency_conflict"><code>concurrency-conflict</code></a></p>
 <p>This operation is incompatible with another asynchronous operation that is already in progress.
+<p>POSIX equivalent: EALREADY</p>
 </li>
 <li>
 <p><a name="error_code.not_in_progress"><code>not-in-progress</code></a></p>
@@ -72,48 +79,12 @@ combined with a couple of errors that are always possible:</p>
 <p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
 </li>
 <li>
-<p><a name="error_code.address_family_not_supported"><code>address-family-not-supported</code></a></p>
-<p>The specified address-family is not supported.
-</li>
-<li>
-<p><a name="error_code.address_family_mismatch"><code>address-family-mismatch</code></a></p>
-<p>An IPv4 address was passed to an IPv6 resource, or vice versa.
-</li>
-<li>
-<p><a name="error_code.invalid_remote_address"><code>invalid-remote-address</code></a></p>
-<p>The socket address is not a valid remote address. E.g. the IP address is set to INADDR_ANY, or the port is set to 0.
-</li>
-<li>
-<p><a name="error_code.ipv4_only_operation"><code>ipv4-only-operation</code></a></p>
-<p>The operation is only supported on IPv4 resources.
-</li>
-<li>
-<p><a name="error_code.ipv6_only_operation"><code>ipv6-only-operation</code></a></p>
-<p>The operation is only supported on IPv6 resources.
+<p><a name="error_code.invalid_state"><code>invalid-state</code></a></p>
+<p>The operation is not valid in the socket's current state.
 </li>
 <li>
 <p><a name="error_code.new_socket_limit"><code>new-socket-limit</code></a></p>
 <p>A new socket resource could not be created because of a system limit.
-</li>
-<li>
-<p><a name="error_code.already_attached"><code>already-attached</code></a></p>
-<p>The socket is already attached to another network.
-</li>
-<li>
-<p><a name="error_code.already_bound"><code>already-bound</code></a></p>
-<p>The socket is already bound.
-</li>
-<li>
-<p><a name="error_code.already_connected"><code>already-connected</code></a></p>
-<p>The socket is already in the Connection state.
-</li>
-<li>
-<p><a name="error_code.not_bound"><code>not-bound</code></a></p>
-<p>The socket is not bound to any local address.
-</li>
-<li>
-<p><a name="error_code.not_connected"><code>not-connected</code></a></p>
-<p>The socket is not in the Connection state.
 </li>
 <li>
 <p><a name="error_code.address_not_bindable"><code>address-not-bindable</code></a></p>
@@ -121,23 +92,11 @@ combined with a couple of errors that are always possible:</p>
 </li>
 <li>
 <p><a name="error_code.address_in_use"><code>address-in-use</code></a></p>
-<p>A bind operation failed because the provided address is already in use.
-</li>
-<li>
-<p><a name="error_code.ephemeral_ports_exhausted"><code>ephemeral-ports-exhausted</code></a></p>
-<p>A bind operation failed because there are no ephemeral ports available.
+<p>A bind operation failed because the provided address is already in use or because there are no ephemeral ports available.
 </li>
 <li>
 <p><a name="error_code.remote_unreachable"><code>remote-unreachable</code></a></p>
 <p>The remote address is not reachable
-</li>
-<li>
-<p><a name="error_code.already_listening"><code>already-listening</code></a></p>
-<p>The socket is already in the Listener state.
-</li>
-<li>
-<p><a name="error_code.not_listening"><code>not-listening</code></a></p>
-<p>The socket is already in the Listener state.
 </li>
 <li>
 <p><a name="error_code.connection_refused"><code>connection-refused</code></a></p>
@@ -148,11 +107,11 @@ combined with a couple of errors that are always possible:</p>
 <p>The connection was reset.
 </li>
 <li>
-<p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
+<p><a name="error_code.connection_aborted"><code>connection-aborted</code></a></p>
+<p>A connection was aborted.
 </li>
 <li>
-<p><a name="error_code.invalid_name"><code>invalid-name</code></a></p>
-<p>The provided name is a syntactically invalid domain name.
+<p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
 </li>
 <li>
 <p><a name="error_code.name_unresolvable"><code>name-unresolvable</code></a></p>
@@ -308,31 +267,60 @@ being reaedy for I/O.</p>
 #### <a name="ip_address_family">`type ip-address-family`</a>
 [`ip-address-family`](#ip_address_family)
 <p>
-#### <a name="datagram">`record datagram`</a>
+#### <a name="incoming_datagram">`record incoming-datagram`</a>
+<p>A received datagram.</p>
 <h5>Record Fields</h5>
 <ul>
-<li><a name="datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</li>
-<li><a name="datagram.remote_address"><code>remote-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li>
+<p><a name="incoming_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
+<p>The payload.
+<p>Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.</p>
+</li>
+<li>
+<p><a name="incoming_datagram.remote_address"><code>remote-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
+<p>The source address.
+<p>This field is guaranteed to match the remote address the stream was initialized with, if any.</p>
+<p>Equivalent to the <code>src_addr</code> out parameter of <code>recvfrom</code>.</p>
+</li>
+</ul>
+<h4><a name="outgoing_datagram"><code>record outgoing-datagram</code></a></h4>
+<p>A datagram to be sent out.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="outgoing_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
+<p>The payload.
+</li>
+<li>
+<p><a name="outgoing_datagram.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</p>
+<p>The destination address.
+<p>The requirements on this field depend on how the stream was initialized:</p>
+<ul>
+<li>with a remote address: this field must be None or match the stream's remote address exactly.</li>
+<li>without a remote address: this field is required.</li>
+</ul>
+<p>If this value is None, the send operation is equivalent to <code>send</code> in POSIX. Otherwise it is equivalent to <code>sendto</code>.</p>
+</li>
 </ul>
 <h4><a name="udp_socket"><code>resource udp-socket</code></a></h4>
+<h4><a name="incoming_datagram_stream"><code>resource incoming-datagram-stream</code></a></h4>
+<h4><a name="outgoing_datagram_stream"><code>resource outgoing-datagram-stream</code></a></h4>
 <hr />
 <h3>Functions</h3>
 <h4><a name="method_udp_socket.start_bind"><code>[method]udp-socket.start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
-If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
-<p>When a socket is not explicitly bound, the first invocation to connect will implicitly bind the socket.</p>
+If the port is zero, the socket will be bound to a random free port.</p>
 <p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>address-family-mismatch</code>:   The <code>local-address</code> has the wrong address family. (EINVAL)</li>
-<li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
-<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
+<li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
+<li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
-<li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
+<li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
 <li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
@@ -364,29 +352,38 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <ul>
 <li><a name="method_udp_socket.finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket.start_connect"><code>[method]udp-socket.start-connect: func</code></a></h4>
-<p>Set the destination address.</p>
-<p>The local-address is updated based on the best network path to <code>remote-address</code>.</p>
-<p>When a destination address is set:</p>
+<h4><a name="method_udp_socket.stream"><code>[method]udp-socket.stream: func</code></a></h4>
+<p>Set up inbound &amp; outbound communication channels, optionally to a specific peer.</p>
+<p>This function only changes the local socket configuration and does not generate any network traffic.
+On success, the <code>remote-address</code> of the socket is updated. The <code>local-address</code> may be updated as well,
+based on the best network path to <code>remote-address</code>.</p>
+<p>When a <code>remote-address</code> is provided, the returned streams are limited to communicating with that specific peer:</p>
 <ul>
-<li>all receive operations will only return datagrams sent from the provided <code>remote-address</code>.</li>
-<li>the <code>send</code> function can only be used to send to this destination.</li>
+<li><code>send</code> can only be used to send to this destination.</li>
+<li><code>receive</code> will only return datagrams sent from the provided <code>remote-address</code>.</li>
 </ul>
-<p>Note that this function does not generate any network traffic and the peer is not aware of this &quot;connection&quot;.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
-<h1>Typical <code>start</code> errors</h1>
+<p>This method may be called multiple times on the same socket to change its association, but
+only the most recently returned pair of streams will be operational. Implementations may trap if
+the streams returned by a previous invocation haven't been dropped yet before calling <code>stream</code> again.</p>
+<p>The POSIX equivalent in pseudo-code is:</p>
+<pre><code class="language-text">if (was previously connected) {
+  connect(s, AF_UNSPEC)
+}
+if (remote_address is Some) {
+  connect(s, remote_address)
+}
+</code></pre>
+<p>Unlike in POSIX, the socket must already be explicitly bound.</p>
+<h1>Typical errors</h1>
 <ul>
-<li><code>address-family-mismatch</code>:   The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-remote-address</code>:    The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-remote-address</code>:    The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>already-attached</code>:          The socket is already bound to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
-<li><code>concurrency-conflict</code>:      Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
-<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
-<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
-<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
+<li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-state</code>:             The socket is not bound.</li>
+<li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
+<li><code>remote-unreachable</code>:        The remote address is not reachable. (ECONNRESET, ENETRESET, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>:        The connection was refused. (ECONNREFUSED)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -397,100 +394,24 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket.start_connect.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.start_connect.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.start_connect.remote_address"><code>remote-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a name="method_udp_socket.stream.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.stream.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket.start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.finish_connect"><code>[method]udp-socket.finish-connect: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.finish_connect.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.finish_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.receive"><code>[method]udp-socket.receive: func</code></a></h4>
-<p>Receive messages on the socket.</p>
-<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
-The returned list may contain fewer elements than requested, but never more.
-If <code>max-results</code> is 0, this function returns successfully with an empty list.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>not-bound</code>:          The socket is not bound to any local address. (EINVAL)</li>
-<li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
-<li><code>would-block</code>:        There is no pending data available to be read at the moment. (EWOULDBLOCK, EAGAIN)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
-<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.receive.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.receive.0"></a> result&lt;list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.send"><code>[method]udp-socket.send: func</code></a></h4>
-<p>Send messages on the socket.</p>
-<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
-returns how many messages were actually sent (or queued for sending).</p>
-<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
-sending each individual datagram until either the end of the list has been reached or the first error occurred.
-If at least one datagram has been sent successfully, this function never returns an error.</p>
-<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
-<p>The remote address option is required. To send a message to the &quot;connected&quot; peer,
-call <code>remote-address</code> to get their address.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>address-family-mismatch</code>: The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-remote-address</code>:  The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-remote-address</code>:  The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>already-connected</code>:       The socket is in &quot;connected&quot; mode and the <code>datagram.remote-address</code> does not match the address passed to <code>connect</code>. (EISCONN)</li>
-<li><code>not-bound</code>:               The socket is not bound to any local address. Unlike POSIX, this function does not perform an implicit bind.</li>
-<li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNREFUSED, ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
-<li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
-<li><code>would-block</code>:             The send buffer is currently full. (EWOULDBLOCK, EAGAIN)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.send.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#datagram"><a href="#datagram"><code>datagram</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.stream.0"></a> result&lt;(own&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;, own&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_udp_socket.local_address"><code>[method]udp-socket.local-address: func</code></a></h4>
 <p>Get the current bound address.</p>
+<p>POSIX mentions:</p>
+<blockquote>
+<p>If the socket has not been bound to a local name, the value
+stored in the object pointed to by <code>address</code> is unspecified.</p>
+</blockquote>
+<p>WASI is stricter and requires <code>local-address</code> to return <code>invalid-state</code> when the socket hasn't been bound yet.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-bound</code>: The socket is not bound to any local address.</li>
+<li><code>invalid-state</code>: The socket is not bound to any local address.</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -508,10 +429,10 @@ call <code>remote-address</code> to get their address.</p>
 <li><a name="method_udp_socket.local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_udp_socket.remote_address"><code>[method]udp-socket.remote-address: func</code></a></h4>
-<p>Get the address set with <code>connect</code>.</p>
+<p>Get the address the socket is currently streaming to.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
+<li><code>invalid-state</code>: The socket is not streaming to a specific remote address. (ENOTCONN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -544,10 +465,9 @@ call <code>remote-address</code> to get their address.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>already-bound</code>:        (set) The socket is already bound.</li>
+<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
+<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
 <li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -569,10 +489,6 @@ call <code>remote-address</code> to get their address.</p>
 </ul>
 <h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
-</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="method_udp_socket.unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
@@ -599,10 +515,6 @@ In other words, after setting a value, reading the same setting back may return 
 actual data to be sent/received by the application, because the kernel might also use the buffer space
 for internal metadata structures.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) Another <code>bind</code> or <code>connect</code> operation is already in progress. (EALREADY)</li>
-</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="method_udp_socket.receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
@@ -652,6 +564,125 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="method_udp_socket.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
+<h4><a name="method_incoming_datagram_stream.receive"><code>[method]incoming-datagram-stream.receive: func</code></a></h4>
+<p>Receive messages on the socket.</p>
+<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
+The returned list may contain fewer elements than requested, but never more.</p>
+<p>This function returns successfully with an empty list when either:</p>
+<ul>
+<li><code>max-results</code> is 0, or:</li>
+<li><code>max-results</code> is greater than 0, but no results are immediately available.
+This function never returns <code>error(would-block)</code>.</li>
+</ul>
+<h1>Typical errors</h1>
+<ul>
+<li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>: The connection was refused. (ECONNREFUSED)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
+<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.receive.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+<li><a name="method_incoming_datagram_stream.receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.receive.0"></a> result&lt;list&lt;<a href="#incoming_datagram"><a href="#incoming_datagram"><code>incoming-datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_incoming_datagram_stream.subscribe"><code>[method]incoming-datagram-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to receive again.</p>
+<p>Note: this function is here for WASI Preview2 only.
+It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.check_send"><code>[method]outgoing-datagram-stream.check-send: func</code></a></h4>
+<p>Check readiness for sending. This function never blocks.</p>
+<p>Returns the number of datagrams permitted for the next call to <code>send</code>,
+or an error. Calling <code>send</code> with more datagrams than this function has
+permitted will trap.</p>
+<p>When this function returns ok(0), the <code>subscribe</code> pollable will
+become ready when this function will report at least ok(1), or an
+error.</p>
+<p>Never returns <code>would-block</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.check_send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.check_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.send"><code>[method]outgoing-datagram-stream.send: func</code></a></h4>
+<p>Send messages on the socket.</p>
+<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
+returns how many messages were actually sent (or queued for sending). This function never
+returns <code>error(would-block)</code>. If none of the datagrams were able to be sent, <code>ok(0)</code> is returned.</p>
+<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
+sending each individual datagram until either the end of the list has been reached or the first error occurred.
+If at least one datagram has been sent successfully, this function never returns an error.</p>
+<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
+<p>Each call to <code>send</code> must be permitted by a preceding <code>check-send</code>. Implementations must trap if
+either <code>check-send</code> was not called or <code>datagrams</code> contains more items than <code>check-send</code> permitted.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:        The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-argument</code>:        <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:        The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:        The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:        The socket is in &quot;connected&quot; mode and <code>remote-address</code> is <code>some</code> value that does not match the address passed to <code>stream</code>. (EISCONN)</li>
+<li><code>invalid-argument</code>:        The socket is not &quot;connected&quot; and no value for <code>remote-address</code> was provided. (EDESTADDRREQ)</li>
+<li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>:      The connection was refused. (ECONNREFUSED)</li>
+<li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+<li><a name="method_outgoing_datagram_stream.send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#outgoing_datagram"><a href="#outgoing_datagram"><code>outgoing-datagram</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.subscribe"><code>[method]outgoing-datagram-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to send again.</p>
+<p>Note: this function is here for WASI Preview2 only.
+It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
 <h2><a name="wasi:sockets_udp_create_socket">Import interface wasi:sockets/udp-create-socket</a></h2>
 <hr />
 <h3>Types</h3>
@@ -673,14 +704,13 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <p>Create a new UDP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code> is called,
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>:                The host does not support UDP sockets. (EOPNOTSUPP)</li>
-<li><code>address-family-not-supported</code>: The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
-<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+<li><code>not-supported</code>:     The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:  The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
 </ul>
 <h1>References:</h1>
 <ul>
@@ -1065,13 +1095,14 @@ implicitly bind the socket.</p>
 <p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>address-family-mismatch</code>:   The <code>local-address</code> has the wrong address family. (EINVAL)</li>
-<li><code>already-bound</code>:             The socket is already bound. (EINVAL)</li>
-<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+<li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
+<li><code>invalid-argument</code>:          <code>local-address</code> is not a unicast address. (EINVAL)</li>
+<li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL)</li>
+<li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
-<li><code>ephemeral-ports-exhausted</code>: No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
+<li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
 <li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
@@ -1110,23 +1141,37 @@ implicitly bind the socket.</p>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
+<p>POSIX mentions:</p>
+<blockquote>
+<p>If connect() fails, the state of the socket is unspecified. Conforming applications should
+close the file descriptor and create a new socket before attempting to reconnect.</p>
+</blockquote>
+<p>WASI prescribes the following behavior:</p>
+<ul>
+<li>If <code>connect</code> fails because an input/state validation error, the socket should remain usable.</li>
+<li>If a connection was actually attempted but failed, the socket should become unusable for further network communication.
+Besides <code>drop</code>, any method after such a failure may return an error.</li>
+</ul>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>address-family-mismatch</code>:   The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-remote-address</code>:    The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
-<li><code>invalid-remote-address</code>:    The port in <code>remote-address</code> is set to 0. (EADDRNOTAVAIL on Windows)</li>
-<li><code>already-attached</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
-<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN)</li>
-<li><code>already-listening</code>:         The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
-<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+<li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is not a unicast address. (EINVAL, ENETUNREACH on Linux, EAFNOSUPPORT on MacOS)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL, EADDRNOTAVAIL on Illumos)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
+<li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EADDRNOTAVAIL on Windows)</li>
+<li><code>invalid-argument</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
+<li><code>invalid-state</code>:             The socket is already in the Connection state. (EISCONN)</li>
+<li><code>invalid-state</code>:             The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
 <li><code>timeout</code>:                   Connection timed out. (ETIMEDOUT)</li>
 <li><code>connection-refused</code>:        The connection was forcefully rejected. (ECONNREFUSED)</li>
 <li><code>connection-reset</code>:          The connection was reset. (ECONNRESET)</li>
-<li><code>remote-unreachable</code>:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN)</li>
-<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
+<li><code>connection-aborted</code>:        The connection was aborted. (ECONNABORTED)</li>
+<li><code>remote-unreachable</code>:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
 <li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
@@ -1166,14 +1211,13 @@ implicitly bind the socket.</p>
 </ul>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>not-bound</code>:                 The socket is not bound to any local address. (EDESTADDRREQ)</li>
-<li><code>already-connected</code>:         The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
-<li><code>already-listening</code>:         The socket is already in the Listener state.</li>
-<li><code>concurrency-conflict</code>:      Another <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EINVAL on BSD)</li>
+<li><code>invalid-state</code>:             The socket is not bound to any local address. (EDESTADDRREQ)</li>
+<li><code>invalid-state</code>:             The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
+<li><code>invalid-state</code>:             The socket is already in the Listener state.</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
-<li><code>ephemeral-ports-exhausted</code>: Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
+<li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
 <li><code>not-in-progress</code>:           A <code>listen</code> operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
@@ -1203,15 +1247,24 @@ implicitly bind the socket.</p>
 </ul>
 <h4><a name="method_tcp_socket.accept"><code>[method]tcp-socket.accept: func</code></a></h4>
 <p>Accept a new client socket.</p>
-<p>The returned socket is bound and in the Connection state.</p>
+<p>The returned socket is bound and in the Connection state. The following properties are inherited from the listener socket:</p>
+<ul>
+<li><code>address-family</code></li>
+<li><code>ipv6-only</code></li>
+<li><code>keep-alive</code></li>
+<li><code>unicast-hop-limit</code></li>
+<li><code>receive-buffer-size</code></li>
+<li><code>send-buffer-size</code></li>
+</ul>
 <p>On success, this function returns the newly accepted client socket along with
 a pair of streams that can be used to read &amp; write to the connection.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-listening</code>: Socket is not in the Listener state. (EINVAL)</li>
-<li><code>would-block</code>:   No pending connections at the moment. (EWOULDBLOCK, EAGAIN)</li>
+<li><code>invalid-state</code>:      Socket is not in the Listener state. (EINVAL)</li>
+<li><code>would-block</code>:        No pending connections at the moment. (EWOULDBLOCK, EAGAIN)</li>
+<li><code>connection-aborted</code>: An incoming connection was pending, but was terminated by the client before this listener could accept it. (ECONNABORTED)</li>
+<li><code>new-socket-limit</code>:   The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
 </ul>
-<p>Host implementations must skip over transient errors returned by the native accept syscall.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html</a></li>
@@ -1229,9 +1282,15 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="method_tcp_socket.local_address"><code>[method]tcp-socket.local-address: func</code></a></h4>
 <p>Get the bound local address.</p>
+<p>POSIX mentions:</p>
+<blockquote>
+<p>If the socket has not been bound to a local name, the value
+stored in the object pointed to by <code>address</code> is unspecified.</p>
+</blockquote>
+<p>WASI is stricter and requires <code>local-address</code> to return <code>invalid-state</code> when the socket hasn't been bound yet.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-bound</code>: The socket is not bound to any local address.</li>
+<li><code>invalid-state</code>: The socket is not bound to any local address.</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1249,10 +1308,10 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <li><a name="method_tcp_socket.local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.remote_address"><code>[method]tcp-socket.remote-address: func</code></a></h4>
-<p>Get the bound remote address.</p>
+<p>Get the remote address.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-connected</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
+<li><code>invalid-state</code>: The socket is not connected to a remote address. (ENOTCONN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1285,10 +1344,9 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Equivalent to the IPV6_V6ONLY socket option.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>ipv6-only-operation</code>:  (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>already-bound</code>:        (set) The socket is already bound.</li>
+<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
+<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
 <li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1312,8 +1370,8 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+<li><code>not-supported</code>:        (set) The platform does not support changing the backlog size after the initial listen.</li>
+<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1326,10 +1384,6 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h4><a name="method_tcp_socket.keep_alive"><code>[method]tcp-socket.keep-alive: func</code></a></h4>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
-</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="method_tcp_socket.keep_alive.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
@@ -1348,37 +1402,13 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 <ul>
 <li><a name="method_tcp_socket.set_keep_alive.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket.no_delay"><code>[method]tcp-socket.no-delay: func</code></a></h4>
-<p>Equivalent to the TCP_NODELAY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.no_delay.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.no_delay.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_tcp_socket.set_no_delay"><code>[method]tcp-socket.set-no-delay: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.set_no_delay.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket.set_no_delay.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.set_no_delay.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
 <h4><a name="method_tcp_socket.unicast_hop_limit"><code>[method]tcp-socket.unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
-<li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+<li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
+<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
+<li><code>invalid-state</code>:        (set) The socket is already in the Listener state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1408,9 +1438,8 @@ for internal metadata structures.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>already-connected</code>:    (set) The socket is already in the Connection state.</li>
-<li><code>already-listening</code>:    (set) The socket is already in the Listener state.</li>
-<li><code>concurrency-conflict</code>: (set) A <code>bind</code>, <code>connect</code> or <code>listen</code> operation is already in progress. (EALREADY)</li>
+<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
+<li><code>invalid-state</code>:        (set) The socket is already in the Listener state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1474,7 +1503,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>The shutdown function does not close (drop) the socket.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-connected</code>: The socket is not in the Connection state. (ENOTCONN)</li>
+<li><code>invalid-state</code>: The socket is not in the Connection state. (ENOTCONN)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1518,9 +1547,8 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>not-supported</code>:                The host does not support TCP sockets. (EOPNOTSUPP)</li>
-<li><code>address-family-not-supported</code>: The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
-<li><code>new-socket-limit</code>:             The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+<li><code>not-supported</code>:     The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:  The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
 </ul>
 <h1>References</h1>
 <ul>
@@ -1552,35 +1580,21 @@ is called, the socket is effectively an in-memory configuration object, unable t
 #### <a name="ip_address">`type ip-address`</a>
 [`ip-address`](#ip_address)
 <p>
-#### <a name="ip_address_family">`type ip-address-family`</a>
-[`ip-address-family`](#ip_address_family)
-<p>
 #### <a name="resolve_address_stream">`resource resolve-address-stream`</a>
 <hr />
 <h3>Functions</h3>
 <h4><a name="resolve_addresses"><code>resolve-addresses: func</code></a></h4>
 <p>Resolve an internet host name to a list of IP addresses.</p>
+<p>Unicode domain names are automatically converted to ASCII using IDNA encoding.
+If the input is an IP address string, the address is parsed and returned
+as-is without making any external requests.</p>
 <p>See the wasi-socket proposal README.md for a comparison with getaddrinfo.</p>
-<h1>Parameters</h1>
-<ul>
-<li><code>name</code>: The name to look up. IP addresses are not allowed. Unicode domain names are automatically converted
-to ASCII using IDNA encoding.</li>
-<li><code>address-family</code>: If provided, limit the results to addresses of this specific address family.</li>
-<li><code>include-unavailable</code>: When set to true, this function will also return addresses of which the runtime
-thinks (or knows) can't be connected to at the moment. For example, this will return IPv6 addresses on
-systems without an active IPv6 interface. Notes:</li>
-<li>Even when no public IPv6 interfaces are present or active, names like &quot;localhost&quot; can still resolve to an IPv6 address.</li>
-<li>Whatever is &quot;available&quot; or &quot;unavailable&quot; is volatile and can change everytime a network cable is unplugged.</li>
-</ul>
-<p>This function never blocks. It either immediately fails or immediately returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a>
-that can be used to (asynchronously) fetch the results.</p>
-<p>At the moment, the stream never completes successfully with 0 items. Ie. the first call
-to <code>resolve-next-address</code> never returns <code>ok(none)</code>. This may change in the future.</p>
+<p>This function never blocks. It either immediately fails or immediately
+returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a> that can be used
+to (asynchronously) fetch the results.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>invalid-name</code>:                 <code>name</code> is a syntactically invalid domain name.</li>
-<li><code>invalid-name</code>:                 <code>name</code> is an IP address.</li>
-<li><code>address-family-not-supported</code>: The specified <code>address-family</code> is not supported. (EAI_FAMILY)</li>
+<li><code>invalid-argument</code>: <code>name</code> is a syntactically invalid domain name or IP address.</li>
 </ul>
 <h1>References:</h1>
 <ul>
@@ -1593,8 +1607,6 @@ to <code>resolve-next-address</code> never returns <code>ok(none)</code>. This m
 <ul>
 <li><a name="resolve_addresses.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 <li><a name="resolve_addresses.name"><code>name</code></a>: <code>string</code></li>
-<li><a name="resolve_addresses.address_family"><code>address-family</code></a>: option&lt;<a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a>&gt;</li>
-<li><a name="resolve_addresses.include_unavailable"><code>include-unavailable</code></a>: <code>bool</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
