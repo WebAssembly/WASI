@@ -785,6 +785,10 @@ exist.</p>
 <li><a name="method_fields.delete.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 <li><a name="method_fields.delete.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_fields.delete.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+</ul>
 <h4><a name="method_fields.append"><code>[method]fields.append: func</code></a></h4>
 <p>Append a value for a key. Does not change or delete any existing
 values for that key.</p>
@@ -888,17 +892,9 @@ return success at most once, and subsequent calls will return error.</p>
 <li><a name="method_incoming_request.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_request"><code>[constructor]outgoing-request: func</code></a></h4>
-<p>Construct a new <a href="#outgoing_request"><code>outgoing-request</code></a>.</p>
+<p>Construct a new <a href="#outgoing_request"><code>outgoing-request</code></a> with a default <a href="#method"><code>method</code></a> of <code>GET</code>, and
+<code>none</code> values for <code>path-with-query</code>, <a href="#scheme"><code>scheme</code></a>, and <code>authority</code>.</p>
 <ul>
-<li><a href="#method"><code>method</code></a> represents the HTTP Method for the Request.</li>
-<li><code>path-with-query</code> is the combination of the HTTP Path and Query for
-the Request. When <code>none</code>, this represents an empty Path and empty
-Query.</li>
-<li><a href="#scheme"><code>scheme</code></a> is the HTTP Related Scheme for the Request. When <code>none</code>,
-the implementation may choose an appropriate default scheme.</li>
-<li><code>authority</code> is the HTTP Authority for the Request. A value of <code>none</code>
-may be used with Related Schemes which do not require an Authority.
-The HTTP and HTTPS schemes always require an authority.</li>
 <li><a href="#headers"><code>headers</code></a> is the HTTP Headers for the Request.</li>
 </ul>
 <p>It is possible to construct, or manipulate with the accessor functions
@@ -908,10 +904,6 @@ It is the obligation of the <code>outgoing-handler.handle</code> implementation
 to reject invalid constructions of <a href="#outgoing_request"><code>outgoing-request</code></a>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="constructor_outgoing_request.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
-<li><a name="constructor_outgoing_request.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
-<li><a name="constructor_outgoing_request.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
-<li><a name="constructor_outgoing_request.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
 <li><a name="constructor_outgoing_request.headers"><a href="#headers"><code>headers</code></a></a>: own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
@@ -943,11 +935,16 @@ calls will return error.</p>
 <li><a name="method_outgoing_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
 <h4><a name="method_outgoing_request.set_method"><code>[method]outgoing-request.set-method: func</code></a></h4>
-<p>Set the Method for the Request.</p>
+<p>Set the Method for the Request. Fails if the string present in a
+<code>method.other</code> argument is not a syntactically valid method.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_request.set_method.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 <li><a name="method_outgoing_request.set_method.method"><a href="#method"><code>method</code></a></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.set_method.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_request.path_with_query"><code>[method]outgoing-request.path-with-query: func</code></a></h4>
 <p>Get the combination of the HTTP Path and Query for the Request.
@@ -962,11 +959,16 @@ When <code>none</code>, this represents an empty Path and empty Query.</p>
 </ul>
 <h4><a name="method_outgoing_request.set_path_with_query"><code>[method]outgoing-request.set-path-with-query: func</code></a></h4>
 <p>Set the combination of the HTTP Path and Query for the Request.
-When <code>none</code>, this represents an empty Path and empty Query.</p>
+When <code>none</code>, this represents an empty Path and empty Query. Fails is the
+string given is not a syntactically valid path and query uri component.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_request.set_path_with_query.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 <li><a name="method_outgoing_request.set_path_with_query.path_with_query"><code>path-with-query</code></a>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.set_path_with_query.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_request.scheme"><code>[method]outgoing-request.scheme: func</code></a></h4>
 <p>Get the HTTP Related Scheme for the Request. When <code>none</code>, the
@@ -981,11 +983,16 @@ implementation may choose an appropriate default scheme.</p>
 </ul>
 <h4><a name="method_outgoing_request.set_scheme"><code>[method]outgoing-request.set-scheme: func</code></a></h4>
 <p>Set the HTTP Related Scheme for the Request. When <code>none</code>, the
-implementation may choose an appropriate default scheme.</p>
+implementation may choose an appropriate default scheme. Fails if the
+string given is not a syntactically valid uri scheme.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_request.set_scheme.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 <li><a name="method_outgoing_request.set_scheme.scheme"><a href="#scheme"><code>scheme</code></a></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.set_scheme.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_request.authority"><code>[method]outgoing-request.authority: func</code></a></h4>
 <p>Get the HTTP Authority for the Request. A value of <code>none</code> may be used
@@ -1002,11 +1009,16 @@ HTTPS schemes always require an authority.</p>
 <h4><a name="method_outgoing_request.set_authority"><code>[method]outgoing-request.set-authority: func</code></a></h4>
 <p>Set the HTTP Authority for the Request. A value of <code>none</code> may be used
 with Related Schemes which do not require an Authority. The HTTP and
-HTTPS schemes always require an authority.</p>
+HTTPS schemes always require an authority. Fails if the string given is
+not a syntactically valid uri authority.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_request.set_authority.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 <li><a name="method_outgoing_request.set_authority.authority"><code>authority</code></a>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_request.set_authority.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_request.headers"><code>[method]outgoing-request.headers: func</code></a></h4>
 <p>Get the headers associated with the Request.</p>
@@ -1201,14 +1213,14 @@ trailers were present in the body.</p>
 <li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
-<p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>.</p>
+<p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>, with a default <a href="#status_code"><code>status-code</code></a> of <code>200</code>.
+If a different <a href="#status_code"><code>status-code</code></a> is needed, it must be set via the
+<code>set-status-code</code> method.</p>
 <ul>
-<li><a href="#status_code"><code>status-code</code></a> is the HTTP Status Code for the Response.</li>
 <li><a href="#headers"><code>headers</code></a> is the HTTP Headers for the Response.</li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="constructor_outgoing_response.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 <li><a name="constructor_outgoing_response.headers"><a href="#headers"><code>headers</code></a></a>: own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
@@ -1226,11 +1238,16 @@ trailers were present in the body.</p>
 <li><a name="method_outgoing_response.status_code.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
 <h4><a name="method_outgoing_response.set_status_code"><code>[method]outgoing-response.set-status-code: func</code></a></h4>
-<p>Set the HTTP Status Code for the Response.</p>
+<p>Set the HTTP Status Code for the Response. Fails if the status-code
+given is not a valid http status code.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_response.set_status_code.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 <li><a name="method_outgoing_response.set_status_code.status_code"><a href="#status_code"><code>status-code</code></a></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_response.set_status_code.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_response.headers"><code>[method]outgoing-response.headers: func</code></a></h4>
 <p>Get the headers associated with the Request.</p>
