@@ -2,13 +2,13 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:random_random"><code>wasi:random/random</code></a></li>
-<li>interface <a href="#wasi:random_insecure"><code>wasi:random/insecure</code></a></li>
-<li>interface <a href="#wasi:random_insecure_seed"><code>wasi:random/insecure-seed</code></a></li>
+<li>interface <a href="#wasi:random_random_0.2.0_rc_2023_11_10"><code>wasi:random/random@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:random_insecure_0.2.0_rc_2023_11_10"><code>wasi:random/insecure@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:random_insecure_seed_0.2.0_rc_2023_11_10"><code>wasi:random/insecure-seed@0.2.0-rc-2023-11-10</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:random_random">Import interface wasi:random/random</a></h2>
+<h2><a name="wasi:random_random_0.2.0_rc_2023_11_10">Import interface wasi:random/random@0.2.0-rc-2023-11-10</a></h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -41,7 +41,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="wasi:random_insecure">Import interface wasi:random/insecure</a></h2>
+<h2><a name="wasi:random_insecure_0.2.0_rc_2023_11_10">Import interface wasi:random/insecure@0.2.0-rc-2023-11-10</a></h2>
 <p>The insecure interface for insecure pseudo-random numbers.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -70,7 +70,7 @@ a long period.</p>
 <ul>
 <li><a name="get_insecure_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="wasi:random_insecure_seed">Import interface wasi:random/insecure-seed</a></h2>
+<h2><a name="wasi:random_insecure_seed_0.2.0_rc_2023_11_10">Import interface wasi:random/insecure-seed@0.2.0-rc-2023-11-10</a></h2>
 <p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
