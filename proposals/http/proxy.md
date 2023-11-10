@@ -644,6 +644,9 @@ their headers, trailers, and bodies.</p>
 #### <a name="output_stream">`type output-stream`</a>
 [`output-stream`](#output_stream)
 <p>
+#### <a name="stream_error">`type stream-error`</a>
+[`error`](#error)
+<p>
 #### <a name="pollable">`type pollable`</a>
 [`pollable`](#pollable)
 <p>
@@ -670,16 +673,76 @@ their headers, trailers, and bodies.</p>
 <li><a name="scheme.https"><code>HTTPS</code></a></li>
 <li><a name="scheme.other"><code>other</code></a>: <code>string</code></li>
 </ul>
-<h4><a name="error"><code>variant error</code></a></h4>
-<p>TODO: perhaps better align with HTTP semantics?
-This type enumerates the different kinds of errors that may occur when
-initially returning a response.</p>
+<h4><a name="dns_error_payload"><code>record DNS-error-payload</code></a></h4>
+<p>Defines the case payload type for <code>DNS-error</code> above:</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="dns_error_payload.rcode"><code>rcode</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="dns_error_payload.info_code"><code>info-code</code></a>: option&lt;<code>u16</code>&gt;</li>
+</ul>
+<h4><a name="tls_alert_received_payload"><code>record TLS-alert-received-payload</code></a></h4>
+<p>Defines the case payload type for <code>TLS-alert-received</code> above:</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="tls_alert_received_payload.alert_id"><code>alert-id</code></a>: option&lt;<code>u8</code>&gt;</li>
+<li><a name="tls_alert_received_payload.alert_message"><code>alert-message</code></a>: option&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="field_size_payload"><code>record field-size-payload</code></a></h4>
+<p>Defines the case payload type for <code>HTTP-response-{header,trailer}-size</code> above:</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="field_size_payload.field_name"><code>field-name</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="field_size_payload.field_size"><code>field-size</code></a>: option&lt;<code>u32</code>&gt;</li>
+</ul>
+<h4><a name="error_code"><code>variant error-code</code></a></h4>
+<p>These cases are inspired by the IANA HTTP Proxy Error Types:
+https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types</p>
 <h5>Variant Cases</h5>
 <ul>
-<li><a name="error.invalid_url"><code>invalid-url</code></a>: <code>string</code></li>
-<li><a name="error.timeout_error"><code>timeout-error</code></a>: <code>string</code></li>
-<li><a name="error.protocol_error"><code>protocol-error</code></a>: <code>string</code></li>
-<li><a name="error.unexpected_error"><code>unexpected-error</code></a>: <code>string</code></li>
+<li><a name="error_code.dns_timeout"><code>DNS-timeout</code></a></li>
+<li><a name="error_code.dns_error"><code>DNS-error</code></a>: <a href="#dns_error_payload"><a href="#dns_error_payload"><code>DNS-error-payload</code></a></a></li>
+<li><a name="error_code.destination_not_found"><code>destination-not-found</code></a></li>
+<li><a name="error_code.destination_unavailable"><code>destination-unavailable</code></a></li>
+<li><a name="error_code.destination_ip_prohibited"><code>destination-IP-prohibited</code></a></li>
+<li><a name="error_code.destination_ip_unroutable"><code>destination-IP-unroutable</code></a></li>
+<li><a name="error_code.connection_refused"><code>connection-refused</code></a></li>
+<li><a name="error_code.connection_terminated"><code>connection-terminated</code></a></li>
+<li><a name="error_code.connection_timeout"><code>connection-timeout</code></a></li>
+<li><a name="error_code.connection_read_timeout"><code>connection-read-timeout</code></a></li>
+<li><a name="error_code.connection_write_timeout"><code>connection-write-timeout</code></a></li>
+<li><a name="error_code.connection_limit_reached"><code>connection-limit-reached</code></a></li>
+<li><a name="error_code.tls_protocol_error"><code>TLS-protocol-error</code></a></li>
+<li><a name="error_code.tls_certificate_error"><code>TLS-certificate-error</code></a></li>
+<li><a name="error_code.tls_alert_received"><code>TLS-alert-received</code></a>: <a href="#tls_alert_received_payload"><a href="#tls_alert_received_payload"><code>TLS-alert-received-payload</code></a></a></li>
+<li><a name="error_code.http_request_denied"><code>HTTP-request-denied</code></a></li>
+<li><a name="error_code.http_request_length_required"><code>HTTP-request-length-required</code></a></li>
+<li><a name="error_code.http_request_body_size"><code>HTTP-request-body-size</code></a>: option&lt;<code>u64</code>&gt;</li>
+<li><a name="error_code.http_request_method_invalid"><code>HTTP-request-method-invalid</code></a></li>
+<li><a name="error_code.http_request_uri_invalid"><code>HTTP-request-URI-invalid</code></a></li>
+<li><a name="error_code.http_request_uri_too_long"><code>HTTP-request-URI-too-long</code></a></li>
+<li><a name="error_code.http_request_header_section_size"><code>HTTP-request-header-section-size</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="error_code.http_request_header_size"><code>HTTP-request-header-size</code></a>: option&lt;<a href="#field_size_payload"><a href="#field_size_payload"><code>field-size-payload</code></a></a>&gt;</li>
+<li><a name="error_code.http_request_trailer_section_size"><code>HTTP-request-trailer-section-size</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="error_code.http_request_trailer_size"><code>HTTP-request-trailer-size</code></a>: <a href="#field_size_payload"><a href="#field_size_payload"><code>field-size-payload</code></a></a></li>
+<li><a name="error_code.http_response_incomplete"><code>HTTP-response-incomplete</code></a></li>
+<li><a name="error_code.http_response_header_section_size"><code>HTTP-response-header-section-size</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="error_code.http_response_header_size"><code>HTTP-response-header-size</code></a>: <a href="#field_size_payload"><a href="#field_size_payload"><code>field-size-payload</code></a></a></li>
+<li><a name="error_code.http_response_body_size"><code>HTTP-response-body-size</code></a>: option&lt;<code>u64</code>&gt;</li>
+<li><a name="error_code.http_response_trailer_section_size"><code>HTTP-response-trailer-section-size</code></a>: option&lt;<code>u32</code>&gt;</li>
+<li><a name="error_code.http_response_trailer_size"><code>HTTP-response-trailer-size</code></a>: <a href="#field_size_payload"><a href="#field_size_payload"><code>field-size-payload</code></a></a></li>
+<li><a name="error_code.http_response_transfer_coding"><code>HTTP-response-transfer-coding</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="error_code.http_response_content_coding"><code>HTTP-response-content-coding</code></a>: option&lt;<code>string</code>&gt;</li>
+<li><a name="error_code.http_response_timeout"><code>HTTP-response-timeout</code></a></li>
+<li><a name="error_code.http_upgrade_failed"><code>HTTP-upgrade-failed</code></a></li>
+<li><a name="error_code.http_protocol_error"><code>HTTP-protocol-error</code></a></li>
+<li><a name="error_code.loop_detected"><code>loop-detected</code></a></li>
+<li><a name="error_code.configuration_error"><code>configuration-error</code></a></li>
+<li><a name="error_code.internal_error"><code>internal-error</code></a>: option&lt;<code>string</code>&gt;<p>This is a catch-all error for anything that doesn't fit cleanly into a
+more specific case. It also includes an optional string for an
+unstructured description of the error. Users should not depend on the
+string for diagnosing errors, as it's not required to be consistent
+between implementations.
+</li>
 </ul>
 <h4><a name="header_error"><code>variant header-error</code></a></h4>
 <p>This type enumerates the different kinds of errors that may occur when
@@ -728,6 +791,23 @@ so they are provided as a list of bytes.
 <h4><a name="future_incoming_response"><code>resource future-incoming-response</code></a></h4>
 <hr />
 <h3>Functions</h3>
+<h4><a name="http_error_code"><code>http-error-code: func</code></a></h4>
+<p>Attempts to extract a http-related <a href="#error"><code>error</code></a> from the stream <a href="#error"><code>error</code></a>
+provided.</p>
+<p>Stream operations which return <a href="#stream_error.last_operation_failed"><code>stream-error::last-operation-failed</code></a> have
+a payload with more information about the operation that failed. This
+payload can be passed through to this function to see if there's
+http-related information about the error to return.</p>
+<p>Note that this function is fallible because not all stream-related errors
+are http-related errors.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="http_error_code.err"><code>err</code></a>: borrow&lt;<a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="http_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
 <h4><a name="constructor_fields"><code>[constructor]fields: func</code></a></h4>
 <p>Construct an empty HTTP Fields.</p>
 <h5>Return values</h5>
@@ -1118,7 +1198,7 @@ implementation determine how to respond with an HTTP error response.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_response_outparam.set.param"><code>param</code></a>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
-<li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="static_response_outparam.set.response"><code>response</code></a>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_response.status"><code>[method]incoming-response.status: func</code></a></h4>
 <p>Returns the status code from the incoming response.</p>
@@ -1210,7 +1290,7 @@ trailers were present in the body.</p>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;</li>
+<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
 <p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>, with a default <a href="#status_code"><code>status-code</code></a> of <code>200</code>.
@@ -1331,7 +1411,7 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;&gt;&gt;</li>
+<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
 <h2><a name="wasi:http_outgoing_handler">Import interface wasi:http/outgoing-handler</a></h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
@@ -1347,8 +1427,8 @@ imported by components which wish to make HTTP Requests.</p>
 #### <a name="future_incoming_response">`type future-incoming-response`</a>
 [`future-incoming-response`](#future_incoming_response)
 <p>
-#### <a name="error">`type error`</a>
-[`error`](#error)
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
 <p>
 ----
 <h3>Functions</h3>
@@ -1368,7 +1448,7 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_incoming_handler">Export interface wasi:http/incoming-handler</a></h2>
 <hr />
