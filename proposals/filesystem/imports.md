@@ -569,40 +569,6 @@ expanded.
 <p>Truncate file to size 0, similar to `O_TRUNC` in POSIX.
 </li>
 </ul>
-<h4><a name="modes"><code>flags modes</code></a></h4>
-<p>Permissions mode used by <code>open-at</code>, <code>change-file-permissions-at</code>, and
-similar.</p>
-<h5>Flags members</h5>
-<ul>
-<li>
-<p><a name="modes.readable"><code>readable</code></a>: </p>
-<p>True if the resource is considered readable by the containing
-filesystem.
-</li>
-<li>
-<p><a name="modes.writable"><code>writable</code></a>: </p>
-<p>True if the resource is considered writable by the containing
-filesystem.
-</li>
-<li>
-<p><a name="modes.executable"><code>executable</code></a>: </p>
-<p>True if the resource is considered executable by the containing
-filesystem. This does not apply to directories.
-</li>
-</ul>
-<h4><a name="access_type"><code>variant access-type</code></a></h4>
-<p>Access type used by <code>access-at</code>.</p>
-<h5>Variant Cases</h5>
-<ul>
-<li>
-<p><a name="access_type.access"><code>access</code></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></p>
-<p>Test for readability, writeability, or executability.
-</li>
-<li>
-<p><a name="access_type.exists"><code>exists</code></a></p>
-<p>Test whether the path exists.
-</li>
-</ul>
 <h4><a name="link_count"><code>type link-count</code></a></h4>
 <p><code>u64</code></p>
 <p>Number of hard links to an inode.
@@ -1171,7 +1137,6 @@ contains <code>truncate</code> or <code>create</code>, and the base descriptor d
 <li><a name="method_descriptor.open_at.path"><code>path</code></a>: <code>string</code></li>
 <li><a name="method_descriptor.open_at.open_flags"><a href="#open_flags"><code>open-flags</code></a></a>: <a href="#open_flags"><a href="#open_flags"><code>open-flags</code></a></a></li>
 <li><a name="method_descriptor.open_at.flags"><code>flags</code></a>: <a href="#descriptor_flags"><a href="#descriptor_flags"><code>descriptor-flags</code></a></a></li>
-<li><a name="method_descriptor.open_at.modes"><a href="#modes"><code>modes</code></a></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -1233,25 +1198,6 @@ filesystem, this function fails with <a href="#error_code.not_permitted"><code>e
 <ul>
 <li><a name="method_descriptor.symlink_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_descriptor.access_at"><code>[method]descriptor.access-at: func</code></a></h4>
-<p>Check accessibility of a filesystem path.</p>
-<p>Check whether the given filesystem path names an object which is
-readable, writable, or executable, or whether it exists.</p>
-<p>This does not a guarantee that subsequent accesses will succeed, as
-filesystem permissions may be modified asynchronously by external
-entities.</p>
-<p>Note: This is similar to <code>faccessat</code> with the <code>AT_EACCESS</code> flag in POSIX.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_descriptor.access_at.self"><code>self</code></a>: borrow&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;</li>
-<li><a name="method_descriptor.access_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
-<li><a name="method_descriptor.access_at.path"><code>path</code></a>: <code>string</code></li>
-<li><a name="method_descriptor.access_at.type"><code>type</code></a>: <a href="#access_type"><a href="#access_type"><code>access-type</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_descriptor.access_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
 <h4><a name="method_descriptor.unlink_file_at"><code>[method]descriptor.unlink-file-at: func</code></a></h4>
 <p>Unlink a filesystem object that is not a directory.</p>
 <p>Return <a href="#error_code.is_directory"><code>error-code::is-directory</code></a> if the path refers to a directory.
@@ -1264,41 +1210,6 @@ Note: This is similar to <code>unlinkat(fd, path, 0)</code> in POSIX.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_descriptor.unlink_file_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_descriptor.change_file_permissions_at"><code>[method]descriptor.change-file-permissions-at: func</code></a></h4>
-<p>Change the permissions of a filesystem object that is not a directory.</p>
-<p>Note that the ultimate meanings of these permissions is
-filesystem-specific.</p>
-<p>Note: This is similar to <code>fchmodat</code> in POSIX.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_descriptor.change_file_permissions_at.self"><code>self</code></a>: borrow&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;</li>
-<li><a name="method_descriptor.change_file_permissions_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
-<li><a name="method_descriptor.change_file_permissions_at.path"><code>path</code></a>: <code>string</code></li>
-<li><a name="method_descriptor.change_file_permissions_at.modes"><a href="#modes"><code>modes</code></a></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_descriptor.change_file_permissions_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_descriptor.change_directory_permissions_at"><code>[method]descriptor.change-directory-permissions-at: func</code></a></h4>
-<p>Change the permissions of a directory.</p>
-<p>Note that the ultimate meanings of these permissions is
-filesystem-specific.</p>
-<p>Unlike in POSIX, the <code>executable</code> flag is not reinterpreted as a &quot;search&quot;
-flag. <code>read</code> on a directory implies readability and searchability, and
-<code>execute</code> is not valid for directories.</p>
-<p>Note: This is similar to <code>fchmodat</code> in POSIX.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_descriptor.change_directory_permissions_at.self"><code>self</code></a>: borrow&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;</li>
-<li><a name="method_descriptor.change_directory_permissions_at.path_flags"><a href="#path_flags"><code>path-flags</code></a></a>: <a href="#path_flags"><a href="#path_flags"><code>path-flags</code></a></a></li>
-<li><a name="method_descriptor.change_directory_permissions_at.path"><code>path</code></a>: <code>string</code></li>
-<li><a name="method_descriptor.change_directory_permissions_at.modes"><a href="#modes"><code>modes</code></a></a>: <a href="#modes"><a href="#modes"><code>modes</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_descriptor.change_directory_permissions_at.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_descriptor.is_same_object"><code>[method]descriptor.is-same-object: func</code></a></h4>
 <p>Test whether two descriptors refer to the same filesystem object.</p>
