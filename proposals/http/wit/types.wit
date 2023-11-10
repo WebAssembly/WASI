@@ -515,7 +515,15 @@ interface types {
     /// called to signal that the response is complete. If the `outgoing-body`
     /// is dropped without calling `outgoing-body.finalize`, the implementation
     /// should treat the body as corrupted.
-    finish: static func(this: outgoing-body, trailers: option<trailers>);
+    ///
+    /// Fails if the body's `outgoing-request` or `outgoing-response` was
+    /// constructed with a Content-Length header, and the contents written
+    /// to the body (via `write`) does not match the value given in the
+    /// Content-Length.
+    finish: static func(
+      this: outgoing-body,
+      trailers: option<trailers>
+    ) -> result<_, error-code>;
   }
 
   /// Represents a future which may eventaully return an incoming HTTP

@@ -1401,10 +1401,18 @@ will return error.</p>
 called to signal that the response is complete. If the <a href="#outgoing_body"><code>outgoing-body</code></a>
 is dropped without calling <code>outgoing-body.finalize</code>, the implementation
 should treat the body as corrupted.</p>
+<p>Fails if the body's <a href="#outgoing_request"><code>outgoing-request</code></a> or <a href="#outgoing_response"><code>outgoing-response</code></a> was
+constructed with a Content-Length header, and the contents written
+to the body (via <code>write</code>) does not match the value given in the
+Content-Length.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_outgoing_body.finish.this"><code>this</code></a>: own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
 <li><a name="static_outgoing_body.finish.trailers"><a href="#trailers"><code>trailers</code></a></a>: option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="static_outgoing_body.finish.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_future_incoming_response.subscribe"><code>[method]future-incoming-response.subscribe: func</code></a></h4>
 <p>Returns a pollable which becomes ready when either the Response has
