@@ -760,6 +760,11 @@ syntactically invalid when used with an operation that sets headers in a
 <p>This error indicates that a forbidden `field-key` was used when trying
 to set a header in a `fields`.
 </li>
+<li>
+<p><a name="header_error.immutable"><code>immutable</code></a></p>
+<p>This error indicates that the operation on the `fields` was not
+permitted because the fields are immutable.
+</li>
 </ul>
 <h4><a name="field_key"><code>type field-key</code></a></h4>
 <p><code>string</code></p>
@@ -810,12 +815,14 @@ are http-related errors.</p>
 </ul>
 <h4><a name="constructor_fields"><code>[constructor]fields: func</code></a></h4>
 <p>Construct an empty HTTP Fields.</p>
+<p>The resulting <a href="#fields"><code>fields</code></a> is mutable.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h4><a name="static_fields.from_list"><code>[static]fields.from-list: func</code></a></h4>
 <p>Construct an HTTP Fields.</p>
+<p>The resulting <a href="#fields"><code>fields</code></a> is mutable.</p>
 <p>The list represents each key-value pair in the Fields. Keys
 which have multiple values are represented by multiple entries in this
 list with the same key.</p>
@@ -847,6 +854,7 @@ syntactically invalid, or if a header was forbidden.</p>
 <h4><a name="method_fields.set"><code>[method]fields.set: func</code></a></h4>
 <p>Set all of the values for a key. Clears any existing values for that
 key, if they have been set.</p>
+<p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.set.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -860,6 +868,7 @@ key, if they have been set.</p>
 <h4><a name="method_fields.delete"><code>[method]fields.delete: func</code></a></h4>
 <p>Delete all values for a key. Does nothing if no values for the key
 exist.</p>
+<p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.delete.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -872,6 +881,7 @@ exist.</p>
 <h4><a name="method_fields.append"><code>[method]fields.append: func</code></a></h4>
 <p>Append a value for a key. Does not change or delete any existing
 values for that key.</p>
+<p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.append.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -898,7 +908,8 @@ list with the same key.</p>
 </ul>
 <h4><a name="method_fields.clone"><code>[method]fields.clone: func</code></a></h4>
 <p>Make a deep copy of the Fields. Equivelant in behavior to calling the
-<a href="#fields"><code>fields</code></a> constructor on the return value of <code>entries</code></p>
+<a href="#fields"><code>fields</code></a> constructor on the return value of <code>entries</code>. The resulting
+<a href="#fields"><code>fields</code></a> is mutable.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.clone.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -948,7 +959,9 @@ list with the same key.</p>
 <li><a name="method_incoming_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request.headers"><code>[method]incoming-request.headers: func</code></a></h4>
-<p>Returns the <a href="#headers"><code>headers</code></a> from the request.</p>
+<p>Get the <a href="#headers"><code>headers</code></a> associated with the request.</p>
+<p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
+<code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
 <p>The <a href="#headers"><code>headers</code></a> returned are a child resource: it must be dropped before
 the parent <a href="#incoming_request"><code>incoming-request</code></a> is dropped. Dropping this
 <a href="#incoming_request"><code>incoming-request</code></a> before all children are dropped will trap.</p>
@@ -1102,6 +1115,8 @@ not a syntactically valid uri authority.</p>
 </ul>
 <h4><a name="method_outgoing_request.headers"><code>[method]outgoing-request.headers: func</code></a></h4>
 <p>Get the headers associated with the Request.</p>
+<p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
+<code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
 <p>This headers resource is a child: it must be dropped before the parent
 <a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
@@ -1212,6 +1227,10 @@ implementation determine how to respond with an HTTP error response.</p>
 </ul>
 <h4><a name="method_incoming_response.headers"><code>[method]incoming-response.headers: func</code></a></h4>
 <p>Returns the headers from the incoming response.</p>
+<p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
+<code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
+<p>This headers resource is a child: it must be dropped before the parent
+<a href="#incoming_response"><code>incoming-response</code></a> is dropped.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_response.headers.self"><code>self</code></a>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
@@ -1284,6 +1303,10 @@ once the future is ready.</p>
 as well as any trailers, were received successfully, or that an error
 occured receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether or not
 trailers were present in the body.</p>
+<p>When some <a href="#trailers"><code>trailers</code></a> are returned by this method, the <a href="#trailers"><code>trailers</code></a>
+resource is immutable, and a child. Use of the <code>set</code>, <code>append</code>, or
+<code>delete</code> methods will return an error, and the resource must be
+dropped before the parent <a href="#future_trailers"><code>future-trailers</code></a> is dropped.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_future_trailers.get.self"><code>self</code></a>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
@@ -1331,6 +1354,8 @@ given is not a valid http status code.</p>
 </ul>
 <h4><a name="method_outgoing_response.headers"><code>[method]outgoing-response.headers: func</code></a></h4>
 <p>Get the headers associated with the Request.</p>
+<p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
+<code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
 <p>This headers resource is a child: it must be dropped before the parent
 <a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
