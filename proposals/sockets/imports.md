@@ -2,19 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:sockets_network"><code>wasi:sockets/network</code></a></li>
-<li>interface <a href="#wasi:sockets_instance_network"><code>wasi:sockets/instance-network</code></a></li>
-<li>interface <a href="#wasi:io_poll"><code>wasi:io/poll</code></a></li>
-<li>interface <a href="#wasi:sockets_udp"><code>wasi:sockets/udp</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_create_socket"><code>wasi:sockets/udp-create-socket</code></a></li>
-<li>interface <a href="#wasi:io_streams"><code>wasi:io/streams</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp"><code>wasi:sockets/tcp</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_create_socket"><code>wasi:sockets/tcp-create-socket</code></a></li>
-<li>interface <a href="#wasi:sockets_ip_name_lookup"><code>wasi:sockets/ip-name-lookup</code></a></li>
+<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/network@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/instance-network@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:sockets_network">Import interface wasi:sockets/network</a></h2>
+<h2><a name="wasi:sockets_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/network@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>resource network</code></a></h4>
@@ -184,7 +186,7 @@ combined with a couple of errors that are always possible:</p>
 <li><a name="ip_socket_address.ipv4"><code>ipv4</code></a>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
 <li><a name="ip_socket_address.ipv6"><code>ipv6</code></a>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
 </ul>
-<h2><a name="wasi:sockets_instance_network">Import interface wasi:sockets/instance-network</a></h2>
+<h2><a name="wasi:sockets_instance_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/instance-network@0.2.0-rc-2023-11-10</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -199,7 +201,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:io_poll">Import interface wasi:io/poll</a></h2>
+<h2><a name="wasi:io_poll_0.2.0_rc_2023_11_10">Import interface wasi:io/poll@0.2.0-rc-2023-11-10</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -249,7 +251,7 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp">Import interface wasi:sockets/udp</a></h2>
+<h2><a name="wasi:sockets_udp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -489,6 +491,11 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="method_udp_socket.unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
@@ -509,12 +516,14 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h4><a name="method_udp_socket.receive_buffer_size"><code>[method]udp-socket.receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
-<p>Note #1: an implementation may choose to cap or round the buffer size when setting the value.
-In other words, after setting a value, reading the same setting back may return a different value.</p>
-<p>Note #2: there is not necessarily a direct relationship between the kernel buffer size and the bytes of
-actual data to be sent/received by the application, because the kernel might also use the buffer space
-for internal metadata structures.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
+</ul>
 <h5>Params</h5>
 <ul>
 <li><a name="method_udp_socket.receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
@@ -683,7 +692,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_create_socket">Import interface wasi:sockets/udp-create-socket</a></h2>
+<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -727,18 +736,41 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a name="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:io_streams">Import interface wasi:io/streams</a></h2>
+<h2><a name="wasi:io_error_0.2.0_rc_2023_11_10">Import interface wasi:io/error@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="error"><code>resource error</code></a></h4>
+<hr />
+<h3>Functions</h3>
+<h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
+<p>Returns a string that is suitable to assist humans in debugging
+this error.</p>
+<p>WARNING: The returned string should not be consumed mechanically!
+It may change across platforms, hosts, or other implementation
+details. Parsing this string is a major platform-compatibility
+hazard.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_error.to_debug_string.self"><code>self</code></a>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
+</ul>
+<h2><a name="wasi:io_streams_0.2.0_rc_2023_11_10">Import interface wasi:io/streams@0.2.0-rc-2023-11-10</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
 when it does, they are expected to subsume this API.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"><code>type pollable</code></a></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+<h4><a name="error"><code>type error</code></a></h4>
+<p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-#### <a name="error">`resource error`</a>
-<h4><a name="stream_error"><code>variant stream-error</code></a></h4>
+#### <a name="pollable">`type pollable`</a>
+[`pollable`](#pollable)
+<p>
+#### <a name="stream_error">`variant stream-error`</a>
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
 <ul>
@@ -758,20 +790,6 @@ future operations.
 <h4><a name="output_stream"><code>resource output-stream</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
-<p>Returns a string that's suitable to assist humans in debugging this
-error.</p>
-<p>The returned string will change across platforms and hosts which
-means that parsing it, for example, would be a
-platform-compatibility hazard.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_error.to_debug_string.self"><code>self</code></a>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
-</ul>
 <h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
 <p>Perform a non-blocking read from the stream.</p>
 <p>This function returns a list of bytes containing the read data,
@@ -1042,7 +1060,68 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp">Import interface wasi:sockets/tcp</a></h2>
+<h2><a name="wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10">Import interface wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</a></h2>
+<p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
+time.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A monotonic clock is a clock which has an unspecified initial value, and
+successive reads of the clock will produce non-decreasing values.</p>
+<p>It is intended for measuring elapsed time.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="pollable"><code>type pollable</code></a></h4>
+<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+<p>
+#### <a name="instant">`type instant`</a>
+`u64`
+<p>An instant in time, in nanoseconds. An instant is relative to an
+unspecified initial value, and can only be compared to instances from
+the same monotonic-clock.
+<h4><a name="duration"><code>type duration</code></a></h4>
+<p><code>u64</code></p>
+<p>A duration of time, in nanoseconds.
+<hr />
+<h3>Functions</h3>
+<h4><a name="now"><code>now: func</code></a></h4>
+<p>Read the current value of the clock.</p>
+<p>The clock is monotonic, therefore calling this function repeatedly will
+produce a sequence of non-decreasing values.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h4><a name="resolution"><code>resolution: func</code></a></h4>
+<p>Query the resolution of the clock. Returns the duration of time
+corresponding to a clock tick.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h4><a name="subscribe_instant"><code>subscribe-instant: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_instant.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="subscribe_duration"><code>subscribe-duration: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
+elapsed, starting at the time at which this function was called.
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_duration.when"><code>when</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:sockets_tcp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -1053,6 +1132,9 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <p>
 #### <a name="pollable">`type pollable`</a>
 [`pollable`](#pollable)
+<p>
+#### <a name="duration">`type duration`</a>
+[`duration`](#duration)
 <p>
 #### <a name="network">`type network`</a>
 [`network`](#network)
@@ -1251,8 +1333,11 @@ Besides <code>drop</code>, any method after such a failure may return an error.<
 <ul>
 <li><code>address-family</code></li>
 <li><code>ipv6-only</code></li>
-<li><code>keep-alive</code></li>
-<li><code>unicast-hop-limit</code></li>
+<li><code>keep-alive-enabled</code></li>
+<li><code>keep-alive-idle-time</code></li>
+<li><code>keep-alive-interval</code></li>
+<li><code>keep-alive-count</code></li>
+<li><code>hop-limit</code></li>
 <li><code>receive-buffer-size</code></li>
 <li><code>send-buffer-size</code></li>
 </ul>
@@ -1328,6 +1413,17 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <ul>
 <li><a name="method_tcp_socket.remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
+<h4><a name="method_tcp_socket.is_listening"><code>[method]tcp-socket.is-listening: func</code></a></h4>
+<p>Whether the socket is listening for new connections.</p>
+<p>Equivalent to the SO_ACCEPTCONN socket option.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.is_listening.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.is_listening.0"></a> <code>bool</code></li>
+</ul>
 <h4><a name="method_tcp_socket.address_family"><code>[method]tcp-socket.address-family: func</code></a></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
 <p>Equivalent to the SO_DOMAIN socket option.</p>
@@ -1368,9 +1464,12 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h4><a name="method_tcp_socket.set_listen_backlog_size"><code>[method]tcp-socket.set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>not-supported</code>:        (set) The platform does not support changing the backlog size after the initial listen.</li>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
 <li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
 </ul>
 <h5>Params</h5>
@@ -1382,28 +1481,121 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <ul>
 <li><a name="method_tcp_socket.set_listen_backlog_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket.keep_alive"><code>[method]tcp-socket.keep-alive: func</code></a></h4>
+<h4><a name="method_tcp_socket.keep_alive_enabled"><code>[method]tcp-socket.keep-alive-enabled: func</code></a></h4>
+<p>Enables or disables keepalive.</p>
+<p>The keepalive behavior can be adjusted using:</p>
+<ul>
+<li><code>keep-alive-idle-time</code></li>
+<li><code>keep-alive-interval</code></li>
+<li><code>keep-alive-count</code>
+These properties can be configured while <code>keep-alive-enabled</code> is false, but only come into effect when <code>keep-alive-enabled</code> is true.</li>
+</ul>
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket.keep_alive.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.keep_alive_enabled.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket.keep_alive.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.keep_alive_enabled.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket.set_keep_alive"><code>[method]tcp-socket.set-keep-alive: func</code></a></h4>
+<h4><a name="method_tcp_socket.set_keep_alive_enabled"><code>[method]tcp-socket.set-keep-alive-enabled: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket.set_keep_alive.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket.set_keep_alive.value"><code>value</code></a>: <code>bool</code></li>
+<li><a name="method_tcp_socket.set_keep_alive_enabled.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_keep_alive_enabled.value"><code>value</code></a>: <code>bool</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket.set_keep_alive.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_keep_alive_enabled.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket.unicast_hop_limit"><code>[method]tcp-socket.unicast-hop-limit: func</code></a></h4>
+<h4><a name="method_tcp_socket.keep_alive_idle_time"><code>[method]tcp-socket.keep-alive-idle-time: func</code></a></h4>
+<p>Amount of time the connection has to be idle before TCP starts sending keepalive packets.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
+<p>Equivalent to the TCP_KEEPIDLE socket option. (TCP_KEEPALIVE on MacOS)</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_idle_time.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_idle_time.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.set_keep_alive_idle_time"><code>[method]tcp-socket.set-keep-alive-idle-time: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_idle_time.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_keep_alive_idle_time.value"><code>value</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_idle_time.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.keep_alive_interval"><code>[method]tcp-socket.keep-alive-interval: func</code></a></h4>
+<p>The time between keepalive packets.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
+<p>Equivalent to the TCP_KEEPINTVL socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_interval.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_interval.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.set_keep_alive_interval"><code>[method]tcp-socket.set-keep-alive-interval: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_interval.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_keep_alive_interval.value"><code>value</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_interval.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.keep_alive_count"><code>[method]tcp-socket.keep-alive-count: func</code></a></h4>
+<p>The maximum amount of keepalive packets TCP should send before aborting the connection.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
+<p>Equivalent to the TCP_KEEPCNT socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_count.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.keep_alive_count.0"></a> result&lt;<code>u32</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.set_keep_alive_count"><code>[method]tcp-socket.set-keep-alive-count: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_count.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_keep_alive_count.value"><code>value</code></a>: <code>u32</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_tcp_socket.set_keep_alive_count.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_tcp_socket.hop_limit"><code>[method]tcp-socket.hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
@@ -1412,32 +1604,31 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket.unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket.unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket.set_unicast_hop_limit"><code>[method]tcp-socket.set-unicast-hop-limit: func</code></a></h4>
+<h4><a name="method_tcp_socket.set_hop_limit"><code>[method]tcp-socket.set-hop-limit: func</code></a></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket.set_unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket.set_unicast_hop_limit.value"><code>value</code></a>: <code>u8</code></li>
+<li><a name="method_tcp_socket.set_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_hop_limit.value"><code>value</code></a>: <code>u8</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket.set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_tcp_socket.set_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.receive_buffer_size"><code>[method]tcp-socket.receive-buffer-size: func</code></a></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
-<p>Note #1: an implementation may choose to cap or round the buffer size when setting the value.
-In other words, after setting a value, reading the same setting back may return a different value.</p>
-<p>Note #2: there is not necessarily a direct relationship between the kernel buffer size and the bytes of
-actual data to be sent/received by the application, because the kernel might also use the buffer space
-for internal metadata structures.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
 <p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
 <h1>Typical errors</h1>
 <ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
 <li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
 <li><code>invalid-state</code>:        (set) The socket is already in the Listener state.</li>
 </ul>
@@ -1521,7 +1712,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <ul>
 <li><a name="method_tcp_socket.shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp_create_socket">Import interface wasi:sockets/tcp-create-socket</a></h2>
+<h2><a name="wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -1565,7 +1756,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_ip_name_lookup">Import interface wasi:sockets/ip-name-lookup</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
