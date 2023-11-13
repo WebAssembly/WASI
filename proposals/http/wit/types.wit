@@ -2,9 +2,10 @@
 /// HTTP Requests and Responses, both incoming and outgoing, as well as
 /// their headers, trailers, and bodies.
 interface types {
-  use wasi:clocks/monotonic-clock.{duration};
-  use wasi:io/streams.{input-stream, output-stream, error as stream-error};
-  use wasi:io/poll.{pollable};
+  use wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10.{duration};
+  use wasi:io/streams@0.2.0-rc-2023-11-10.{input-stream, output-stream};
+  use wasi:io/error@0.2.0-rc-2023-11-10.{error as io-error};
+  use wasi:io/poll@0.2.0-rc-2023-11-10.{pollable};
 
   /// This type corresponds to HTTP standard Methods.
   variant method {
@@ -94,17 +95,18 @@ interface types {
     field-size: option<u32>
   }
 
-  /// Attempts to extract a http-related `error` from the stream `error`
+  /// Attempts to extract a http-related `error` from the wasi:io `error`
   /// provided.
   ///
-  /// Stream operations which return `stream-error::last-operation-failed` have
-  /// a payload with more information about the operation that failed. This
-  /// payload can be passed through to this function to see if there's
-  /// http-related information about the error to return.
+  /// Stream operations which return
+  /// `wasi:io/stream/stream-error::last-operation-failed` have a payload of
+  /// type `wasi:io/error/error` with more information about the operation
+  /// that failed. This payload can be passed through to this function to see
+  /// if there's http-related information about the error to return.
   ///
-  /// Note that this function is fallible because not all stream-related errors
-  /// are http-related errors.
-  http-error-code: func(err: borrow<stream-error>) -> option<error-code>;
+  /// Note that this function is fallible because not all io-errors are
+  /// http-related errors.
+  http-error-code: func(err: borrow<io-error>) -> option<error-code>;
 
   /// This type enumerates the different kinds of errors that may occur when
   /// setting or appending to a `fields` resource.
