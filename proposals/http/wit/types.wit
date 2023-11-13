@@ -259,7 +259,7 @@ interface types {
     /// Request.
     ///
     /// Returns success on the first call: the `outgoing-body` resource for
-    /// this `outgoing-response` can be retrieved at most once. Subsequent
+    /// this `outgoing-request` can be retrieved at most once. Subsequent
     /// calls will return error.
     body: func() -> result<outgoing-body>;
 
