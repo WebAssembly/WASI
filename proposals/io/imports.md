@@ -231,7 +231,7 @@ following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while !contents.is_empty() {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, contents.len());
   let (chunk, rest) = contents.split_at(len);
@@ -240,7 +240,7 @@ while !contents.is_empty() {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -300,7 +300,7 @@ all derived <a href="#pollable"><code>pollable</code></a>s created with this fun
 </ul>
 <h4><a name="method_output_stream.write_zeroes"><code>[method]output-stream.write-zeroes: func</code></a></h4>
 <p>Write zeroes to a stream.</p>
-<p>this should be used precisely like <code>write</code> with the exact same
+<p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
 passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
@@ -323,7 +323,7 @@ the following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while num_zeroes != 0 {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, num_zeroes);
   this.write-zeroes(len);         // eliding error handling
@@ -331,7 +331,7 @@ while num_zeroes != 0 {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
