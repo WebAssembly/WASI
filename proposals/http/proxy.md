@@ -1079,73 +1079,73 @@ another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <ul>
 <li><a name="constructor_request_options.0"></a> own&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.connect_timeout_ms"><code>[method]request-options.connect-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.connect_timeout"><code>[method]request-options.connect-timeout: func</code></a></h4>
 <p>The timeout for the initial connect to the HTTP Server.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.connect_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.connect_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.connect_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.connect_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_connect_timeout_ms"><code>[method]request-options.set-connect-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.set_connect_timeout"><code>[method]request-options.set-connect-timeout: func</code></a></h4>
 <p>Set the timeout for the initial connect to the HTTP Server. An error
 return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_connect_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_connect_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_connect_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_connect_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_connect_timeout_ms.0"></a> result</li>
+<li><a name="method_request_options.set_connect_timeout.0"></a> result</li>
 </ul>
-<h4><a name="method_request_options.first_byte_timeout_ms"><code>[method]request-options.first-byte-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.first_byte_timeout"><code>[method]request-options.first-byte-timeout: func</code></a></h4>
 <p>The timeout for receiving the first byte of the Response body.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.first_byte_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.first_byte_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.first_byte_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.first_byte_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_first_byte_timeout_ms"><code>[method]request-options.set-first-byte-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.set_first_byte_timeout"><code>[method]request-options.set-first-byte-timeout: func</code></a></h4>
 <p>Set the timeout for receiving the first byte of the Response body. An
 error return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_first_byte_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_first_byte_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_first_byte_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_first_byte_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_first_byte_timeout_ms.0"></a> result</li>
+<li><a name="method_request_options.set_first_byte_timeout.0"></a> result</li>
 </ul>
-<h4><a name="method_request_options.between_bytes_timeout_ms"><code>[method]request-options.between-bytes-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.between_bytes_timeout"><code>[method]request-options.between-bytes-timeout: func</code></a></h4>
 <p>The timeout for receiving subsequent chunks of bytes in the Response
 body stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.between_bytes_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.between_bytes_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.between_bytes_timeout_ms.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.between_bytes_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_between_bytes_timeout_ms"><code>[method]request-options.set-between-bytes-timeout-ms: func</code></a></h4>
+<h4><a name="method_request_options.set_between_bytes_timeout"><code>[method]request-options.set-between-bytes-timeout: func</code></a></h4>
 <p>Set the timeout for receiving subsequent chunks of bytes in the Response
 body stream. An error return value indicates that this timeout is not
 supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_between_bytes_timeout_ms.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_between_bytes_timeout_ms.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_between_bytes_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_between_bytes_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_between_bytes_timeout_ms.0"></a> result</li>
+<li><a name="method_request_options.set_between_bytes_timeout.0"></a> result</li>
 </ul>
 <h4><a name="static_response_outparam.set"><code>[static]response-outparam.set: func</code></a></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
