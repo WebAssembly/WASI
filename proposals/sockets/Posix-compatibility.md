@@ -6,11 +6,11 @@ This document provides an overview of the POSIX interface along with common non-
 ## General
 
 ### I/O completion polling (`poll`, `select`, `pselect`, `epoll_*` (non-standard), `kqueue` (non-standard)) <a name="select"></a>
-Use [`tcp::subscribe`](tcp)/[`udp::subscribe`](udp) to obtain a `pollable` handle. Then use that to wait for IO events using the [wasi-poll](poll) interface.
+Use [`tcp::subscribe`][tcp]/[`udp::subscribe`][udp] to obtain a `pollable` handle. Then use that to wait for IO events using the [wasi-poll][poll] interface.
 
 ### Non-blocking mode (`FIONBIO`, `SOCK_NONBLOCK`, `O_NONBLOCK`) <a name="nonblock"></a>
 All WASI sockets are non-blocking and can not be configured to block.
-Blocking behaviour can be recreated in userland (or in wasi-libc) by repeatedly calling [`poll::poll-oneoff`](poll) until the operation is complete.
+Blocking behaviour can be recreated in userland (or in wasi-libc) by repeatedly calling [`poll::poll-oneoff`][poll] until the operation is complete.
 
 ### TCP urgent data (`sockatmark`, `MSG_OOB`, `SO_OOBINLINE`, `SIOCATMARK`) <a name="oob"></a>
 Out-of-band (OOB) data is currently not included in this proposal. Application-level usage of the TCP "urgent" flag is rare in practice and discouraged in general. Including it in WASI would probably interfere with the ability to use WASI/ComponentModel `stream`s.
@@ -31,54 +31,54 @@ Not included in proposal. WASI has no concept of UNIX-style processes.
 ## Functions
 
 ### `socket`
-- TCP: [`create-tcp-socket`](tcp-create-socket)
-- UDP: [`create-udp-socket`](udp-create-socket)
+- TCP: [`create-tcp-socket`][tcp-create-socket]
+- UDP: [`create-udp-socket`][udp-create-socket]
 
 ### `connect`
-- TCP: [`tcp::start-connect`](tcp) & [`tcp::finish-connect`](tcp)
-- UDP: [`udp::start-connect`](udp) & [`udp::finish-connect`](udp)
+- TCP: [`tcp::start-connect`][tcp] & [`tcp::finish-connect`][tcp]
+- UDP: [`udp::start-connect`][udp] & [`udp::finish-connect`][udp]
 
 ### `bind`
-- TCP: [`tcp::start-bind`](tcp) & [`tcp::finish-bind`](tcp)
-- UDP: [`udp::start-bind`](udp) & [`udp::finish-bind`](udp)
+- TCP: [`tcp::start-bind`][tcp] & [`tcp::finish-bind`][tcp]
+- UDP: [`udp::start-bind`][udp] & [`udp::finish-bind`][udp]
 
 ### `listen`
-- TCP: [`tcp::start-listen`](tcp) & [`tcp::finish-listen`](tcp). The `backlog` parameter has been split out into a distinct function [`tcp::set-listen-backlog-size`](tcp) ([See #34](https://github.com/WebAssembly/wasi-sockets/issues/34)).
+- TCP: [`tcp::start-listen`][tcp] & [`tcp::finish-listen`][tcp]. The `backlog` parameter has been split out into a distinct function [`tcp::set-listen-backlog-size`][tcp] ([See #34](https://github.com/WebAssembly/wasi-sockets/issues/34)).
 - UDP: N/A
 
 ### `accept`, `accept4` (non-standard)
-- TCP: [`tcp::accept`](tcp)
+- TCP: [`tcp::accept`][tcp]
 - UDP: N/A
 
-To collect the remote address, call [`tcp::remote-address`](tcp) on the newly accepted client socket.
+To collect the remote address, call [`tcp::remote-address`][tcp] on the newly accepted client socket.
 
 Some platforms provide an `accept4` variant with additional flags. None of these flags make sense in the context of this proposal. See [SOCK_NONBLOCK](#nonblock) & [SOCK_CLOEXEC](#cloexec).
 
 ### `getsockname`, `getpeername`
-- TCP: [`tcp::local-address`](tcp) & [`tcp::remote-address`](tcp)
-- UDP: [`udp::local-address`](udp) & [`udp::remote-address`](udp)
+- TCP: [`tcp::local-address`][tcp] & [`tcp::remote-address`][tcp]
+- UDP: [`udp::local-address`][udp] & [`udp::remote-address`][udp]
 
 ### `read`, `readv`, `recv`, `recvfrom`, `recvmsg`, `recvmmsg` (non-standard)
 
-TCP sockets can be read using [`streams::(blocking-)read`](streams). UDP sockets can be read using [`udp::receive`](udp).
+TCP sockets can be read using [`streams::(blocking-)read`][streams]. UDP sockets can be read using [`udp::receive`][udp].
 
 The various POSIX functions should be implementable on top of these two functions.
 
 None of the flags are directly present in WASI Sockets:
 - `MSG_DONTWAIT`: This is [always the case](#nonblock).
-- `MSG_OOB` (TCP): [Not supported](#oob)
-- `MSG_OOB` (UDP): N/A
+- `MSG_OOB` on TCP sockets: [Not supported](#oob)
+- `MSG_OOB` on UDP sockets: N/A
 - `MSG_PEEK`: [No direct support](#peek)
-- `MSG_TRUNC` (TCP): N/A
-- `MSG_TRUNC` (UDP): Not needed, the returned data array always has the exact perfect size.
-- `MSG_WAITALL` (TCP): Emulatable in userspace.
-- `MSG_WAITALL` (UDP): N/A
+- `MSG_TRUNC on TCP sockets: N/A
+- `MSG_TRUNC` on UDP sockets: Not needed, the returned data array always has the exact perfect size.
+- `MSG_WAITALL` on TCP sockets: Emulatable in userspace.
+- `MSG_WAITALL` on UDP sockets: N/A
 - `MSG_EOR`: N/A (not supported on TCP & UDP sockets)
 - `MSG_CMSG_CLOEXEC`: N/A (only used on Unix domain sockets)
 
 ### `write`, `writev`, `send`, `sendto`, `sendmsg`, `sendmmsg` (non-standard)
 
-TCP sockets can be written to using [`streams::(blocking-)write`](streams). UDP sockets can be written to using [`udp::send`](udp).
+TCP sockets can be written to using [`streams::(blocking-)write`][streams]. UDP sockets can be written to using [`udp::send`][udp].
 
 The various POSIX functions should be implementable on top of these two functions.
 
@@ -86,17 +86,17 @@ None of the flags are directly present in WASI Sockets:
 - `MSG_DONTROUTE`: Not included in proposal at the moment.
 - `MSG_DONTWAIT`: This is [always the case](#nonblock).
 - `MSG_NOSIGNAL`: This is [always the case](#sigpipe).
-- `MSG_OOB` (TCP): [Not supported](#oob)
-- `MSG_OOB` (UDP): N/A
+- `MSG_OOB` on TCP sockets: [Not supported](#oob)
+- `MSG_OOB` on UDP sockets: N/A
 - `MSG_EOR`: N/A (not supported on TCP & UDP sockets)
 
 
 ### `sendfile` (non-standard)
-- TCP: Part of the WASI Streams proposal as [`output-stream::forward`](streams)
+- TCP: Part of the WASI Streams proposal as [`output-stream::forward`][streams]
 - UDP: N/A
 
 ### `shutdown`
-- TCP: [`tcp::shutdown`](tcp)
+- TCP: [`tcp::shutdown`][tcp]
 - UDP: N/A
 
 ### `sockatmark`
@@ -147,15 +147,15 @@ Columns:
 | Option                          | WASI      | POSIX  | Linux  | Windows | MacOS   | FreeBSD | JVM   | .NET   | Rust  | Node.js | Go  | OpenSSL  | nginx | curl  | msquic | exim  | Notes |
 |---------------------------------|-----------|--------|--------|---------|---------|---------|-------|--------|-------|---------|-----|----------|-------|-------|--------|-------|-|
 | SO_ERROR                        | ⛔       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ✅  | ✅      | ✅    | ✅    | ✅    | ❌   | Not necessary. WIT has (or will have) native support for asynchronous results. |
-| SO_DOMAIN                       | ✅       | ❌     | ✅    | ✅      | ❌     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::address-family`](tcp)<br/>[`udp::address-family`](udp) <br/><br/> SO_PROTOCOL_INFO on Windows. |
+| SO_DOMAIN                       | ✅       | ❌     | ✅    | ✅      | ❌     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::address-family`][tcp]<br/>[`udp::address-family`][udp] <br/><br/> SO_PROTOCOL_INFO on Windows. |
 | SO_TYPE                         | ✅*      | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ❌      | ✅  | ✅      | ✅    | ✅    | ❌    | ✅   | * indirectly through the type of the socket resource. |
 | SO_PROTOCOL                     | ✅*      | ❌     | ✅    | ✅      | ❌     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ✅   | * indirectly through the type of the socket resource. SO_PROTOCOL_INFO on Windows. |
 | SO_ACCEPTCONN                   | ❔       | ✅     | ✅    | ✅      | ✅     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | |
-| IPV6_V6ONLY                     | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ✅      | ❌    | ✅    | ✅    | ✅   | [`tcp::(set-)ipv6-only`](tcp)<br/>[`udp::(set-)ipv6-only`](udp) |
+| IPV6_V6ONLY                     | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ✅      | ❌    | ✅    | ✅    | ✅   | [`tcp::(set-)ipv6-only`][tcp]<br/>[`udp::(set-)ipv6-only`][udp] |
 | IP_HDRINCL                      | ⛔       | ❌     | ✅    | ✅      | ✅     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | Out of scope. Raw sockets only. |
 | IPV6_HDRINCL                    | ⛔       | ❌     | ✅    | ✅      | ❌     | ❌      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | Out of scope. Raw sockets only. |
-| IP_TTL                          | ✅       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::(set-)unicast-hop-limit`](tcp)<br/>[`udp::(set-)unicast-hop-limit`](udp) |
-| IPV6_UNICAST_HOPS               | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::(set-)unicast-hop-limit`](tcp)<br/>[`udp::(set-)unicast-hop-limit`](udp) |
+| IP_TTL                          | ✅       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::(set-)unicast-hop-limit`][tcp]<br/>[`udp::(set-)unicast-hop-limit`][udp] |
+| IPV6_UNICAST_HOPS               | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | [`tcp::(set-)unicast-hop-limit`][tcp]<br/>[`udp::(set-)unicast-hop-limit`][udp] |
 | IP_RECVTTL                      | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ❌    | ❌    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | |
 | IPV6_RECVHOPLIMIT               | ❔       | ❌     | ✅    | ❌      | ✅     | ✅      | ❌    | ❌    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | |
 | IP_TOS                          | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ✅   | |
@@ -168,17 +168,17 @@ Columns:
 | IPV6_DONTFRAG                   | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ❌      | ❌  | ✅      | ✅    | ❌    | ✅    | ❌   | |
 | IP_MTU_DISCOVER                 | ❔       | ❌     | ✅    | ✅      | ❌     | ❌      | ❌    | ❌    | ❌   | ❌      | ❌  | ✅      | ✅    | ✅    | ✅    | ❌   | |
 | IPV6_MTU_DISCOVER               | ❔       | ❌     | ✅    | ✅      | ❌     | ❌      | ❌    | ❌    | ❌   | ❌      | ❌  | ✅      | ✅    | ✅    | ✅    | ❌   | |
-| SO_RCVBUF                       | ✅       | ✅     | ✅    | ❌      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ❌    | ✅    | ❌   | [`tcp::(set-)receive-buffer-size`](tcp)<br/>[`udp::(set-)receive-buffer-size`](udp) |
-| SO_SNDBUF                       | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ✅    | ❌    | ❌   | [`tcp::(set-)send-buffer-size`](tcp)<br/>[`udp::(set-)send-buffer-size`](udp) |
+| SO_RCVBUF                       | ✅       | ✅     | ✅    | ❌      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ❌    | ✅    | ❌   | [`tcp::(set-)receive-buffer-size`][tcp]<br/>[`udp::(set-)receive-buffer-size`][udp] |
+| SO_SNDBUF                       | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ✅    | ❌    | ❌   | [`tcp::(set-)send-buffer-size`][tcp]<br/>[`udp::(set-)send-buffer-size`][udp] |
 | SO_RCVLOWAT                     | ❔       | ✅     | ✅    | ❌      | ✅     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | |
 | SO_SNDLOWAT                     | ❔       | ✅     | ✅    | ❌      | ✅     | ✅      | ❌    | ✅    | ❌   | ❌      | ❌  | ❌      | ✅    | ❌    | ❌    | ❌   | |
 | SO_RCVTIMEO                     | ⛔       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ❌      | ❌  | ✅      | ❌    | ✅    | ❌    | ❌   | WASI sockets are always non-blocking. Timeouts can be recreated in libc. |
 | SO_SNDTIMEO                     | ⛔       | ✅     | ❌    | ✅      | ✅     | ✅      | ❌    | ✅    | ✅   | ❌      | ❌  | ✅      | ❌    | ❌    | ❌    | ❌   | WASI sockets are always non-blocking. Timeouts can be recreated in libc. |
-| SO_KEEPALIVE                    | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ✅      | ✅    | ✅    | ❌    | ✅   | [`tcp::(set-)keep-alive`](tcp) |
+| SO_KEEPALIVE                    | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ✅      | ✅    | ✅    | ❌    | ✅   | [`tcp::(set-)keep-alive`][tcp] |
 | TCP_KEEPCNT                     | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ❌  | ❌      | ✅    | ❌    | ❌    | ❌   | |
 | TCP_KEEPIDLE                    | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ✅    | ❌    | ❌   | TCP_KEEPALIVE on MacOS |
 | TCP_KEEPINTVL                   | ❔       | ❌     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ✅      | ✅  | ❌      | ✅    | ✅    | ❌    | ❌   | |
-| TCP_NODELAY                     | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ✅  | ✅      | ✅    | ✅    | ❌    | ✅   | [`tcp::(set-)no-delay`](tcp) |
+| TCP_NODELAY                     | ✅       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ✅  | ✅      | ✅    | ✅    | ❌    | ✅   | [`tcp::(set-)no-delay`][tcp] |
 | TCP_CORK                        | ❔       | ❌     | ✅    | ❌      | ✅     | ✅      | ❌    | ❌    | ❌   | ❌      | ❌  | ❌      | ✅    | ❌    | ❌    | ✅   | TCP_NOPUSH on MacOS & FreeBSD |
 | SO_LINGER                       | ❔       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ✅   | ✅      | ✅  | ✅      | ✅    | ❌    | ❌    | ❌   | |
 | SO_OOBINLINE                    | ⛔       | ✅     | ✅    | ✅      | ✅     | ✅      | ✅    | ✅    | ❌   | ❌      | ❌  | ❌      | ❌    | ❌    | ❌    | ❌   | Not supported, see [OOB](#oob) |
@@ -599,3 +599,4 @@ Columns:
 [udp]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/udp.wit
 [poll]: https://github.com/WebAssembly/wasi-poll/blob/main/wit/poll.wit
 [streams]: https://github.com/WebAssembly/wasi-io/blob/main/wit/streams.wit
+****
