@@ -66,13 +66,13 @@ The various POSIX functions should be implementable on top of these two function
 
 None of the flags are directly present in WASI Sockets:
 - `MSG_DONTWAIT`: This is [always the case](#nonblock).
-- `MSG_OOB` [TCP]: [Not supported](#oob)
-- `MSG_OOB` [udp]: N/A
+- `MSG_OOB` on TCP sockets: [Not supported](#oob)
+- `MSG_OOB` on UDP sockets: N/A
 - `MSG_PEEK`: [No direct support](#peek)
-- `MSG_TRUNC` [TCP]: N/A
-- `MSG_TRUNC` [udp]: Not needed, the returned data array always has the exact perfect size.
-- `MSG_WAITALL` [TCP]: Emulatable in userspace.
-- `MSG_WAITALL` [udp]: N/A
+- `MSG_TRUNC on TCP sockets: N/A
+- `MSG_TRUNC` on UDP sockets: Not needed, the returned data array always has the exact perfect size.
+- `MSG_WAITALL` on TCP sockets: Emulatable in userspace.
+- `MSG_WAITALL` on UDP sockets: N/A
 - `MSG_EOR`: N/A (not supported on TCP & UDP sockets)
 - `MSG_CMSG_CLOEXEC`: N/A (only used on Unix domain sockets)
 
@@ -86,8 +86,8 @@ None of the flags are directly present in WASI Sockets:
 - `MSG_DONTROUTE`: Not included in proposal at the moment.
 - `MSG_DONTWAIT`: This is [always the case](#nonblock).
 - `MSG_NOSIGNAL`: This is [always the case](#sigpipe).
-- `MSG_OOB` [TCP]: [Not supported](#oob)
-- `MSG_OOB` [udp]: N/A
+- `MSG_OOB` on TCP sockets: [Not supported](#oob)
+- `MSG_OOB` on UDP sockets: N/A
 - `MSG_EOR`: N/A (not supported on TCP & UDP sockets)
 
 
