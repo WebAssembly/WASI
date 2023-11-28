@@ -308,9 +308,9 @@ interface types {
     headers: func() -> headers;
   }
 
-  /// Parameters for making an HTTP Request. Each of these parameters is an
-  /// optional timeout, with the unit in milliseconds, applicable to the
-  /// transport layer of the HTTP protocol.
+  /// Parameters for making an HTTP Request. Each of these parameters is
+  /// currently an optional timeout applicable to the transport layer of the
+  /// HTTP protocol.
   ///
   /// These timeouts are separate from any the user may use to bound a
   /// blocking call to `wasi:io/poll.poll`.
