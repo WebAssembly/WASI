@@ -1244,10 +1244,13 @@ the <code>get</code> method will return <code>some</code>.</p>
 once the future is ready.</p>
 <p>The outer <code>option</code> represents future readiness. Users can wait on this
 <code>option</code> to become <code>some</code> using the <code>subscribe</code> method.</p>
-<p>The <code>result</code> represents that either the HTTP Request or Response body,
-as well as any trailers, were received successfully, or that an error
-occured receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether or not
-trailers were present in the body.</p>
+<p>The outer <code>result</code> is used to retrieve the trailers or error at most
+once. It will be success on the first call in which the outer option
+is <code>some</code>, and error on subsequent calls.</p>
+<p>The inner <code>result</code> represents that either the HTTP Request or Response
+body, as well as any trailers, were received successfully, or that an
+error occured receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether
+or not trailers were present in the body.</p>
 <p>When some <a href="#trailers"><code>trailers</code></a> are returned by this method, the <a href="#trailers"><code>trailers</code></a>
 resource is immutable, and a child. Use of the <code>set</code>, <code>append</code>, or
 <code>delete</code> methods will return an error, and the resource must be
@@ -1258,7 +1261,7 @@ dropped before the parent <a href="#future_trailers"><code>future-trailers</code
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
+<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"><code>[constructor]outgoing-response: func</code></a></h4>
 <p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>, with a default <a href="#status_code"><code>status-code</code></a> of <code>200</code>.
