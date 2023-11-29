@@ -12,7 +12,7 @@ WASI-clocks is currently in [Phase 2].
 
 - Dan Gohman
 
-### Phase 4 Advancement Criteria
+### Portability Criteria
 
 WASI clocks must have host implementations which can pass the testsuite
 on at least Windows, macOS, and Linux.
