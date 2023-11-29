@@ -14,7 +14,7 @@ wasi-http is currently in [Phase 2](https://github.com/WebAssembly/WASI/blob/mai
 * David Justice
 * Luke Wagner
 
-### Portability Criteria for Phase 4
+### Portability Criteria
 
 WASI-http must have at least two complete independent implementations
 demonstrating embeddability in a production HTTP server context.
