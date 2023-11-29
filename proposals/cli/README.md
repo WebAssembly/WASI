@@ -12,7 +12,7 @@ wasi-cli is currently in [Phase 1].
 
 - Dan Gohman
 
-### Phase 4 Advancement Criteria
+### Portability Criteria
 
 WASI CLI must have host implementations which can pass the testsuite
 on at least Windows, macOS, and Linux.
