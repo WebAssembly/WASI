@@ -10,7 +10,7 @@ Phase 2
 
 - Dave Bakker (@badeend)
 
-### Phase 4 Advancement Criteria
+### Portability Criteria
 
 - At least two independent production implementations.
 - Implementations available for at least Windows, Linux & MacOS.
