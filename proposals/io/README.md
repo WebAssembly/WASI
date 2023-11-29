@@ -12,11 +12,11 @@ WASI-io is currently in [Phase 2].
 
 - Dan Gohman
 
-### Phase 4 Advancement Criteria
+### Portability Criteria
 
-WASI I/O has not yet proposed its phase-4 advancement criteria.
+WASI I/O must have host implementations which can pass the testsuite on at least Windows, macOS, and Linux.
 
-We anticipate it will involve ensuring it works well for streaming files, sockets, and pipes, and is usable from wasi-libc for implementing POSIX APIs.
+WASI I/O must have at least two complete independent implementations.
 
 ## Table of Contents
 
