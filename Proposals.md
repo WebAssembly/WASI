@@ -23,20 +23,19 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| [I/O][wasi-io]                                                                 | Dan Gohman                             |          |
+| [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
+| [Random][wasi-random]                                                          | Dan Gohman                             |          |
+| [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |          |
+| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
+| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
+| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [I/O][wasi-io]                                                                 | Dan Gohman                             |          |
-| [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |          |
-| [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
-| [Random][wasi-random]                                                          | Dan Gohman                             |          |
-| [Poll][wasi-poll]                                                              | Dan Gohman                             |          |
-| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
-| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
-| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
