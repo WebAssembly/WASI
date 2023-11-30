@@ -4,7 +4,7 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-Phase 2
+[Phase 3](https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-3---implementation-phase-cg--wg)
 
 ### Champions
 
