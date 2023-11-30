@@ -4,9 +4,9 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-WASI-io is currently in [Phase 2].
+WASI I/O is currently in [Phase 3].
 
-[Phase 2]: https://github.com/WebAssembly/WASI/blob/42fe2a3ca159011b23099c3d10b5b1d9aff2140e/docs/Proposals.md#phase-2---proposed-spec-text-available-cg--wg
+[Phase 3]: https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-3---implementation-phase-cg--wg
 
 ### Champions
 
@@ -147,11 +147,8 @@ addresses it in a very simple way.
 
 ### Stakeholder Interest & Feedback
 
-TODO before entering Phase 3.
-
-Wasi-io is being proposed to be a dependency of wasi-filesystem and
-wasi-sockets, and is expected to be a foundational piece of WASI
-preview2.
+Wasi-io is a dependency of wasi-filesystem, wasi-sockets, and wasi-http, and
+is a foundational piece of WASI Preview 2.
 
 ### References & acknowledgements
 
