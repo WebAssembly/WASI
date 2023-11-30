@@ -4,9 +4,9 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-wasi-cli is currently in [Phase 2].
+wasi-cli is currently in [Phase 3].
 
-[Phase 2]: https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-2---proposed-spec-text-available-cg--wg
+[Phase 3]:  https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-3---implementation-phase-cg--wg
 
 ### Champions
 
