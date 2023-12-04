@@ -745,7 +745,10 @@ syntactically invalid, or if a header was forbidden.</p>
 <li><a name="static_fields.from_list.0"></a> result&lt;own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_fields.get"><code>[method]fields.get: func</code></a></h4>
-<p>Get all of the values corresponding to a key.</p>
+<p>Get all of the values corresponding to a key. If the key is not present
+in this <a href="#fields"><code>fields</code></a>, an empty list is returned. However, if the key is
+present but empty, this is represented by a list with one or more
+empty field-values present.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.get.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -754,6 +757,18 @@ syntactically invalid, or if a header was forbidden.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_fields.get.0"></a> list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_fields.has"><code>[method]fields.has: func</code></a></h4>
+<p>Returns <code>true</code> when the key is present in this <a href="#fields"><code>fields</code></a>. If the key is
+syntactically invalid, <code>false</code> is returned.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_fields.has.self"><code>self</code></a>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields.has.name"><code>name</code></a>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_fields.has.0"></a> <code>bool</code></li>
 </ul>
 <h4><a name="method_fields.set"><code>[method]fields.set: func</code></a></h4>
 <p>Set all of the values for a key. Clears any existing values for that
