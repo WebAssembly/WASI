@@ -17,3 +17,5 @@ jobs:
         chmod +x ./wit-deps
         ./wit-deps lock --check
     - uses: WebAssembly/wit-abi-up-to-date@v16
+      with:
+        wit-bindgen: '0.15.0'
