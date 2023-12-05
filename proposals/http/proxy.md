@@ -10,18 +10,18 @@ outgoing HTTP requests.</p>
 <li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_11_10"><code>wasi:cli/stdout@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_11_10"><code>wasi:cli/stderr@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_11_10"><code>wasi:cli/stdin@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/stdout@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/stderr@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/stdin@0.2.0-rc-2023-12-05</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:http_types_0.2.0_rc_2023_11_10"><code>wasi:http/types@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:http_outgoing_handler_0.2.0_rc_2023_11_10"><code>wasi:http/outgoing-handler@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:http_types_0.2.0_rc_2023_12_05"><code>wasi:http/types@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:http_outgoing_handler_0.2.0_rc_2023_12_05"><code>wasi:http/outgoing-handler@0.2.0-rc-2023-12-05</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi:http_incoming_handler_0.2.0_rc_2023_11_10"><code>wasi:http/incoming-handler@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:http_incoming_handler_0.2.0_rc_2023_12_05"><code>wasi:http/incoming-handler@0.2.0-rc-2023-12-05</code></a></li>
 </ul>
 </li>
 </ul>
@@ -62,7 +62,21 @@ represented as a <code>u64</code>.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="error"><code>resource error</code></a></h4>
-<hr />
+<p>A resource which represents some error information.</p>
+<p>The only method provided by this resource is <code>to-debug-string</code>,
+which provides some human-readable information about the error.</p>
+<p>In the <code>wasi:io</code> package, this resource is returned through the
+<code>wasi:io/streams/stream-error</code> type.</p>
+<p>To provide more specific error information, other interfaces may
+provide functions to further &quot;downcast&quot; this error into more specific
+error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
+from filesystem types to be described using the filesystem's own
+error-code type, using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
+<code>borrow&lt;error&gt;</code> and returns
+<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
+concrete type is open.</h2>
 <h3>Functions</h3>
 <h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
 <p>Returns a string that is suitable to assist humans in debugging
@@ -85,7 +99,7 @@ at once.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>resource pollable</code></a></h4>
-<hr />
+<h2><a href="#pollable"><code>pollable</code></a> represents a single I/O event which may be ready, or not.</h2>
 <h3>Functions</h3>
 <h4><a name="method_pollable.ready"><code>[method]pollable.ready: func</code></a></h4>
 <p>Return the readiness of a pollable. This function never blocks.</p>
@@ -159,8 +173,21 @@ future operations.
 </li>
 </ul>
 <h4><a name="input_stream"><code>resource input-stream</code></a></h4>
+<p>An input bytestream.</p>
+<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
+platforms. I/O operations always return promptly; if fewer bytes are
+promptly available than requested, they return the number of bytes promptly
+available, which could even be zero. To wait for data to be available,
+use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be polled
+for using <code>wasi:io/poll</code>.</p>
 <h4><a name="output_stream"><code>resource output-stream</code></a></h4>
-<hr />
+<p>An output bytestream.</p>
+<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+underlying platforms. Except where specified otherwise, I/O operations also
+always return promptly, after the number of bytes that can be written
+promptly, which could even be zero. To wait for the stream to be ready to
+accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
+polled for using <code>wasi:io/poll</code>.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
 <p>Perform a non-blocking read from the stream.</p>
@@ -281,7 +308,7 @@ following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while !contents.is_empty() {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, contents.len());
   let (chunk, rest) = contents.split_at(len);
@@ -290,7 +317,7 @@ while !contents.is_empty() {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -350,7 +377,7 @@ all derived <a href="#pollable"><code>pollable</code></a>s created with this fun
 </ul>
 <h4><a name="method_output_stream.write_zeroes"><code>[method]output-stream.write-zeroes: func</code></a></h4>
 <p>Write zeroes to a stream.</p>
-<p>this should be used precisely like <code>write</code> with the exact same
+<p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
 passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
@@ -373,7 +400,7 @@ the following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while num_zeroes != 0 {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, num_zeroes);
   this.write-zeroes(len);         // eliding error handling
@@ -381,7 +408,7 @@ while num_zeroes != 0 {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -432,7 +459,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdout@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdout@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -445,7 +472,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/stderr@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/stderr@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -458,7 +485,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdin@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdin@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -532,7 +559,7 @@ occured.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:http_types_0.2.0_rc_2023_11_10">Import interface wasi:http/types@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:http_types_0.2.0_rc_2023_12_05">Import interface wasi:http/types@0.2.0-rc-2023-12-05</a></h2>
 <p>This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
@@ -678,6 +705,15 @@ permitted because the fields are immutable.
 reality, HTTP implementations often have to interpret malformed values,
 so they are provided as a list of bytes.
 <h4><a name="fields"><code>resource fields</code></a></h4>
+<p>This following block defines the <a href="#fields"><code>fields</code></a> resource which corresponds to
+HTTP standard Fields. Fields are a common representation used for both
+Headers and Trailers.</p>
+<p>A <a href="#fields"><code>fields</code></a> may be mutable or immutable. A <a href="#fields"><code>fields</code></a> created using the
+constructor, <code>from-list</code>, or <code>clone</code> will be mutable, but a <a href="#fields"><code>fields</code></a>
+resource given by other means (including, but not limited to,
+<code>incoming-request.headers</code>, <code>outgoing-request.headers</code>) might be be
+immutable. In an immutable fields, the <code>set</code>, <code>append</code>, and <code>delete</code>
+operations will fail with <code>header-error.immutable</code>.</p>
 <h4><a name="headers"><code>type headers</code></a></h4>
 <p><a href="#fields"><a href="#fields"><code>fields</code></a></a></p>
 <p>Headers is an alias for Fields.
@@ -685,19 +721,60 @@ so they are provided as a list of bytes.
 <p><a href="#fields"><a href="#fields"><code>fields</code></a></a></p>
 <p>Trailers is an alias for Fields.
 <h4><a name="incoming_request"><code>resource incoming-request</code></a></h4>
+<p>Represents an incoming HTTP Request.</p>
 <h4><a name="outgoing_request"><code>resource outgoing-request</code></a></h4>
+<p>Represents an outgoing HTTP Request.</p>
 <h4><a name="request_options"><code>resource request-options</code></a></h4>
+<p>Parameters for making an HTTP Request. Each of these parameters is
+currently an optional timeout applicable to the transport layer of the
+HTTP protocol.</p>
+<p>These timeouts are separate from any the user may use to bound a
+blocking call to <code>wasi:io/poll.poll</code>.</p>
 <h4><a name="response_outparam"><code>resource response-outparam</code></a></h4>
+<p>Represents the ability to send an HTTP Response.</p>
+<p>This resource is used by the <code>wasi:http/incoming-handler</code> interface to
+allow a Response to be sent corresponding to the Request provided as the
+other argument to <code>incoming-handler.handle</code>.</p>
 <h4><a name="status_code"><code>type status-code</code></a></h4>
 <p><code>u16</code></p>
 <p>This type corresponds to the HTTP standard Status Code.
 <h4><a name="incoming_response"><code>resource incoming-response</code></a></h4>
+<p>Represents an incoming HTTP Response.</p>
 <h4><a name="incoming_body"><code>resource incoming-body</code></a></h4>
+<p>Represents an incoming HTTP Request or Response's Body.</p>
+<p>A body has both its contents - a stream of bytes - and a (possibly
+empty) set of trailers, indicating that the full contents of the
+body have been received. This resource represents the contents as
+an <a href="#input_stream"><code>input-stream</code></a> and the delivery of trailers as a <a href="#future_trailers"><code>future-trailers</code></a>,
+and ensures that the user of this interface may only be consuming either
+the body contents or waiting on trailers at any given time.</p>
 <h4><a name="future_trailers"><code>resource future-trailers</code></a></h4>
+<p>Represents a future which may eventaully return trailers, or an error.</p>
+<p>In the case that the incoming HTTP Request or Response did not have any
+trailers, this future will resolve to the empty set of trailers once the
+complete Request or Response body has been received.</p>
 <h4><a name="outgoing_response"><code>resource outgoing-response</code></a></h4>
+<p>Represents an outgoing HTTP Response.</p>
 <h4><a name="outgoing_body"><code>resource outgoing-body</code></a></h4>
+<p>Represents an outgoing HTTP Request or Response's Body.</p>
+<p>A body has both its contents - a stream of bytes - and a (possibly
+empty) set of trailers, inducating the full contents of the body
+have been sent. This resource represents the contents as an
+<a href="#output_stream"><code>output-stream</code></a> child resource, and the completion of the body (with
+optional trailers) with a static function that consumes the
+<a href="#outgoing_body"><code>outgoing-body</code></a> resource, and ensures that the user of this interface
+may not write to the body contents after the body has been finished.</p>
+<p>If the user code drops this resource, as opposed to calling the static
+method <code>finish</code>, the implementation should treat the body as incomplete,
+and that an error has occured. The implementation should propogate this
+error to the HTTP protocol by whatever means it has available,
+including: corrupting the body on the wire, aborting the associated
+Request, or sending a late status code for the Response.</p>
 <h4><a name="future_incoming_response"><code>resource future-incoming-response</code></a></h4>
-<hr />
+<p>Represents a future which may eventaully return an incoming HTTP
+Response, or an error.</p>
+<h2>This resource is returned by the <code>wasi:http/outgoing-handler</code> interface to
+provide the HTTP Response corresponding to the sent Request.</h2>
 <h3>Functions</h3>
 <h4><a name="http_error_code"><code>http-error-code: func</code></a></h4>
 <p>Attempts to extract a http-related <a href="#error"><code>error</code></a> from the wasi:io <a href="#error"><code>error</code></a>
@@ -1368,7 +1445,7 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:http_outgoing_handler_0.2.0_rc_2023_11_10">Import interface wasi:http/outgoing-handler@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:http_outgoing_handler_0.2.0_rc_2023_12_05">Import interface wasi:http/outgoing-handler@0.2.0-rc-2023-12-05</a></h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
 <hr />
@@ -1446,7 +1523,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi:http_incoming_handler_0.2.0_rc_2023_11_10">Export interface wasi:http/incoming-handler@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:http_incoming_handler_0.2.0_rc_2023_12_05">Export interface wasi:http/incoming-handler@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="incoming_request"><code>type incoming-request</code></a></h4>
