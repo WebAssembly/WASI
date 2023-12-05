@@ -1069,7 +1069,7 @@ return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_request_options.set_connect_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_connect_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_connect_timeout.duration"><a href="#duration"><code>duration</code></a></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -1091,7 +1091,7 @@ error return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_request_options.set_first_byte_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_first_byte_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_first_byte_timeout.duration"><a href="#duration"><code>duration</code></a></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
@@ -1115,7 +1115,7 @@ supported.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_request_options.set_between_bytes_timeout.self"><code>self</code></a>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_between_bytes_timeout.ms"><code>ms</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options.set_between_bytes_timeout.duration"><a href="#duration"><code>duration</code></a></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
