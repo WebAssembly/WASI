@@ -20,4 +20,5 @@ jobs:
         git diff --exit-code
     - uses: WebAssembly/wit-abi-up-to-date@v16
       with:
-        worlds: "command reactor"
+        wit-bindgen: '0.15.0'
+        worlds: "command imports"

@@ -1,26 +1,12 @@
-<h1><a name="reactor">World reactor</a></h1>
+<h1><a name="imports">World imports</a></h1>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:filesystem_types_0.2.0_rc_2023_11_10"><code>wasi:filesystem/types@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:filesystem_preopens_0.2.0_rc_2023_11_10"><code>wasi:filesystem/preopens@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/network@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/instance-network@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:random_random_0.2.0_rc_2023_11_10"><code>wasi:random/random@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:random_insecure_0.2.0_rc_2023_11_10"><code>wasi:random/insecure@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:random_insecure_seed_0.2.0_rc_2023_11_10"><code>wasi:random/insecure-seed@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_environment_0.2.0_rc_2023_11_10"><code>wasi:cli/environment@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_exit_0.2.0_rc_2023_11_10"><code>wasi:cli/exit@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_11_10"><code>wasi:cli/stdin@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_11_10"><code>wasi:cli/stdout@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_11_10"><code>wasi:cli/stderr@0.2.0-rc-2023-11-10</code></a></li>
@@ -29,49 +15,93 @@
 <li>interface <a href="#wasi:cli_terminal_stdin_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stdin@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_terminal_stdout_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stdout@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:cli_terminal_stderr_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stderr@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:filesystem_types_0.2.0_rc_2023_11_10"><code>wasi:filesystem/types@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:filesystem_preopens_0.2.0_rc_2023_11_10"><code>wasi:filesystem/preopens@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/network@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/instance-network@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:random_random_0.2.0_rc_2023_11_10"><code>wasi:random/random@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:random_insecure_0.2.0_rc_2023_11_10"><code>wasi:random/insecure@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:random_insecure_seed_0.2.0_rc_2023_11_10"><code>wasi:random/insecure-seed@0.2.0-rc-2023-11-10</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:clocks_wall_clock_0.2.0_rc_2023_11_10">Import interface wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</a></h2>
-<p>WASI Wall Clock is a clock API intended to let users query the current
-time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
-is not necessarily monotonic as it may be reset.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<p>A wall clock is a clock which measures the date and time according to
-some external reference.</p>
-<p>External references may be reset, so this clock is not necessarily
-monotonic, making it unsuitable for measuring elapsed time.</p>
-<p>It is intended for reporting the current date and time for humans.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="datetime"><code>record datetime</code></a></h4>
-<p>A time and date in seconds plus nanoseconds.</p>
-<h5>Record Fields</h5>
-<ul>
-<li><a name="datetime.seconds"><code>seconds</code></a>: <code>u64</code></li>
-<li><a name="datetime.nanoseconds"><code>nanoseconds</code></a>: <code>u32</code></li>
-</ul>
+<h2><a name="wasi:cli_environment_0.2.0_rc_2023_11_10">Import interface wasi:cli/environment@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Functions</h3>
-<h4><a name="now"><code>now: func</code></a></h4>
-<p>Read the current value of the clock.</p>
-<p>This clock is not monotonic, therefore calling this function repeatedly
-will not necessarily produce a sequence of non-decreasing values.</p>
-<p>The returned timestamps represent the number of seconds since
-1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
-also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h4><a name="get_environment"><code>get-environment: func</code></a></h4>
+<p>Get the POSIX-style environment variables.</p>
+<p>Each environment variable is provided as a pair of string variable names
+and string value.</p>
+<p>Morally, these are a value import, but until value imports are available
+in the component model, this import function should return the same
+values each time it is called.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+<li><a name="get_environment.0"></a> list&lt;(<code>string</code>, <code>string</code>)&gt;</li>
 </ul>
-<h4><a name="resolution"><code>resolution: func</code></a></h4>
-<p>Query the resolution of the clock.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h4><a name="get_arguments"><code>get-arguments: func</code></a></h4>
+<p>Get the POSIX-style arguments to the program.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+<li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
+</ul>
+<h4><a name="initial_cwd"><code>initial-cwd: func</code></a></h4>
+<p>Return a path that programs should use as their initial current working
+directory, interpreting <code>.</code> as shorthand for this.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_exit_0.2.0_rc_2023_11_10">Import interface wasi:cli/exit@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Functions</h3>
+<h4><a name="exit"><code>exit: func</code></a></h4>
+<p>Exit the current instance and any linked instances.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="exit.status"><code>status</code></a>: result</li>
+</ul>
+<h2><a name="wasi:io_error_0.2.0_rc_2023_11_10">Import interface wasi:io/error@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="error"><code>resource error</code></a></h4>
+<p>A resource which represents some error information.</p>
+<p>The only method provided by this resource is <code>to-debug-string</code>,
+which provides some human-readable information about the error.</p>
+<p>In the <code>wasi:io</code> package, this resource is returned through the
+<code>wasi:io/streams/stream-error</code> type.</p>
+<p>To provide more specific error information, other interfaces may
+provide functions to further &quot;downcast&quot; this error into more specific
+error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
+from filesystem types to be described using the filesystem's own
+error-code type, using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
+<code>borrow&lt;error&gt;</code> and returns
+<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
+concrete type is open.</h2>
+<h3>Functions</h3>
+<h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
+<p>Returns a string that is suitable to assist humans in debugging
+this error.</p>
+<p>WARNING: The returned string should not be consumed mechanically!
+It may change across platforms, hosts, or other implementation
+details. Parsing this string is a major platform-compatibility
+hazard.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_error.to_debug_string.self"><code>self</code></a>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
 </ul>
 <h2><a name="wasi:io_poll_0.2.0_rc_2023_11_10">Import interface wasi:io/poll@0.2.0-rc-2023-11-10</a></h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
@@ -79,7 +109,7 @@ at once.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>resource pollable</code></a></h4>
-<hr />
+<h2><a href="#pollable"><code>pollable</code></a> represents a single I/O event which may be ready, or not.</h2>
 <h3>Functions</h3>
 <h4><a name="method_pollable.ready"><code>[method]pollable.ready: func</code></a></h4>
 <p>Return the readiness of a pollable. This function never blocks.</p>
@@ -123,88 +153,6 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10">Import interface wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</a></h2>
-<p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
-time.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<p>A monotonic clock is a clock which has an unspecified initial value, and
-successive reads of the clock will produce non-decreasing values.</p>
-<p>It is intended for measuring elapsed time.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="pollable"><code>type pollable</code></a></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
-<p>
-#### <a name="instant">`type instant`</a>
-`u64`
-<p>An instant in time, in nanoseconds. An instant is relative to an
-unspecified initial value, and can only be compared to instances from
-the same monotonic-clock.
-<h4><a name="duration"><code>type duration</code></a></h4>
-<p><code>u64</code></p>
-<p>A duration of time, in nanoseconds.
-<hr />
-<h3>Functions</h3>
-<h4><a name="now"><code>now: func</code></a></h4>
-<p>Read the current value of the clock.</p>
-<p>The clock is monotonic, therefore calling this function repeatedly will
-produce a sequence of non-decreasing values.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
-</ul>
-<h4><a name="resolution"><code>resolution: func</code></a></h4>
-<p>Query the resolution of the clock. Returns the duration of time
-corresponding to a clock tick.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
-</ul>
-<h4><a name="subscribe_instant"><code>subscribe-instant: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
-occured.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_instant.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h4><a name="subscribe_duration"><code>subscribe-duration: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
-elapsed, starting at the time at which this function was called.
-occured.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_duration.when"><code>when</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:io_error_0.2.0_rc_2023_11_10">Import interface wasi:io/error@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="error"><code>resource error</code></a></h4>
-<hr />
-<h3>Functions</h3>
-<h4><a name="method_error.to_debug_string"><code>[method]error.to-debug-string: func</code></a></h4>
-<p>Returns a string that is suitable to assist humans in debugging
-this error.</p>
-<p>WARNING: The returned string should not be consumed mechanically!
-It may change across platforms, hosts, or other implementation
-details. Parsing this string is a major platform-compatibility
-hazard.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_error.to_debug_string.self"><code>self</code></a>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
-</ul>
 <h2><a name="wasi:io_streams_0.2.0_rc_2023_11_10">Import interface wasi:io/streams@0.2.0-rc-2023-11-10</a></h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
@@ -235,8 +183,21 @@ future operations.
 </li>
 </ul>
 <h4><a name="input_stream"><code>resource input-stream</code></a></h4>
+<p>An input bytestream.</p>
+<p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
+platforms. I/O operations always return promptly; if fewer bytes are
+promptly available than requested, they return the number of bytes promptly
+available, which could even be zero. To wait for data to be available,
+use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be polled
+for using <code>wasi:io/poll</code>.</p>
 <h4><a name="output_stream"><code>resource output-stream</code></a></h4>
-<hr />
+<p>An output bytestream.</p>
+<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+underlying platforms. Except where specified otherwise, I/O operations also
+always return promptly, after the number of bytes that can be written
+promptly, which could even be zero. To wait for the stream to be ready to
+accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
+polled for using <code>wasi:io/poll</code>.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
 <p>Perform a non-blocking read from the stream.</p>
@@ -357,7 +318,7 @@ following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while !contents.is_empty() {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, contents.len());
   let (chunk, rest) = contents.split_at(len);
@@ -366,7 +327,7 @@ while !contents.is_empty() {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -426,7 +387,7 @@ all derived <a href="#pollable"><code>pollable</code></a>s created with this fun
 </ul>
 <h4><a name="method_output_stream.write_zeroes"><code>[method]output-stream.write-zeroes: func</code></a></h4>
 <p>Write zeroes to a stream.</p>
-<p>this should be used precisely like <code>write</code> with the exact same
+<p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
 passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
@@ -449,7 +410,7 @@ the following pseudo-code:</p>
 <pre><code class="language-text">let pollable = this.subscribe();
 while num_zeroes != 0 {
   // Wait for the stream to become writable
-  poll-one(pollable);
+  pollable.block();
   let Ok(n) = this.check-write(); // eliding error handling
   let len = min(n, num_zeroes);
   this.write-zeroes(len);         // eliding error handling
@@ -457,7 +418,7 @@ while num_zeroes != 0 {
 }
 this.flush();
 // Wait for completion of `flush`
-poll-one(pollable);
+pollable.block();
 // Check for any errors that arose during `flush`
 let _ = this.check-write();         // eliding error handling
 </code></pre>
@@ -507,6 +468,208 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdin@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="input_stream"><code>type input-stream</code></a></h4>
+<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdin"><code>get-stdin: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdout@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"><code>type output-stream</code></a></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdout"><code>get-stdout: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/stderr@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"><code>type output-stream</code></a></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stderr"><code>get-stderr: func</code></a></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_input"><code>resource terminal-input</code></a></h4>
+<p>The input side of a terminal.</p>
+<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>resource terminal-output</code></a></h4>
+<p>The output side of a terminal.</p>
+<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2023-11-10</a></h2>
+<p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_input"><code>type terminal-input</code></a></h4>
+<p><a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stdin"><code>get-terminal-stdin: func</code></a></h4>
+<p>If stdin is connected to a terminal, return a <a href="#terminal_input"><code>terminal-input</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stdin.0"></a> option&lt;own&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;&gt;</li>
+</ul>
+<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2023-11-10</a></h2>
+<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
+<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stdout"><code>get-terminal-stdout: func</code></a></h4>
+<p>If stdout is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stdout.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
+</ul>
+<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2023-11-10</a></h2>
+<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
+link-time authority.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
+<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_terminal_stderr"><code>get-terminal-stderr: func</code></a></h4>
+<p>If stderr is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
+allowing further interaction with it.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_terminal_stderr.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
+</ul>
+<h2><a name="wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10">Import interface wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</a></h2>
+<p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
+time.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A monotonic clock is a clock which has an unspecified initial value, and
+successive reads of the clock will produce non-decreasing values.</p>
+<p>It is intended for measuring elapsed time.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="pollable"><code>type pollable</code></a></h4>
+<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+<p>
+#### <a name="instant">`type instant`</a>
+`u64`
+<p>An instant in time, in nanoseconds. An instant is relative to an
+unspecified initial value, and can only be compared to instances from
+the same monotonic-clock.
+<h4><a name="duration"><code>type duration</code></a></h4>
+<p><code>u64</code></p>
+<p>A duration of time, in nanoseconds.
+<hr />
+<h3>Functions</h3>
+<h4><a name="now"><code>now: func</code></a></h4>
+<p>Read the current value of the clock.</p>
+<p>The clock is monotonic, therefore calling this function repeatedly will
+produce a sequence of non-decreasing values.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h4><a name="resolution"><code>resolution: func</code></a></h4>
+<p>Query the resolution of the clock. Returns the duration of time
+corresponding to a clock tick.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h4><a name="subscribe_instant"><code>subscribe-instant: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_instant.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="subscribe_duration"><code>subscribe-duration: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
+elapsed, starting at the time at which this function was called.
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_duration.when"><code>when</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:clocks_wall_clock_0.2.0_rc_2023_11_10">Import interface wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</a></h2>
+<p>WASI Wall Clock is a clock API intended to let users query the current
+time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
+is not necessarily monotonic as it may be reset.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A wall clock is a clock which measures the date and time according to
+some external reference.</p>
+<p>External references may be reset, so this clock is not necessarily
+monotonic, making it unsuitable for measuring elapsed time.</p>
+<p>It is intended for reporting the current date and time for humans.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="datetime"><code>record datetime</code></a></h4>
+<p>A time and date in seconds plus nanoseconds.</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="datetime.seconds"><code>seconds</code></a>: <code>u64</code></li>
+<li><a name="datetime.nanoseconds"><code>nanoseconds</code></a>: <code>u32</code></li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a name="now"><code>now: func</code></a></h4>
+<p>Read the current value of the clock.</p>
+<p>This clock is not monotonic, therefore calling this function repeatedly
+will not necessarily produce a sequence of non-decreasing values.</p>
+<p>The returned timestamps represent the number of seconds since
+1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
+also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h4><a name="resolution"><code>resolution: func</code></a></h4>
+<p>Query the resolution of the clock.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h2><a name="wasi:filesystem_types_0.2.0_rc_2023_11_10">Import interface wasi:filesystem/types@0.2.0-rc-2023-11-10</a></h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
@@ -938,8 +1101,11 @@ not reuse it thereafter.
 </li>
 </ul>
 <h4><a name="descriptor"><code>resource descriptor</code></a></h4>
+<p>A descriptor is a reference to a filesystem object, which may be a file,
+directory, named pipe, special file, or other object on which filesystem
+calls may be made.</p>
 <h4><a name="directory_entry_stream"><code>resource directory-entry-stream</code></a></h4>
-<hr />
+<h2>A stream of directory entries.</h2>
 <h3>Functions</h3>
 <h4><a name="method_descriptor.read_via_stream"><code>[method]descriptor.read-via-stream: func</code></a></h4>
 <p>Return a stream for reading from a file, if available.</p>
@@ -1403,6 +1569,9 @@ errors are filesystem-related errors.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>resource network</code></a></h4>
+<p>An opaque resource that represents access to (a subset of) the network.
+This enables context-based security for networking.
+There is no need for this to map 1:1 to a physical network interface.</p>
 <h4><a name="error_code"><code>enum error-code</code></a></h4>
 <p>Error codes.</p>
 <p>In theory, every API can return any error code.
@@ -1584,7 +1753,7 @@ combined with a couple of errors that are always possible:</p>
 <ul>
 <li><a name="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_udp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -1596,73 +1765,479 @@ combined with a couple of errors that are always possible:</p>
 #### <a name="error_code">`type error-code`</a>
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_address">`type ip-address`</a>
-[`ip-address`](#ip_address)
+#### <a name="ip_socket_address">`type ip-socket-address`</a>
+[`ip-socket-address`](#ip_socket_address)
 <p>
-#### <a name="resolve_address_stream">`resource resolve-address-stream`</a>
+#### <a name="ip_address_family">`type ip-address-family`</a>
+[`ip-address-family`](#ip_address_family)
+<p>
+#### <a name="incoming_datagram">`record incoming-datagram`</a>
+<p>A received datagram.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="incoming_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
+<p>The payload.
+<p>Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.</p>
+</li>
+<li>
+<p><a name="incoming_datagram.remote_address"><code>remote-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
+<p>The source address.
+<p>This field is guaranteed to match the remote address the stream was initialized with, if any.</p>
+<p>Equivalent to the <code>src_addr</code> out parameter of <code>recvfrom</code>.</p>
+</li>
+</ul>
+<h4><a name="outgoing_datagram"><code>record outgoing-datagram</code></a></h4>
+<p>A datagram to be sent out.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="outgoing_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
+<p>The payload.
+</li>
+<li>
+<p><a name="outgoing_datagram.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</p>
+<p>The destination address.
+<p>The requirements on this field depend on how the stream was initialized:</p>
+<ul>
+<li>with a remote address: this field must be None or match the stream's remote address exactly.</li>
+<li>without a remote address: this field is required.</li>
+</ul>
+<p>If this value is None, the send operation is equivalent to <code>send</code> in POSIX. Otherwise it is equivalent to <code>sendto</code>.</p>
+</li>
+</ul>
+<h4><a name="udp_socket"><code>resource udp-socket</code></a></h4>
+<p>A UDP socket handle.</p>
+<h4><a name="incoming_datagram_stream"><code>resource incoming-datagram-stream</code></a></h4>
+<h4><a name="outgoing_datagram_stream"><code>resource outgoing-datagram-stream</code></a></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="resolve_addresses"><code>resolve-addresses: func</code></a></h4>
-<p>Resolve an internet host name to a list of IP addresses.</p>
-<p>Unicode domain names are automatically converted to ASCII using IDNA encoding.
-If the input is an IP address string, the address is parsed and returned
-as-is without making any external requests.</p>
-<p>See the wasi-socket proposal README.md for a comparison with getaddrinfo.</p>
-<p>This function never blocks. It either immediately fails or immediately
-returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a> that can be used
-to (asynchronously) fetch the results.</p>
-<h1>Typical errors</h1>
+<h4><a name="method_udp_socket.start_bind"><code>[method]udp-socket.start-bind: func</code></a></h4>
+<p>Bind the socket to a specific network on the provided IP address and port.</p>
+<p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
+network interface(s) to bind to.
+If the port is zero, the socket will be bound to a random free port.</p>
+<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
+<h1>Typical <code>start</code> errors</h1>
 <ul>
-<li><code>invalid-argument</code>: <code>name</code> is a syntactically invalid domain name or IP address.</li>
+<li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
+<li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
 </ul>
-<h1>References:</h1>
+<h1>Typical <code>finish</code> errors</h1>
 <ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo">https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3">https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3</a></li>
+<li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
+<li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
+<li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
+<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
+<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
-<h5>Params</h5>
+<h1>References</h1>
 <ul>
-<li><a name="resolve_addresses.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="resolve_addresses.name"><code>name</code></a>: <code>string</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="resolve_addresses.0"></a> result&lt;own&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_resolve_address_stream.resolve_next_address"><code>[method]resolve-address-stream.resolve-next-address: func</code></a></h4>
-<p>Returns the next address from the resolver.</p>
-<p>This function should be called multiple times. On each call, it will
-return the next address in connection order preference. If all
-addresses have been exhausted, this function returns <code>none</code>.</p>
-<p>This function never returns IPv4-mapped IPv6 addresses.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>name-unresolvable</code>:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)</li>
-<li><code>temporary-resolver-failure</code>: A temporary failure in name resolution occurred. (EAI_AGAIN)</li>
-<li><code>permanent-resolver-failure</code>: A permanent failure in name resolution occurred. (EAI_FAIL)</li>
-<li><code>would-block</code>:                A result is not available yet. (EWOULDBLOCK, EAGAIN)</li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html">https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_resolve_address_stream.resolve_next_address.self"><code>self</code></a>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.start_bind.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.start_bind.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.start_bind.local_address"><code>local-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_resolve_address_stream.resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_resolve_address_stream.subscribe"><code>[method]resolve-address-stream.subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
+<h4><a name="method_udp_socket.finish_bind"><code>[method]udp-socket.finish-bind: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.finish_bind.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.stream"><code>[method]udp-socket.stream: func</code></a></h4>
+<p>Set up inbound &amp; outbound communication channels, optionally to a specific peer.</p>
+<p>This function only changes the local socket configuration and does not generate any network traffic.
+On success, the <code>remote-address</code> of the socket is updated. The <code>local-address</code> may be updated as well,
+based on the best network path to <code>remote-address</code>.</p>
+<p>When a <code>remote-address</code> is provided, the returned streams are limited to communicating with that specific peer:</p>
+<ul>
+<li><code>send</code> can only be used to send to this destination.</li>
+<li><code>receive</code> will only return datagrams sent from the provided <code>remote-address</code>.</li>
+</ul>
+<p>This method may be called multiple times on the same socket to change its association, but
+only the most recently returned pair of streams will be operational. Implementations may trap if
+the streams returned by a previous invocation haven't been dropped yet before calling <code>stream</code> again.</p>
+<p>The POSIX equivalent in pseudo-code is:</p>
+<pre><code class="language-text">if (was previously connected) {
+  connect(s, AF_UNSPEC)
+}
+if (remote_address is Some) {
+  connect(s, remote_address)
+}
+</code></pre>
+<p>Unlike in POSIX, the socket must already be explicitly bound.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-state</code>:             The socket is not bound.</li>
+<li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
+<li><code>remote-unreachable</code>:        The remote address is not reachable. (ECONNRESET, ENETRESET, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>:        The connection was refused. (ECONNREFUSED)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?connect">https://man.freebsd.org/cgi/man.cgi?connect</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.stream.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.stream.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.stream.0"></a> result&lt;(own&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;, own&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.local_address"><code>[method]udp-socket.local-address: func</code></a></h4>
+<p>Get the current bound address.</p>
+<p>POSIX mentions:</p>
+<blockquote>
+<p>If the socket has not been bound to a local name, the value
+stored in the object pointed to by <code>address</code> is unspecified.</p>
+</blockquote>
+<p>WASI is stricter and requires <code>local-address</code> to return <code>invalid-state</code> when the socket hasn't been bound yet.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-state</code>: The socket is not bound to any local address.</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?getsockname">https://man.freebsd.org/cgi/man.cgi?getsockname</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.local_address.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.remote_address"><code>[method]udp-socket.remote-address: func</code></a></h4>
+<p>Get the address the socket is currently streaming to.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-state</code>: The socket is not streaming to a specific remote address. (ENOTCONN)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1">https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.remote_address.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.address_family"><code>[method]udp-socket.address-family: func</code></a></h4>
+<p>Whether this is a IPv4 or IPv6 socket.</p>
+<p>Equivalent to the SO_DOMAIN socket option.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.address_family.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+</ul>
+<h4><a name="method_udp_socket.ipv6_only"><code>[method]udp-socket.ipv6-only: func</code></a></h4>
+<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
+<p>Equivalent to the IPV6_V6ONLY socket option.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
+<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
+<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.set_ipv6_only"><code>[method]udp-socket.set-ipv6-only: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
+<p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.set_unicast_hop_limit"><code>[method]udp-socket.set-unicast-hop-limit: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.set_unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.set_unicast_hop_limit.value"><code>value</code></a>: <code>u8</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.receive_buffer_size"><code>[method]udp-socket.receive-buffer-size: func</code></a></h4>
+<p>The kernel buffer space reserved for sends/receives on this socket.</p>
+<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
+Any other value will never cause an error, but it might be silently clamped and/or rounded.
+I.e. after setting a value, reading the same setting back may return a different value.</p>
+<p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.set_receive_buffer_size"><code>[method]udp-socket.set-receive-buffer-size: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.set_receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.set_receive_buffer_size.value"><code>value</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.send_buffer_size"><code>[method]udp-socket.send-buffer-size: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.send_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.set_send_buffer_size"><code>[method]udp-socket.set-send-buffer-size: func</code></a></h4>
+<h5>Params</h5>
+<ul>
+<li><a name="method_udp_socket.set_send_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.set_send_buffer_size.value"><code>value</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_udp_socket.set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_udp_socket.subscribe"><code>[method]udp-socket.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_resolve_address_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_resolve_address_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_udp_socket.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_incoming_datagram_stream.receive"><code>[method]incoming-datagram-stream.receive: func</code></a></h4>
+<p>Receive messages on the socket.</p>
+<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
+The returned list may contain fewer elements than requested, but never more.</p>
+<p>This function returns successfully with an empty list when either:</p>
+<ul>
+<li><code>max-results</code> is 0, or:</li>
+<li><code>max-results</code> is greater than 0, but no results are immediately available.
+This function never returns <code>error(would-block)</code>.</li>
+</ul>
+<h1>Typical errors</h1>
+<ul>
+<li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>: The connection was refused. (ECONNREFUSED)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
+<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.receive.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+<li><a name="method_incoming_datagram_stream.receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.receive.0"></a> result&lt;list&lt;<a href="#incoming_datagram"><a href="#incoming_datagram"><code>incoming-datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_incoming_datagram_stream.subscribe"><code>[method]incoming-datagram-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to receive again.</p>
+<p>Note: this function is here for WASI Preview2 only.
+It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_incoming_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.check_send"><code>[method]outgoing-datagram-stream.check-send: func</code></a></h4>
+<p>Check readiness for sending. This function never blocks.</p>
+<p>Returns the number of datagrams permitted for the next call to <code>send</code>,
+or an error. Calling <code>send</code> with more datagrams than this function has
+permitted will trap.</p>
+<p>When this function returns ok(0), the <code>subscribe</code> pollable will
+become ready when this function will report at least ok(1), or an
+error.</p>
+<p>Never returns <code>would-block</code>.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.check_send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.check_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.send"><code>[method]outgoing-datagram-stream.send: func</code></a></h4>
+<p>Send messages on the socket.</p>
+<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
+returns how many messages were actually sent (or queued for sending). This function never
+returns <code>error(would-block)</code>. If none of the datagrams were able to be sent, <code>ok(0)</code> is returned.</p>
+<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
+sending each individual datagram until either the end of the list has been reached or the first error occurred.
+If at least one datagram has been sent successfully, this function never returns an error.</p>
+<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
+<p>Each call to <code>send</code> must be permitted by a preceding <code>check-send</code>. Implementations must trap if
+either <code>check-send</code> was not called or <code>datagrams</code> contains more items than <code>check-send</code> permitted.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>invalid-argument</code>:        The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
+<li><code>invalid-argument</code>:        <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:        The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:        The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
+<li><code>invalid-argument</code>:        The socket is in &quot;connected&quot; mode and <code>remote-address</code> is <code>some</code> value that does not match the address passed to <code>stream</code>. (EISCONN)</li>
+<li><code>invalid-argument</code>:        The socket is not &quot;connected&quot; and no value for <code>remote-address</code> was provided. (EDESTADDRREQ)</li>
+<li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
+<li><code>connection-refused</code>:      The connection was refused. (ECONNREFUSED)</li>
+<li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
+</ul>
+<h1>References</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+<li><a name="method_outgoing_datagram_stream.send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#outgoing_datagram"><a href="#outgoing_datagram"><code>outgoing-datagram</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_outgoing_datagram_stream.subscribe"><code>[method]outgoing-datagram-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to send again.</p>
+<p>Note: this function is here for WASI Preview2 only.
+It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</a></h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="network"><code>type network</code></a></h4>
+<p><a href="#network"><a href="#network"><code>network</code></a></a></p>
+<p>
+#### <a name="error_code">`type error-code`</a>
+[`error-code`](#error_code)
+<p>
+#### <a name="ip_address_family">`type ip-address-family`</a>
+[`ip-address-family`](#ip_address_family)
+<p>
+#### <a name="udp_socket">`type udp-socket`</a>
+[`udp-socket`](#udp_socket)
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="create_udp_socket"><code>create-udp-socket: func</code></a></h4>
+<p>Create a new UDP socket.</p>
+<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
+<p>This function does not require a network capability handle. This is considered to be safe because
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code> is called,
+the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
+<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>not-supported</code>:     The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
+<li><code>new-socket-limit</code>:  The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+</ul>
+<h1>References:</h1>
+<ul>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="create_udp_socket.address_family"><code>address-family</code></a>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:sockets_tcp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp@0.2.0-rc-2023-11-10</a></h2>
 <hr />
@@ -1708,7 +2283,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 </li>
 </ul>
 <h4><a name="tcp_socket"><code>resource tcp-socket</code></a></h4>
-<hr />
+<h2>A TCP socket handle.</h2>
 <h3>Functions</h3>
 <h4><a name="method_tcp_socket.start_bind"><code>[method]tcp-socket.start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
@@ -2299,7 +2874,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -2311,478 +2886,73 @@ is called, the socket is effectively an in-memory configuration object, unable t
 #### <a name="error_code">`type error-code`</a>
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_socket_address">`type ip-socket-address`</a>
-[`ip-socket-address`](#ip_socket_address)
+#### <a name="ip_address">`type ip-address`</a>
+[`ip-address`](#ip_address)
 <p>
-#### <a name="ip_address_family">`type ip-address-family`</a>
-[`ip-address-family`](#ip_address_family)
-<p>
-#### <a name="incoming_datagram">`record incoming-datagram`</a>
-<p>A received datagram.</p>
-<h5>Record Fields</h5>
-<ul>
-<li>
-<p><a name="incoming_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
-<p>The payload.
-<p>Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.</p>
-</li>
-<li>
-<p><a name="incoming_datagram.remote_address"><code>remote-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
-<p>The source address.
-<p>This field is guaranteed to match the remote address the stream was initialized with, if any.</p>
-<p>Equivalent to the <code>src_addr</code> out parameter of <code>recvfrom</code>.</p>
-</li>
-</ul>
-<h4><a name="outgoing_datagram"><code>record outgoing-datagram</code></a></h4>
-<p>A datagram to be sent out.</p>
-<h5>Record Fields</h5>
-<ul>
-<li>
-<p><a name="outgoing_datagram.data"><code>data</code></a>: list&lt;<code>u8</code>&gt;</p>
-<p>The payload.
-</li>
-<li>
-<p><a name="outgoing_datagram.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</p>
-<p>The destination address.
-<p>The requirements on this field depend on how the stream was initialized:</p>
-<ul>
-<li>with a remote address: this field must be None or match the stream's remote address exactly.</li>
-<li>without a remote address: this field is required.</li>
-</ul>
-<p>If this value is None, the send operation is equivalent to <code>send</code> in POSIX. Otherwise it is equivalent to <code>sendto</code>.</p>
-</li>
-</ul>
-<h4><a name="udp_socket"><code>resource udp-socket</code></a></h4>
-<h4><a name="incoming_datagram_stream"><code>resource incoming-datagram-stream</code></a></h4>
-<h4><a name="outgoing_datagram_stream"><code>resource outgoing-datagram-stream</code></a></h4>
+#### <a name="resolve_address_stream">`resource resolve-address-stream`</a>
 <hr />
 <h3>Functions</h3>
-<h4><a name="method_udp_socket.start_bind"><code>[method]udp-socket.start-bind: func</code></a></h4>
-<p>Bind the socket to a specific network on the provided IP address and port.</p>
-<p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
-network interface(s) to bind to.
-If the port is zero, the socket will be bound to a random free port.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
-<h1>Typical <code>start</code> errors</h1>
-<ul>
-<li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
-<li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
-<li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
-<li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
-<li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
-<li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
-<li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/bind.2.html">https://man7.org/linux/man-pages/man2/bind.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html">https://man.freebsd.org/cgi/man.cgi?query=bind&amp;sektion=2&amp;format=html</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.start_bind.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.start_bind.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.start_bind.local_address"><code>local-address</code></a>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.finish_bind"><code>[method]udp-socket.finish-bind: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.finish_bind.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.stream"><code>[method]udp-socket.stream: func</code></a></h4>
-<p>Set up inbound &amp; outbound communication channels, optionally to a specific peer.</p>
-<p>This function only changes the local socket configuration and does not generate any network traffic.
-On success, the <code>remote-address</code> of the socket is updated. The <code>local-address</code> may be updated as well,
-based on the best network path to <code>remote-address</code>.</p>
-<p>When a <code>remote-address</code> is provided, the returned streams are limited to communicating with that specific peer:</p>
-<ul>
-<li><code>send</code> can only be used to send to this destination.</li>
-<li><code>receive</code> will only return datagrams sent from the provided <code>remote-address</code>.</li>
-</ul>
-<p>This method may be called multiple times on the same socket to change its association, but
-only the most recently returned pair of streams will be operational. Implementations may trap if
-the streams returned by a previous invocation haven't been dropped yet before calling <code>stream</code> again.</p>
-<p>The POSIX equivalent in pseudo-code is:</p>
-<pre><code class="language-text">if (was previously connected) {
-  connect(s, AF_UNSPEC)
-}
-if (remote_address is Some) {
-  connect(s, remote_address)
-}
-</code></pre>
-<p>Unlike in POSIX, the socket must already be explicitly bound.</p>
+<h4><a name="resolve_addresses"><code>resolve-addresses: func</code></a></h4>
+<p>Resolve an internet host name to a list of IP addresses.</p>
+<p>Unicode domain names are automatically converted to ASCII using IDNA encoding.
+If the input is an IP address string, the address is parsed and returned
+as-is without making any external requests.</p>
+<p>See the wasi-socket proposal README.md for a comparison with getaddrinfo.</p>
+<p>This function never blocks. It either immediately fails or immediately
+returns successfully with a <a href="#resolve_address_stream"><code>resolve-address-stream</code></a> that can be used
+to (asynchronously) fetch the results.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
-<li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-state</code>:             The socket is not bound.</li>
-<li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
-<li><code>remote-unreachable</code>:        The remote address is not reachable. (ECONNRESET, ENETRESET, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
-<li><code>connection-refused</code>:        The connection was refused. (ECONNREFUSED)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/connect.2.html">https://man7.org/linux/man-pages/man2/connect.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?connect">https://man.freebsd.org/cgi/man.cgi?connect</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.stream.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.stream.remote_address"><code>remote-address</code></a>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.stream.0"></a> result&lt;(own&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;, own&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.local_address"><code>[method]udp-socket.local-address: func</code></a></h4>
-<p>Get the current bound address.</p>
-<p>POSIX mentions:</p>
-<blockquote>
-<p>If the socket has not been bound to a local name, the value
-stored in the object pointed to by <code>address</code> is unspecified.</p>
-</blockquote>
-<p>WASI is stricter and requires <code>local-address</code> to return <code>invalid-state</code> when the socket hasn't been bound yet.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-state</code>: The socket is not bound to any local address.</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockname.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/getsockname.2.html">https://man7.org/linux/man-pages/man2/getsockname.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?getsockname">https://man.freebsd.org/cgi/man.cgi?getsockname</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.local_address.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.remote_address"><code>[method]udp-socket.remote-address: func</code></a></h4>
-<p>Get the address the socket is currently streaming to.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-state</code>: The socket is not streaming to a specific remote address. (ENOTCONN)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/getpeername.2.html">https://man7.org/linux/man-pages/man2/getpeername.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1">https://man.freebsd.org/cgi/man.cgi?query=getpeername&amp;sektion=2&amp;n=1</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.remote_address.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.address_family"><code>[method]udp-socket.address-family: func</code></a></h4>
-<p>Whether this is a IPv4 or IPv6 socket.</p>
-<p>Equivalent to the SO_DOMAIN socket option.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.address_family.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
-</ul>
-<h4><a name="method_udp_socket.ipv6_only"><code>[method]udp-socket.ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
-<p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
-<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_ipv6_only"><code>[method]udp-socket.set-ipv6-only: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
-<p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
-<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_unicast_hop_limit"><code>[method]udp-socket.set-unicast-hop-limit: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_unicast_hop_limit.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_unicast_hop_limit.value"><code>value</code></a>: <code>u8</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.receive_buffer_size"><code>[method]udp-socket.receive-buffer-size: func</code></a></h4>
-<p>The kernel buffer space reserved for sends/receives on this socket.</p>
-<p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
-Any other value will never cause an error, but it might be silently clamped and/or rounded.
-I.e. after setting a value, reading the same setting back may return a different value.</p>
-<p>Equivalent to the SO_RCVBUF and SO_SNDBUF socket options.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_receive_buffer_size"><code>[method]udp-socket.set-receive-buffer-size: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_receive_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_receive_buffer_size.value"><code>value</code></a>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.send_buffer_size"><code>[method]udp-socket.send-buffer-size: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.send_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_send_buffer_size"><code>[method]udp-socket.set-send-buffer-size: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_send_buffer_size.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_send_buffer_size.value"><code>value</code></a>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.subscribe"><code>[method]udp-socket.subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
-<p>Note: this function is here for WASI Preview2 only.
-It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_incoming_datagram_stream.receive"><code>[method]incoming-datagram-stream.receive: func</code></a></h4>
-<p>Receive messages on the socket.</p>
-<p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
-The returned list may contain fewer elements than requested, but never more.</p>
-<p>This function returns successfully with an empty list when either:</p>
-<ul>
-<li><code>max-results</code> is 0, or:</li>
-<li><code>max-results</code> is greater than 0, but no results are immediately available.
-This function never returns <code>error(would-block)</code>.</li>
-</ul>
-<h1>Typical errors</h1>
-<ul>
-<li><code>remote-unreachable</code>: The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
-<li><code>connection-refused</code>: The connection was refused. (ECONNREFUSED)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html</a></li>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/recv.2.html">https://man7.org/linux/man-pages/man2/recv.2.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/recvmmsg.2.html">https://man7.org/linux/man-pages/man2/recvmmsg.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom">https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom</a></li>
-<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=recv&amp;sektion=2</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_incoming_datagram_stream.receive.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
-<li><a name="method_incoming_datagram_stream.receive.max_results"><code>max-results</code></a>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_incoming_datagram_stream.receive.0"></a> result&lt;list&lt;<a href="#incoming_datagram"><a href="#incoming_datagram"><code>incoming-datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_incoming_datagram_stream.subscribe"><code>[method]incoming-datagram-stream.subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to receive again.</p>
-<p>Note: this function is here for WASI Preview2 only.
-It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_incoming_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_incoming_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_outgoing_datagram_stream.check_send"><code>[method]outgoing-datagram-stream.check-send: func</code></a></h4>
-<p>Check readiness for sending. This function never blocks.</p>
-<p>Returns the number of datagrams permitted for the next call to <code>send</code>,
-or an error. Calling <code>send</code> with more datagrams than this function has
-permitted will trap.</p>
-<p>When this function returns ok(0), the <code>subscribe</code> pollable will
-become ready when this function will report at least ok(1), or an
-error.</p>
-<p>Never returns <code>would-block</code>.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.check_send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.check_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_outgoing_datagram_stream.send"><code>[method]outgoing-datagram-stream.send: func</code></a></h4>
-<p>Send messages on the socket.</p>
-<p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
-returns how many messages were actually sent (or queued for sending). This function never
-returns <code>error(would-block)</code>. If none of the datagrams were able to be sent, <code>ok(0)</code> is returned.</p>
-<p>This function semantically behaves the same as iterating the <code>datagrams</code> list and sequentially
-sending each individual datagram until either the end of the list has been reached or the first error occurred.
-If at least one datagram has been sent successfully, this function never returns an error.</p>
-<p>If the input list is empty, the function returns <code>ok(0)</code>.</p>
-<p>Each call to <code>send</code> must be permitted by a preceding <code>check-send</code>. Implementations must trap if
-either <code>check-send</code> was not called or <code>datagrams</code> contains more items than <code>check-send</code> permitted.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-argument</code>:        The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:        <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
-<li><code>invalid-argument</code>:        The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-argument</code>:        The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
-<li><code>invalid-argument</code>:        The socket is in &quot;connected&quot; mode and <code>remote-address</code> is <code>some</code> value that does not match the address passed to <code>stream</code>. (EISCONN)</li>
-<li><code>invalid-argument</code>:        The socket is not &quot;connected&quot; and no value for <code>remote-address</code> was provided. (EDESTADDRREQ)</li>
-<li><code>remote-unreachable</code>:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
-<li><code>connection-refused</code>:      The connection was refused. (ECONNREFUSED)</li>
-<li><code>datagram-too-large</code>:      The datagram is too large. (EMSGSIZE)</li>
-</ul>
-<h1>References</h1>
-<ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html</a></li>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/send.2.html">https://man7.org/linux/man-pages/man2/send.2.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/sendmmsg.2.html">https://man7.org/linux/man-pages/man2/sendmmsg.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=send&amp;sektion=2</a></li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.send.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
-<li><a name="method_outgoing_datagram_stream.send.datagrams"><code>datagrams</code></a>: list&lt;<a href="#outgoing_datagram"><a href="#outgoing_datagram"><code>outgoing-datagram</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_outgoing_datagram_stream.subscribe"><code>[method]outgoing-datagram-stream.subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to send again.</p>
-<p>Note: this function is here for WASI Preview2 only.
-It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="network"><code>type network</code></a></h4>
-<p><a href="#network"><a href="#network"><code>network</code></a></a></p>
-<p>
-#### <a name="error_code">`type error-code`</a>
-[`error-code`](#error_code)
-<p>
-#### <a name="ip_address_family">`type ip-address-family`</a>
-[`ip-address-family`](#ip_address_family)
-<p>
-#### <a name="udp_socket">`type udp-socket`</a>
-[`udp-socket`](#udp_socket)
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="create_udp_socket"><code>create-udp-socket: func</code></a></h4>
-<p>Create a new UDP socket.</p>
-<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
-<p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code> is called,
-the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
-<p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>not-supported</code>:     The specified <code>address-family</code> is not supported. (EAFNOSUPPORT)</li>
-<li><code>new-socket-limit</code>:  The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
+<li><code>invalid-argument</code>: <code>name</code> is a syntactically invalid domain name or IP address.</li>
 </ul>
 <h1>References:</h1>
 <ul>
-<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html</a></li>
-<li><a href="https://man7.org/linux/man-pages/man2/socket.2.html">https://man7.org/linux/man-pages/man2/socket.2.html</a></li>
-<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw">https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw</a></li>
-<li><a href="https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2">https://man.freebsd.org/cgi/man.cgi?query=socket&amp;sektion=2</a></li>
+<li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html</a></li>
+<li><a href="https://man7.org/linux/man-pages/man3/getaddrinfo.3.html">https://man7.org/linux/man-pages/man3/getaddrinfo.3.html</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo">https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo</a></li>
+<li><a href="https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3">https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&amp;sektion=3</a></li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="create_udp_socket.address_family"><code>address-family</code></a>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+<li><a name="resolve_addresses.network"><a href="#network"><code>network</code></a></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a name="resolve_addresses.name"><code>name</code></a>: <code>string</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="resolve_addresses.0"></a> result&lt;own&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_resolve_address_stream.resolve_next_address"><code>[method]resolve-address-stream.resolve-next-address: func</code></a></h4>
+<p>Returns the next address from the resolver.</p>
+<p>This function should be called multiple times. On each call, it will
+return the next address in connection order preference. If all
+addresses have been exhausted, this function returns <code>none</code>.</p>
+<p>This function never returns IPv4-mapped IPv6 addresses.</p>
+<h1>Typical errors</h1>
+<ul>
+<li><code>name-unresolvable</code>:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)</li>
+<li><code>temporary-resolver-failure</code>: A temporary failure in name resolution occurred. (EAI_AGAIN)</li>
+<li><code>permanent-resolver-failure</code>: A permanent failure in name resolution occurred. (EAI_FAIL)</li>
+<li><code>would-block</code>:                A result is not available yet. (EWOULDBLOCK, EAGAIN)</li>
+</ul>
+<h5>Params</h5>
+<ul>
+<li><a name="method_resolve_address_stream.resolve_next_address.self"><code>self</code></a>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_resolve_address_stream.resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h4><a name="method_resolve_address_stream.subscribe"><code>[method]resolve-address-stream.subscribe: func</code></a></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
+<p>Note: this function is here for WASI Preview2 only.
+It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_resolve_address_stream.subscribe.self"><code>self</code></a>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_resolve_address_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:random_random_0.2.0_rc_2023_11_10">Import interface wasi:random/random@0.2.0-rc-2023-11-10</a></h2>
 <p>WASI Random is a random data API.</p>
@@ -2869,138 +3039,4 @@ protection.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
-</ul>
-<h2><a name="wasi:cli_environment_0.2.0_rc_2023_11_10">Import interface wasi:cli/environment@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Functions</h3>
-<h4><a name="get_environment"><code>get-environment: func</code></a></h4>
-<p>Get the POSIX-style environment variables.</p>
-<p>Each environment variable is provided as a pair of string variable names
-and string value.</p>
-<p>Morally, these are a value import, but until value imports are available
-in the component model, this import function should return the same
-values each time it is called.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_environment.0"></a> list&lt;(<code>string</code>, <code>string</code>)&gt;</li>
-</ul>
-<h4><a name="get_arguments"><code>get-arguments: func</code></a></h4>
-<p>Get the POSIX-style arguments to the program.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_arguments.0"></a> list&lt;<code>string</code>&gt;</li>
-</ul>
-<h4><a name="initial_cwd"><code>initial-cwd: func</code></a></h4>
-<p>Return a path that programs should use as their initial current working
-directory, interpreting <code>.</code> as shorthand for this.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_exit_0.2.0_rc_2023_11_10">Import interface wasi:cli/exit@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Functions</h3>
-<h4><a name="exit"><code>exit: func</code></a></h4>
-<p>Exit the current instance and any linked instances.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="exit.status"><code>status</code></a>: result</li>
-</ul>
-<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdin@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="input_stream"><code>type input-stream</code></a></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stdin"><code>get-stdin: func</code></a></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdout@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="output_stream"><code>type output-stream</code></a></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stdout"><code>get-stdout: func</code></a></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/stderr@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="output_stream"><code>type output-stream</code></a></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stderr"><code>get-stderr: func</code></a></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="terminal_input"><code>resource terminal-input</code></a></h4>
-<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-11-10</a></h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="terminal_output"><code>resource terminal-output</code></a></h4>
-<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2023-11-10</a></h2>
-<p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
-link-time authority.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="terminal_input"><code>type terminal-input</code></a></h4>
-<p><a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_terminal_stdin"><code>get-terminal-stdin: func</code></a></h4>
-<p>If stdin is connected to a terminal, return a <a href="#terminal_input"><code>terminal-input</code></a> handle
-allowing further interaction with it.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_terminal_stdin.0"></a> option&lt;own&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;&gt;</li>
-</ul>
-<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2023-11-10</a></h2>
-<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
-link-time authority.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
-<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_terminal_stdout"><code>get-terminal-stdout: func</code></a></h4>
-<p>If stdout is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
-allowing further interaction with it.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_terminal_stdout.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
-</ul>
-<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2023-11-10</a></h2>
-<p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
-link-time authority.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="terminal_output"><code>type terminal-output</code></a></h4>
-<p><a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_terminal_stderr"><code>get-terminal-stderr: func</code></a></h4>
-<p>If stderr is connected to a terminal, return a <a href="#terminal_output"><code>terminal-output</code></a> handle
-allowing further interaction with it.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_terminal_stderr.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
 </ul>
