@@ -2,19 +2,19 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:cli_environment_0.2.0_rc_2023_11_10"><code>wasi:cli/environment@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_exit_0.2.0_rc_2023_11_10"><code>wasi:cli/exit@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:cli_environment_0.2.0_rc_2023_12_05"><code>wasi:cli/environment@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_exit_0.2.0_rc_2023_12_05"><code>wasi:cli/exit@0.2.0-rc-2023-12-05</code></a></li>
 <li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_11_10"><code>wasi:cli/stdin@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_11_10"><code>wasi:cli/stdout@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_11_10"><code>wasi:cli/stderr@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_input_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-input@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_output_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-output@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stdin_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stdin@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stdout_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stdout@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stderr_0.2.0_rc_2023_11_10"><code>wasi:cli/terminal-stderr@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/stdin@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/stdout@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/stderr@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_input_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-input@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_output_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-output@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stdin@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stdout@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stderr@0.2.0-rc-2023-12-05</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:filesystem_types_0.2.0_rc_2023_11_10"><code>wasi:filesystem/types@0.2.0-rc-2023-11-10</code></a></li>
@@ -32,7 +32,7 @@
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:cli_environment_0.2.0_rc_2023_11_10">Import interface wasi:cli/environment@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_environment_0.2.0_rc_2023_12_05">Import interface wasi:cli/environment@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_environment"><code>get-environment: func</code></a></h4>
@@ -59,7 +59,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_exit_0.2.0_rc_2023_11_10">Import interface wasi:cli/exit@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_exit_0.2.0_rc_2023_12_05">Import interface wasi:cli/exit@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="exit"><code>exit: func</code></a></h4>
@@ -469,7 +469,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdin@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdin@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -482,7 +482,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/stdout@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdout@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -495,7 +495,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/stderr@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/stderr@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -508,17 +508,17 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="terminal_input"><code>resource terminal-input</code></a></h4>
 <p>The input side of a terminal.</p>
-<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-12-05</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="terminal_output"><code>resource terminal-output</code></a></h4>
 <p>The output side of a terminal.</p>
-<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2023-12-05</a></h2>
 <p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
 link-time authority.</p>
 <hr />
@@ -535,7 +535,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a name="get_terminal_stdin.0"></a> option&lt;own&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2023-12-05</a></h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
 link-time authority.</p>
 <hr />
@@ -552,7 +552,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a name="get_terminal_stdout.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2023_11_10">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2023-12-05</a></h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
 link-time authority.</p>
 <hr />
