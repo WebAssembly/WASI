@@ -49,6 +49,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Observe][wasi-observe]    | Chris Dickinson                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
 | [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
@@ -95,6 +96,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-logging]: https://github.com/WebAssembly/wasi-logging
 [wasi-message-queue]: https://github.com/WebAssembly/wasi-message-queue
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
+[wasi-observe]: https://github.com/dylibso/wasi-observe
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
