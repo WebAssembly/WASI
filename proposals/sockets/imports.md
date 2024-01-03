@@ -1192,8 +1192,9 @@ implicitly bind the socket.</p>
 </ul>
 <h1>Implementors note</h1>
 <p>When binding to a non-zero port, this bind operation shouldn't be affected by the TIME_WAIT
-state of a recently closed socket on the same local address (i.e. the SO_REUSEADDR socket
-option should be set implicitly on platforms that require it).</p>
+state of a recently closed socket on the same local address. In practice this means that the SO_REUSEADDR
+socket option should be set implicitly on all platforms, except on Windows where this is the default behavior
+and SO_REUSEADDR performs something different entirely.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
