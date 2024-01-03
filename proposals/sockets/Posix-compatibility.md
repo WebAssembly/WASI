@@ -156,6 +156,7 @@ Legend:
 | ✅ | TCP_KEEPIDLE <br/><sub>TCP_KEEPALIVE on MacOS</sub> | [`tcp-socket::(set-)keep-alive-idle-time`][tcp]                               | linux, windows, macos, freebsd, jvm, .net, libuv, go, nginx, curl |
 | ✅ | TCP_KEEPINTVL                   | [`tcp-socket::(set-)keep-alive-interval`][tcp]                                                    | linux, windows, macos, freebsd, jvm, .net, libuv, go, nginx, curl |
 | ✅ | TCP_KEEPCNT                     | [`tcp-socket::(set-)keep-alive-count`][tcp]                                                       | linux, windows, macos, freebsd, jvm, .net, libuv, nginx |
+| ✅ | SO_REUSEADDR for TCP            | Enabled by default. See [`tcp-socket::bind`][tcp]                              | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, nginx, curl, exim |
 | ⛔ | SO_ERROR                        | Not necessary. WIT has (or will have) native support for asynchronous results. | posix, linux, windows, macos, freebsd, jvm, .net, rust, libuv, go, openssl, nginx, curl, msquic |
 | ⛔ | SO_TYPE                         | Can be inferred from the socket resource type.                                 | posix, linux, windows, macos, freebsd, jvm, .net, go, openssl, nginx, curl, exim |
 | ⛔ | SO_PROTOCOL <br/><sub>SO_PROTOCOL_INFO on Windows</sub> | Can be inferred from the socket resource type.         | linux, windows, freebsd, .net, exim |
@@ -182,7 +183,7 @@ Legend:
 | ❔ | IPV6_MTU_DISCOVER               | [#79][79]                                | linux, windows, openssl, nginx, curl, msquic |
 | ❔ | TCP_NODELAY                     | [#75][75]                                | posix, linux, windows, macos, freebsd, jvm, .net, rust, libuv, go, openssl, nginx, curl, exim |
 | ❔ | TCP_CORK <br/><sub>TCP_NOPUSH on MacOS & FreeBSD</sub> | [#75][75]         | linux, macos, freebsd, nginx, exim |
-| ❔ | SO_REUSEADDR                    | [#74][74]                                | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, nginx, curl, exim |
+| ❔ | SO_REUSEADDR for UDP            | [#74][74]                                | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, nginx, curl, exim |
 | ❔ | SO_EXCLUSIVEADDRUSE             | [#74][74]                                | windows |
 | ❔ | SO_RANDOMIZE_PORT               | [#74][74]                                | windows |
 | ❔ | SO_RANDOMPORT                   | [#74][74]                                | macos |
