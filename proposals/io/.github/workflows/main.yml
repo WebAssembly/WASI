@@ -10,5 +10,5 @@ jobs:
     name: Check ABI files are up-to-date
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: WebAssembly/wit-abi-up-to-date@v16
+    - uses: actions/checkout@v4
+    - uses: WebAssembly/wit-abi-up-to-date@v17
