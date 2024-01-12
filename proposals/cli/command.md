@@ -206,6 +206,10 @@ polled for using <code>wasi:io/poll</code>.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
 <p>Perform a non-blocking read from the stream.</p>
+<p>When the source of a <code>read</code> is binary data, the bytes from the source
+are returned verbatim. When the source of a <code>read</code> is known to the
+implementation to be text, bytes containing the UTF-8 encoding of the
+text are returned.</p>
 <p>This function returns a list of bytes containing the read data,
 when successful. The returned list will contain up to <code>len</code> bytes;
 it may return fewer than requested, but not more. The list is
@@ -301,6 +305,11 @@ error.</p>
 </ul>
 <h4><a name="method_output_stream.write"><code>[method]output-stream.write: func</code></a></h4>
 <p>Perform a write. This function never blocks.</p>
+<p>When the destination of a <code>write</code> is binary data, the bytes from
+<code>contents</code> are written verbatim. When the destination of a <code>write</code> is
+known to the implementation to be text, the bytes of <code>contents</code> are
+transcoded from UTF-8 into the encoding of the destination and then
+written.</p>
 <p>Precondition: check-write gave permit of Ok(n) and contents has a
 length of less than or equal to n. Otherwise, this function will trap.</p>
 <p>returns Err(closed) without writing if the stream has closed since
@@ -514,11 +523,19 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-12-05</a></h2>
+<p>Terminal input.</p>
+<p>In the future, this may include functions for disabling echoing,
+disabling input buffering so that keyboard events are sent through
+immediately, querying supported features, and so on.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="terminal_input"><code>resource terminal-input</code></a></h4>
 <p>The input side of a terminal.</p>
 <h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-12-05</a></h2>
+<p>Terminal output.</p>
+<p>In the future, this may include functions for querying the terminal
+size, being notified of terminal size changes, querying supported
+features, and so on.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="terminal_output"><code>resource terminal-output</code></a></h4>
@@ -1659,18 +1676,20 @@ combined with a couple of errors that are always possible:</p>
 </li>
 <li>
 <p><a name="error_code.connection_refused"><code>connection-refused</code></a></p>
-<p>The connection was forcefully rejected
+<p>The TCP connection was forcefully rejected
 </li>
 <li>
 <p><a name="error_code.connection_reset"><code>connection-reset</code></a></p>
-<p>The connection was reset.
+<p>The TCP connection was reset.
 </li>
 <li>
 <p><a name="error_code.connection_aborted"><code>connection-aborted</code></a></p>
-<p>A connection was aborted.
+<p>A TCP connection was aborted.
 </li>
 <li>
 <p><a name="error_code.datagram_too_large"><code>datagram-too-large</code></a></p>
+<p>The size of a datagram sent to a UDP socket exceeded the maximum
+supported size.
 </li>
 <li>
 <p><a name="error_code.name_unresolvable"><code>name-unresolvable</code></a></p>
@@ -1726,16 +1745,34 @@ combined with a couple of errors that are always possible:</p>
 <h4><a name="ipv4_socket_address"><code>record ipv4-socket-address</code></a></h4>
 <h5>Record Fields</h5>
 <ul>
-<li><a name="ipv4_socket_address.port"><code>port</code></a>: <code>u16</code></li>
-<li><a name="ipv4_socket_address.address"><code>address</code></a>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></li>
+<li>
+<p><a name="ipv4_socket_address.port"><code>port</code></a>: <code>u16</code></p>
+<p>sin_port
+</li>
+<li>
+<p><a name="ipv4_socket_address.address"><code>address</code></a>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></p>
+<p>sin_addr
+</li>
 </ul>
 <h4><a name="ipv6_socket_address"><code>record ipv6-socket-address</code></a></h4>
 <h5>Record Fields</h5>
 <ul>
-<li><a name="ipv6_socket_address.port"><code>port</code></a>: <code>u16</code></li>
-<li><a name="ipv6_socket_address.flow_info"><code>flow-info</code></a>: <code>u32</code></li>
-<li><a name="ipv6_socket_address.address"><code>address</code></a>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></li>
-<li><a name="ipv6_socket_address.scope_id"><code>scope-id</code></a>: <code>u32</code></li>
+<li>
+<p><a name="ipv6_socket_address.port"><code>port</code></a>: <code>u16</code></p>
+<p>sin6_port
+</li>
+<li>
+<p><a name="ipv6_socket_address.flow_info"><code>flow-info</code></a>: <code>u32</code></p>
+<p>sin6_flowinfo
+</li>
+<li>
+<p><a name="ipv6_socket_address.address"><code>address</code></a>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></p>
+<p>sin6_addr
+</li>
+<li>
+<p><a name="ipv6_socket_address.scope_id"><code>scope-id</code></a>: <code>u32</code></p>
+<p>sin6_scope_id
+</li>
 </ul>
 <h4><a name="ip_socket_address"><code>variant ip-socket-address</code></a></h4>
 <h5>Variant Cases</h5>
@@ -2313,6 +2350,11 @@ implicitly bind the socket.</p>
 <li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
+<h1>Implementors note</h1>
+<p>When binding to a non-zero port, this bind operation shouldn't be affected by the TIME_WAIT
+state of a recently closed socket on the same local address. In practice this means that the SO_REUSEADDR
+socket option should be set implicitly on all platforms, except on Windows where this is the default behavior
+and SO_REUSEADDR performs something different entirely.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
