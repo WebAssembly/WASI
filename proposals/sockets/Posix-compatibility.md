@@ -139,6 +139,7 @@ Additionally, most columns have been populated semi-automatically by grepping th
 
 Legend:
 - ✅ = Included in proposal.
+- ⚠️ = Partially supported.
 - ⛔ = Consciously decided _not_ to include in WASI. See notes for explanation.
 - ❔ = Not included (yet), for no particular reason.
 
@@ -147,7 +148,6 @@ Legend:
 |----| ---------------------------------|-----------------------------------------|---------------------|
 | ✅ | SO_DOMAIN <br/><sub>SO_PROTOCOL_INFO on Windows</sub> | [`tcp-socket::address-family`][tcp]<br/>[`udp-socket::address-family`][udp] | linux, windows, freebsd, .net |
 | ✅ | SO_ACCEPTCONN                   | [`tcp-socket::is-listening`][tcp]                                                                 | posix, linux, windows, macos, freebsd, .net |
-| ✅ | IPV6_V6ONLY                     | [`tcp-socket::(set-)ipv6-only`][tcp]<br/>[`udp-socket::(set-)ipv6-only`][udp]                     | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, curl, msquic, exim |
 | ✅ | IP_TTL                          | [`tcp-socket::(set-)hop-limit`][tcp]<br/>[`udp-socket::(set-)unicast-hop-limit`][udp]             | linux, windows, macos, freebsd, jvm, .net, rust, libuv |
 | ✅ | IPV6_UNICAST_HOPS               | [`tcp-socket::(set-)hop-limit`][tcp]<br/>[`udp-socket::(set-)unicast-hop-limit`][udp]             | posix, linux, windows, macos, freebsd, jvm, .net, libuv |
 | ✅ | SO_RCVBUF                       | [`tcp-socket::(set-)receive-buffer-size`][tcp]<br/>[`udp-socket::(set-)receive-buffer-size`][udp] | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, nginx, msquic |
@@ -157,6 +157,7 @@ Legend:
 | ✅ | TCP_KEEPINTVL                   | [`tcp-socket::(set-)keep-alive-interval`][tcp]                                                    | linux, windows, macos, freebsd, jvm, .net, libuv, go, nginx, curl |
 | ✅ | TCP_KEEPCNT                     | [`tcp-socket::(set-)keep-alive-count`][tcp]                                                       | linux, windows, macos, freebsd, jvm, .net, libuv, nginx |
 | ✅ | SO_REUSEADDR for TCP            | Enabled by default. See [`tcp-socket::bind`][tcp]                              | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, nginx, curl, exim |
+| ⚠️ | IPV6_V6ONLY                     | In WASI this always `true`. [#1][1]                                            | posix, linux, windows, macos, freebsd, jvm, .net, libuv, go, openssl, curl, msquic, exim |
 | ⛔ | SO_ERROR                        | Not necessary. WIT has (or will have) native support for asynchronous results. | posix, linux, windows, macos, freebsd, jvm, .net, rust, libuv, go, openssl, nginx, curl, msquic |
 | ⛔ | SO_TYPE                         | Can be inferred from the socket resource type.                                 | posix, linux, windows, macos, freebsd, jvm, .net, go, openssl, nginx, curl, exim |
 | ⛔ | SO_PROTOCOL <br/><sub>SO_PROTOCOL_INFO on Windows</sub> | Can be inferred from the socket resource type.         | linux, windows, freebsd, .net, exim |
@@ -586,6 +587,7 @@ Legend:
 | ❔ | TCP_USE_CMP_ACKS                |                                          | freebsd |
 | ❔ | TCP_USER_LOG                    |                                          | freebsd |
 
+[1]: https://github.com/WebAssembly/wasi-sockets/issues/1
 [17]: https://github.com/WebAssembly/wasi-sockets/issues/17
 [34]: https://github.com/WebAssembly/wasi-sockets/issues/34
 [73]: https://github.com/WebAssembly/wasi-sockets/issues/73
