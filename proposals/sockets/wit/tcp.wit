@@ -304,6 +304,9 @@ interface tcp {
         ///   associated with this socket will be closed and a FIN packet will be sent.
         /// - `both`: Same effect as `receive` & `send` combined.
         ///
+        /// This function is idempotent. Shutting a down a direction more than once
+        /// has no effect and returns `ok`.
+        ///
         /// The shutdown function does not close (drop) the socket.
         ///
         /// # Typical errors
