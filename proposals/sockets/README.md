@@ -218,19 +218,25 @@ stateDiagram-v2
     TCP_BOUND --> TCP_LISTEN: startListen() [WAIT]
     TCP_LISTEN --> TCP_LISTEN_READY: permission granted [RESOLVED]
     TCP_LISTEN --> TCP_BOUND: permission denied [RESOLVED]
-    TCP_LISTEN_READY --> TCP_LISTENER: finishListen() [RESOLVED]
+    TCP_LISTEN_READY --> TCP_LISTENER: finishListen() [WAIT]
     TCP_LISTEN_READY --> TCP_ERROR: finishListen() error [RESOLVED]
-    TCP_CONNECTION --> TCP_CLOSED: shutdown() [RESOLVED]
-    TCP_LISTENER --> TCP_CLOSED: shutdown() [RESOLVED]
-
-    
+    TCP_CONNECTION --> TCP_CONNECTION: shutdown() [RESOLVED]
+    TCP_CONNECTION --> TCP_ERROR: socket error [RESOLVED]
+    TCP_CONNECTION --> TCP_CLOSED: socket close [RESOLVED]
+    TCP_LISTENER --> TCP_ERROR: socket error [RESOLVED]
+    TCP_LISTENER --> TCP_CLOSED: socket close [RESOLVED]
 ```
 
 where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state, therefore always being recoverable by not transitioning the socket into the error state.
 
 The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
 
-Once the TCP state machine is in the `TCP_CONNECTION` or `TCP_LISTENER` state, the pollable state is instantaneously updated to the state of the underlying socket IO - `[RESOLVED]` if there is pending IO, and `[UNRESOLVED]` otherwise. This means it is possible for the `finishConnect()` call to instantaneously transition the pollable to resolved and then back to unresolved if there is no data ready on the underlying socket.
+In the `TCP_CONECTION` state, data IO on the socket streams do not affect the pollable state on the socket resource.
+
+In the `TCP_LISTENER` state, the pollable state is set to the state of the underlying socket IO - `[RESOLVED]` if there is a pending backlog, and `[WAIT]` otherwise. This means it is possible for the `finishListen()` call to instantaneously transition the pollable to resolved.
+
+The `TCP_CONNECT_READY` and `TCP_LISTEN_READY` states should eagerly handle socket connection and socket listen calls respectively, so that
+the finish calls represent completion of the asynchronous operation. Implementations may perform blocking connect and listen in the `connectFinish` and `listenFinish` calls, but this is discouraged.
 
 The TCP socket can be dropped in all states, performing the necessary cleanup. There are no traps associated with any state transitions.
 
