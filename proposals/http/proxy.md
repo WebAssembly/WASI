@@ -10,18 +10,18 @@ outgoing HTTP requests.</p>
 <li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/stdout@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/stderr@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/stdin@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2024_01_16"><code>wasi:cli/stdout@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2024_01_16"><code>wasi:cli/stderr@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2024_01_16"><code>wasi:cli/stdin@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:http_types_0.2.0_rc_2023_12_05"><code>wasi:http/types@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:http_outgoing_handler_0.2.0_rc_2023_12_05"><code>wasi:http/outgoing-handler@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:http_types_0.2.0_rc_2024_01_16"><code>wasi:http/types@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:http_outgoing_handler_0.2.0_rc_2024_01_16"><code>wasi:http/outgoing-handler@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi:http_incoming_handler_0.2.0_rc_2023_12_05"><code>wasi:http/incoming-handler@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:http_incoming_handler_0.2.0_rc_2024_01_16"><code>wasi:http/incoming-handler@0.2.0-rc-2024-01-16</code></a></li>
 </ul>
 </li>
 </ul>
@@ -191,6 +191,10 @@ polled for using <code>wasi:io/poll</code>.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream.read"><code>[method]input-stream.read: func</code></a></h4>
 <p>Perform a non-blocking read from the stream.</p>
+<p>When the source of a <code>read</code> is binary data, the bytes from the source
+are returned verbatim. When the source of a <code>read</code> is known to the
+implementation to be text, bytes containing the UTF-8 encoding of the
+text are returned.</p>
 <p>This function returns a list of bytes containing the read data,
 when successful. The returned list will contain up to <code>len</code> bytes;
 it may return fewer than requested, but not more. The list is
@@ -286,6 +290,11 @@ error.</p>
 </ul>
 <h4><a name="method_output_stream.write"><code>[method]output-stream.write: func</code></a></h4>
 <p>Perform a write. This function never blocks.</p>
+<p>When the destination of a <code>write</code> is binary data, the bytes from
+<code>contents</code> are written verbatim. When the destination of a <code>write</code> is
+known to the implementation to be text, the bytes of <code>contents</code> are
+transcoded from UTF-8 into the encoding of the destination and then
+written.</p>
 <p>Precondition: check-write gave permit of Ok(n) and contents has a
 length of less than or equal to n. Otherwise, this function will trap.</p>
 <p>returns Err(closed) without writing if the stream has closed since
@@ -459,7 +468,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdout@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stdout_0.2.0_rc_2024_01_16">Import interface wasi:cli/stdout@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -472,7 +481,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/stderr@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stderr_0.2.0_rc_2024_01_16">Import interface wasi:cli/stderr@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -485,7 +494,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdin@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stdin_0.2.0_rc_2024_01_16">Import interface wasi:cli/stdin@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -559,7 +568,7 @@ occured.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:http_types_0.2.0_rc_2023_12_05">Import interface wasi:http/types@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:http_types_0.2.0_rc_2024_01_16">Import interface wasi:http/types@0.2.0-rc-2024-01-16</a></h2>
 <p>This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
@@ -1445,7 +1454,7 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:http_outgoing_handler_0.2.0_rc_2023_12_05">Import interface wasi:http/outgoing-handler@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:http_outgoing_handler_0.2.0_rc_2024_01_16">Import interface wasi:http/outgoing-handler@0.2.0-rc-2024-01-16</a></h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
 <hr />
@@ -1523,7 +1532,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi:http_incoming_handler_0.2.0_rc_2023_12_05">Export interface wasi:http/incoming-handler@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:http_incoming_handler_0.2.0_rc_2024_01_16">Export interface wasi:http/incoming-handler@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="incoming_request"><code>type incoming-request</code></a></h4>
