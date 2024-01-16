@@ -1195,8 +1195,6 @@ occured.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
-<p>When a socket is not explicitly bound, the first invocation to a listen or connect operation will
-implicitly bind the socket.</p>
 <p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
@@ -1251,17 +1249,8 @@ and SO_REUSEADDR performs something different entirely.</p>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<p>POSIX mentions:</p>
-<blockquote>
-<p>If connect() fails, the state of the socket is unspecified. Conforming applications should
-close the file descriptor and create a new socket before attempting to reconnect.</p>
-</blockquote>
-<p>WASI prescribes the following behavior:</p>
-<ul>
-<li>If <code>connect</code> fails because an input/state validation error, the socket should remain usable.</li>
-<li>If a connection was actually attempted but failed, the socket should become unusable for further network communication.
-Besides <code>drop</code>, any method after such a failure may return an error.</li>
-</ul>
+<p>After a failed connection attempt, the only valid action left is to
+<code>drop</code> the socket. A single socket can not be used to connect more than once.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
@@ -1683,13 +1672,16 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h4><a name="method_tcp_socket.shutdown"><code>[method]tcp-socket.shutdown: func</code></a></h4>
 <p>Initiate a graceful shutdown.</p>
 <ul>
-<li>receive: the socket is not expecting to receive any more data from the peer. All subsequent read
-operations on the <a href="#input_stream"><code>input-stream</code></a> associated with this socket will return an End Of Stream indication.
-Any data still in the receive queue at time of calling <code>shutdown</code> will be discarded.</li>
-<li>send: the socket is not expecting to send any more data to the peer. All subsequent write
-operations on the <a href="#output_stream"><code>output-stream</code></a> associated with this socket will return an error.</li>
-<li>both: same effect as receive &amp; send combined.</li>
+<li><code>receive</code>: The socket is not expecting to receive any data from
+the peer. The <a href="#input_stream"><code>input-stream</code></a> associated with this socket will be
+closed. Any data still in the receive queue at time of calling
+this method will be discarded.</li>
+<li><code>send</code>: The socket has no more data to send to the peer. The <a href="#output_stream"><code>output-stream</code></a>
+associated with this socket will be closed and a FIN packet will be sent.</li>
+<li><code>both</code>: Same effect as <code>receive</code> &amp; <code>send</code> combined.</li>
 </ul>
+<p>This function is idempotent. Shutting a down a direction more than once
+has no effect and returns <code>ok</code>.</p>
 <p>The shutdown function does not close (drop) the socket.</p>
 <h1>Typical errors</h1>
 <ul>
@@ -1733,7 +1725,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.
 On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>listen</code>/<code>connect</code>
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
