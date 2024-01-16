@@ -1,4 +1,4 @@
-package wasi:http@0.2.0-rc-2023-12-05;
+package wasi:http@0.2.0-rc-2024-01-16;
 
 /// The `wasi:http/proxy` world captures a widely-implementable intersection of
 /// hosts that includes HTTP forward and reverse proxies. Components targeting
