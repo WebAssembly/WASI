@@ -226,9 +226,9 @@ stateDiagram-v2
     
 ```
 
-where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state (therefore always being recoverable).
+where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state, therefore always being recoverable by not transitioning the socket into the error state.
 
-The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are recoverable if the permissions dynamically change.
+The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
 
 Once the TCP state machine is in the `TCP_CONNECTION` or `TCP_LISTENER` state, the pollable state is instantaneously updated to the state of the underlying socket IO - `[RESOLVED]` if there is pending IO, and `[UNRESOLVED]` otherwise. This means it is possible for the `finishConnect()` call to instantaneously transition the pollable to resolved and then back to unresolved if there is no data ready on the underlying socket.
 
