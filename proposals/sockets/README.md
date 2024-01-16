@@ -195,6 +195,44 @@ The most likely contenders for permission prompt interception are:
 
 Now, again, this proposal does not specify if/how permission prompts should be implemented. However, it does at least facilitate the ability for runtimes to do so. Since waiting for user input takes an unknowable amount of time, the operations listed above have been made asynchronous. POSIX-compatibility layers can simply synchronously block on the returned `future`s.
 
+### TCP State Machine
+
+The TCP valid states can be described by the following diagram:
+
+```mermaid
+stateDiagram-v2
+    [*] --> TCP_INIT: tcpSocketCreate() [RESOLVED]
+    [*] --> TCP_CONNECTION: accept() [RESOLVED]
+    TCP_INIT --> TCP_BIND: startBind() [WAIT]
+    TCP_BIND --> TCP_BIND_READY: permission granted [RESOLVED]
+    TCP_BIND --> TCP_INIT: permission denied [RESOLVED]
+    TCP_BIND_READY --> TCP_BOUND: finishBind() [RESOLVED]
+    TCP_BIND_READY --> TCP_ERROR: finishBind() error [RESOLVED]
+    TCP_INIT --> TCP_CONNECT: startConnect() [WAIT]
+    TCP_BOUND --> TCP_CONNECT: startConnect() [WAIT]
+    TCP_CONNECT --> TCP_CONNECT_READY: permission granted [RESOLVED]
+    TCP_CONNECT --> TCP_ERROR: permission denied [RESOLVED]
+    TCP_CONNECT_READY --> TCP_CONNECTION: finishConnect() [RESOLVED]
+    TCP_CONNECT_READY --> TCP_ERROR: finishConnect() error [RESOLVED]
+    TCP_BOUND --> TCP_LISTEN: startListen() [WAIT]
+    TCP_LISTEN --> TCP_LISTEN_READY: permission granted [RESOLVED]
+    TCP_LISTEN --> TCP_ERROR: permission denied [RESOLVED]
+    TCP_LISTEN_READY --> TCP_LISTENER: finishListen() [RESOLVED]
+    TCP_LISTEN_READY --> TCP_ERROR: finishListen() error [RESOLVED]
+    TCP_CONNECTION --> TCP_CLOSED: shutdown() [RESOLVED]
+    TCP_LISTENER --> TCP_CLOSED: shutdown() [RESOLVED]
+
+    
+```
+
+where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state`.
+
+The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription.
+
+Once the TCP state machine is in the `TCP_CONNECTION` or `TCP_LISTENER` state, the pollable state is instantaneously updated to the state of the underlying socket IO - `[RESOLVED]` if there is pending IO, and `[UNRESOLVED]` otherwise. This means it is possible for the `finishConnect()` call to instantaneously transition the pollable to resolved and then back to unresolved if there is no data ready on the underlying socket.
+
+The TCP socket can be dropped in all states, performing the necessary cleanup. There are no traps associated with any state transitions.
+
 ### Considered alternatives
 
 [This section is not required if you already covered considered alternatives in the design discussion above.]
