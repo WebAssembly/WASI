@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/network@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/instance-network@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2024_01_16"><code>wasi:sockets/network@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2024_01_16"><code>wasi:sockets/instance-network@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2024_01_16"><code>wasi:sockets/udp@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2024_01_16"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2024_01_16"><code>wasi:sockets/tcp@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2024_01_16"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2024_01_16"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2024-01-16</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:sockets_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/network@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_network_0.2.0_rc_2024_01_16">Import interface wasi:sockets/network@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>resource network</code></a></h4>
@@ -209,7 +209,7 @@ supported size.
 <li><a name="ip_socket_address.ipv4"><code>ipv4</code></a>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
 <li><a name="ip_socket_address.ipv6"><code>ipv6</code></a>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
 </ul>
-<h2><a name="wasi:sockets_instance_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/instance-network@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_instance_network_0.2.0_rc_2024_01_16">Import interface wasi:sockets/instance-network@0.2.0-rc-2024-01-16</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -274,7 +274,7 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_udp_0.2.0_rc_2024_01_16">Import interface wasi:sockets/udp@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -687,7 +687,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2024_01_16">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -1144,7 +1144,7 @@ occured.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_tcp_0.2.0_rc_2024_01_16">Import interface wasi:sockets/tcp@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -1703,7 +1703,7 @@ has no effect and returns <code>ok</code>.</p>
 <ul>
 <li><a name="method_tcp_socket.shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_tcp_create_socket_0.2.0_rc_2024_01_16">Import interface wasi:sockets/tcp-create-socket@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -1748,7 +1748,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2024_01_16">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
