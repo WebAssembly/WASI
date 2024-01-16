@@ -211,12 +211,13 @@ stateDiagram-v2
     TCP_INIT --> TCP_CONNECT: startConnect() [WAIT]
     TCP_BOUND --> TCP_CONNECT: startConnect() [WAIT]
     TCP_CONNECT --> TCP_CONNECT_READY: permission granted [RESOLVED]
-    TCP_CONNECT --> TCP_ERROR: permission denied [RESOLVED]
+    TCP_CONNECT --> TCP_INIT: permission denied [RESOLVED]
+    TCP_CONNECT --> TCP_BOUND: permission denied [RESOLVED]
     TCP_CONNECT_READY --> TCP_CONNECTION: finishConnect() [RESOLVED]
     TCP_CONNECT_READY --> TCP_ERROR: finishConnect() error [RESOLVED]
     TCP_BOUND --> TCP_LISTEN: startListen() [WAIT]
     TCP_LISTEN --> TCP_LISTEN_READY: permission granted [RESOLVED]
-    TCP_LISTEN --> TCP_ERROR: permission denied [RESOLVED]
+    TCP_LISTEN --> TCP_BOUND: permission denied [RESOLVED]
     TCP_LISTEN_READY --> TCP_LISTENER: finishListen() [RESOLVED]
     TCP_LISTEN_READY --> TCP_ERROR: finishListen() error [RESOLVED]
     TCP_CONNECTION --> TCP_CLOSED: shutdown() [RESOLVED]
@@ -227,7 +228,7 @@ stateDiagram-v2
 
 where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state`.
 
-The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription.
+The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are recoverable if the permissions dynamically change.
 
 Once the TCP state machine is in the `TCP_CONNECTION` or `TCP_LISTENER` state, the pollable state is instantaneously updated to the state of the underlying socket IO - `[RESOLVED]` if there is pending IO, and `[UNRESOLVED]` otherwise. This means it is possible for the `finishConnect()` call to instantaneously transition the pollable to resolved and then back to unresolved if there is no data ready on the underlying socket.
 
