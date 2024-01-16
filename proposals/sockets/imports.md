@@ -403,7 +403,6 @@ if (remote_address is Some) {
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
 <li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-state</code>:             The socket is not bound.</li>
@@ -485,33 +484,6 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_udp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
-</ul>
-<h4><a name="method_udp_socket.ipv6_only"><code>[method]udp-socket.ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
-<p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
-<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_ipv6_only"><code>[method]udp-socket.set-ipv6-only: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
@@ -675,7 +647,6 @@ either <code>check-send</code> was not called or <code>datagrams</code> contains
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:        The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:        <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
 <li><code>invalid-argument</code>:        The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:        The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:        The socket is in &quot;connected&quot; mode and <code>remote-address</code> is <code>some</code> value that does not match the address passed to <code>stream</code>. (EISCONN)</li>
@@ -735,7 +706,8 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h3>Functions</h3>
 <h4><a name="create_udp_socket"><code>create-udp-socket: func</code></a></h4>
 <p>Create a new UDP socket.</p>
-<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
+<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.
+On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
 at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
@@ -1228,7 +1200,7 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
 <li><code>invalid-argument</code>:          <code>local-address</code> is not a unicast address. (EINVAL)</li>
-<li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL)</li>
+<li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address. (EINVAL)</li>
 <li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
@@ -1283,8 +1255,7 @@ and SO_REUSEADDR performs something different entirely.</p>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-argument</code>:          <code>remote-address</code> is not a unicast address. (EINVAL, ENETUNREACH on Linux, EAFNOSUPPORT on MacOS)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL, EADDRNOTAVAIL on Illumos)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is an IPv4-mapped IPv6 address. (EINVAL, EADDRNOTAVAIL on Illumos)</li>
 <li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
@@ -1377,7 +1348,6 @@ and SO_REUSEADDR performs something different entirely.</p>
 <p>The returned socket is bound and in the Connection state. The following properties are inherited from the listener socket:</p>
 <ul>
 <li><code>address-family</code></li>
-<li><code>ipv6-only</code></li>
 <li><code>keep-alive-enabled</code></li>
 <li><code>keep-alive-idle-time</code></li>
 <li><code>keep-alive-interval</code></li>
@@ -1479,33 +1449,6 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_tcp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
-</ul>
-<h4><a name="method_tcp_socket.ipv6_only"><code>[method]tcp-socket.ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
-<p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
-<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_tcp_socket.set_ipv6_only"><code>[method]tcp-socket.set-ipv6-only: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.set_listen_backlog_size"><code>[method]tcp-socket.set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
@@ -1779,7 +1722,8 @@ has no effect and returns <code>ok</code>.</p>
 <h3>Functions</h3>
 <h4><a name="create_tcp_socket"><code>create-tcp-socket: func</code></a></h4>
 <p>Create a new TCP socket.</p>
-<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.</p>
+<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.
+On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
 at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
