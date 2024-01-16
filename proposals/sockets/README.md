@@ -226,7 +226,7 @@ stateDiagram-v2
     
 ```
 
-where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state`.
+where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state (therefore always being recoverable).
 
 The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are recoverable if the permissions dynamically change.
 
