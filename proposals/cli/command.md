@@ -2,30 +2,30 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:cli_environment_0.2.0_rc_2023_12_05"><code>wasi:cli/environment@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_exit_0.2.0_rc_2023_12_05"><code>wasi:cli/exit@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_environment_0.2.0_rc_2024_01_16"><code>wasi:cli/environment@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_exit_0.2.0_rc_2024_01_16"><code>wasi:cli/exit@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:io_error_0.2.0_rc_2023_11_10"><code>wasi:io/error@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_poll_0.2.0_rc_2023_11_10"><code>wasi:io/poll@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:io_streams_0.2.0_rc_2023_11_10"><code>wasi:io/streams@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/stdin@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/stdout@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/stderr@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_input_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-input@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_output_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-output@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stdin_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stdin@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stdout_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stdout@0.2.0-rc-2023-12-05</code></a></li>
-<li>interface <a href="#wasi:cli_terminal_stderr_0.2.0_rc_2023_12_05"><code>wasi:cli/terminal-stderr@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_stdin_0.2.0_rc_2024_01_16"><code>wasi:cli/stdin@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_stdout_0.2.0_rc_2024_01_16"><code>wasi:cli/stdout@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_stderr_0.2.0_rc_2024_01_16"><code>wasi:cli/stderr@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_input_0.2.0_rc_2024_01_16"><code>wasi:cli/terminal-input@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_output_0.2.0_rc_2024_01_16"><code>wasi:cli/terminal-output@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdin_0.2.0_rc_2024_01_16"><code>wasi:cli/terminal-stdin@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stdout_0.2.0_rc_2024_01_16"><code>wasi:cli/terminal-stdout@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:cli_terminal_stderr_0.2.0_rc_2024_01_16"><code>wasi:cli/terminal-stderr@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/monotonic-clock@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock_0.2.0_rc_2023_11_10"><code>wasi:clocks/wall-clock@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:filesystem_types_0.2.0_rc_2023_11_10"><code>wasi:filesystem/types@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:filesystem_preopens_0.2.0_rc_2023_11_10"><code>wasi:filesystem/preopens@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/network@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2023_11_10"><code>wasi:sockets/instance-network@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</code></a></li>
-<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</code></a></li>
+<li>interface <a href="#wasi:sockets_network_0.2.0_rc_2024_01_16"><code>wasi:sockets/network@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_instance_network_0.2.0_rc_2024_01_16"><code>wasi:sockets/instance-network@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_0.2.0_rc_2024_01_16"><code>wasi:sockets/udp@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_udp_create_socket_0.2.0_rc_2024_01_16"><code>wasi:sockets/udp-create-socket@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_0.2.0_rc_2024_01_16"><code>wasi:sockets/tcp@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_tcp_create_socket_0.2.0_rc_2024_01_16"><code>wasi:sockets/tcp-create-socket@0.2.0-rc-2024-01-16</code></a></li>
+<li>interface <a href="#wasi:sockets_ip_name_lookup_0.2.0_rc_2024_01_16"><code>wasi:sockets/ip-name-lookup@0.2.0-rc-2024-01-16</code></a></li>
 <li>interface <a href="#wasi:random_random_0.2.0_rc_2023_11_10"><code>wasi:random/random@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:random_insecure_0.2.0_rc_2023_11_10"><code>wasi:random/insecure@0.2.0-rc-2023-11-10</code></a></li>
 <li>interface <a href="#wasi:random_insecure_seed_0.2.0_rc_2023_11_10"><code>wasi:random/insecure-seed@0.2.0-rc-2023-11-10</code></a></li>
@@ -33,11 +33,11 @@
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi:cli_run_0.2.0_rc_2023_12_05"><code>wasi:cli/run@0.2.0-rc-2023-12-05</code></a></li>
+<li>interface <a href="#wasi:cli_run_0.2.0_rc_2024_01_16"><code>wasi:cli/run@0.2.0-rc-2024-01-16</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:cli_environment_0.2.0_rc_2023_12_05">Import interface wasi:cli/environment@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_environment_0.2.0_rc_2024_01_16">Import interface wasi:cli/environment@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="get_environment"><code>get-environment: func</code></a></h4>
@@ -64,7 +64,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_exit_0.2.0_rc_2023_12_05">Import interface wasi:cli/exit@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_exit_0.2.0_rc_2024_01_16">Import interface wasi:cli/exit@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="exit"><code>exit: func</code></a></h4>
@@ -483,7 +483,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdin@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stdin_0.2.0_rc_2024_01_16">Import interface wasi:cli/stdin@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -496,7 +496,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/stdout@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stdout_0.2.0_rc_2024_01_16">Import interface wasi:cli/stdout@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -509,7 +509,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/stderr@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_stderr_0.2.0_rc_2024_01_16">Import interface wasi:cli/stderr@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"><code>type output-stream</code></a></h4>
@@ -522,7 +522,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-input@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_terminal_input_0.2.0_rc_2024_01_16">Import interface wasi:cli/terminal-input@0.2.0-rc-2024-01-16</a></h2>
 <p>Terminal input.</p>
 <p>In the future, this may include functions for disabling echoing,
 disabling input buffering so that keyboard events are sent through
@@ -531,7 +531,7 @@ immediately, querying supported features, and so on.</p>
 <h3>Types</h3>
 <h4><a name="terminal_input"><code>resource terminal-input</code></a></h4>
 <p>The input side of a terminal.</p>
-<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-output@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_terminal_output_0.2.0_rc_2024_01_16">Import interface wasi:cli/terminal-output@0.2.0-rc-2024-01-16</a></h2>
 <p>Terminal output.</p>
 <p>In the future, this may include functions for querying the terminal
 size, being notified of terminal size changes, querying supported
@@ -540,7 +540,7 @@ features, and so on.</p>
 <h3>Types</h3>
 <h4><a name="terminal_output"><code>resource terminal-output</code></a></h4>
 <p>The output side of a terminal.</p>
-<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_terminal_stdin_0.2.0_rc_2024_01_16">Import interface wasi:cli/terminal-stdin@0.2.0-rc-2024-01-16</a></h2>
 <p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
 link-time authority.</p>
 <hr />
@@ -557,7 +557,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a name="get_terminal_stdin.0"></a> option&lt;own&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_terminal_stdout_0.2.0_rc_2024_01_16">Import interface wasi:cli/terminal-stdout@0.2.0-rc-2024-01-16</a></h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
 link-time authority.</p>
 <hr />
@@ -574,7 +574,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a name="get_terminal_stdout.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2023_12_05">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_terminal_stderr_0.2.0_rc_2024_01_16">Import interface wasi:cli/terminal-stderr@0.2.0-rc-2024-01-16</a></h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
 link-time authority.</p>
 <hr />
@@ -1587,7 +1587,7 @@ errors are filesystem-related errors.</p>
 <ul>
 <li><a name="get_directories.0"></a> list&lt;(own&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;, <code>string</code>)&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/network@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_network_0.2.0_rc_2024_01_16">Import interface wasi:sockets/network@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>resource network</code></a></h4>
@@ -1780,7 +1780,7 @@ supported size.
 <li><a name="ip_socket_address.ipv4"><code>ipv4</code></a>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
 <li><a name="ip_socket_address.ipv6"><code>ipv6</code></a>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
 </ul>
-<h2><a name="wasi:sockets_instance_network_0.2.0_rc_2023_11_10">Import interface wasi:sockets/instance-network@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_instance_network_0.2.0_rc_2024_01_16">Import interface wasi:sockets/instance-network@0.2.0-rc-2024-01-16</a></h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -1795,7 +1795,7 @@ supported size.
 <ul>
 <li><a name="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_udp_0.2.0_rc_2024_01_16">Import interface wasi:sockets/udp@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -1924,7 +1924,6 @@ if (remote_address is Some) {
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
 <li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-state</code>:             The socket is not bound.</li>
@@ -2006,33 +2005,6 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_udp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
-</ul>
-<h4><a name="method_udp_socket.ipv6_only"><code>[method]udp-socket.ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
-<p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
-<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_udp_socket.set_ipv6_only"><code>[method]udp-socket.set-ipv6-only: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_udp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_udp_socket.unicast_hop_limit"><code>[method]udp-socket.unicast-hop-limit: func</code></a></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
@@ -2196,7 +2168,6 @@ either <code>check-send</code> was not called or <code>datagrams</code> contains
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:        The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
-<li><code>invalid-argument</code>:        <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
 <li><code>invalid-argument</code>:        The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:        The port in <code>remote-address</code> is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)</li>
 <li><code>invalid-argument</code>:        The socket is in &quot;connected&quot; mode and <code>remote-address</code> is <code>some</code> value that does not match the address passed to <code>stream</code>. (EISCONN)</li>
@@ -2237,7 +2208,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a name="method_outgoing_datagram_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_udp_create_socket_0.2.0_rc_2024_01_16">Import interface wasi:sockets/udp-create-socket@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -2256,7 +2227,8 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h3>Functions</h3>
 <h4><a name="create_udp_socket"><code>create-udp-socket: func</code></a></h4>
 <p>Create a new UDP socket.</p>
-<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.</p>
+<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.
+On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
 at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code> is called,
 the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
@@ -2281,7 +2253,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a name="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_tcp_0.2.0_rc_2024_01_16">Import interface wasi:sockets/tcp@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"><code>type input-stream</code></a></h4>
@@ -2332,14 +2304,12 @@ the socket is effectively an in-memory configuration object, unable to communica
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
-<p>When a socket is not explicitly bound, the first invocation to a listen or connect operation will
-implicitly bind the socket.</p>
 <p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
 <li><code>invalid-argument</code>:          <code>local-address</code> is not a unicast address. (EINVAL)</li>
-<li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL)</li>
+<li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address. (EINVAL)</li>
 <li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
@@ -2388,23 +2358,13 @@ and SO_REUSEADDR performs something different entirely.</p>
 <li>the socket is transitioned into the Connection state</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<p>POSIX mentions:</p>
-<blockquote>
-<p>If connect() fails, the state of the socket is unspecified. Conforming applications should
-close the file descriptor and create a new socket before attempting to reconnect.</p>
-</blockquote>
-<p>WASI prescribes the following behavior:</p>
-<ul>
-<li>If <code>connect</code> fails because an input/state validation error, the socket should remain usable.</li>
-<li>If a connection was actually attempted but failed, the socket should become unusable for further network communication.
-Besides <code>drop</code>, any method after such a failure may return an error.</li>
-</ul>
+<p>After a failed connection attempt, the only valid action left is to
+<code>drop</code> the socket. A single socket can not be used to connect more than once.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-argument</code>:          <code>remote-address</code> is not a unicast address. (EINVAL, ENETUNREACH on Linux, EAFNOSUPPORT on MacOS)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is an IPv4-mapped IPv6 address, but the socket has <code>ipv6-only</code> enabled. (EINVAL, EADDRNOTAVAIL on Illumos)</li>
-<li><code>invalid-argument</code>:          <code>remote-address</code> is a non-IPv4-mapped IPv6 address, but the socket was bound to a specific IPv4-mapped IPv6 address. (or vice versa)</li>
+<li><code>invalid-argument</code>:          <code>remote-address</code> is an IPv4-mapped IPv6 address. (EINVAL, EADDRNOTAVAIL on Illumos)</li>
 <li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
@@ -2497,7 +2457,6 @@ Besides <code>drop</code>, any method after such a failure may return an error.<
 <p>The returned socket is bound and in the Connection state. The following properties are inherited from the listener socket:</p>
 <ul>
 <li><code>address-family</code></li>
-<li><code>ipv6-only</code></li>
 <li><code>keep-alive-enabled</code></li>
 <li><code>keep-alive-idle-time</code></li>
 <li><code>keep-alive-interval</code></li>
@@ -2599,33 +2558,6 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_tcp_socket.address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
-</ul>
-<h4><a name="method_tcp_socket.ipv6_only"><code>[method]tcp-socket.ipv6-only: func</code></a></h4>
-<p>Whether IPv4 compatibility (dual-stack) mode is disabled or not.</p>
-<p>Equivalent to the IPV6_V6ONLY socket option.</p>
-<h1>Typical errors</h1>
-<ul>
-<li><code>invalid-state</code>:        (set) The socket is already bound.</li>
-<li><code>not-supported</code>:        (get/set) <code>this</code> socket is an IPv4 socket.</li>
-<li><code>not-supported</code>:        (set) Host does not support dual-stack sockets. (Implementations are not required to.)</li>
-</ul>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.ipv6_only.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h4><a name="method_tcp_socket.set_ipv6_only"><code>[method]tcp-socket.set-ipv6-only: func</code></a></h4>
-<h5>Params</h5>
-<ul>
-<li><a name="method_tcp_socket.set_ipv6_only.self"><code>self</code></a>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket.set_ipv6_only.value"><code>value</code></a>: <code>bool</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_tcp_socket.set_ipv6_only.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.set_listen_backlog_size"><code>[method]tcp-socket.set-listen-backlog-size: func</code></a></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
@@ -2849,13 +2781,16 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <h4><a name="method_tcp_socket.shutdown"><code>[method]tcp-socket.shutdown: func</code></a></h4>
 <p>Initiate a graceful shutdown.</p>
 <ul>
-<li>receive: the socket is not expecting to receive any more data from the peer. All subsequent read
-operations on the <a href="#input_stream"><code>input-stream</code></a> associated with this socket will return an End Of Stream indication.
-Any data still in the receive queue at time of calling <code>shutdown</code> will be discarded.</li>
-<li>send: the socket is not expecting to send any more data to the peer. All subsequent write
-operations on the <a href="#output_stream"><code>output-stream</code></a> associated with this socket will return an error.</li>
-<li>both: same effect as receive &amp; send combined.</li>
+<li><code>receive</code>: The socket is not expecting to receive any data from
+the peer. The <a href="#input_stream"><code>input-stream</code></a> associated with this socket will be
+closed. Any data still in the receive queue at time of calling
+this method will be discarded.</li>
+<li><code>send</code>: The socket has no more data to send to the peer. The <a href="#output_stream"><code>output-stream</code></a>
+associated with this socket will be closed and a FIN packet will be sent.</li>
+<li><code>both</code>: Same effect as <code>receive</code> &amp; <code>send</code> combined.</li>
 </ul>
+<p>This function is idempotent. Shutting a down a direction more than once
+has no effect and returns <code>ok</code>.</p>
 <p>The shutdown function does not close (drop) the socket.</p>
 <h1>Typical errors</h1>
 <ul>
@@ -2877,7 +2812,7 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <ul>
 <li><a name="method_tcp_socket.shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_tcp_create_socket_0.2.0_rc_2023_11_10">Import interface wasi:sockets/tcp-create-socket@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_tcp_create_socket_0.2.0_rc_2024_01_16">Import interface wasi:sockets/tcp-create-socket@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="network"><code>type network</code></a></h4>
@@ -2896,9 +2831,10 @@ operations on the <a href="#output_stream"><code>output-stream</code></a> associ
 <h3>Functions</h3>
 <h4><a name="create_tcp_socket"><code>create-tcp-socket: func</code></a></h4>
 <p>Create a new TCP socket.</p>
-<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.</p>
+<p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.
+On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
 <p>This function does not require a network capability handle. This is considered to be safe because
-at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>listen</code>/<code>connect</code>
+at time of creation, the socket is not bound to any <a href="#network"><code>network</code></a> yet. Up to the moment <code>bind</code>/<code>connect</code>
 is called, the socket is effectively an in-memory configuration object, unable to communicate with the outside world.</p>
 <p>All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.</p>
 <h1>Typical errors</h1>
@@ -2921,7 +2857,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a name="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2023_11_10">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2023-11-10</a></h2>
+<h2><a name="wasi:sockets_ip_name_lookup_0.2.0_rc_2024_01_16">Import interface wasi:sockets/ip-name-lookup@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"><code>type pollable</code></a></h4>
@@ -3087,7 +3023,7 @@ protection.</p>
 <ul>
 <li><a name="insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
-<h2><a name="wasi:cli_run_0.2.0_rc_2023_12_05">Export interface wasi:cli/run@0.2.0-rc-2023-12-05</a></h2>
+<h2><a name="wasi:cli_run_0.2.0_rc_2024_01_16">Export interface wasi:cli/run@0.2.0-rc-2024-01-16</a></h2>
 <hr />
 <h3>Functions</h3>
 <h4><a name="run"><code>run: func</code></a></h4>
