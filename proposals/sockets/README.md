@@ -233,16 +233,11 @@ stateDiagram-v2
     TCP_LISTENER: TCP_LISTENER [WAIT]
 ```
 
-where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state, therefore always being recoverable by not transitioning the socket into the error state.
+where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state, therefore always being recoverable by not transitioning the socket into the error state. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
 
-The state of the pollable for the TCP state machine is `RESOLVED` in every state, except for when transitioning into those states with `[WAIT]` on them - `TCP_BIND`, `TCP_CONNECT`, `TCP_LISTEN` and `TCP_LISTENER`. These correspond to events that can be polled on for the subscription. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
+The `TCP_CONNECT_READY` and `TCP_LISTEN_READY` states should eagerly handle socket connection and socket listen calls respectively, so that the finish calls represent completion of the asynchronous operation. Implementations may perform blocking connect and listen in the `connectFinish` and `listenFinish` calls, but this is discouraged.
 
-In the `TCP_CONECTION` state, data IO on the socket streams do not affect the pollable state on the socket resource.
-
-In the `TCP_LISTENER` state, the pollable state is set to the state of the underlying socket IO - `[RESOLVED]` if there is a pending backlog, and `[WAIT]` otherwise. This means it is possible for the `finishListen()` call to instantaneously transition the pollable to resolved.
-
-The `TCP_CONNECT_READY` and `TCP_LISTEN_READY` states should eagerly handle socket connection and socket listen calls respectively, so that
-the finish calls represent completion of the asynchronous operation. Implementations may perform blocking connect and listen in the `connectFinish` and `listenFinish` calls, but this is discouraged.
+The state of the pollable for the TCP state machine is `RESOLVED` in every state, except for when transitioning into those states with `[WAIT]` on them - `TCP_BIND`, `TCP_CONNECT`, `TCP_LISTEN` and `TCP_LISTENER`. These correspond to states that can be polled on for their transition into another state that is resolved. The `TCP_LISTENER` state is the only one where the state of the pollable is the state of the underlying socket. It will be `RESOLVED` if there is a pending backlog, and `WAIT` otherwise. This means it is possible for the `finishListen()` call to instantaneously transition the pollable to resolved.the subscription.  In the `TCP_CONECTION` state, data IO on the socket streams do not affect the pollable state on the socket resource.
 
 The TCP socket can be dropped in all states, performing the necessary cleanup. There are no traps associated with any state transitions.
 
