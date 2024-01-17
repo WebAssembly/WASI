@@ -49,13 +49,11 @@ interface tcp {
         /// only as long as the previous bind failed. Once a bind succeeds, the
         /// binding can't be changed anymore.
         ///
-        /// # Typical `start` errors
+        /// # Typical errors
         /// - `invalid-argument`:          The `local-address` has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)
         /// - `invalid-argument`:          `local-address` is not a unicast address. (EINVAL)
         /// - `invalid-argument`:          `local-address` is an IPv4-mapped IPv6 address. (EINVAL)
         /// - `invalid-state`:             The socket is already bound. (EINVAL)
-        ///
-        /// # Typical `finish` errors
         /// - `address-in-use`:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)
         /// - `address-in-use`:            Address is already in use. (EADDRINUSE)
         /// - `address-not-bindable`:      `local-address` is not an address that the `network` can bind to. (EADDRNOTAVAIL)
@@ -91,7 +89,7 @@ interface tcp {
         /// state and the only valid action left is to `drop` the socket. A single
         /// socket can not be used to connect more than once.
         ///
-        /// # Typical `start` errors
+        /// # Typical errors
         /// - `invalid-argument`:          The `remote-address` has the wrong address family. (EAFNOSUPPORT)
         /// - `invalid-argument`:          `remote-address` is not a unicast address. (EINVAL, ENETUNREACH on Linux, EAFNOSUPPORT on MacOS)
         /// - `invalid-argument`:          `remote-address` is an IPv4-mapped IPv6 address. (EINVAL, EADDRNOTAVAIL on Illumos)
@@ -100,8 +98,6 @@ interface tcp {
         /// - `invalid-argument`:          The socket is already attached to a different network. The `network` passed to `connect` must be identical to the one passed to `bind`.
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN)
         /// - `invalid-state`:             The socket is already in the `listening` state. (EOPNOTSUPP, EINVAL on Windows)
-        ///
-        /// # Typical `finish` errors
         /// - `timeout`:                   Connection timed out. (ETIMEDOUT)
         /// - `connection-refused`:        The connection was forcefully rejected. (ECONNREFUSED)
         /// - `connection-reset`:          The connection was reset. (ECONNRESET)
@@ -134,12 +130,10 @@ interface tcp {
         ///
         /// Unlike POSIX, the socket must already be explicitly bound.
         ///
-        /// # Typical `start` errors
+        /// # Typical errors
         /// - `invalid-state`:             The socket is not bound to any local address. (EDESTADDRREQ)
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN, EINVAL on BSD)
         /// - `invalid-state`:             The socket is already in the `listening` state.
-        ///
-        /// # Typical `finish` errors
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)
         /// - `not-in-progress`:           A listen operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)

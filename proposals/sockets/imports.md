@@ -338,13 +338,10 @@ being reaedy for I/O.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the port is zero, the socket will be bound to a random free port.</p>
-<h1>Typical <code>start</code> errors</h1>
+<h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
 <li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
 <li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
@@ -1222,15 +1219,12 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 different arguments on each iteration. But never concurrently and
 only as long as the previous bind failed. Once a bind succeeds, the
 binding can't be changed anymore.</p>
-<h1>Typical <code>start</code> errors</h1>
+<h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
 <li><code>invalid-argument</code>:          <code>local-address</code> is not a unicast address. (EINVAL)</li>
 <li><code>invalid-argument</code>:          <code>local-address</code> is an IPv4-mapped IPv6 address. (EINVAL)</li>
 <li><code>invalid-state</code>:             The socket is already bound. (EINVAL)</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
 <li><code>address-in-use</code>:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)</li>
 <li><code>address-in-use</code>:            Address is already in use. (EADDRINUSE)</li>
 <li><code>address-not-bindable</code>:      <code>local-address</code> is not an address that the <a href="#network"><code>network</code></a> can bind to. (EADDRNOTAVAIL)</li>
@@ -1282,7 +1276,7 @@ don't want to make use of this ability can simply call the native
 <p>After a failed connection attempt, the socket will be in the <code>closed</code>
 state and the only valid action left is to <code>drop</code> the socket. A single
 socket can not be used to connect more than once.</p>
-<h1>Typical <code>start</code> errors</h1>
+<h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
 <li><code>invalid-argument</code>:          <code>remote-address</code> is not a unicast address. (EINVAL, ENETUNREACH on Linux, EAFNOSUPPORT on MacOS)</li>
@@ -1292,9 +1286,6 @@ socket can not be used to connect more than once.</p>
 <li><code>invalid-argument</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
 <li><code>invalid-state</code>:             The socket is already in the <code>connected</code> state. (EISCONN)</li>
 <li><code>invalid-state</code>:             The socket is already in the <code>listening</code> state. (EOPNOTSUPP, EINVAL on Windows)</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
 <li><code>timeout</code>:                   Connection timed out. (ETIMEDOUT)</li>
 <li><code>connection-refused</code>:        The connection was forcefully rejected. (ECONNREFUSED)</li>
 <li><code>connection-reset</code>:          The connection was reset. (ECONNRESET)</li>
@@ -1341,14 +1332,11 @@ the <code>SO_ERROR</code> socket option, in case the poll signaled readiness.</p
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the <code>listening</code> state.</p>
 <p>Unlike POSIX, the socket must already be explicitly bound.</p>
-<h1>Typical <code>start</code> errors</h1>
+<h1>Typical errors</h1>
 <ul>
 <li><code>invalid-state</code>:             The socket is not bound to any local address. (EDESTADDRREQ)</li>
 <li><code>invalid-state</code>:             The socket is already in the <code>connected</code> state. (EISCONN, EINVAL on BSD)</li>
 <li><code>invalid-state</code>:             The socket is already in the <code>listening</code> state.</li>
-</ul>
-<h1>Typical <code>finish</code> errors</h1>
-<ul>
 <li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
 <li><code>not-in-progress</code>:           A listen operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>

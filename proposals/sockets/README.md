@@ -95,6 +95,7 @@ The semantics are as follows:
 - When `finish-*` returns anything other than `would-block`:
     - The asynchronous operation should be considered "finished" (either successful or failed)
     - Future calls to `finish-*` return the `not-in-progress` error code.
+- The documented error codes can be returned from either the `start-*` function or the `finish-*` function. Both are equally correct.
 
 Runtimes that don't need asynchrony, can simply validate the arguments provided to the `start` function and stash them on their internal socket instance and perform the actual syscall in the `finish` function. Conveniently, sockets only allow one of these `start/finish` asynchronous operation to be active at a time.
 
