@@ -1188,7 +1188,26 @@ occured.</p>
 </li>
 </ul>
 <h4><a name="tcp_socket"><code>resource tcp-socket</code></a></h4>
-<h2>A TCP socket handle.</h2>
+<p>A TCP socket resource.</p>
+<p>The socket can be in one of the following states:</p>
+<ul>
+<li><code>unbound</code></li>
+<li><code>bind-in-progress</code></li>
+<li><code>bound</code> (See note below)</li>
+<li><code>listen-in-progress</code></li>
+<li><code>listening</code></li>
+<li><code>connect-in-progress</code></li>
+<li><code>connected</code></li>
+<li><code>closed</code>
+See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md</a>
+for a more information.</li>
+</ul>
+<p>Note: Except where explicitly mentioned, whenever this documentation uses
+the term &quot;bound&quot; without backticks it actually means: in the <code>bound</code> state <em>or higher</em>.
+(i.e. <code>bound</code>, <code>listen-in-progress</code>, <code>listening</code>, <code>connect-in-progress</code> or <code>connected</code>)</p>
+<h2>In addition to the general error codes documented on the
+<code>network::error-code</code> type, TCP socket methods may always return
+<code>error(invalid-state)</code> when in the <code>closed</code> state.</h2>
 <h3>Functions</h3>
 <h4><a name="method_tcp_socket.start_bind"><code>[method]tcp-socket.start-bind: func</code></a></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
@@ -1246,11 +1265,12 @@ and SO_REUSEADDR performs something different entirely.</p>
 <p>Connect to a remote endpoint.</p>
 <p>On success:</p>
 <ul>
-<li>the socket is transitioned into the Connection state</li>
+<li>the socket is transitioned into the <code>connection</code> state.</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
-<p>After a failed connection attempt, the only valid action left is to
-<code>drop</code> the socket. A single socket can not be used to connect more than once.</p>
+<p>After a failed connection attempt, the socket will be in the <code>closed</code>
+state and the only valid action left is to <code>drop</code> the socket. A single
+socket can not be used to connect more than once.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>remote-address</code> has the wrong address family. (EAFNOSUPPORT)</li>
@@ -1259,8 +1279,8 @@ and SO_REUSEADDR performs something different entirely.</p>
 <li><code>invalid-argument</code>:          The IP address in <code>remote-address</code> is set to INADDR_ANY (<code>0.0.0.0</code> / <code>::</code>). (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The port in <code>remote-address</code> is set to 0. (EADDRNOTAVAIL on Windows)</li>
 <li><code>invalid-argument</code>:          The socket is already attached to a different network. The <a href="#network"><code>network</code></a> passed to <code>connect</code> must be identical to the one passed to <code>bind</code>.</li>
-<li><code>invalid-state</code>:             The socket is already in the Connection state. (EISCONN)</li>
-<li><code>invalid-state</code>:             The socket is already in the Listener state. (EOPNOTSUPP, EINVAL on Windows)</li>
+<li><code>invalid-state</code>:             The socket is already in the <code>connected</code> state. (EISCONN)</li>
+<li><code>invalid-state</code>:             The socket is already in the <code>listening</code> state. (EOPNOTSUPP, EINVAL on Windows)</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
@@ -1270,7 +1290,7 @@ and SO_REUSEADDR performs something different entirely.</p>
 <li><code>connection-aborted</code>:        The connection was aborted. (ECONNABORTED)</li>
 <li><code>remote-unreachable</code>:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)</li>
 <li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)</li>
-<li><code>not-in-progress</code>:           A <code>connect</code> operation is not in progress.</li>
+<li><code>not-in-progress</code>:           A connect operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
@@ -1301,7 +1321,7 @@ and SO_REUSEADDR performs something different entirely.</p>
 </ul>
 <h4><a name="method_tcp_socket.start_listen"><code>[method]tcp-socket.start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
-<p>Transitions the socket into the Listener state.</p>
+<p>Transitions the socket into the <code>listening</code> state.</p>
 <p>Unlike POSIX:</p>
 <ul>
 <li>this function is async. This enables interactive WASI hosts to inject permission prompts.</li>
@@ -1310,13 +1330,13 @@ and SO_REUSEADDR performs something different entirely.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-state</code>:             The socket is not bound to any local address. (EDESTADDRREQ)</li>
-<li><code>invalid-state</code>:             The socket is already in the Connection state. (EISCONN, EINVAL on BSD)</li>
-<li><code>invalid-state</code>:             The socket is already in the Listener state.</li>
+<li><code>invalid-state</code>:             The socket is already in the <code>connected</code> state. (EISCONN, EINVAL on BSD)</li>
+<li><code>invalid-state</code>:             The socket is already in the <code>listening</code> state.</li>
 </ul>
 <h1>Typical <code>finish</code> errors</h1>
 <ul>
 <li><code>address-in-use</code>:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)</li>
-<li><code>not-in-progress</code>:           A <code>listen</code> operation is not in progress.</li>
+<li><code>not-in-progress</code>:           A listen operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
 <h1>References</h1>
@@ -1345,7 +1365,7 @@ and SO_REUSEADDR performs something different entirely.</p>
 </ul>
 <h4><a name="method_tcp_socket.accept"><code>[method]tcp-socket.accept: func</code></a></h4>
 <p>Accept a new client socket.</p>
-<p>The returned socket is bound and in the Connection state. The following properties are inherited from the listener socket:</p>
+<p>The returned socket is bound and in the <code>connected</code> state. The following properties are inherited from the listener socket:</p>
 <ul>
 <li><code>address-family</code></li>
 <li><code>keep-alive-enabled</code></li>
@@ -1360,7 +1380,7 @@ and SO_REUSEADDR performs something different entirely.</p>
 a pair of streams that can be used to read &amp; write to the connection.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>invalid-state</code>:      Socket is not in the Listener state. (EINVAL)</li>
+<li><code>invalid-state</code>:      Socket is not in the <code>listening</code> state. (EINVAL)</li>
 <li><code>would-block</code>:        No pending connections at the moment. (EWOULDBLOCK, EAGAIN)</li>
 <li><code>connection-aborted</code>: An incoming connection was pending, but was terminated by the client before this listener could accept it. (ECONNABORTED)</li>
 <li><code>new-socket-limit</code>:   The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)</li>
@@ -1429,7 +1449,7 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 <li><a name="method_tcp_socket.remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.is_listening"><code>[method]tcp-socket.is-listening: func</code></a></h4>
-<p>Whether the socket is listening for new connections.</p>
+<p>Whether the socket is in the <code>listening</code> state.</p>
 <p>Equivalent to the SO_ACCEPTCONN socket option.</p>
 <h5>Params</h5>
 <ul>
@@ -1458,7 +1478,7 @@ Any other value will never cause an error, but it might be silently clamped and/
 <ul>
 <li><code>not-supported</code>:        (set) The platform does not support changing the backlog size after the initial listen.</li>
 <li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
-<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
+<li><code>invalid-state</code>:        (set) The socket is in the <code>connect-in-progress</code> or <code>connected</code> state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1587,8 +1607,6 @@ I.e. after setting a value, reading the same setting back may return a different
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:     (set) The TTL value must be 1 or higher.</li>
-<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
-<li><code>invalid-state</code>:        (set) The socket is already in the Listener state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1617,8 +1635,6 @@ I.e. after setting a value, reading the same setting back may return a different
 <h1>Typical errors</h1>
 <ul>
 <li><code>invalid-argument</code>:     (set) The provided value was 0.</li>
-<li><code>invalid-state</code>:        (set) The socket is already in the Connection state.</li>
-<li><code>invalid-state</code>:        (set) The socket is already in the Listener state.</li>
 </ul>
 <h5>Params</h5>
 <ul>
@@ -1658,7 +1674,17 @@ I.e. after setting a value, reading the same setting back may return a different
 <li><a name="method_tcp_socket.set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_tcp_socket.subscribe"><code>[method]tcp-socket.subscribe: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which can be used to poll for, or block on,
+completion of any of the asynchronous operations of this socket.</p>
+<p>When <code>finish-bind</code>, <code>finish-listen</code>, <code>finish-connect</code> or <code>accept</code>
+return <code>error(would-block)</code>, this pollable can be used to wait for
+their success or failure, after which the method can be retried.</p>
+<p>The pollable is not limited to the async operation that happens to be
+in progress at the time of calling <code>subscribe</code> (if any). Theoretically,
+<code>subscribe</code> only has to be called once per socket and can then be
+(re)used for the remainder of the socket's lifetime.</p>
+<p>See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness</a>
+for a more information.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
@@ -1685,7 +1711,7 @@ has no effect and returns <code>ok</code>.</p>
 <p>The shutdown function does not close (drop) the socket.</p>
 <h1>Typical errors</h1>
 <ul>
-<li><code>invalid-state</code>: The socket is not in the Connection state. (ENOTCONN)</li>
+<li><code>invalid-state</code>: The socket is not in the <code>connected</code> state. (ENOTCONN)</li>
 </ul>
 <h1>References</h1>
 <ul>
