@@ -201,7 +201,6 @@ The TCP valid states can be described by the following diagram:
 
 ```mermaid
 stateDiagram-v2
-    direction LR
     [*] --> TCP_INIT: tcpSocketCreate()
     [*] --> TCP_CONNECTION: accept()
     TCP_INIT --> TCP_BIND: startBind()
