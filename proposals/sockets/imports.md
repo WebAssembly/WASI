@@ -1218,6 +1218,10 @@ the term &quot;bound&quot; without backticks it actually means: in the <code>bou
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
+<p>Bind can be attempted multiple times on the same socket, even with
+different arguments on each iteration. But never concurrently and
+only as long as the previous bind failed. Once a bind succeeds, the
+binding can't be changed anymore.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
