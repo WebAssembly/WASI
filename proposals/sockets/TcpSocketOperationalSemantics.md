@@ -83,10 +83,10 @@ stateDiagram-v2
     BindInProgress --> Unbound: finish-bind()\n#error(NOT would-block)
     BindInProgress --> Bound: finish-bind()\n#ok
 
-    Bound --> ListenInProgress: start-listen()\n#ok
-    Bound --> Closed: start-listen()\n#error
     Bound --> ConnectInProgress: start-connect()\n#ok
     Bound --> Closed: start-connect()\n#error
+    Bound --> ListenInProgress: start-listen()\n#ok
+    Bound --> Closed: start-listen()\n#error
 
     ListenInProgress --> ListenInProgress: finish-listen()\n#error(would-block)
     ListenInProgress --> Closed: finish-listen()\n#error(NOT would-block)
