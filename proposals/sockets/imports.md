@@ -338,7 +338,6 @@ being reaedy for I/O.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the port is zero, the socket will be bound to a random free port.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
@@ -352,6 +351,11 @@ If the port is zero, the socket will be bound to a random free port.</p>
 <li><code>not-in-progress</code>:           A <code>bind</code> operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
+<h1>Implementors note</h1>
+<p>Unlike in POSIX, in WASI the bind operation is async. This enables
+interactive WASI hosts to inject permission prompts. Runtimes that
+don't want to make use of this ability can simply call the native
+<code>bind</code> as part of either <code>start-bind</code> or <code>finish-bind</code>.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
@@ -1214,7 +1218,6 @@ the term &quot;bound&quot; without backticks it actually means: in the <code>bou
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
 If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
-<p>Unlike in POSIX, this function is async. This enables interactive WASI hosts to inject permission prompts.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-argument</code>:          The <code>local-address</code> has the wrong address family. (EAFNOSUPPORT, EFAULT on Windows)</li>
@@ -1235,6 +1238,10 @@ If the TCP/UDP port is zero, the socket will be bound to a random free port.</p>
 state of a recently closed socket on the same local address. In practice this means that the SO_REUSEADDR
 socket option should be set implicitly on all platforms, except on Windows where this is the default behavior
 and SO_REUSEADDR performs something different entirely.</p>
+<p>Unlike in POSIX, in WASI the bind operation is async. This enables
+interactive WASI hosts to inject permission prompts. Runtimes that
+don't want to make use of this ability can simply call the native
+<code>bind</code> as part of either <code>start-bind</code> or <code>finish-bind</code>.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html</a></li>
@@ -1293,6 +1300,13 @@ socket can not be used to connect more than once.</p>
 <li><code>not-in-progress</code>:           A connect operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
+<h1>Implementors note</h1>
+<p>The POSIX equivalent of <code>start-connect</code> is the regular <code>connect</code> syscall.
+Because all WASI sockets are non-blocking this is expected to return
+EINPROGRESS, which should be translated to <code>ok()</code> in WASI.</p>
+<p>The POSIX equivalent of <code>finish-connect</code> is a <a href="#poll"><code>poll</code></a> for event <code>POLLOUT</code>
+with a timeout of 0 on the socket descriptor. Followed by a check for
+the <code>SO_ERROR</code> socket option, in case the poll signaled readiness.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html</a></li>
@@ -1322,11 +1336,7 @@ socket can not be used to connect more than once.</p>
 <h4><a name="method_tcp_socket.start_listen"><code>[method]tcp-socket.start-listen: func</code></a></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the <code>listening</code> state.</p>
-<p>Unlike POSIX:</p>
-<ul>
-<li>this function is async. This enables interactive WASI hosts to inject permission prompts.</li>
-<li>the socket must already be explicitly bound.</li>
-</ul>
+<p>Unlike POSIX, the socket must already be explicitly bound.</p>
 <h1>Typical <code>start</code> errors</h1>
 <ul>
 <li><code>invalid-state</code>:             The socket is not bound to any local address. (EDESTADDRREQ)</li>
@@ -1339,6 +1349,11 @@ socket can not be used to connect more than once.</p>
 <li><code>not-in-progress</code>:           A listen operation is not in progress.</li>
 <li><code>would-block</code>:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)</li>
 </ul>
+<h1>Implementors note</h1>
+<p>Unlike in POSIX, in WASI the listen operation is async. This enables
+interactive WASI hosts to inject permission prompts. Runtimes that
+don't want to make use of this ability can simply call the native
+<code>listen</code> as part of either <code>start-listen</code> or <code>finish-listen</code>.</p>
 <h1>References</h1>
 <ul>
 <li><a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html</a></li>
