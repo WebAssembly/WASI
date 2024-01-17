@@ -202,35 +202,40 @@ The TCP valid states can be described by the following diagram:
 ```mermaid
 stateDiagram-v2
     direction LR
-    [*] --> TCP_INIT: tcpSocketCreate() [RESOLVED]
-    [*] --> TCP_CONNECTION: accept() [RESOLVED]
-    TCP_INIT --> TCP_BIND: startBind() [WAIT]
-    TCP_BIND --> TCP_BIND_READY: permission granted [RESOLVED]
-    TCP_BIND --> TCP_INIT: permission denied [RESOLVED]
-    TCP_BIND_READY --> TCP_BOUND: finishBind() [RESOLVED]
-    TCP_BIND_READY --> TCP_ERROR: finishBind() error [RESOLVED]
-    TCP_INIT --> TCP_CONNECT: startConnect() [WAIT]
-    TCP_BOUND --> TCP_CONNECT: startConnect() [WAIT]
-    TCP_CONNECT --> TCP_CONNECT_READY: permission granted [RESOLVED]
-    TCP_CONNECT --> TCP_INIT: permission denied [RESOLVED]
-    TCP_CONNECT --> TCP_BOUND: permission denied [RESOLVED]
-    TCP_CONNECT_READY --> TCP_CONNECTION: finishConnect() [RESOLVED]
-    TCP_CONNECT_READY --> TCP_ERROR: finishConnect() error [RESOLVED]
-    TCP_BOUND --> TCP_LISTEN: startListen() [WAIT]
-    TCP_LISTEN --> TCP_LISTEN_READY: permission granted [RESOLVED]
-    TCP_LISTEN --> TCP_BOUND: permission denied [RESOLVED]
-    TCP_LISTEN_READY --> TCP_LISTENER: finishListen() [WAIT]
-    TCP_LISTEN_READY --> TCP_ERROR: finishListen() error [RESOLVED]
-    TCP_CONNECTION --> TCP_CONNECTION: shutdown() [RESOLVED]
-    TCP_CONNECTION --> TCP_ERROR: socket error [RESOLVED]
-    TCP_CONNECTION --> TCP_CLOSED: socket close [RESOLVED]
-    TCP_LISTENER --> TCP_ERROR: socket error [RESOLVED]
-    TCP_LISTENER --> TCP_CLOSED: socket close [RESOLVED]
+    [*] --> TCP_INIT: tcpSocketCreate()
+    [*] --> TCP_CONNECTION: accept()
+    TCP_INIT --> TCP_BIND: startBind()
+    TCP_BIND --> TCP_BIND_READY: granted
+    TCP_BIND --> TCP_INIT: denied
+    TCP_BIND_READY --> TCP_BOUND: finishBind()
+    TCP_BIND_READY --> TCP_ERROR: finishBind() error
+    TCP_INIT --> TCP_CONNECT: startConnect()
+    TCP_BOUND --> TCP_CONNECT: startConnect()
+    TCP_CONNECT --> TCP_CONNECT_READY: granted
+    TCP_CONNECT --> TCP_INIT: denied
+    TCP_CONNECT --> TCP_BOUND: denied
+    TCP_CONNECT_READY --> TCP_CONNECTION: finishConnect()
+    TCP_CONNECT_READY --> TCP_ERROR: finishConnect() error
+    TCP_BOUND --> TCP_LISTEN: startListen()
+    TCP_LISTEN --> TCP_LISTEN_READY: granted
+    TCP_LISTEN --> TCP_BOUND: denied
+    TCP_LISTEN_READY --> TCP_LISTENER: finishListen()
+    TCP_LISTEN_READY --> TCP_ERROR: finishListen() error
+    TCP_CONNECTION --> TCP_CONNECTION: shutdown()
+    TCP_CONNECTION --> TCP_ERROR: socket error
+    TCP_CONNECTION --> TCP_CLOSED: socket close
+    TCP_LISTENER --> TCP_ERROR: socket error
+    TCP_LISTENER --> TCP_CLOSED: socket close
+
+    TCP_BIND: TCP_BIND [WAIT]
+    TCP_CONNECT: TCP_CONNECT [WAIT]
+    TCP_LISTEN: TCP_LISTEN [WAIT]
+    TCP_LISTENER: TCP_LISTENER [WAIT]
 ```
 
 where the given methods synchronously transition the state when they are called. All method calls not on these state transition paths throw `invalid-state` while remaining in the current state, therefore always being recoverable by not transitioning the socket into the error state.
 
-The state of the pollable for the TCP state machine is provided as `[RESOLVED]` or `[WAIT]` in the above, where a transition from `[WAIT] -> [RESOLVED]` in the above state diagram corresponds to an event that can be polled on for the subscription. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
+The state of the pollable for the TCP state machine is `RESOLVED` in every state, except for when transitioning into those states with `[WAIT]` on them - `TCP_BIND`, `TCP_CONNECT`, `TCP_LISTEN` and `TCP_LISTENER`. These correspond to events that can be polled on for the subscription. Permission denied errors are retriable if the permissions dynamically change, and do not transition into the socket error state.
 
 In the `TCP_CONECTION` state, data IO on the socket streams do not affect the pollable state on the socket resource.
 
