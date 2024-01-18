@@ -95,6 +95,7 @@ The semantics are as follows:
 - When `finish-*` returns anything other than `would-block`:
     - The asynchronous operation should be considered "finished" (either successful or failed)
     - Future calls to `finish-*` return the `not-in-progress` error code.
+- The documented error codes can be returned from either the `start-*` function or the `finish-*` function. Both are equally correct.
 
 Runtimes that don't need asynchrony, can simply validate the arguments provided to the `start` function and stash them on their internal socket instance and perform the actual syscall in the `finish` function. Conveniently, sockets only allow one of these `start/finish` asynchronous operation to be active at a time.
 
@@ -194,6 +195,10 @@ The most likely contenders for permission prompt interception are:
 - UDP: `connect`
 
 Now, again, this proposal does not specify if/how permission prompts should be implemented. However, it does at least facilitate the ability for runtimes to do so. Since waiting for user input takes an unknowable amount of time, the operations listed above have been made asynchronous. POSIX-compatibility layers can simply synchronously block on the returned `future`s.
+
+### TCP State Machine
+
+See [Operational Semantics](./TcpSocketOperationalSemantics.md).
 
 ### Considered alternatives
 
