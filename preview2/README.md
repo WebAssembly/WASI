@@ -1,17 +1,6 @@
 # WASI Preview 2
 
-At this time, Preview 2 is in development and has not yet launched.
-
-## Launch criteria
-
-WASI Preview 2 will be considered launched when at least two independent
-proposals which define worlds, and all their dependencies, have met the
-requirements for inclusion listed below, and the WASI Subgroup has voted
-to launch it.
-
 ## Introduction
-
-*The following is a draft of an introduction for WASI Preview 2 when it launches.*
 
 WASI Preview 2 represents a major milestone for WASI. It marks the moment
 when WASI has fully rebased on the [Wit IDL] and the [component model]
@@ -25,8 +14,41 @@ accessible to a wide variety of source languages.
 
 WASI Preview 2 contains the following APIs:
 
-| Proposal                                                                       | Versions |
-| ------------------------------------------------------------------------------ | -------- |
+| Proposal           | Versions |
+| ------------------ | -------- |
+| [wasi-io]          | 0.2.0 |
+| [wasi-clocks]      | 0.2.0 |
+| [wasi-random]      | 0.2.0 |
+| [wasi-filesystem]  | 0.2.0 |
+| [wasi-sockets]     | 0.2.0 |
+| [wasi-cli]         | 0.2.0 |
+| [wasi-http]        | 0.2.0 |
+
+[wasi-io]: https://github.com/WebAssembly/wasi-io
+[wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
+[wasi-random]: https://github.com/WebAssembly/wasi-random
+[wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
+[wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
+[wasi-cli]: https://github.com/WebAssembly/wasi-cli
+[wasi-http]: https://github.com/WebAssembly/wasi-http
+
+## WASI Preview 2 Implementations
+
+The portability criteria of the WASI Preview 2 proposals were met by the
+following implementations, which were demonstrated to be interoperable by
+each passing [Wasmtime's WASI Preview 2 test suite][test-suite].
+
+* [Wasmtime]
+* [JCO]
+
+[Wasmtime]: https://github.com/BytecodeAlliance/wasmtime
+[JCO]: https://github.com/BytecodeAlliance/jco
+
+We plan to promote the Preview 2 test suite to live in the [wasi-testsuite]
+project soon, and add more interoperable implementations to this list when
+they are complete.
+
+[wasi-testsuite]: https://github.com/WebAssembly/wasi-testsuite
 
 ## Proposal requirements for inclusion in WASI Preview 2.
 
