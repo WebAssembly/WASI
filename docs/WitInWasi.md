@@ -23,51 +23,6 @@ so at this time some features or planned features in the component model are
 not ready for use in WASI APIs. Here's a list of those features and what to use
 for now in their place.
 
-### Resources
-
-Resources are expected to be available in time for Preview2, but at this time
-still in development.
-
-As a temporary workaround, WASI proposals are using `u32` types, which
-represent indices into an implied global table of handles. Since it is
-implied and global, this table doesn't provide any isolation between
-components; it intended to be a temporary workaround to support prototyping.
-
-In place of a resource like this:
-
-```wit
-/// An example resource.
-///
-/// A description of the example resource.
-resource resource-name {
-   /// An example function.
-   ///
-   /// A description of the example function.
-   function-name: func()
-}
-```
-
-Define a `u32` type alias, an explicit `drop` function, and change all
-functions inside the resource to have an explicit `this` argument, like this:
-
-```wit
-    /// An example resource.
-    ///
-    /// A description of the example resource.
-    ///
-    /// This [represents a resource](https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#Resources).
-    type resource-name = 32
-
-    /// An example function.
-    ///
-    /// A description of the example function.
-    function-name: func(this: resource-name)
-
-    /// Dispose of the specified `resource-name`, after which it may no longer
-    /// be used.
-    drop-resource-name: func(this: resource-name)
-```
-
 ### Streams
 
 Streams are expected to be available in the Preview 3 timeframe, as part of the
@@ -85,7 +40,7 @@ with a function returning `option<T>` or `result<option<T>, E>` for returning
 the elements with `none` indicating the end of the stream.
 
 This resource-based workaround can be used for asynchronous I/O by using
-[wasi-poll] to poll for multiple streams, however it doesn't support
+[wasi-io] to poll for multiple streams, however it doesn't support
 composing asynchronous work across multiple components, and it has some scaling
 limitations. These limitations will be fixed when built in `stream` types are
 available.
@@ -93,7 +48,6 @@ available.
 [Component Model async proposal]: https://docs.google.com/presentation/d/1MNVOZ8hdofO3tI0szg_i-Yoy0N2QPU2C--LzVuoGSlE/edit#slide=id.g1270ef7d5b6_0_662
 [use]: #Dependencies
 [wasi-io]: https://github.com/WebAssembly/wasi-io
-[wasi-poll]: https://github.com/WebAssembly/wasi-poll
 [resource]: #Resources
 
 ### Value Imports
