@@ -69,9 +69,19 @@ and their existing Witx machinery.
 
 ## Looking forward to Preview 3
 
-Preview 3 will add the new `stream` and `future` keywords. The
-release criteria of Preview 3 will include that performance will be
-measured and addressed.
+The component model is expected to add `future` and `stream` keywords, which
+will provide integrated and composable `async` functionality. WASI Preview 3 is
+planned to be a major revision of the Preview 2 APIs using these new features
+in place of wasi-io's streams and polling interfaces. It's also expected to
+incorporate lessons learned from implementation and user experience with
+Preview 2.
+
+When Preview 3 is launched, implementations may continue to support Preview 2,
+either by implementing Preview 3 along side it, or by virtualizing (polyfilling)
+Preview 2 in terms of Preview 3.
+
+The release criteria of Preview 3 will include that performance will be measured
+and addressed.
 
 [WASI Subgroup Phase Process]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#the-phase-process
 [portability criteria]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#2-feature-description-available-wasi-subgroup
