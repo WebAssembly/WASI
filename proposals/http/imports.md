@@ -1,29 +1,90 @@
-<h1><a name="proxy">World proxy</a></h1>
-<p>The <code>wasi:http/proxy</code> world captures a widely-implementable intersection of
-hosts that includes HTTP forward and reverse proxies. Components targeting
-this world may concurrently stream in and out any number of incoming and
-outgoing HTTP requests.</p>
+<h1><a name="imports">World imports</a></h1>
+<p>The <code>wasi:http/imports</code> world imports all the APIs for HTTP proxies.
+Is is intended to be <code>include</code>d in other worlds.</p>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:io_poll_0.2.0"><code>wasi:io/poll@0.2.0</code></a></li>
-<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi:io_error_0.2.0"><code>wasi:io/error@0.2.0</code></a></li>
-<li>interface <a href="#wasi:io_streams_0.2.0"><code>wasi:io/streams@0.2.0</code></a></li>
-<li>interface <a href="#wasi:http_types_0.2.0"><code>wasi:http/types@0.2.0</code></a></li>
 <li>interface <a href="#wasi:random_random_0.2.0"><code>wasi:random/random@0.2.0</code></a></li>
+<li>interface <a href="#wasi:io_error_0.2.0"><code>wasi:io/error@0.2.0</code></a></li>
+<li>interface <a href="#wasi:io_poll_0.2.0"><code>wasi:io/poll@0.2.0</code></a></li>
+<li>interface <a href="#wasi:io_streams_0.2.0"><code>wasi:io/streams@0.2.0</code></a></li>
 <li>interface <a href="#wasi:cli_stdout_0.2.0"><code>wasi:cli/stdout@0.2.0</code></a></li>
 <li>interface <a href="#wasi:cli_stderr_0.2.0"><code>wasi:cli/stderr@0.2.0</code></a></li>
 <li>interface <a href="#wasi:cli_stdin_0.2.0"><code>wasi:cli/stdin@0.2.0</code></a></li>
+<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
+<li>interface <a href="#wasi:http_types_0.2.0"><code>wasi:http/types@0.2.0</code></a></li>
 <li>interface <a href="#wasi:http_outgoing_handler_0.2.0"><code>wasi:http/outgoing-handler@0.2.0</code></a></li>
 <li>interface <a href="#wasi:clocks_wall_clock_0.2.0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
 </ul>
 </li>
-<li>Exports:
-<ul>
-<li>interface <a href="#wasi:http_incoming_handler_0.2.0"><code>wasi:http/incoming-handler@0.2.0</code></a></li>
 </ul>
-</li>
+<h2><a name="wasi:random_random_0.2.0"></a>Import interface wasi:random/random@0.2.0</h2>
+<p>WASI Random is a random data API.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a name="get_random_bytes"></a><code>get-random-bytes: func</code></h4>
+<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
+<p>This function must produce data at least as cryptographically secure and
+fast as an adequately seeded cryptographically-secure pseudo-random
+number generator (CSPRNG). It must not block, from the perspective of
+the calling program, under any circumstances, including on the first
+request and on requests for numbers of bytes. The returned data must
+always be unpredictable.</p>
+<p>This function must always return fresh data. Deterministic environments
+must omit this function, rather than implementing it with deterministic
+data.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="get_random_bytes.len"></a><code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h4><a name="get_random_u64"></a><code>get-random-u64: func</code></h4>
+<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
+represented as a <code>u64</code>.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_random_u64.0"></a> <code>u64</code></li>
+</ul>
+<h2><a name="wasi:io_error_0.2.0"></a>Import interface wasi:io/error@0.2.0</h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="error"></a><code>resource error</code></h4>
+<p>A resource which represents some error information.</p>
+<p>The only method provided by this resource is <code>to-debug-string</code>,
+which provides some human-readable information about the error.</p>
+<p>In the <code>wasi:io</code> package, this resource is returned through the
+<code>wasi:io/streams/stream-error</code> type.</p>
+<p>To provide more specific error information, other interfaces may
+provide functions to further &quot;downcast&quot; this error into more specific
+error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
+from filesystem types to be described using the filesystem's own
+error-code type, using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
+<code>borrow&lt;error&gt;</code> and returns
+<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
+concrete type is open.</h2>
+<h3>Functions</h3>
+<h4><a name="method_error.to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
+<p>Returns a string that is suitable to assist humans in debugging
+this error.</p>
+<p>WARNING: The returned string should not be consumed mechanically!
+It may change across platforms, hosts, or other implementation
+details. Parsing this string is a major platform-compatibility
+hazard.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="method_error.to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
 </ul>
 <h2><a name="wasi:io_poll_0.2.0"></a>Import interface wasi:io/poll@0.2.0</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
@@ -74,102 +135,6 @@ being reaedy for I/O.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
-</ul>
-<h2><a name="wasi:clocks_monotonic_clock_0.2.0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
-<p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
-time.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<p>A monotonic clock is a clock which has an unspecified initial value, and
-successive reads of the clock will produce non-decreasing values.</p>
-<p>It is intended for measuring elapsed time.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="pollable"></a><code>type pollable</code></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
-<p>
-#### <a name="instant"></a>`type instant`
-`u64`
-<p>An instant in time, in nanoseconds. An instant is relative to an
-unspecified initial value, and can only be compared to instances from
-the same monotonic-clock.
-<h4><a name="duration"></a><code>type duration</code></h4>
-<p><code>u64</code></p>
-<p>A duration of time, in nanoseconds.
-<hr />
-<h3>Functions</h3>
-<h4><a name="now"></a><code>now: func</code></h4>
-<p>Read the current value of the clock.</p>
-<p>The clock is monotonic, therefore calling this function repeatedly will
-produce a sequence of non-decreasing values.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
-</ul>
-<h4><a name="resolution"></a><code>resolution: func</code></h4>
-<p>Query the resolution of the clock. Returns the duration of time
-corresponding to a clock tick.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
-</ul>
-<h4><a name="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
-occured.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h4><a name="subscribe_duration"></a><code>subscribe-duration: func</code></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
-elapsed, starting at the time at which this function was called.
-occured.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="subscribe_duration.when"></a><code>when</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:io_error_0.2.0"></a>Import interface wasi:io/error@0.2.0</h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="error"></a><code>resource error</code></h4>
-<p>A resource which represents some error information.</p>
-<p>The only method provided by this resource is <code>to-debug-string</code>,
-which provides some human-readable information about the error.</p>
-<p>In the <code>wasi:io</code> package, this resource is returned through the
-<code>wasi:io/streams/stream-error</code> type.</p>
-<p>To provide more specific error information, other interfaces may
-provide functions to further &quot;downcast&quot; this error into more specific
-error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
-from filesystem types to be described using the filesystem's own
-error-code type, using the function
-<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
-<code>borrow&lt;error&gt;</code> and returns
-<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
-<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
-concrete type is open.</h2>
-<h3>Functions</h3>
-<h4><a name="method_error.to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
-<p>Returns a string that is suitable to assist humans in debugging
-this error.</p>
-<p>WARNING: The returned string should not be consumed mechanically!
-It may change across platforms, hosts, or other implementation
-details. Parsing this string is a major platform-compatibility
-hazard.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="method_error.to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
 </ul>
 <h2><a name="wasi:io_streams_0.2.0"></a>Import interface wasi:io/streams@0.2.0</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
@@ -495,6 +460,106 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <h5>Return values</h5>
 <ul>
 <li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stdout_0.2.0"></a>Import interface wasi:cli/stdout@0.2.0</h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"></a><code>type output-stream</code></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdout"></a><code>get-stdout: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stderr_0.2.0"></a>Import interface wasi:cli/stderr@0.2.0</h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="output_stream"></a><code>type output-stream</code></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stderr"></a><code>get-stderr: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:cli_stdin_0.2.0"></a>Import interface wasi:cli/stdin@0.2.0</h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="input_stream"></a><code>type input-stream</code></h4>
+<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a name="get_stdin"></a><code>get-stdin: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a name="wasi:clocks_monotonic_clock_0.2.0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
+<p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
+time.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A monotonic clock is a clock which has an unspecified initial value, and
+successive reads of the clock will produce non-decreasing values.</p>
+<p>It is intended for measuring elapsed time.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="pollable"></a><code>type pollable</code></h4>
+<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+<p>
+#### <a name="instant"></a>`type instant`
+`u64`
+<p>An instant in time, in nanoseconds. An instant is relative to an
+unspecified initial value, and can only be compared to instances from
+the same monotonic-clock.
+<h4><a name="duration"></a><code>type duration</code></h4>
+<p><code>u64</code></p>
+<p>A duration of time, in nanoseconds.
+<hr />
+<h3>Functions</h3>
+<h4><a name="now"></a><code>now: func</code></h4>
+<p>Read the current value of the clock.</p>
+<p>The clock is monotonic, therefore calling this function repeatedly will
+produce a sequence of non-decreasing values.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h4><a name="resolution"></a><code>resolution: func</code></h4>
+<p>Query the resolution of the clock. Returns the duration of time
+corresponding to a clock tick.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h4><a name="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+</ul>
+<h4><a name="subscribe_duration"></a><code>subscribe-duration: func</code></h4>
+<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
+elapsed, starting at the time at which this function was called.
+occured.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="subscribe_duration.when"></a><code>when</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h2><a name="wasi:http_types_0.2.0"></a>Import interface wasi:http/types@0.2.0</h2>
 <p>This interface defines all of the types and methods for implementing
@@ -1382,78 +1447,6 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:random_random_0.2.0"></a>Import interface wasi:random/random@0.2.0</h2>
-<p>WASI Random is a random data API.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<hr />
-<h3>Functions</h3>
-<h4><a name="get_random_bytes"></a><code>get-random-bytes: func</code></h4>
-<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
-<p>This function must produce data at least as cryptographically secure and
-fast as an adequately seeded cryptographically-secure pseudo-random
-number generator (CSPRNG). It must not block, from the perspective of
-the calling program, under any circumstances, including on the first
-request and on requests for numbers of bytes. The returned data must
-always be unpredictable.</p>
-<p>This function must always return fresh data. Deterministic environments
-must omit this function, rather than implementing it with deterministic
-data.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="get_random_bytes.len"></a><code>len</code>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
-</ul>
-<h4><a name="get_random_u64"></a><code>get-random-u64: func</code></h4>
-<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
-<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
-represented as a <code>u64</code>.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_random_u64.0"></a> <code>u64</code></li>
-</ul>
-<h2><a name="wasi:cli_stdout_0.2.0"></a>Import interface wasi:cli/stdout@0.2.0</h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="output_stream"></a><code>type output-stream</code></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stdout"></a><code>get-stdout: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_stderr_0.2.0"></a>Import interface wasi:cli/stderr@0.2.0</h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="output_stream"></a><code>type output-stream</code></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stderr"></a><code>get-stderr: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi:cli_stdin_0.2.0"></a>Import interface wasi:cli/stdin@0.2.0</h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="input_stream"></a><code>type input-stream</code></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="get_stdin"></a><code>get-stdin: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-</ul>
 <h2><a name="wasi:http_outgoing_handler_0.2.0"></a>Import interface wasi:http/outgoing-handler@0.2.0</h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
@@ -1531,30 +1524,4 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <h5>Return values</h5>
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
-</ul>
-<h2><a name="wasi:http_incoming_handler_0.2.0"></a>Export interface wasi:http/incoming-handler@0.2.0</h2>
-<hr />
-<h3>Types</h3>
-<h4><a name="incoming_request"></a><code>type incoming-request</code></h4>
-<p><a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a></p>
-<p>
-#### <a name="response_outparam"></a>`type response-outparam`
-[`response-outparam`](#response_outparam)
-<p>
-----
-<h3>Functions</h3>
-<h4><a name="handle"></a><code>handle: func</code></h4>
-<p>This function is invoked with an incoming HTTP Request, and a resource
-<a href="#response_outparam"><code>response-outparam</code></a> which provides the capability to reply with an HTTP
-Response. The response is sent by calling the <code>response-outparam.set</code>
-method, which allows execution to continue after the response has been
-sent. This enables both streaming to the response body, and performing other
-work.</p>
-<p>The implementor of this function must write a response to the
-<a href="#response_outparam"><code>response-outparam</code></a> before returning, or else the caller will respond
-with an error on its behalf.</p>
-<h5>Params</h5>
-<ul>
-<li><a name="handle.request"></a><code>request</code>: own&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
-<li><a name="handle.response_out"></a><code>response-out</code>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
 </ul>

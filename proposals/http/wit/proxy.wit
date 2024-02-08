@@ -1,10 +1,8 @@
 package wasi:http@0.2.0;
 
-/// The `wasi:http/proxy` world captures a widely-implementable intersection of
-/// hosts that includes HTTP forward and reverse proxies. Components targeting
-/// this world may concurrently stream in and out any number of incoming and
-/// outgoing HTTP requests.
-world proxy {
+/// The `wasi:http/imports` world imports all the APIs for HTTP proxies.
+/// Is is intended to be `include`d in other worlds.
+world imports {
   /// HTTP proxies have access to time and randomness.
   include wasi:clocks/imports@0.2.0;
   import wasi:random/random@0.2.0;
@@ -23,6 +21,14 @@ world proxy {
   /// This is the default handler to use when user code simply wants to make an
   /// HTTP request (e.g., via `fetch()`).
   import outgoing-handler;
+}
+
+/// The `wasi:http/proxy` world captures a widely-implementable intersection of
+/// hosts that includes HTTP forward and reverse proxies. Components targeting
+/// this world may concurrently stream in and out any number of incoming and
+/// outgoing HTTP requests.
+world proxy {
+  include imports;
 
   /// The host delivers incoming HTTP requests to a component by calling the
   /// `handle` function of this exported interface. A host may arbitrarily reuse
