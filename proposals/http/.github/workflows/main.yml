@@ -17,3 +17,6 @@ jobs:
         chmod +x ./wit-deps
         ./wit-deps lock --check
     - uses: WebAssembly/wit-abi-up-to-date@v17
+      with:
+        wit-bindgen: '0.17.0'
+        worlds: 'imports proxy'
