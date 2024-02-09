@@ -1,7 +1,7 @@
 package wasi:http@0.2.0;
 
 /// The `wasi:http/imports` world imports all the APIs for HTTP proxies.
-/// Is is intended to be `include`d in other worlds.
+/// It is intended to be `include`d in other worlds.
 world imports {
   /// HTTP proxies have access to time and randomness.
   include wasi:clocks/imports@0.2.0;
