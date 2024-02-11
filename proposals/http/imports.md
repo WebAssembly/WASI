@@ -1,6 +1,6 @@
 <h1><a name="imports">World imports</a></h1>
 <p>The <code>wasi:http/imports</code> world imports all the APIs for HTTP proxies.
-Is is intended to be <code>include</code>d in other worlds.</p>
+It is intended to be <code>include</code>d in other worlds.</p>
 <ul>
 <li>Imports:
 <ul>
