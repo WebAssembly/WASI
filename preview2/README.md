@@ -7,6 +7,10 @@ when WASI has fully rebased on the [Wit IDL] and the [component model]
 type system and semantics, making it modular, fully virtualizable, and
 accessible to a wide variety of source languages.
 
+WASI Preview 2 is also known as “WASI 0.2”, and corresponds to versions
+numbered `0.2.x` in Wit packages and related identifiers. It is also known as
+“WASIp2”, where the “p” stands for either “preview” or “point”.
+
 [Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 [component model]: https://github.com/WebAssembly/component-model
 
