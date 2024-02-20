@@ -745,11 +745,9 @@ http-related errors.</p>
 which have multiple values are represented by multiple entries in this
 list with the same key.</p>
 <p>The tuple is a pair of the field key, represented as a string, and
-Value, represented as a list of bytes. In a valid Fields, all keys
-and values are valid UTF-8 strings. However, values are not always
-well-formed, so they are represented as a raw list of bytes.</p>
-<p>An error result will be returned if any header or value was
-syntactically invalid, or if a header was forbidden.</p>
+Value, represented as a list of bytes.</p>
+<p>An error result will be returned if any <a href="#field_key"><code>field-key</code></a> or <a href="#field_value"><code>field-value</code></a> is
+syntactically invalid, or if a field is forbidden.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="static_fields.from_list.entries"></a><code>entries</code>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
@@ -760,9 +758,9 @@ syntactically invalid, or if a header was forbidden.</p>
 </ul>
 <h4><a name="method_fields.get"></a><code>[method]fields.get: func</code></h4>
 <p>Get all of the values corresponding to a key. If the key is not present
-in this <a href="#fields"><code>fields</code></a>, an empty list is returned. However, if the key is
-present but empty, this is represented by a list with one or more
-empty field-values present.</p>
+in this <a href="#fields"><code>fields</code></a> or is syntactically invalid, an empty list is returned.
+However, if the key is present but empty, this is represented by a list
+with one or more empty field-values present.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.get.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -788,6 +786,8 @@ syntactically invalid, <code>false</code> is returned.</p>
 <p>Set all of the values for a key. Clears any existing values for that
 key, if they have been set.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
+<p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_key"><code>field-key</code></a> or any of
+the <a href="#field_value"><code>field-value</code></a>s are syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.set.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -802,6 +802,8 @@ key, if they have been set.</p>
 <p>Delete all values for a key. Does nothing if no values for the key
 exist.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
+<p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_key"><code>field-key</code></a> is
+syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.delete.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
@@ -815,6 +817,8 @@ exist.</p>
 <p>Append a value for a key. Does not change or delete any existing
 values for that key.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
+<p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_key"><code>field-key</code></a> or
+<a href="#field_value"><code>field-value</code></a> are syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_fields.append.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
