@@ -55,7 +55,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [SQL Embed][wasi-sql-embed]                                                                | Kyle Brown |          |
+| [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | Radu Matei       |          |
 | [WebGPU][wasi-webgpu]                                                          | Mendy Berger, Sean Isom                   |          |
