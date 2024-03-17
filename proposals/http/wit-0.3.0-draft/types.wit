@@ -258,9 +258,8 @@ interface types {
     /// `none` values for `path-with-query`, `scheme`, and `authority`.
     ///
     /// * `headers` is the HTTP Headers for the Response.
-    /// * `body` is the contents of the body, as a stream of bytes.
-    /// * `trailers` is an optional `future` which resolves to the HTTP Trailers
-    ///   for the Response.
+    /// * `body` is the optional contents of the body, possibly including
+    ///   trailers.
     /// * `options` is optional `request-options` to be used if the request is
     ///   sent over a network connection.
     ///
@@ -271,7 +270,7 @@ interface types {
     /// to reject invalid constructions of `request`.
     constructor(
       headers: headers,
-      body: body,
+      body: option<body>,
       options: option<request-options>
     );
 
@@ -327,15 +326,16 @@ interface types {
     /// component by e.g. `handler.handle`.
     headers: func() -> headers;
 
-    /// Get the body associated with the Request.
+    /// Get the body associated with the Request, if any.
     ///
     /// This body resource is a child: it must be dropped before the parent
     /// `request` is dropped, or its ownership is transfered to another
     /// component by e.g. `handler.handle`.
-    body: func() -> body;
+    body: func() -> option<body>;
 
-    /// Takes onwership of the `request` and returns the `headers` and `body`.
-    into-parts: static func(this: request) -> tuple<headers, body>;
+    /// Takes ownership of the `request` and returns the `headers` and `body`,
+    /// if any.
+    into-parts: static func(this: request) -> tuple<headers, option<body>>;
   }
 
   /// Parameters for making an HTTP Request. Each of these parameters is
@@ -385,12 +385,11 @@ interface types {
     /// `set-status-code` method.
     ///
     /// * `headers` is the HTTP Headers for the Response.
-    /// * `body` is the contents of the body, as a stream of bytes.
-    /// * `trailers` is an optional `future` which resolves to the HTTP Trailers
-    ///   for the Response.
+    /// * `body` is the optional contents of the body, possibly including
+    ///   trailers.
     constructor(
       headers: headers,
-      body: body,
+      body: option<body>,
     );
 
     /// Get the HTTP Status Code for the Response.
@@ -410,14 +409,15 @@ interface types {
     /// component by e.g. `handler.handle`.
     headers: func() -> headers;
 
-    /// Get the body associated with the Response.
+    /// Get the body associated with the Response, if any.
     ///
     /// This body resource is a child: it must be dropped before the parent
     /// `response` is dropped, or its ownership is transfered to another
     /// component by e.g. `handler.handle`.
-    body: func() -> body;
+    body: func() -> option<body>;
 
-    /// Takes onwership of the `response` and returns the `headers` and `body`.
-    into-parts: static func(this: response) -> tuple<headers, body>;
+    /// Takes ownership of the `response` and returns the `headers` and `body`,
+    /// if any.
+    into-parts: static func(this: response) -> tuple<headers, option<body>>;
   }
 }
