@@ -198,6 +198,14 @@ interface types {
     /// Fails with `header-error.immutable` if the `fields` are immutable.
     delete: func(name: field-key) -> result<_, header-error>;
 
+    /// Delete all values for a key. Does nothing if no values for the key
+    /// exist.
+    ///
+    /// Returns all values previously corresponding to the key, if any.
+    ///
+    /// Fails with `header-error.immutable` if the `fields` are immutable.
+    get-and-delete: func(name: field-key) -> result<list<field-value>, header-error>;
+
     /// Append a value for a key. Does not change or delete any existing
     /// values for that key.
     ///
