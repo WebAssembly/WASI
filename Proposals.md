@@ -45,7 +45,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [I2C][wasi-i2c]                      | Friedrich Vandenberghe |          |
+| [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
