@@ -59,6 +59,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | Radu Matei       |          |
+| [USB][wasi-usb]                                                                | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts | |
 | [WebGPU][wasi-webgpu]                                                          | Mendy Berger, Sean Isom                   |          |
 
 ### Phase 0 - Pre-Proposal (CG)
@@ -111,5 +112,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-sql-embed]: https://github.com/WebAssembly/wasi-sql-embed
 [wasi-threads]: https://github.com/WebAssembly/wasi-native-threads
 [wasi-url]: https://github.com/WebAssembly/wasi-url
+[wasi-usb]: https://github.com/WebAssembly/wasi-usb
 [wasi-webgpu]: https://github.com/WebAssembly/wasi-webgpu
 [wasi-cli]: https://github.com/WebAssembly/wasi-cli
