@@ -82,7 +82,7 @@ interface tcp {
         /// Connect to a remote endpoint.
         ///
         /// On success:
-        /// - the socket is transitioned into the `connection` state.
+        /// - the socket is transitioned into the `connected` state.
         /// - a pair of streams is returned that can be used to read & write to the connection
         ///
         /// After a failed connection attempt, the socket will be in the `closed`
