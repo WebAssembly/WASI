@@ -61,7 +61,6 @@ interface network {
         /// Note: this is scheduled to be removed when `future`s are natively supported.
         would-block,
 
-
         /// The operation is not valid in the socket's current state.
         invalid-state,
 
@@ -77,7 +76,6 @@ interface network {
         /// The remote address is not reachable
         remote-unreachable,
 
-
         /// The TCP connection was forcefully rejected
         connection-refused,
 
@@ -87,11 +85,9 @@ interface network {
         /// A TCP connection was aborted.
         connection-aborted,
 
-
         /// The size of a datagram sent to a UDP socket exceeded the maximum
         /// supported size.
         datagram-too-large,
-
 
         /// Name does not exist or has no suitable associated IP addresses.
         name-unresolvable,
