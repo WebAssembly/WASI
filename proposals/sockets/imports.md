@@ -1210,7 +1210,7 @@ occured.</p>
 <li><code>connected</code></li>
 <li><code>closed</code>
 See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md</a>
-for a more information.</li>
+for more information.</li>
 </ul>
 <p>Note: Except where explicitly mentioned, whenever this documentation uses
 the term &quot;bound&quot; without backticks it actually means: in the <code>bound</code> state <em>or higher</em>.
@@ -1700,7 +1700,7 @@ in progress at the time of calling <code>subscribe</code> (if any). Theoreticall
 <code>subscribe</code> only has to be called once per socket and can then be
 (re)used for the remainder of the socket's lifetime.</p>
 <p>See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness</a>
-for a more information.</p>
+for more information.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>

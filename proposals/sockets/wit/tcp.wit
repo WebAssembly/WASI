@@ -27,8 +27,8 @@ interface tcp {
     /// - `connect-in-progress`
     /// - `connected`
     /// - `closed`
-    /// See <https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md>
-    /// for a more information.
+    /// See <https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md>
+    /// for more information.
     ///
     /// Note: Except where explicitly mentioned, whenever this documentation uses
     /// the term "bound" without backticks it actually means: in the `bound` state *or higher*.
@@ -318,8 +318,8 @@ interface tcp {
         /// `subscribe` only has to be called once per socket and can then be
         /// (re)used for the remainder of the socket's lifetime.
         ///
-        /// See <https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness>
-        /// for a more information.
+        /// See <https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness>
+        /// for more information.
         ///
         /// Note: this function is here for WASI Preview2 only.
         /// It's planned to be removed when `future` is natively supported in Preview3.
