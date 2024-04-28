@@ -48,11 +48,10 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
-| [Message Queue][wasi-message-queue]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Messaging][wasi-messaging]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Observe][wasi-observe]    | Chris Dickinson                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [Pub/sub][wasi-pubsub]                                                         | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
@@ -96,14 +95,13 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-kv-store]: https://github.com/WebAssembly/wasi-kv-store
 [wasi-logging]: https://github.com/WebAssembly/wasi-logging
-[wasi-message-queue]: https://github.com/WebAssembly/wasi-message-queue
+[wasi-message]: https://github.com/WebAssembly/wasi-messaging
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-observe]: https://github.com/dylibso/wasi-observe
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
 [wasi-poll]: https://github.com/WebAssembly/wasi-poll
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
-[wasi-pubsub]: https://github.com/WebAssembly/wasi-pubsub
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-runtime-config]: https://github.com/WebAssembly/wasi-runtime-config
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
