@@ -100,7 +100,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-observe]: https://github.com/dylibso/wasi-observe
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
-[wasi-poll]: https://github.com/WebAssembly/wasi-poll
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-runtime-config]: https://github.com/WebAssembly/wasi-runtime-config
