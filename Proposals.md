@@ -95,7 +95,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-kv-store]: https://github.com/WebAssembly/wasi-kv-store
 [wasi-logging]: https://github.com/WebAssembly/wasi-logging
-[wasi-message]: https://github.com/WebAssembly/wasi-messaging
+[wasi-messaging]: https://github.com/WebAssembly/wasi-messaging
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-observe]: https://github.com/dylibso/wasi-observe
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
