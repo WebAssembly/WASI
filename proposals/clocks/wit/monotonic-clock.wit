@@ -7,8 +7,6 @@ package wasi:clocks@0.2.0;
 ///
 /// A monotonic clock is a clock which has an unspecified initial value, and
 /// successive reads of the clock will produce non-decreasing values.
-///
-/// It is intended for measuring elapsed time.
 interface monotonic-clock {
     use wasi:io/poll@0.2.0.{pollable};
 
@@ -31,14 +29,13 @@ interface monotonic-clock {
     resolution: func() -> duration;
 
     /// Create a `pollable` which will resolve once the specified instant
-    /// occured.
+    /// has occurred.
     subscribe-instant: func(
         when: instant,
     ) -> pollable;
 
-    /// Create a `pollable` which will resolve once the given duration has
-    /// elapsed, starting at the time at which this function was called.
-    /// occured.
+    /// Create a `pollable` that will resolve after the specified duration has
+    /// elapsed from the time this function is invoked.
     subscribe-duration: func(
         when: duration,
     ) -> pollable;

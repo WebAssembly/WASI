@@ -98,7 +98,7 @@ corresponding to a clock tick.</p>
 </ul>
 <h4><a name="subscribe_instant"><code>subscribe-instant: func</code></a></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
-occured.</p>
+has occurred.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="subscribe_instant.when"><code>when</code></a>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
@@ -108,9 +108,8 @@ occured.</p>
 <li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_duration"><code>subscribe-duration: func</code></a></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
-elapsed, starting at the time at which this function was called.
-occured.</p>
+<p>Create a <a href="#pollable"><code>pollable</code></a> that will resolve after the specified duration has
+elapsed from the time this function is invoked.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="subscribe_duration.when"><code>when</code></a>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>

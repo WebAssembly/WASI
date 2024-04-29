@@ -42,7 +42,7 @@ WASI Clocks is a WASI API for reading the current time and measuring elapsed
 time.
 
 Unlike many clock APIs, WASI Clocks is capability-oriented. Instead
-of having functions that implicitly reference a clock, WASI clocks' APIs are
+of having functions that implicitly reference a clock, WASI Clocks' APIs are
 passed a clock handle.
 
 ### Goals
