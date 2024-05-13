@@ -1209,8 +1209,8 @@ occured.</p>
 <li><code>connect-in-progress</code></li>
 <li><code>connected</code></li>
 <li><code>closed</code>
-See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md</a>
-for a more information.</li>
+See <a href="https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md</a>
+for more information.</li>
 </ul>
 <p>Note: Except where explicitly mentioned, whenever this documentation uses
 the term &quot;bound&quot; without backticks it actually means: in the <code>bound</code> state <em>or higher</em>.
@@ -1279,7 +1279,7 @@ don't want to make use of this ability can simply call the native
 <p>Connect to a remote endpoint.</p>
 <p>On success:</p>
 <ul>
-<li>the socket is transitioned into the <code>connection</code> state.</li>
+<li>the socket is transitioned into the <code>connected</code> state.</li>
 <li>a pair of streams is returned that can be used to read &amp; write to the connection</li>
 </ul>
 <p>After a failed connection attempt, the socket will be in the <code>closed</code>
@@ -1699,8 +1699,8 @@ their success or failure, after which the method can be retried.</p>
 in progress at the time of calling <code>subscribe</code> (if any). Theoretically,
 <code>subscribe</code> only has to be called once per socket and can then be
 (re)used for the remainder of the socket's lifetime.</p>
-<p>See <a href="https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness">https://github.com/WebAssembly/wasi-sockets/TcpSocketOperationalSemantics.md#Pollable-readiness</a>
-for a more information.</p>
+<p>See <a href="https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness">https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness</a>
+for more information.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
@@ -1722,7 +1722,7 @@ this method will be discarded.</li>
 associated with this socket will be closed and a FIN packet will be sent.</li>
 <li><code>both</code>: Same effect as <code>receive</code> &amp; <code>send</code> combined.</li>
 </ul>
-<p>This function is idempotent. Shutting a down a direction more than once
+<p>This function is idempotent; shutting down a direction more than once
 has no effect and returns <code>ok</code>.</p>
 <p>The shutdown function does not close (drop) the socket.</p>
 <h1>Typical errors</h1>
