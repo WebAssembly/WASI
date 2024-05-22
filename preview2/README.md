@@ -42,6 +42,8 @@ The portability criteria of the WASI Preview 2 proposals were met by the
 following implementations, which were demonstrated to be interoperable by
 each passing [Wasmtime's WASI Preview 2 test suite][test-suite].
 
+[test-suite]: https://github.com/bytecodealliance/wasmtime/blob/main/crates/test-programs/README.md
+
 * [Wasmtime]
 * [JCO]
 
