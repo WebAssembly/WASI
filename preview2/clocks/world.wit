@@ -6,4 +6,6 @@ world imports {
     import monotonic-clock;
     @since(version = 0.2.0)
     import wall-clock;
+    @unstable(feature = timezone)
+    import timezone;
 }
