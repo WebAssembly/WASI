@@ -1,6 +1,9 @@
 package wasi:clocks@0.2.0;
 
+@since(version = 0.2.0)
 world imports {
+    @since(version = 0.2.0)
     import monotonic-clock;
+    @since(version = 0.2.0)
     import wall-clock;
 }
