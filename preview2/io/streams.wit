@@ -16,12 +16,10 @@ interface streams {
         /// The last operation (a write or flush) failed before completion.
         ///
         /// More information is available in the `error` payload.
-        @since(version = 0.2.0)
         last-operation-failed(error),
         /// The stream is closed: no more input will be accepted by the
         /// stream. A closed output-stream will return this error on all
         /// future operations.
-        @since(version = 0.2.0)
         closed
     }
 
