@@ -1,6 +1,6 @@
 package wasi:io@0.2.0;
 
-
+@since(version = 0.2.0)
 interface error {
     /// A resource which represents some error information.
     ///
@@ -19,6 +19,7 @@ interface error {
     ///
     /// The set of functions which can "downcast" an `error` into a more
     /// concrete type is open.
+    @since(version = 0.2.0)
     resource error {
         /// Returns a string that is suitable to assist humans in debugging
         /// this error.
@@ -27,6 +28,7 @@ interface error {
         /// It may change across platforms, hosts, or other implementation
         /// details. Parsing this string is a major platform-compatibility
         /// hazard.
+        @since(version = 0.2.0)
         to-debug-string: func() -> string;
     }
 }
