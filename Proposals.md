@@ -68,6 +68,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
+| [Clocks: Timezone][wasi-clocks]                                                     | Dan Gohman                             |          |
 
 ## Versioning
 
