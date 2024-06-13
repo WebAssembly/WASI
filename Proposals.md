@@ -36,6 +36,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
+| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                             |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -68,7 +69,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
-| [Clocks: Timezone][wasi-clocks]                                                     | Dan Gohman                             |          |
 
 ## Versioning
 
