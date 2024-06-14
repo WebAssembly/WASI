@@ -35,6 +35,7 @@ WASI clocks must have at least two complete independent implementations.
   - [[Alternative 2]](#alternative-2)
 - [Stakeholder Interest & Feedback](#stakeholder-interest--feedback)
 - [References & acknowledgements](#references--acknowledgements)
+- [Development](#development)
 
 ### Introduction
 
@@ -132,3 +133,13 @@ Many thanks for valuable feedback and advice from:
 - [Person 1]
 - [Person 2]
 - [etc.]
+
+### Development
+
+#### Generating imports.md
+
+The file `imports.md` is generated using [wit-bindgen](https://github.com/bytecodealliance/wit-bindgen).
+
+```bash
+wit-bindgen markdown wit --html-in-md --features clocks-timezone
+```

@@ -5,6 +5,7 @@
 <li>interface <a href="#wasi_io_poll_0_2_0"><code>wasi:io/poll@0.2.0</code></a></li>
 <li>interface <a href="#wasi_clocks_monotonic_clock_0_2_0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
 <li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_2_0"><code>wasi:clocks/timezone@0.2.0</code></a></li>
 </ul>
 </li>
 </ul>
@@ -157,4 +158,69 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <h5>Return values</h5>
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h2><a name="wasi_clocks_timezone_0_2_0"></a>Import interface wasi:clocks/timezone@0.2.0</h2>
+<hr />
+<h3>Types</h3>
+<h4><a name="datetime"></a><code>type datetime</code></h4>
+<p><a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>
+#### <a name="timezone_display"></a>`record timezone-display`
+<p>Information useful for displaying the timezone of a specific <a href="#datetime"><code>datetime</code></a>.</p>
+<p>This information may vary within a single <code>timezone</code> to reflect daylight
+saving time adjustments.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a name="timezone_display.utc_offset"></a><a href="#utc_offset"><code>utc-offset</code></a>: <code>s32</code></p>
+<p>The number of seconds difference between UTC time and the local
+time of the timezone.
+<p>The returned value will always be less than 86400 which is the
+number of seconds in a day (24<em>60</em>60).</p>
+<p>In implementations that do not expose an actual time zone, this
+should return 0.</p>
+</li>
+<li>
+<p><a name="timezone_display.name"></a><code>name</code>: <code>string</code></p>
+<p>The abbreviated name of the timezone to display to a user. The name
+`UTC` indicates Coordinated Universal Time. Otherwise, this should
+reference local standards for the name of the time zone.
+<p>In implementations that do not expose an actual time zone, this
+should be the string <code>UTC</code>.</p>
+<p>In time zones that do not have an applicable name, a formatted
+representation of the UTC offset may be returned, such as <code>-04:00</code>.</p>
+</li>
+<li>
+<p><a name="timezone_display.in_daylight_saving_time"></a><code>in-daylight-saving-time</code>: <code>bool</code></p>
+<p>Whether daylight saving time is active.
+<p>In implementations that do not expose an actual time zone, this
+should return false.</p>
+</li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a name="display"></a><code>display: func</code></h4>
+<p>Return information needed to display the given <a href="#datetime"><code>datetime</code></a>. This includes
+the UTC offset, the time zone name, and a flag indicating whether
+daylight saving time is active.</p>
+<p>If the timezone cannot be determined for the given <a href="#datetime"><code>datetime</code></a>, return a
+<a href="#timezone_display"><code>timezone-display</code></a> for <code>UTC</code> with a <a href="#utc_offset"><code>utc-offset</code></a> of 0 and no daylight
+saving time.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="display.when"></a><code>when</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="display.0"></a> <a href="#timezone_display"><a href="#timezone_display"><code>timezone-display</code></a></a></li>
+</ul>
+<h4><a name="utc_offset"></a><code>utc-offset: func</code></h4>
+<p>The same as <a href="#display"><code>display</code></a>, but only return the UTC offset.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="utc_offset.when"></a><code>when</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a name="utc_offset.0"></a> <code>s32</code></li>
 </ul>
