@@ -1,4 +1,4 @@
-
+@since(version = 0.2.0)
 interface udp-create-socket {
     use network.{network, error-code, ip-address-family};
     use udp.{udp-socket};
@@ -23,5 +23,6 @@ interface udp-create-socket {
     /// - <https://man7.org/linux/man-pages/man2/socket.2.html>
     /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw>
     /// - <https://man.freebsd.org/cgi/man.cgi?query=socket&sektion=2>
+    @since(version = 0.2.0)
     create-udp-socket: func(address-family: ip-address-family) -> result<udp-socket, error-code>;
 }
