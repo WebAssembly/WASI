@@ -1,5 +1,6 @@
 @since(version = 0.2.0)
 interface stdin {
+  @since(version = 0.2.0)
   use wasi:io/streams@0.2.0.{input-stream};
 
   @since(version = 0.2.0)
@@ -8,6 +9,7 @@ interface stdin {
 
 @since(version = 0.2.0)
 interface stdout {
+  @since(version = 0.2.0)
   use wasi:io/streams@0.2.0.{output-stream};
 
   @since(version = 0.2.0)
@@ -16,6 +18,7 @@ interface stdout {
 
 @since(version = 0.2.0)
 interface stderr {
+  @since(version = 0.2.0)
   use wasi:io/streams@0.2.0.{output-stream};
 
   @since(version = 0.2.0)

@@ -26,6 +26,7 @@ interface terminal-output {
 /// link-time authority.
 @since(version = 0.2.0)
 interface terminal-stdin {
+    @since(version = 0.2.0)
     use terminal-input.{terminal-input};
 
     /// If stdin is connected to a terminal, return a `terminal-input` handle
@@ -38,6 +39,7 @@ interface terminal-stdin {
 /// link-time authority.
 @since(version = 0.2.0)
 interface terminal-stdout {
+    @since(version = 0.2.0)
     use terminal-output.{terminal-output};
 
     /// If stdout is connected to a terminal, return a `terminal-output` handle
@@ -50,6 +52,7 @@ interface terminal-stdout {
 /// link-time authority.
 @since(version = 0.2.0)
 interface terminal-stderr {
+    @since(version = 0.2.0)
     use terminal-output.{terminal-output};
 
     /// If stderr is connected to a terminal, return a `terminal-output` handle
