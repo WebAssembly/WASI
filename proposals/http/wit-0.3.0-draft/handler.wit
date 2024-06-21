@@ -3,6 +3,7 @@
 /// which can respond to HTTP Requests.  In addition, it may be used to pass
 /// a request from one component to another without any use of a network.
 interface handler {
+  @since(version = 0.2.0)
   use types.{request, response, error-code};
 
   /// When exported, this function may be called with either an incoming

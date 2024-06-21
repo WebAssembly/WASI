@@ -2,6 +2,7 @@
 /// be exported by components which can respond to HTTP Requests.
 @since(version = 0.2.0)
 interface incoming-handler {
+  @since(version = 0.2.0)
   use types.{incoming-request, response-outparam};
 
   /// This function is invoked with an incoming HTTP Request, and a resource
@@ -25,6 +26,7 @@ interface incoming-handler {
 /// imported by components which wish to make HTTP Requests.
 @since(version = 0.2.0)
 interface outgoing-handler {
+  @since(version = 0.2.0)
   use types.{
     outgoing-request, request-options, future-incoming-response, error-code
   };

@@ -3,9 +3,13 @@
 /// their headers, trailers, and bodies.
 @since(version = 0.2.0)
 interface types {
+  @since(version = 0.2.0)
   use wasi:clocks/monotonic-clock@0.2.0.{duration};
+  @since(version = 0.2.0)
   use wasi:io/streams@0.2.0.{input-stream, output-stream};
+  @since(version = 0.2.0)
   use wasi:io/error@0.2.0.{error as io-error};
+  @since(version = 0.2.0)
   use wasi:io/poll@0.2.0.{pollable};
 
   /// This type corresponds to HTTP standard Methods.
