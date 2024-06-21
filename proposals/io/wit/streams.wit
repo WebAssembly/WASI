@@ -7,7 +7,9 @@ package wasi:io@0.2.0;
 /// when it does, they are expected to subsume this API.
 @since(version = 0.2.0)
 interface streams {
+    @since(version = 0.2.0)
     use error.{error};
+    @since(version = 0.2.0)
     use poll.{pollable};
 
     /// An error for input-stream and output-stream operations.
