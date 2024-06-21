@@ -9,6 +9,7 @@ package wasi:clocks@0.2.0;
 /// successive reads of the clock will produce non-decreasing values.
 @since(version = 0.2.0)
 interface monotonic-clock {
+    @since(version = 0.2.0)
     use wasi:io/poll@0.2.0.{pollable};
 
     /// An instant in time, in nanoseconds. An instant is relative to an
