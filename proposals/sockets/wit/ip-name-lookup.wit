@@ -1,6 +1,8 @@
 @since(version = 0.2.0)
 interface ip-name-lookup {
+    @since(version = 0.2.0)
     use wasi:io/poll@0.2.0.{pollable};
+    @since(version = 0.2.0)
     use network.{network, error-code, ip-address};
 
     /// Resolve an internet host name to a list of IP addresses.

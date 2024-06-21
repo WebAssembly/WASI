@@ -1,6 +1,8 @@
 @since(version = 0.2.0)
 interface tcp-create-socket {
+    @since(version = 0.2.0)
     use network.{network, error-code, ip-address-family};
+    @since(version = 0.2.0)
     use tcp.{tcp-socket};
 
     /// Create a new TCP socket.
