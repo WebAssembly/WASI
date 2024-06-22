@@ -109,3 +109,41 @@ Phases 4 and 5 are where a feature is finished and standardized. As WASI matures
 [proposal template]: https://github.com/WebAssembly/wasi-proposal-template
 [WASI meeting agenda]: https://github.com/WebAssembly/meetings/tree/main/wasi
 [WebAssembly CG's Phase Process]: https://github.com/WebAssembly/meetings/blob/main/process/phases.md
+
+## Filing changes to existing phase 3 proposals
+
+Extending existing phase 3 WASI proposals follows a different process than filing
+new proposals. Because the scope of a phase 3 proposal is already set, further
+changes to its APIs are tracked independently as phase 2 proposals behind an
+`@unstable` gate in WIT. Once an extension is sufficiently developed, and meets
+the phase 3 criteria, it must go through a vote in the WASI SG to reach
+phase 3. Once that's done, the `@unstable` gate can be replaced with `@since`,
+and the extension can be included in a future WASI release.
+
+To submit an extension to an existing phase 3 WASI proposal, the following
+process should be followed:
+
+1. File a PR to a WASI proposal repo with the feature extensions behind an
+  `@unstable` gate. Feature gate names all exist in a shared namespace, so they
+  should be prefixed with the parent proposal name. An unstable "timezone"
+  feature for the "clocks" proposal should be named `clocks-timezone`.
+2. Accepting changes to proposals is done at the discretion of the proposal
+  champions. They will review and work with the PR submitter to get it to a
+  state where it can be merged, or explain why the extension is presently not
+  the right fit for the existing proposal.
+3. Once the champion is ready to merge the proposal, they will submit a PR to
+  the WASI repository (this repository) to file for a new phase 2 feature.
+4. Once the feature is tracked on the WASI repository the champion can now merge
+  the extension. This would also be a good time to inform the WASI SG that an
+  extension has landed - in the interest of keeping relevant parties informed.
+5. Implementers should now be free to begin implementing the extension behind
+  feature flags. The goal at this phase is to implement and iterate on the
+  extension until it is ready to advance to phase 3.
+6. Once the champion believes the phase 3 advancement criteria are met, they
+  should bring it to the WASI SG for a vote.
+7. Once the proposal is voted to advance to phase 3, the `@unstable` gate should
+  be replaced with a `@since` gate containing the version of the next WASI
+  release. It is encouraged to preserve the `feature` field in the `@since` gate to
+  help the transition from the `@unstable` feature to the newly stabilized
+  `@since` gate.
+8. The proposal is now ready to be released as part of the next WASI version.
