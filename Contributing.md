@@ -112,11 +112,11 @@ Phases 4 and 5 are where a feature is finished and standardized. As WASI matures
 
 ## Filing changes to existing phase 3 proposals
 
-Extending existing phase 3 WASI proposals follow a different process than filing
+Extending existing phase 3 WASI proposals follows a different process than filing
 new proposals. Because the scope of a phase 3 proposal is already set, further
 changes to its APIs are tracked independently as phase 2 proposals behind an
 `@unstable` gate in WIT. Once an extension is sufficiently developed, and meets
-the phase 3 criteria, it must go through a vote in the WASI SG to get reach
+the phase 3 criteria, it must go through a vote in the WASI SG to reach
 phase 3. Once that's done, the `@unstable` gate can be replaced with `@since`,
 and the extension can be included in a future WASI release.
 
@@ -142,7 +142,7 @@ process should be followed:
 6. Once the champion believes the phase 3 advancement criteria are met, they
   should bring it to the WASI SG for a vote.
 7. Once the proposal is voted to advance to phase 3, the `@unstable` gate should
-  be replaced with an `@since` gate containing the version of the next WASI
+  be replaced with a `@since` gate containing the version of the next WASI
   release. It is encouraged to preserve the `feature` field in the `@since` gate to
   help the transition from the `@unstable` feature to the newly stabilized
   `@since` gate.
