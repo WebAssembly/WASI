@@ -77,8 +77,11 @@ containing only this pollable.</p>
 interest, and waits until one or more of the events is ready for I/O.</p>
 <p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
 argument list that is ready for I/O.</p>
-<p>If the list contains more elements than can be indexed with a <code>u32</code>
-value, this function traps.</p>
+<p>This function traps if either:</p>
+<ul>
+<li>the list is empty, or:</li>
+<li>the list contains more elements than can be indexed with a <code>u32</code> value.</li>
+</ul>
 <p>A timeout can be implemented by adding a pollable from the
 wasi-clocks API to the list.</p>
 <p>This function does not return a <code>result</code>; polling in itself does not
