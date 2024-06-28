@@ -98,7 +98,7 @@ corresponding to a clock tick.</p>
 </ul>
 <h4><a name="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
-has occurred.</p>
+has occured.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
