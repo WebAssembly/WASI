@@ -57,7 +57,7 @@ unavailable, programs may fail to be instantiated or may trap).
 WASI Random is not aiming to be a full DRBG API. Such an API could be
 considered in WASI, but it should be a separate proposal.
 
-And, WASI Random is not include facilities for feeding entropy back into
+WASI Random does not include facilities for feeding entropy back into
 the system. It is expected that most entropy that applications would observe
 should also be observable by the host implementation, and so there should
 be little need to feed it back in. There may be other uses for such an API,
@@ -168,7 +168,7 @@ their imports, as mentioned in the previous question.
 Best practices suggest that implementations should provide at least 196 bits of
 security. However, many host platforms' CSPRNG APIs do not currently document
 their bits of security, and it doesn't seem desirable to require wasm engines to
-run their own CSPRNG on a platform which alreay has one, so for now, the API
+run their own CSPRNG on a platform which already has one, so for now, the API
 does not specify a specific number.
 
 ### Why is insecure-random a fixed-sized return value?
