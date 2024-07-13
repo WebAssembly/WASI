@@ -55,7 +55,7 @@ semantics of path lookup, and the semantics of files, directories, and
 symlinks, and the constraints on filesystem paths, is host-dependent.
 
 WASI filesystem is not intended to be used as a virtual API for accessing
-arbitary resources. Unix's "everything is a file" philosophy is in conflict
+arbitrary resources. Unix's "everything is a file" philosophy is in conflict
 with the goals of supporting modularity and the principle of least authority.
 
 Many of the ideas related to doing capability-based filesystem sandboxing with
@@ -94,7 +94,7 @@ fn write_hello_world_to_a_file(dir: Descriptor) -> Result<(), Errno> {
     while !view.is_empty() {
         let num_written = file.pwrite(view.to_owned(), 0)?;
         offset += num_written;
-        view = &view[num_writen..];
+        view = &view[num_written..];
     }
     // The file descriptor is closed when it's dropped!
 }
@@ -141,7 +141,7 @@ case-insensitivity on a case-sensitive filesystem, are both tricky to do.
 
 One issue is that case insensitivity depends on a Unicode version, so the
 details can differ between different case-insensitive platforms. Another
-issue is tha WASI filesystem in general can't assume it has exclusive access
+issue is the WASI filesystem in general can't assume it has exclusive access
 to the filesystem, so approaches that involve checking for files with names
 that differ only by case can race with other processes creating new files.
 

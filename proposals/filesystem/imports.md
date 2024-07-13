@@ -569,7 +569,7 @@ requirement.</p>
 </li>
 <li>
 <p><a name="descriptor_flags.requested_write_sync"></a><code>requested-write-sync</code>: </p>
-<p>Requests that reads be performed at the same level of integrety
+<p>Requests that reads be performed at the same level of integrity
 requested for writes. This is similar to `O_RSYNC` in POSIX.
 <p>The precise semantics of this operation have not yet been defined for
 WASI. At this time, it should be interpreted as a request, and not a
