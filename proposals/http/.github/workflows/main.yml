@@ -10,7 +10,7 @@ jobs:
     name: Check ABI files are up-to-date
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: ensure `./wit/deps` are in sync
       run: |
         curl -Lo 'wit-deps' https://github.com/bytecodealliance/wit-deps/releases/download/v0.3.2/wit-deps-x86_64-unknown-linux-musl
