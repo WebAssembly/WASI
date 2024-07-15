@@ -133,12 +133,15 @@ use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>po
 for using <code>wasi:io/poll</code>.</p>
 <h4><a name="output_stream"></a><code>resource output-stream</code></h4>
 <p>An output bytestream.</p>
-<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
 underlying platforms. Except where specified otherwise, I/O operations also
 always return promptly, after the number of bytes that can be written
 promptly, which could even be zero. To wait for the stream to be ready to
 accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
-polled for using <code>wasi:io/poll</code>.</h2>
+polled for using <code>wasi:io/poll</code>.</p>
+<h2>Dropping an <a href="#output_stream"><code>output-stream</code></a> while there's still an active write in
+progress may result in the data being lost. Before dropping the stream,
+be sure to fully flush your writes.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream_read"></a><code>[method]input-stream.read: func</code></h4>
 <p>Perform a non-blocking read from the stream.</p>
