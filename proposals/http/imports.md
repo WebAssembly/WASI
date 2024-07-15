@@ -751,7 +751,7 @@ an <a href="#input_stream"><code>input-stream</code></a> and the delivery of tra
 and ensures that the user of this interface may only be consuming either
 the body contents or waiting on trailers at any given time.</p>
 <h4><a name="future_trailers"></a><code>resource future-trailers</code></h4>
-<p>Represents a future which may eventaully return trailers, or an error.</p>
+<p>Represents a future which may eventually return trailers, or an error.</p>
 <p>In the case that the incoming HTTP Request or Response did not have any
 trailers, this future will resolve to the empty set of trailers once the
 complete Request or Response body has been received.</p>
@@ -768,12 +768,12 @@ optional trailers) with a static function that consumes the
 may not write to the body contents after the body has been finished.</p>
 <p>If the user code drops this resource, as opposed to calling the static
 method <code>finish</code>, the implementation should treat the body as incomplete,
-and that an error has occured. The implementation should propogate this
+and that an error has occurred. The implementation should propagate this
 error to the HTTP protocol by whatever means it has available,
 including: corrupting the body on the wire, aborting the associated
 Request, or sending a late status code for the Response.</p>
 <h4><a name="future_incoming_response"></a><code>resource future-incoming-response</code></h4>
-<p>Represents a future which may eventaully return an incoming HTTP
+<p>Represents a future which may eventually return an incoming HTTP
 Response, or an error.</p>
 <h2>This resource is returned by the <code>wasi:http/outgoing-handler</code> interface to
 provide the HTTP Response corresponding to the sent Request.</h2>
@@ -909,7 +909,7 @@ list with the same key.</p>
 <li><a name="method_fields.entries.0"></a> list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
 <h4><a name="method_fields.clone"></a><code>[method]fields.clone: func</code></h4>
-<p>Make a deep copy of the Fields. Equivelant in behavior to calling the
+<p>Make a deep copy of the Fields. Equivalent in behavior to calling the
 <a href="#fields"><code>fields</code></a> constructor on the return value of <code>entries</code>. The resulting
 <a href="#fields"><code>fields</code></a> is mutable.</p>
 <h5>Params</h5>
@@ -1120,7 +1120,7 @@ not a syntactically valid uri authority.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
 <p>This headers resource is a child: it must be dropped before the parent
-<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
+<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transferred to
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <h5>Params</h5>
 <ul>
@@ -1286,7 +1286,7 @@ This function will trap if the <a href="#input_stream"><code>input-stream</code>
 </ul>
 <h4><a name="method_future_trailers.subscribe"></a><code>[method]future-trailers.subscribe: func</code></h4>
 <p>Returns a pollable which becomes ready when either the trailers have
-been received, or an error has occured. When this pollable is ready,
+been received, or an error has occurred. When this pollable is ready,
 the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
@@ -1297,7 +1297,7 @@ the <code>get</code> method will return <code>some</code>.</p>
 <li><a name="method_future_trailers.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_future_trailers.get"></a><code>[method]future-trailers.get: func</code></h4>
-<p>Returns the contents of the trailers, or an error which occured,
+<p>Returns the contents of the trailers, or an error which occurred,
 once the future is ready.</p>
 <p>The outer <code>option</code> represents future readiness. Users can wait on this
 <code>option</code> to become <code>some</code> using the <code>subscribe</code> method.</p>
@@ -1306,7 +1306,7 @@ once. It will be success on the first call in which the outer option
 is <code>some</code>, and error on subsequent calls.</p>
 <p>The inner <code>result</code> represents that either the HTTP Request or Response
 body, as well as any trailers, were received successfully, or that an
-error occured receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether
+error occurred receiving them. The optional <a href="#trailers"><code>trailers</code></a> indicates whether
 or not trailers were present in the body.</p>
 <p>When some <a href="#trailers"><code>trailers</code></a> are returned by this method, the <a href="#trailers"><code>trailers</code></a>
 resource is immutable, and a child. Use of the <code>set</code>, <code>append</code>, or
@@ -1362,7 +1362,7 @@ given is not a valid http status code.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
 <p>This headers resource is a child: it must be dropped before the parent
-<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transfered to
+<a href="#outgoing_request"><code>outgoing-request</code></a> is dropped, or its ownership is transferred to
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <h5>Params</h5>
 <ul>
@@ -1421,7 +1421,7 @@ Content-Length.</p>
 </ul>
 <h4><a name="method_future_incoming_response.subscribe"></a><code>[method]future-incoming-response.subscribe: func</code></h4>
 <p>Returns a pollable which becomes ready when either the Response has
-been received, or an error has occured. When this pollable is ready,
+been received, or an error has occurred. When this pollable is ready,
 the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
@@ -1439,8 +1439,8 @@ the <code>get</code> method will return <code>some</code>.</p>
 once. It will be success on the first call in which the outer option
 is <code>some</code>, and error on subsequent calls.</p>
 <p>The inner <code>result</code> represents that either the incoming HTTP Response
-status and headers have recieved successfully, or that an error
-occured. Errors may also occur while consuming the response body,
+status and headers have received successfully, or that an error
+occurred. Errors may also occur while consuming the response body,
 but those will be reported by the <a href="#incoming_body"><code>incoming-body</code></a> and its
 <a href="#output_stream"><code>output-stream</code></a> child.</p>
 <h5>Params</h5>

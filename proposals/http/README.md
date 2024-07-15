@@ -88,7 +88,7 @@ The `wit/deps` directory contains a live snapshot of the contents of several
 other WASI proposals upon which this proposal depends. It is automatically
 updated by running [`wit-deps update`](https://crates.io/crates/wit-deps-cli)
 in the root directory, which fetches the live contents of the `main` branch of
-each proposal. As things stablize, `wit/deps.toml` will be updated to refer to
+each proposal. As things stabilize, `wit/deps.toml` will be updated to refer to
 versioned releases.
 
 ### References & acknowledgements

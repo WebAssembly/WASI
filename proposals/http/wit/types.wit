@@ -212,7 +212,7 @@ interface types {
     /// list with the same key.
     entries: func() -> list<tuple<field-key,field-value>>;
 
-    /// Make a deep copy of the Fields. Equivelant in behavior to calling the
+    /// Make a deep copy of the Fields. Equivalent in behavior to calling the
     /// `fields` constructor on the return value of `entries`. The resulting
     /// `fields` is mutable.
     clone: func() -> fields;
@@ -317,7 +317,7 @@ interface types {
     /// `delete` operations will fail with `header-error.immutable`.
     ///
     /// This headers resource is a child: it must be dropped before the parent
-    /// `outgoing-request` is dropped, or its ownership is transfered to
+    /// `outgoing-request` is dropped, or its ownership is transferred to
     /// another component by e.g. `outgoing-handler.handle`.
     headers: func() -> headers;
   }
@@ -433,7 +433,7 @@ interface types {
     finish: static func(this: incoming-body) -> future-trailers;
   }
 
-  /// Represents a future which may eventaully return trailers, or an error.
+  /// Represents a future which may eventually return trailers, or an error.
   ///
   /// In the case that the incoming HTTP Request or Response did not have any
   /// trailers, this future will resolve to the empty set of trailers once the
@@ -441,11 +441,11 @@ interface types {
   resource future-trailers {
 
     /// Returns a pollable which becomes ready when either the trailers have
-    /// been received, or an error has occured. When this pollable is ready,
+    /// been received, or an error has occurred. When this pollable is ready,
     /// the `get` method will return `some`.
     subscribe: func() -> pollable;
 
-    /// Returns the contents of the trailers, or an error which occured,
+    /// Returns the contents of the trailers, or an error which occurred,
     /// once the future is ready.
     ///
     /// The outer `option` represents future readiness. Users can wait on this
@@ -457,7 +457,7 @@ interface types {
     ///
     /// The inner `result` represents that either the HTTP Request or Response
     /// body, as well as any trailers, were received successfully, or that an
-    /// error occured receiving them. The optional `trailers` indicates whether
+    /// error occurred receiving them. The optional `trailers` indicates whether
     /// or not trailers were present in the body.
     ///
     /// When some `trailers` are returned by this method, the `trailers`
@@ -490,7 +490,7 @@ interface types {
     /// `delete` operations will fail with `header-error.immutable`.
     ///
     /// This headers resource is a child: it must be dropped before the parent
-    /// `outgoing-request` is dropped, or its ownership is transfered to
+    /// `outgoing-request` is dropped, or its ownership is transferred to
     /// another component by e.g. `outgoing-handler.handle`.
     headers: func() -> headers;
 
@@ -514,7 +514,7 @@ interface types {
   ///
   /// If the user code drops this resource, as opposed to calling the static
   /// method `finish`, the implementation should treat the body as incomplete,
-  /// and that an error has occured. The implementation should propogate this
+  /// and that an error has occurred. The implementation should propagate this
   /// error to the HTTP protocol by whatever means it has available,
   /// including: corrupting the body on the wire, aborting the associated
   /// Request, or sending a late status code for the Response.
@@ -546,14 +546,14 @@ interface types {
     ) -> result<_, error-code>;
   }
 
-  /// Represents a future which may eventaully return an incoming HTTP
+  /// Represents a future which may eventually return an incoming HTTP
   /// Response, or an error.
   ///
   /// This resource is returned by the `wasi:http/outgoing-handler` interface to
   /// provide the HTTP Response corresponding to the sent Request.
   resource future-incoming-response {
     /// Returns a pollable which becomes ready when either the Response has
-    /// been received, or an error has occured. When this pollable is ready,
+    /// been received, or an error has occurred. When this pollable is ready,
     /// the `get` method will return `some`.
     subscribe: func() -> pollable;
 
@@ -567,8 +567,8 @@ interface types {
     /// is `some`, and error on subsequent calls.
     ///
     /// The inner `result` represents that either the incoming HTTP Response
-    /// status and headers have recieved successfully, or that an error
-    /// occured. Errors may also occur while consuming the response body,
+    /// status and headers have received successfully, or that an error
+    /// occurred. Errors may also occur while consuming the response body,
     /// but those will be reported by the `incoming-body` and its
     /// `output-stream` child.
     get: func() -> option<result<result<incoming-response, error-code>>>;

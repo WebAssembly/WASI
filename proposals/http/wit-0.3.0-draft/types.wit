@@ -220,7 +220,7 @@ interface types {
     /// list with the same key.
     entries: func() -> list<tuple<field-key,field-value>>;
 
-    /// Make a deep copy of the Fields. Equivelant in behavior to calling the
+    /// Make a deep copy of the Fields. Equivalent in behavior to calling the
     /// `fields` constructor on the return value of `entries`. The resulting
     /// `fields` is mutable.
     clone: func() -> fields;
@@ -320,7 +320,7 @@ interface types {
     /// will fail if invoked.
     ///
     /// This `request-options` resource is a child: it must be dropped before
-    /// the parent `request` is dropped, or its ownership is transfered to
+    /// the parent `request` is dropped, or its ownership is transferred to
     /// another component by e.g. `handler.handle`.
     options: func() -> option<request-options>;
 
@@ -330,14 +330,14 @@ interface types {
     /// `delete` operations will fail with `header-error.immutable`.
     ///
     /// This headers resource is a child: it must be dropped before the parent
-    /// `request` is dropped, or its ownership is transfered to another
+    /// `request` is dropped, or its ownership is transferred to another
     /// component by e.g. `handler.handle`.
     headers: func() -> headers;
 
     /// Get the body associated with the Request, if any.
     ///
     /// This body resource is a child: it must be dropped before the parent
-    /// `request` is dropped, or its ownership is transfered to another
+    /// `request` is dropped, or its ownership is transferred to another
     /// component by e.g. `handler.handle`.
     body: func() -> option<body>;
 
@@ -413,14 +413,14 @@ interface types {
     /// `delete` operations will fail with `header-error.immutable`.
     ///
     /// This headers resource is a child: it must be dropped before the parent
-    /// `response` is dropped, or its ownership is transfered to another
+    /// `response` is dropped, or its ownership is transferred to another
     /// component by e.g. `handler.handle`.
     headers: func() -> headers;
 
     /// Get the body associated with the Response, if any.
     ///
     /// This body resource is a child: it must be dropped before the parent
-    /// `response` is dropped, or its ownership is transfered to another
+    /// `response` is dropped, or its ownership is transferred to another
     /// component by e.g. `handler.handle`.
     body: func() -> option<body>;
 
