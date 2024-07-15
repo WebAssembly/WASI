@@ -49,7 +49,7 @@ types, `input-stream`, and `output-stream`, which support `read` and
 ### Non-goals
 
  - Support for async. That will be addressed in the component-model async
-   design, where we can have the benefit of tigher integration with language
+   design, where we can have the benefit of tighter integration with language
    bindings.
  - Bidirectional streams.
 

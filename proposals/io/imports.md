@@ -320,7 +320,7 @@ and stream is ready for writing again.</p>
 </ul>
 <h4><a name="method_output_stream_subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
-is ready for more writing, or an error has occured. When this
+is ready for more writing, or an error has occurred. When this
 pollable is ready, <code>check-write</code> will return <code>ok(n)</code> with n&gt;0, or an
 error.</p>
 <p>If the stream is closed, this pollable is always ready immediately.</p>
@@ -383,7 +383,7 @@ let _ = this.check-write();         // eliding error handling
 </ul>
 <h4><a name="method_output_stream_splice"></a><code>[method]output-stream.splice: func</code></h4>
 <p>Read from one stream and write to another.</p>
-<p>The behavior of splice is equivelant to:</p>
+<p>The behavior of splice is equivalent to:</p>
 <ol>
 <li>calling <code>check-write</code> on the <a href="#output_stream"><code>output-stream</code></a></li>
 <li>calling <code>read</code> on the <a href="#input_stream"><code>input-stream</code></a> with the smaller of the
