@@ -112,6 +112,10 @@ interface streams {
     /// promptly, which could even be zero. To wait for the stream to be ready to
     /// accept data, the `subscribe` function to obtain a `pollable` which can be
     /// polled for using `wasi:io/poll`.
+    ///
+    /// Dropping an `output-stream` while there's still an active write in
+    /// progress may result in the data being lost. Before dropping the stream,
+    /// be sure to fully flush your writes.
     @since(version = 0.2.0)
     resource output-stream {
         /// Check readiness for writing. This function never blocks.
@@ -192,7 +196,7 @@ interface streams {
         blocking-flush: func() -> result<_, stream-error>;
 
         /// Create a `pollable` which will resolve once the output-stream
-        /// is ready for more writing, or an error has occured. When this
+        /// is ready for more writing, or an error has occurred. When this
         /// pollable is ready, `check-write` will return `ok(n)` with n>0, or an
         /// error.
         ///
@@ -247,7 +251,7 @@ interface streams {
 
         /// Read from one stream and write to another.
         ///
-        /// The behavior of splice is equivelant to:
+        /// The behavior of splice is equivalent to:
         /// 1. calling `check-write` on the `output-stream`
         /// 2. calling `read` on the `input-stream` with the smaller of the
         /// `check-write` permitted length and the `len` provided to `splice`

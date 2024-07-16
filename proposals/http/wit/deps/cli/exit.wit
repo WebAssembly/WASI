@@ -1,4 +1,6 @@
+@since(version = 0.2.0)
 interface exit {
   /// Exit the current instance and any linked instances.
+  @since(version = 0.2.0)
   exit: func(status: result);
 }

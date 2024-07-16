@@ -83,7 +83,7 @@ interface types {
         /// WASI. At this time, it should be interpreted as a request, and not a
         /// requirement.
         data-integrity-sync,
-        /// Requests that reads be performed at the same level of integrety
+        /// Requests that reads be performed at the same level of integrity
         /// requested for writes. This is similar to `O_RSYNC` in POSIX.
         ///
         /// The precise semantics of this operation have not yet been defined for
