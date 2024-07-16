@@ -6,26 +6,26 @@ outgoing HTTP requests.</p>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi:io_poll_0.2.0"><code>wasi:io/poll@0.2.0</code></a></li>
-<li>interface <a href="#wasi:clocks_monotonic_clock_0.2.0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi:io_error_0.2.0"><code>wasi:io/error@0.2.0</code></a></li>
-<li>interface <a href="#wasi:io_streams_0.2.0"><code>wasi:io/streams@0.2.0</code></a></li>
-<li>interface <a href="#wasi:http_types_0.2.0"><code>wasi:http/types@0.2.0</code></a></li>
-<li>interface <a href="#wasi:random_random_0.2.0"><code>wasi:random/random@0.2.0</code></a></li>
-<li>interface <a href="#wasi:cli_stdout_0.2.0"><code>wasi:cli/stdout@0.2.0</code></a></li>
-<li>interface <a href="#wasi:cli_stderr_0.2.0"><code>wasi:cli/stderr@0.2.0</code></a></li>
-<li>interface <a href="#wasi:cli_stdin_0.2.0"><code>wasi:cli/stdin@0.2.0</code></a></li>
-<li>interface <a href="#wasi:http_outgoing_handler_0.2.0"><code>wasi:http/outgoing-handler@0.2.0</code></a></li>
-<li>interface <a href="#wasi:clocks_wall_clock_0.2.0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_0"><code>wasi:io/poll@0.2.0</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_0"><code>wasi:io/error@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_0"><code>wasi:io/streams@0.2.0</code></a></li>
+<li>interface <a href="#wasi_http_types_0_2_0"><code>wasi:http/types@0.2.0</code></a></li>
+<li>interface <a href="#wasi_random_random_0_2_0"><code>wasi:random/random@0.2.0</code></a></li>
+<li>interface <a href="#wasi_cli_stdout_0_2_0"><code>wasi:cli/stdout@0.2.0</code></a></li>
+<li>interface <a href="#wasi_cli_stderr_0_2_0"><code>wasi:cli/stderr@0.2.0</code></a></li>
+<li>interface <a href="#wasi_cli_stdin_0_2_0"><code>wasi:cli/stdin@0.2.0</code></a></li>
+<li>interface <a href="#wasi_http_outgoing_handler_0_2_0"><code>wasi:http/outgoing-handler@0.2.0</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi:http_incoming_handler_0.2.0"><code>wasi:http/incoming-handler@0.2.0</code></a></li>
+<li>interface <a href="#wasi_http_incoming_handler_0_2_0"><code>wasi:http/incoming-handler@0.2.0</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi:io_poll_0.2.0"></a>Import interface wasi:io/poll@0.2.0</h2>
+<h2><a name="wasi_io_poll_0_2_0"></a>Import interface wasi:io/poll@0.2.0</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -33,25 +33,25 @@ at once.</p>
 <h4><a name="pollable"></a><code>resource pollable</code></h4>
 <h2><a href="#pollable"><code>pollable</code></a> represents a single I/O event which may be ready, or not.</h2>
 <h3>Functions</h3>
-<h4><a name="method_pollable.ready"></a><code>[method]pollable.ready: func</code></h4>
+<h4><a name="method_pollable_ready"></a><code>[method]pollable.ready: func</code></h4>
 <p>Return the readiness of a pollable. This function never blocks.</p>
 <p>Returns <code>true</code> when the pollable is ready, and <code>false</code> otherwise.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_pollable.ready.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_pollable_ready.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_pollable.ready.0"></a> <code>bool</code></li>
+<li><a name="method_pollable_ready.0"></a> <code>bool</code></li>
 </ul>
-<h4><a name="method_pollable.block"></a><code>[method]pollable.block: func</code></h4>
+<h4><a name="method_pollable_block"></a><code>[method]pollable.block: func</code></h4>
 <p><code>block</code> returns immediately if the pollable is ready, and otherwise
 blocks until ready.</p>
 <p>This function is equivalent to calling <code>poll.poll</code> on a list
 containing only this pollable.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_pollable.block.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_pollable_block.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="poll"></a><code>poll: func</code></h4>
 <p>Poll for completion on a set of pollables.</p>
@@ -59,14 +59,17 @@ containing only this pollable.</p>
 interest, and waits until one or more of the events is ready for I/O.</p>
 <p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
 argument list that is ready for I/O.</p>
-<p>If the list contains more elements than can be indexed with a <code>u32</code>
-value, this function traps.</p>
+<p>This function traps if either:</p>
+<ul>
+<li>the list is empty, or:</li>
+<li>the list contains more elements than can be indexed with a <code>u32</code> value.</li>
+</ul>
 <p>A timeout can be implemented by adding a pollable from the
 wasi-clocks API to the list.</p>
 <p>This function does not return a <code>result</code>; polling in itself does not
 do any I/O so it doesn't fail. If any of the I/O sources identified by
 the pollables has an error, it is indicated by marking the source as
-being reaedy for I/O.</p>
+being ready for I/O.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll.in"></a><code>in</code>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
@@ -75,14 +78,13 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi:clocks_monotonic_clock_0.2.0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_monotonic_clock_0_2_0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
 <p>A monotonic clock is a clock which has an unspecified initial value, and
 successive reads of the clock will produce non-decreasing values.</p>
-<p>It is intended for measuring elapsed time.</p>
 <hr />
 <h3>Types</h3>
 <h4><a name="pollable"></a><code>type pollable</code></h4>
@@ -115,7 +117,7 @@ corresponding to a clock tick.</p>
 </ul>
 <h4><a name="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
-occured.</p>
+has occurred.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
@@ -125,9 +127,8 @@ occured.</p>
 <li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h4><a name="subscribe_duration"></a><code>subscribe-duration: func</code></h4>
-<p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the given duration has
-elapsed, starting at the time at which this function was called.
-occured.</p>
+<p>Create a <a href="#pollable"><code>pollable</code></a> that will resolve after the specified duration has
+elapsed from the time this function is invoked.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="subscribe_duration.when"></a><code>when</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
@@ -136,7 +137,7 @@ occured.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:io_error_0.2.0"></a>Import interface wasi:io/error@0.2.0</h2>
+<h2><a name="wasi_io_error_0_2_0"></a>Import interface wasi:io/error@0.2.0</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="error"></a><code>resource error</code></h4>
@@ -146,17 +147,15 @@ which provides some human-readable information about the error.</p>
 <p>In the <code>wasi:io</code> package, this resource is returned through the
 <code>wasi:io/streams/stream-error</code> type.</p>
 <p>To provide more specific error information, other interfaces may
-provide functions to further &quot;downcast&quot; this error into more specific
-error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
-from filesystem types to be described using the filesystem's own
-error-code type, using the function
-<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
-<code>borrow&lt;error&gt;</code> and returns
-<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+offer functions to &quot;downcast&quot; this error into more specific types. For example,
+errors returned from streams derived from filesystem types can be described using
+the filesystem's own error-code type. This is done using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
+parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
 <h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
 concrete type is open.</h2>
 <h3>Functions</h3>
-<h4><a name="method_error.to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
+<h4><a name="method_error_to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
 <p>Returns a string that is suitable to assist humans in debugging
 this error.</p>
 <p>WARNING: The returned string should not be consumed mechanically!
@@ -165,13 +164,13 @@ details. Parsing this string is a major platform-compatibility
 hazard.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_error.to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a name="method_error_to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_error.to_debug_string.0"></a> <code>string</code></li>
+<li><a name="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a name="wasi:io_streams_0.2.0"></a>Import interface wasi:io/streams@0.2.0</h2>
+<h2><a name="wasi_io_streams_0_2_0"></a>Import interface wasi:io/streams@0.2.0</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -210,14 +209,17 @@ use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>po
 for using <code>wasi:io/poll</code>.</p>
 <h4><a name="output_stream"></a><code>resource output-stream</code></h4>
 <p>An output bytestream.</p>
-<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
 underlying platforms. Except where specified otherwise, I/O operations also
 always return promptly, after the number of bytes that can be written
 promptly, which could even be zero. To wait for the stream to be ready to
 accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
-polled for using <code>wasi:io/poll</code>.</h2>
+polled for using <code>wasi:io/poll</code>.</p>
+<h2>Dropping an <a href="#output_stream"><code>output-stream</code></a> while there's still an active write in
+progress may result in the data being lost. Before dropping the stream,
+be sure to fully flush your writes.</h2>
 <h3>Functions</h3>
-<h4><a name="method_input_stream.read"></a><code>[method]input-stream.read: func</code></h4>
+<h4><a name="method_input_stream_read"></a><code>[method]input-stream.read: func</code></h4>
 <p>Perform a non-blocking read from the stream.</p>
 <p>When the source of a <code>read</code> is binary data, the bytes from the source
 are returned verbatim. When the source of a <code>read</code> is known to the
@@ -241,51 +243,51 @@ as a return value by the callee. The callee may return a list of bytes
 less than <code>len</code> in size while more bytes are available for reading.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream.read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream.read.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_input_stream_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream_read.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream.read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream.blocking_read"></a><code>[method]input-stream.blocking-read: func</code></h4>
+<h4><a name="method_input_stream_blocking_read"></a><code>[method]input-stream.blocking-read: func</code></h4>
 <p>Read bytes from a stream, after blocking until at least one byte can
 be read. Except for blocking, behavior is identical to <code>read</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream.blocking_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream.blocking_read.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_input_stream_blocking_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream_blocking_read.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream.blocking_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream_blocking_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream.skip"></a><code>[method]input-stream.skip: func</code></h4>
+<h4><a name="method_input_stream_skip"></a><code>[method]input-stream.skip: func</code></h4>
 <p>Skip bytes from a stream. Returns number of bytes skipped.</p>
 <p>Behaves identical to <code>read</code>, except instead of returning a list
 of bytes, returns the number of bytes consumed from the stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream.skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream.skip.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_input_stream_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream_skip.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream.skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream.blocking_skip"></a><code>[method]input-stream.blocking-skip: func</code></h4>
+<h4><a name="method_input_stream_blocking_skip"></a><code>[method]input-stream.blocking-skip: func</code></h4>
 <p>Skip bytes from a stream, after blocking until at least one byte
 can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream.blocking_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream.blocking_skip.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_input_stream_blocking_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream_blocking_skip.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream.blocking_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_input_stream_blocking_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream.subscribe"></a><code>[method]input-stream.subscribe: func</code></h4>
+<h4><a name="method_input_stream_subscribe"></a><code>[method]input-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
 has bytes available to read or the other end of the stream has been
 closed.
@@ -294,13 +296,13 @@ Implementations may trap if the <a href="#input_stream"><code>input-stream</code
 all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream.subscribe.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_input_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_input_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.check_write"></a><code>[method]output-stream.check-write: func</code></h4>
+<h4><a name="method_output_stream_check_write"></a><code>[method]output-stream.check-write: func</code></h4>
 <p>Check readiness for writing. This function never blocks.</p>
 <p>Returns the number of bytes permitted for the next call to <code>write</code>,
 or an error. Calling <code>write</code> with more bytes than this function has
@@ -310,13 +312,13 @@ become ready when this function will report at least 1 byte, or an
 error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.check_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_check_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.check_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_check_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.write"></a><code>[method]output-stream.write: func</code></h4>
+<h4><a name="method_output_stream_write"></a><code>[method]output-stream.write: func</code></h4>
 <p>Perform a write. This function never blocks.</p>
 <p>When the destination of a <code>write</code> is binary data, the bytes from
 <code>contents</code> are written verbatim. When the destination of a <code>write</code> is
@@ -329,14 +331,14 @@ length of less than or equal to n. Otherwise, this function will trap.</p>
 the last call to check-write provided a permit.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.write.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_output_stream_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_write.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.write.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_write.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
+<h4><a name="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 bytes, and then flush the stream. Block
 until all of these operations are complete, or an error occurs.</p>
 <p>This is a convenience wrapper around the use of <code>check-write</code>,
@@ -360,14 +362,14 @@ let _ = this.check-write();         // eliding error handling
 </code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.blocking_write_and_flush.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a name="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_write_and_flush.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.blocking_write_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_write_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.flush"></a><code>[method]output-stream.flush: func</code></h4>
+<h4><a name="method_output_stream_flush"></a><code>[method]output-stream.flush: func</code></h4>
 <p>Request to flush buffered output. This function never blocks.</p>
 <p>This tells the output-stream that the caller intends any buffered
 output to be flushed. the output which is expected to be flushed
@@ -378,26 +380,26 @@ completed. The <code>subscribe</code> pollable will become ready when the
 flush has completed and the stream can accept more writes.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.blocking_flush"></a><code>[method]output-stream.blocking-flush: func</code></h4>
+<h4><a name="method_output_stream_blocking_flush"></a><code>[method]output-stream.blocking-flush: func</code></h4>
 <p>Request to flush buffered output, and block until flush completes
 and stream is ready for writing again.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.blocking_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.blocking_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
+<h4><a name="method_output_stream_subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
-is ready for more writing, or an error has occured. When this
+is ready for more writing, or an error has occurred. When this
 pollable is ready, <code>check-write</code> will return <code>ok(n)</code> with n&gt;0, or an
 error.</p>
 <p>If the stream is closed, this pollable is always ready immediately.</p>
@@ -406,13 +408,13 @@ Implementations may trap if the <a href="#output_stream"><code>output-stream</co
 all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.subscribe.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_output_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.write_zeroes"></a><code>[method]output-stream.write-zeroes: func</code></h4>
+<h4><a name="method_output_stream_write_zeroes"></a><code>[method]output-stream.write-zeroes: func</code></h4>
 <p>Write zeroes to a stream.</p>
 <p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
@@ -420,14 +422,14 @@ passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.write_zeroes.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.write_zeroes.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_output_stream_write_zeroes.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_write_zeroes.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.write_zeroes.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_write_zeroes.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.blocking_write_zeroes_and_flush"></a><code>[method]output-stream.blocking-write-zeroes-and-flush: func</code></h4>
+<h4><a name="method_output_stream_blocking_write_zeroes_and_flush"></a><code>[method]output-stream.blocking-write-zeroes-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 zeroes, and then flush the stream.
 Block until all of these operations are complete, or an error
 occurs.</p>
@@ -451,16 +453,16 @@ let _ = this.check-write();         // eliding error handling
 </code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.blocking_write_zeroes_and_flush.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_write_zeroes_and_flush.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.blocking_write_zeroes_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_write_zeroes_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.splice"></a><code>[method]output-stream.splice: func</code></h4>
+<h4><a name="method_output_stream_splice"></a><code>[method]output-stream.splice: func</code></h4>
 <p>Read from one stream and write to another.</p>
-<p>The behavior of splice is equivelant to:</p>
+<p>The behavior of splice is equivalent to:</p>
 <ol>
 <li>calling <code>check-write</code> on the <a href="#output_stream"><code>output-stream</code></a></li>
 <li>calling <code>read</code> on the <a href="#input_stream"><code>input-stream</code></a> with the smaller of the
@@ -473,30 +475,30 @@ let _ = this.check-write();         // eliding error handling
 than <code>len</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.splice.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_output_stream_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_splice.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream.blocking_splice"></a><code>[method]output-stream.blocking-splice: func</code></h4>
+<h4><a name="method_output_stream_blocking_splice"></a><code>[method]output-stream.blocking-splice: func</code></h4>
 <p>Read from one stream and write to another, with blocking.</p>
 <p>This is similar to <code>splice</code>, except that it blocks until the
 <a href="#output_stream"><code>output-stream</code></a> is ready for writing, and the <a href="#input_stream"><code>input-stream</code></a>
 is ready for reading, before performing the <code>splice</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream.blocking_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.blocking_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream.blocking_splice.len"></a><code>len</code>: <code>u64</code></li>
+<li><a name="method_output_stream_blocking_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_splice.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream.blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a name="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:http_types_0.2.0"></a>Import interface wasi:http/types@0.2.0</h2>
+<h2><a name="wasi_http_types_0_2_0"></a>Import interface wasi:http/types@0.2.0</h2>
 <p>This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
@@ -738,7 +740,7 @@ http-related errors.</p>
 <ul>
 <li><a name="constructor_fields.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
-<h4><a name="static_fields.from_list"></a><code>[static]fields.from-list: func</code></h4>
+<h4><a name="static_fields_from_list"></a><code>[static]fields.from-list: func</code></h4>
 <p>Construct an HTTP Fields.</p>
 <p>The resulting <a href="#fields"><code>fields</code></a> is mutable.</p>
 <p>The list represents each key-value pair in the Fields. Keys
@@ -750,39 +752,39 @@ Value, represented as a list of bytes.</p>
 syntactically invalid, or if a field is forbidden.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="static_fields.from_list.entries"></a><code>entries</code>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
+<li><a name="static_fields_from_list.entries"></a><code>entries</code>: list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="static_fields.from_list.0"></a> result&lt;own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+<li><a name="static_fields_from_list.0"></a> result&lt;own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_fields.get"></a><code>[method]fields.get: func</code></h4>
+<h4><a name="method_fields_get"></a><code>[method]fields.get: func</code></h4>
 <p>Get all of the values corresponding to a key. If the key is not present
 in this <a href="#fields"><code>fields</code></a> or is syntactically invalid, an empty list is returned.
 However, if the key is present but empty, this is represented by a list
 with one or more empty field-values present.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.get.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.get.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields_get.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_get.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.get.0"></a> list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
+<li><a name="method_fields_get.0"></a> list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_fields.has"></a><code>[method]fields.has: func</code></h4>
+<h4><a name="method_fields_has"></a><code>[method]fields.has: func</code></h4>
 <p>Returns <code>true</code> when the key is present in this <a href="#fields"><code>fields</code></a>. If the key is
 syntactically invalid, <code>false</code> is returned.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.has.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.has.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields_has.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_has.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.has.0"></a> <code>bool</code></li>
+<li><a name="method_fields_has.0"></a> <code>bool</code></li>
 </ul>
-<h4><a name="method_fields.set"></a><code>[method]fields.set: func</code></h4>
+<h4><a name="method_fields_set"></a><code>[method]fields.set: func</code></h4>
 <p>Set all of the values for a key. Clears any existing values for that
 key, if they have been set.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
@@ -790,15 +792,15 @@ key, if they have been set.</p>
 the <a href="#field_value"><code>field-value</code></a>s are syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.set.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.set.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
-<li><a name="method_fields.set.value"></a><code>value</code>: list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
+<li><a name="method_fields_set.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_set.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields_set.value"></a><code>value</code>: list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.set.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+<li><a name="method_fields_set.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_fields.delete"></a><code>[method]fields.delete: func</code></h4>
+<h4><a name="method_fields_delete"></a><code>[method]fields.delete: func</code></h4>
 <p>Delete all values for a key. Does nothing if no values for the key
 exist.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
@@ -806,14 +808,14 @@ exist.</p>
 syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.delete.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.delete.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields_delete.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_delete.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.delete.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+<li><a name="method_fields_delete.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_fields.append"></a><code>[method]fields.append: func</code></h4>
+<h4><a name="method_fields_append"></a><code>[method]fields.append: func</code></h4>
 <p>Append a value for a key. Does not change or delete any existing
 values for that key.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
@@ -821,15 +823,15 @@ values for that key.</p>
 <a href="#field_value"><code>field-value</code></a> are syntactically invalid.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.append.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
-<li><a name="method_fields.append.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
-<li><a name="method_fields.append.value"></a><code>value</code>: <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></li>
+<li><a name="method_fields_append.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_append.name"></a><code>name</code>: <a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></li>
+<li><a name="method_fields_append.value"></a><code>value</code>: <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.append.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
+<li><a name="method_fields_append.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_fields.entries"></a><code>[method]fields.entries: func</code></h4>
+<h4><a name="method_fields_entries"></a><code>[method]fields.entries: func</code></h4>
 <p>Retrieve the full set of keys and values in the Fields. Like the
 constructor, the list represents each key-value pair.</p>
 <p>The outer list represents each key-value pair in the Fields. Keys
@@ -837,65 +839,65 @@ which have multiple values are represented by multiple entries in this
 list with the same key.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.entries.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_entries.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.entries.0"></a> list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
+<li><a name="method_fields_entries.0"></a> list&lt;(<a href="#field_key"><a href="#field_key"><code>field-key</code></a></a>, <a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>)&gt;</li>
 </ul>
-<h4><a name="method_fields.clone"></a><code>[method]fields.clone: func</code></h4>
+<h4><a name="method_fields_clone"></a><code>[method]fields.clone: func</code></h4>
 <p>Make a deep copy of the Fields. Equivalent in behavior to calling the
 <a href="#fields"><code>fields</code></a> constructor on the return value of <code>entries</code>. The resulting
 <a href="#fields"><code>fields</code></a> is mutable.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_fields.clone.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_clone.self"></a><code>self</code>: borrow&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_fields.clone.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
+<li><a name="method_fields_clone.0"></a> own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_request.method"></a><code>[method]incoming-request.method: func</code></h4>
+<h4><a name="method_incoming_request_method"></a><code>[method]incoming-request.method: func</code></h4>
 <p>Returns the method of the incoming request.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.method.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_method.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
+<li><a name="method_incoming_request_method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
-<h4><a name="method_incoming_request.path_with_query"></a><code>[method]incoming-request.path-with-query: func</code></h4>
+<h4><a name="method_incoming_request_path_with_query"></a><code>[method]incoming-request.path-with-query: func</code></h4>
 <p>Returns the path with query parameters from the request, as a string.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_incoming_request_path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="method_incoming_request.scheme"></a><code>[method]incoming-request.scheme: func</code></h4>
+<h4><a name="method_incoming_request_scheme"></a><code>[method]incoming-request.scheme: func</code></h4>
 <p>Returns the protocol scheme from the request.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.scheme.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_scheme.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_request.authority"></a><code>[method]incoming-request.authority: func</code></h4>
+<h4><a name="method_incoming_request_authority"></a><code>[method]incoming-request.authority: func</code></h4>
 <p>Returns the authority from the request, if it was present.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.authority.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_authority.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_incoming_request_authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="method_incoming_request.headers"></a><code>[method]incoming-request.headers: func</code></h4>
+<h4><a name="method_incoming_request_headers"></a><code>[method]incoming-request.headers: func</code></h4>
 <p>Get the <a href="#headers"><code>headers</code></a> associated with the request.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
@@ -904,22 +906,22 @@ the parent <a href="#incoming_request"><code>incoming-request</code></a> is drop
 <a href="#incoming_request"><code>incoming-request</code></a> before all children are dropped will trap.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.headers.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_headers.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_request.consume"></a><code>[method]incoming-request.consume: func</code></h4>
+<h4><a name="method_incoming_request_consume"></a><code>[method]incoming-request.consume: func</code></h4>
 <p>Gives the <a href="#incoming_body"><code>incoming-body</code></a> associated with this request. Will only
 return success at most once, and subsequent calls will return error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_request.consume.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
+<li><a name="method_incoming_request_consume.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_request.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_request_consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_request"></a><code>[constructor]outgoing-request: func</code></h4>
 <p>Construct a new <a href="#outgoing_request"><code>outgoing-request</code></a> with a default <a href="#method"><code>method</code></a> of <code>GET</code>, and
@@ -940,7 +942,7 @@ to reject invalid constructions of <a href="#outgoing_request"><code>outgoing-re
 <ul>
 <li><a name="constructor_outgoing_request.0"></a> own&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.body"></a><code>[method]outgoing-request.body: func</code></h4>
+<h4><a name="method_outgoing_request_body"></a><code>[method]outgoing-request.body: func</code></h4>
 <p>Returns the resource corresponding to the outgoing Body for this
 Request.</p>
 <p>Returns success on the first call: the <a href="#outgoing_body"><code>outgoing-body</code></a> resource for
@@ -948,109 +950,109 @@ this <a href="#outgoing_request"><code>outgoing-request</code></a> can be retrie
 calls will return error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.body.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_body.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_request_body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.method"></a><code>[method]outgoing-request.method: func</code></h4>
+<h4><a name="method_outgoing_request_method"></a><code>[method]outgoing-request.method: func</code></h4>
 <p>Get the Method for the Request.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.method.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_method.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
+<li><a name="method_outgoing_request_method.0"></a> <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
-<h4><a name="method_outgoing_request.set_method"></a><code>[method]outgoing-request.set-method: func</code></h4>
+<h4><a name="method_outgoing_request_set_method"></a><code>[method]outgoing-request.set-method: func</code></h4>
 <p>Set the Method for the Request. Fails if the string present in a
 <code>method.other</code> argument is not a syntactically valid method.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.set_method.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
-<li><a name="method_outgoing_request.set_method.method"></a><a href="#method"><code>method</code></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
+<li><a name="method_outgoing_request_set_method.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_set_method.method"></a><a href="#method"><code>method</code></a>: <a href="#method"><a href="#method"><code>method</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.set_method.0"></a> result</li>
+<li><a name="method_outgoing_request_set_method.0"></a> result</li>
 </ul>
-<h4><a name="method_outgoing_request.path_with_query"></a><code>[method]outgoing-request.path-with-query: func</code></h4>
+<h4><a name="method_outgoing_request_path_with_query"></a><code>[method]outgoing-request.path-with-query: func</code></h4>
 <p>Get the combination of the HTTP Path and Query for the Request.
 When <code>none</code>, this represents an empty Path and empty Query.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_outgoing_request_path_with_query.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.set_path_with_query"></a><code>[method]outgoing-request.set-path-with-query: func</code></h4>
+<h4><a name="method_outgoing_request_set_path_with_query"></a><code>[method]outgoing-request.set-path-with-query: func</code></h4>
 <p>Set the combination of the HTTP Path and Query for the Request.
 When <code>none</code>, this represents an empty Path and empty Query. Fails is the
 string given is not a syntactically valid path and query uri component.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.set_path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
-<li><a name="method_outgoing_request.set_path_with_query.path_with_query"></a><code>path-with-query</code>: option&lt;<code>string</code>&gt;</li>
+<li><a name="method_outgoing_request_set_path_with_query.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_set_path_with_query.path_with_query"></a><code>path-with-query</code>: option&lt;<code>string</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.set_path_with_query.0"></a> result</li>
+<li><a name="method_outgoing_request_set_path_with_query.0"></a> result</li>
 </ul>
-<h4><a name="method_outgoing_request.scheme"></a><code>[method]outgoing-request.scheme: func</code></h4>
+<h4><a name="method_outgoing_request_scheme"></a><code>[method]outgoing-request.scheme: func</code></h4>
 <p>Get the HTTP Related Scheme for the Request. When <code>none</code>, the
 implementation may choose an appropriate default scheme.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.scheme.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_scheme.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.set_scheme"></a><code>[method]outgoing-request.set-scheme: func</code></h4>
+<h4><a name="method_outgoing_request_set_scheme"></a><code>[method]outgoing-request.set-scheme: func</code></h4>
 <p>Set the HTTP Related Scheme for the Request. When <code>none</code>, the
 implementation may choose an appropriate default scheme. Fails if the
 string given is not a syntactically valid uri scheme.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.set_scheme.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
-<li><a name="method_outgoing_request.set_scheme.scheme"></a><a href="#scheme"><code>scheme</code></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_set_scheme.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_set_scheme.scheme"></a><a href="#scheme"><code>scheme</code></a>: option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.set_scheme.0"></a> result</li>
+<li><a name="method_outgoing_request_set_scheme.0"></a> result</li>
 </ul>
-<h4><a name="method_outgoing_request.authority"></a><code>[method]outgoing-request.authority: func</code></h4>
+<h4><a name="method_outgoing_request_authority"></a><code>[method]outgoing-request.authority: func</code></h4>
 <p>Get the HTTP Authority for the Request. A value of <code>none</code> may be used
 with Related Schemes which do not require an Authority. The HTTP and
 HTTPS schemes always require an authority.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.authority.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_authority.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.authority.0"></a> option&lt;<code>string</code>&gt;</li>
+<li><a name="method_outgoing_request_authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_request.set_authority"></a><code>[method]outgoing-request.set-authority: func</code></h4>
+<h4><a name="method_outgoing_request_set_authority"></a><code>[method]outgoing-request.set-authority: func</code></h4>
 <p>Set the HTTP Authority for the Request. A value of <code>none</code> may be used
 with Related Schemes which do not require an Authority. The HTTP and
 HTTPS schemes always require an authority. Fails if the string given is
 not a syntactically valid uri authority.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.set_authority.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
-<li><a name="method_outgoing_request.set_authority.authority"></a><code>authority</code>: option&lt;<code>string</code>&gt;</li>
+<li><a name="method_outgoing_request_set_authority.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_set_authority.authority"></a><code>authority</code>: option&lt;<code>string</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.set_authority.0"></a> result</li>
+<li><a name="method_outgoing_request_set_authority.0"></a> result</li>
 </ul>
-<h4><a name="method_outgoing_request.headers"></a><code>[method]outgoing-request.headers: func</code></h4>
+<h4><a name="method_outgoing_request_headers"></a><code>[method]outgoing-request.headers: func</code></h4>
 <p>Get the headers associated with the Request.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
@@ -1059,11 +1061,11 @@ not a syntactically valid uri authority.</p>
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_request.headers.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_headers.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_request.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="method_outgoing_request_headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
 <h4><a name="constructor_request_options"></a><code>[constructor]request-options: func</code></h4>
 <p>Construct a default <a href="#request_options"><code>request-options</code></a> value.</p>
@@ -1071,75 +1073,75 @@ another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <ul>
 <li><a name="constructor_request_options.0"></a> own&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.connect_timeout"></a><code>[method]request-options.connect-timeout: func</code></h4>
+<h4><a name="method_request_options_connect_timeout"></a><code>[method]request-options.connect-timeout: func</code></h4>
 <p>The timeout for the initial connect to the HTTP Server.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.connect_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_connect_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.connect_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_connect_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_connect_timeout"></a><code>[method]request-options.set-connect-timeout: func</code></h4>
+<h4><a name="method_request_options_set_connect_timeout"></a><code>[method]request-options.set-connect-timeout: func</code></h4>
 <p>Set the timeout for the initial connect to the HTTP Server. An error
 return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_connect_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_connect_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_connect_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_connect_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_connect_timeout.0"></a> result</li>
+<li><a name="method_request_options_set_connect_timeout.0"></a> result</li>
 </ul>
-<h4><a name="method_request_options.first_byte_timeout"></a><code>[method]request-options.first-byte-timeout: func</code></h4>
+<h4><a name="method_request_options_first_byte_timeout"></a><code>[method]request-options.first-byte-timeout: func</code></h4>
 <p>The timeout for receiving the first byte of the Response body.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.first_byte_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_first_byte_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.first_byte_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_first_byte_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_first_byte_timeout"></a><code>[method]request-options.set-first-byte-timeout: func</code></h4>
+<h4><a name="method_request_options_set_first_byte_timeout"></a><code>[method]request-options.set-first-byte-timeout: func</code></h4>
 <p>Set the timeout for receiving the first byte of the Response body. An
 error return value indicates that this timeout is not supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_first_byte_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_first_byte_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_first_byte_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_first_byte_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_first_byte_timeout.0"></a> result</li>
+<li><a name="method_request_options_set_first_byte_timeout.0"></a> result</li>
 </ul>
-<h4><a name="method_request_options.between_bytes_timeout"></a><code>[method]request-options.between-bytes-timeout: func</code></h4>
+<h4><a name="method_request_options_between_bytes_timeout"></a><code>[method]request-options.between-bytes-timeout: func</code></h4>
 <p>The timeout for receiving subsequent chunks of bytes in the Response
 body stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.between_bytes_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_between_bytes_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.between_bytes_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_between_bytes_timeout.0"></a> option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_request_options.set_between_bytes_timeout"></a><code>[method]request-options.set-between-bytes-timeout: func</code></h4>
+<h4><a name="method_request_options_set_between_bytes_timeout"></a><code>[method]request-options.set-between-bytes-timeout: func</code></h4>
 <p>Set the timeout for receiving subsequent chunks of bytes in the Response
 body stream. An error return value indicates that this timeout is not
 supported.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_request_options.set_between_bytes_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
-<li><a name="method_request_options.set_between_bytes_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_between_bytes_timeout.self"></a><code>self</code>: borrow&lt;<a href="#request_options"><a href="#request_options"><code>request-options</code></a></a>&gt;</li>
+<li><a name="method_request_options_set_between_bytes_timeout.duration"></a><a href="#duration"><code>duration</code></a>: option&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_request_options.set_between_bytes_timeout.0"></a> result</li>
+<li><a name="method_request_options_set_between_bytes_timeout.0"></a> result</li>
 </ul>
-<h4><a name="static_response_outparam.set"></a><code>[static]response-outparam.set: func</code></h4>
+<h4><a name="static_response_outparam_set"></a><code>[static]response-outparam.set: func</code></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
 or indicate an error.</p>
 <p>This method consumes the <a href="#response_outparam"><code>response-outparam</code></a> to ensure that it is
@@ -1149,20 +1151,20 @@ will respond with an error.</p>
 implementation determine how to respond with an HTTP error response.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="static_response_outparam.set.param"></a><code>param</code>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
-<li><a name="static_response_outparam.set.response"></a><code>response</code>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="static_response_outparam_set.param"></a><code>param</code>: own&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
+<li><a name="static_response_outparam_set.response"></a><code>response</code>: result&lt;own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_response.status"></a><code>[method]incoming-response.status: func</code></h4>
+<h4><a name="method_incoming_response_status"></a><code>[method]incoming-response.status: func</code></h4>
 <p>Returns the status code from the incoming response.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_response.status.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
+<li><a name="method_incoming_response_status.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_response.status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+<li><a name="method_incoming_response_status.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
-<h4><a name="method_incoming_response.headers"></a><code>[method]incoming-response.headers: func</code></h4>
+<h4><a name="method_incoming_response_headers"></a><code>[method]incoming-response.headers: func</code></h4>
 <p>Returns the headers from the incoming response.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
@@ -1170,24 +1172,24 @@ implementation determine how to respond with an HTTP error response.</p>
 <a href="#incoming_response"><code>incoming-response</code></a> is dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_response.headers.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
+<li><a name="method_incoming_response_headers.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_response.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="method_incoming_response_headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_response.consume"></a><code>[method]incoming-response.consume: func</code></h4>
+<h4><a name="method_incoming_response_consume"></a><code>[method]incoming-response.consume: func</code></h4>
 <p>Returns the incoming body. May be called at most once. Returns error
 if called additional times.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_response.consume.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
+<li><a name="method_incoming_response_consume.self"></a><code>self</code>: borrow&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_response.consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_response_consume.0"></a> result&lt;own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="method_incoming_body.stream"></a><code>[method]incoming-body.stream: func</code></h4>
+<h4><a name="method_incoming_body_stream"></a><code>[method]incoming-body.stream: func</code></h4>
 <p>Returns the contents of the body, as a stream of bytes.</p>
 <p>Returns success on first call: the stream representing the contents
 can be retrieved at most once. Subsequent calls will return error.</p>
@@ -1202,36 +1204,36 @@ and for that backpressure to not inhibit delivery of the trailers if
 the user does not read the entire body.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_body.stream.self"></a><code>self</code>: borrow&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
+<li><a name="method_incoming_body_stream.self"></a><code>self</code>: borrow&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_body.stream.0"></a> result&lt;own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;&gt;</li>
+<li><a name="method_incoming_body_stream.0"></a> result&lt;own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="static_incoming_body.finish"></a><code>[static]incoming-body.finish: func</code></h4>
+<h4><a name="static_incoming_body_finish"></a><code>[static]incoming-body.finish: func</code></h4>
 <p>Takes ownership of <a href="#incoming_body"><code>incoming-body</code></a>, and returns a <a href="#future_trailers"><code>future-trailers</code></a>.
 This function will trap if the <a href="#input_stream"><code>input-stream</code></a> child is still alive.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="static_incoming_body.finish.this"></a><code>this</code>: own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
+<li><a name="static_incoming_body_finish.this"></a><code>this</code>: own&lt;<a href="#incoming_body"><a href="#incoming_body"><code>incoming-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="static_incoming_body.finish.0"></a> own&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
+<li><a name="static_incoming_body_finish.0"></a> own&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_future_trailers.subscribe"></a><code>[method]future-trailers.subscribe: func</code></h4>
+<h4><a name="method_future_trailers_subscribe"></a><code>[method]future-trailers.subscribe: func</code></h4>
 <p>Returns a pollable which becomes ready when either the trailers have
 been received, or an error has occurred. When this pollable is ready,
 the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_future_trailers.subscribe.self"></a><code>self</code>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
+<li><a name="method_future_trailers_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_trailers.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_future_trailers_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_future_trailers.get"></a><code>[method]future-trailers.get: func</code></h4>
+<h4><a name="method_future_trailers_get"></a><code>[method]future-trailers.get: func</code></h4>
 <p>Returns the contents of the trailers, or an error which occurred,
 once the future is ready.</p>
 <p>The outer <code>option</code> represents future readiness. Users can wait on this
@@ -1249,11 +1251,11 @@ resource is immutable, and a child. Use of the <code>set</code>, <code>append</c
 dropped before the parent <a href="#future_trailers"><code>future-trailers</code></a> is dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_future_trailers.get.self"></a><code>self</code>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
+<li><a name="method_future_trailers_get.self"></a><code>self</code>: borrow&lt;<a href="#future_trailers"><a href="#future_trailers"><code>future-trailers</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_trailers.get.0"></a> option&lt;result&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
+<li><a name="method_future_trailers_get.0"></a> option&lt;result&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
 <h4><a name="constructor_outgoing_response"></a><code>[constructor]outgoing-response: func</code></h4>
 <p>Construct an <a href="#outgoing_response"><code>outgoing-response</code></a>, with a default <a href="#status_code"><code>status-code</code></a> of <code>200</code>.
@@ -1270,29 +1272,29 @@ If a different <a href="#status_code"><code>status-code</code></a> is needed, it
 <ul>
 <li><a name="constructor_outgoing_response.0"></a> own&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_response.status_code"></a><code>[method]outgoing-response.status-code: func</code></h4>
+<h4><a name="method_outgoing_response_status_code"></a><code>[method]outgoing-response.status-code: func</code></h4>
 <p>Get the HTTP Status Code for the Response.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_response.status_code.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response_status_code.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_response.status_code.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+<li><a name="method_outgoing_response_status_code.0"></a> <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
-<h4><a name="method_outgoing_response.set_status_code"></a><code>[method]outgoing-response.set-status-code: func</code></h4>
+<h4><a name="method_outgoing_response_set_status_code"></a><code>[method]outgoing-response.set-status-code: func</code></h4>
 <p>Set the HTTP Status Code for the Response. Fails if the status-code
 given is not a valid http status code.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_response.set_status_code.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
-<li><a name="method_outgoing_response.set_status_code.status_code"></a><a href="#status_code"><code>status-code</code></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
+<li><a name="method_outgoing_response_set_status_code.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response_set_status_code.status_code"></a><a href="#status_code"><code>status-code</code></a>: <a href="#status_code"><a href="#status_code"><code>status-code</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_response.set_status_code.0"></a> result</li>
+<li><a name="method_outgoing_response_set_status_code.0"></a> result</li>
 </ul>
-<h4><a name="method_outgoing_response.headers"></a><code>[method]outgoing-response.headers: func</code></h4>
+<h4><a name="method_outgoing_response_headers"></a><code>[method]outgoing-response.headers: func</code></h4>
 <p>Get the headers associated with the Request.</p>
 <p>The returned <a href="#headers"><code>headers</code></a> resource is immutable: <code>set</code>, <code>append</code>, and
 <code>delete</code> operations will fail with <code>header-error.immutable</code>.</p>
@@ -1301,26 +1303,26 @@ given is not a valid http status code.</p>
 another component by e.g. <code>outgoing-handler.handle</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_response.headers.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response_headers.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_response.headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response_headers.0"></a> own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_response.body"></a><code>[method]outgoing-response.body: func</code></h4>
+<h4><a name="method_outgoing_response_body"></a><code>[method]outgoing-response.body: func</code></h4>
 <p>Returns the resource corresponding to the outgoing Body for this Response.</p>
 <p>Returns success on the first call: the <a href="#outgoing_body"><code>outgoing-body</code></a> resource for
 this <a href="#outgoing_response"><code>outgoing-response</code></a> can be retrieved at most once. Subsequent
 calls will return error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_response.body.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
+<li><a name="method_outgoing_response_body.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_response"><a href="#outgoing_response"><code>outgoing-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_response.body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_response_body.0"></a> result&lt;own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="method_outgoing_body.write"></a><code>[method]outgoing-body.write: func</code></h4>
+<h4><a name="method_outgoing_body_write"></a><code>[method]outgoing-body.write: func</code></h4>
 <p>Returns a stream for writing the body contents.</p>
 <p>The returned <a href="#output_stream"><code>output-stream</code></a> is a child resource: it must be dropped
 before the parent <a href="#outgoing_body"><code>outgoing-body</code></a> resource is dropped (or finished),
@@ -1330,13 +1332,13 @@ this <a href="#outgoing_body"><code>outgoing-body</code></a> may be retrieved at
 will return error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_body.write.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
+<li><a name="method_outgoing_body_write.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_body.write.0"></a> result&lt;own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;&gt;</li>
+<li><a name="method_outgoing_body_write.0"></a> result&lt;own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;&gt;</li>
 </ul>
-<h4><a name="static_outgoing_body.finish"></a><code>[static]outgoing-body.finish: func</code></h4>
+<h4><a name="static_outgoing_body_finish"></a><code>[static]outgoing-body.finish: func</code></h4>
 <p>Finalize an outgoing body, optionally providing trailers. This must be
 called to signal that the response is complete. If the <a href="#outgoing_body"><code>outgoing-body</code></a>
 is dropped without calling <code>outgoing-body.finalize</code>, the implementation
@@ -1347,26 +1349,26 @@ to the body (via <code>write</code>) does not match the value given in the
 Content-Length.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="static_outgoing_body.finish.this"></a><code>this</code>: own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
-<li><a name="static_outgoing_body.finish.trailers"></a><a href="#trailers"><code>trailers</code></a>: option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;</li>
+<li><a name="static_outgoing_body_finish.this"></a><code>this</code>: own&lt;<a href="#outgoing_body"><a href="#outgoing_body"><code>outgoing-body</code></a></a>&gt;</li>
+<li><a name="static_outgoing_body_finish.trailers"></a><a href="#trailers"><code>trailers</code></a>: option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="static_outgoing_body.finish.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a name="static_outgoing_body_finish.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_future_incoming_response.subscribe"></a><code>[method]future-incoming-response.subscribe: func</code></h4>
+<h4><a name="method_future_incoming_response_subscribe"></a><code>[method]future-incoming-response.subscribe: func</code></h4>
 <p>Returns a pollable which becomes ready when either the Response has
 been received, or an error has occurred. When this pollable is ready,
 the <code>get</code> method will return <code>some</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_future_incoming_response.subscribe.self"></a><code>self</code>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
+<li><a name="method_future_incoming_response_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_incoming_response.subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a name="method_future_incoming_response_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_future_incoming_response.get"></a><code>[method]future-incoming-response.get: func</code></h4>
+<h4><a name="method_future_incoming_response_get"></a><code>[method]future-incoming-response.get: func</code></h4>
 <p>Returns the incoming HTTP Response, or an error, once one is ready.</p>
 <p>The outer <code>option</code> represents future readiness. Users can wait on this
 <code>option</code> to become <code>some</code> using the <code>subscribe</code> method.</p>
@@ -1380,13 +1382,13 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <a href="#output_stream"><code>output-stream</code></a> child.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_future_incoming_response.get.self"></a><code>self</code>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
+<li><a name="method_future_incoming_response_get.self"></a><code>self</code>: borrow&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_future_incoming_response.get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
+<li><a name="method_future_incoming_response_get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a name="wasi:random_random_0.2.0"></a>Import interface wasi:random/random@0.2.0</h2>
+<h2><a name="wasi_random_random_0_2_0"></a>Import interface wasi:random/random@0.2.0</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -1419,7 +1421,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="wasi:cli_stdout_0.2.0"></a>Import interface wasi:cli/stdout@0.2.0</h2>
+<h2><a name="wasi_cli_stdout_0_2_0"></a>Import interface wasi:cli/stdout@0.2.0</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"></a><code>type output-stream</code></h4>
@@ -1432,7 +1434,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stderr_0.2.0"></a>Import interface wasi:cli/stderr@0.2.0</h2>
+<h2><a name="wasi_cli_stderr_0_2_0"></a>Import interface wasi:cli/stderr@0.2.0</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"></a><code>type output-stream</code></h4>
@@ -1445,7 +1447,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:cli_stdin_0.2.0"></a>Import interface wasi:cli/stdin@0.2.0</h2>
+<h2><a name="wasi_cli_stdin_0_2_0"></a>Import interface wasi:cli/stdin@0.2.0</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"></a><code>type input-stream</code></h4>
@@ -1458,7 +1460,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:http_outgoing_handler_0.2.0"></a>Import interface wasi:http/outgoing-handler@0.2.0</h2>
+<h2><a name="wasi_http_outgoing_handler_0_2_0"></a>Import interface wasi:http/outgoing-handler@0.2.0</h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
 <hr />
@@ -1495,7 +1497,7 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 <ul>
 <li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi:clocks_wall_clock_0.2.0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -1536,7 +1538,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi:http_incoming_handler_0.2.0"></a>Export interface wasi:http/incoming-handler@0.2.0</h2>
+<h2><a name="wasi_http_incoming_handler_0_2_0"></a>Export interface wasi:http/incoming-handler@0.2.0</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="incoming_request"></a><code>type incoming-request</code></h4>
