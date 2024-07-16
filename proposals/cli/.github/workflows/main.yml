@@ -18,7 +18,6 @@ jobs:
         ./wit-deps lock
         git add -N wit/deps
         git diff --exit-code
-    - uses: WebAssembly/wit-abi-up-to-date@v17
+    - uses: WebAssembly/wit-abi-up-to-date@v21
       with:
-        wit-bindgen: '0.16.0'
         worlds: "command imports"
