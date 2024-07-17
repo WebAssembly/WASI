@@ -11,12 +11,12 @@ outgoing HTTP requests.</p>
 <li>interface <a href="#wasi_io_error_0_2_0"><code>wasi:io/error@0.2.0</code></a></li>
 <li>interface <a href="#wasi_io_streams_0_2_0"><code>wasi:io/streams@0.2.0</code></a></li>
 <li>interface <a href="#wasi_http_types_0_2_0"><code>wasi:http/types@0.2.0</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
 <li>interface <a href="#wasi_random_random_0_2_0"><code>wasi:random/random@0.2.0</code></a></li>
 <li>interface <a href="#wasi_cli_stdout_0_2_0"><code>wasi:cli/stdout@0.2.0</code></a></li>
 <li>interface <a href="#wasi_cli_stderr_0_2_0"><code>wasi:cli/stderr@0.2.0</code></a></li>
 <li>interface <a href="#wasi_cli_stdin_0_2_0"><code>wasi:cli/stdin@0.2.0</code></a></li>
 <li>interface <a href="#wasi_http_outgoing_handler_0_2_0"><code>wasi:http/outgoing-handler@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
 </ul>
 </li>
 <li>Exports:
@@ -1388,6 +1388,47 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a name="method_future_incoming_response_get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
+<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
+<p>WASI Wall Clock is a clock API intended to let users query the current
+time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
+is not necessarily monotonic as it may be reset.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A wall clock is a clock which measures the date and time according to
+some external reference.</p>
+<p>External references may be reset, so this clock is not necessarily
+monotonic, making it unsuitable for measuring elapsed time.</p>
+<p>It is intended for reporting the current date and time for humans.</p>
+<hr />
+<h3>Types</h3>
+<h4><a name="datetime"></a><code>record datetime</code></h4>
+<p>A time and date in seconds plus nanoseconds.</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a name="datetime.seconds"></a><code>seconds</code>: <code>u64</code></li>
+<li><a name="datetime.nanoseconds"></a><code>nanoseconds</code>: <code>u32</code></li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a name="now"></a><code>now: func</code></h4>
+<p>Read the current value of the clock.</p>
+<p>This clock is not monotonic, therefore calling this function repeatedly
+will not necessarily produce a sequence of non-decreasing values.</p>
+<p>The returned timestamps represent the number of seconds since
+1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
+also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h4><a name="resolution"></a><code>resolution: func</code></h4>
+<p>Query the resolution of the clock.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
 <h2><a name="wasi_random_random_0_2_0"></a>Import interface wasi:random/random@0.2.0</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -1496,47 +1537,6 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 <h5>Return values</h5>
 <ul>
 <li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
-</ul>
-<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
-<p>WASI Wall Clock is a clock API intended to let users query the current
-time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
-is not necessarily monotonic as it may be reset.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<p>A wall clock is a clock which measures the date and time according to
-some external reference.</p>
-<p>External references may be reset, so this clock is not necessarily
-monotonic, making it unsuitable for measuring elapsed time.</p>
-<p>It is intended for reporting the current date and time for humans.</p>
-<hr />
-<h3>Types</h3>
-<h4><a name="datetime"></a><code>record datetime</code></h4>
-<p>A time and date in seconds plus nanoseconds.</p>
-<h5>Record Fields</h5>
-<ul>
-<li><a name="datetime.seconds"></a><code>seconds</code>: <code>u64</code></li>
-<li><a name="datetime.nanoseconds"></a><code>nanoseconds</code>: <code>u32</code></li>
-</ul>
-<hr />
-<h3>Functions</h3>
-<h4><a name="now"></a><code>now: func</code></h4>
-<p>Read the current value of the clock.</p>
-<p>This clock is not monotonic, therefore calling this function repeatedly
-will not necessarily produce a sequence of non-decreasing values.</p>
-<p>The returned timestamps represent the number of seconds since
-1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
-also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
-</ul>
-<h4><a name="resolution"></a><code>resolution: func</code></h4>
-<p>Query the resolution of the clock.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Return values</h5>
-<ul>
-<li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
 <h2><a name="wasi_http_incoming_handler_0_2_0"></a>Export interface wasi:http/incoming-handler@0.2.0</h2>
 <hr />

@@ -6,7 +6,9 @@ package wasi:http@0.2.0;
 world imports {
   /// HTTP proxies have access to time and randomness.
   @since(version = 0.2.0)
-  include wasi:clocks/imports@0.2.0;
+  import wasi:clocks/monotonic-clock@0.2.0;
+  @since(version = 0.2.0)
+  import wasi:clocks/wall-clock@0.2.0;
   @since(version = 0.2.0)
   import wasi:random/random@0.2.0;
 
