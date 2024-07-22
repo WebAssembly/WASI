@@ -33,10 +33,12 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun           |          |
-| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                             |          |
+| Proposal                                                                       | Champion                                   | Versions |
+| ------------------------------------------------------------------------------ | ------------------------------------------ | -------- |
+| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                 |          |
+| [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
+| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun               |          |
+| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -47,13 +49,11 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
-| [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Messaging][wasi-messaging]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Observe][wasi-observe]    | Chris Dickinson                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
