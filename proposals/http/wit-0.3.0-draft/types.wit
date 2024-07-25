@@ -315,14 +315,14 @@ interface types {
     /// string given is not a syntactically valid uri scheme.
     set-scheme: func(scheme: option<scheme>) -> result;
 
-    /// Get the HTTP Authority for the Request. A value of `none` may be used
-    /// with Related Schemes which do not require an Authority. The HTTP and
+    /// Get the authority of the Request's target URI. A value of `none` may be used
+    /// with Related Schemes which do not require an authority. The HTTP and
     /// HTTPS schemes always require an authority.
     authority: func() -> option<string>;
-    /// Set the HTTP Authority for the Request. A value of `none` may be used
-    /// with Related Schemes which do not require an Authority. The HTTP and
+    /// Set the authority of the Request's target URI. A value of `none` may be used
+    /// with Related Schemes which do not require an authority. The HTTP and
     /// HTTPS schemes always require an authority. Fails if the string given is
-    /// not a syntactically valid uri authority.
+    /// not a syntactically valid URI authority.
     set-authority: func(authority: option<string>) -> result;
 
     /// Get the `request-options` to be associated with this request

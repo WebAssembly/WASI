@@ -888,7 +888,7 @@ list with the same key.</p>
 <li><a name="method_incoming_request_scheme.0"></a> option&lt;<a href="#scheme"><a href="#scheme"><code>scheme</code></a></a>&gt;</li>
 </ul>
 <h4><a name="method_incoming_request_authority"></a><code>[method]incoming-request.authority: func</code></h4>
-<p>Returns the authority from the request, if it was present.</p>
+<p>Returns the authority of the Request's target URI, if present.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_incoming_request_authority.self"></a><code>self</code>: borrow&lt;<a href="#incoming_request"><a href="#incoming_request"><code>incoming-request</code></a></a>&gt;</li>
@@ -1027,8 +1027,8 @@ string given is not a syntactically valid uri scheme.</p>
 <li><a name="method_outgoing_request_set_scheme.0"></a> result</li>
 </ul>
 <h4><a name="method_outgoing_request_authority"></a><code>[method]outgoing-request.authority: func</code></h4>
-<p>Get the HTTP Authority for the Request. A value of <code>none</code> may be used
-with Related Schemes which do not require an Authority. The HTTP and
+<p>Get the authority of the Request's target URI. A value of <code>none</code> may be used
+with Related Schemes which do not require an authority. The HTTP and
 HTTPS schemes always require an authority.</p>
 <h5>Params</h5>
 <ul>
@@ -1039,10 +1039,10 @@ HTTPS schemes always require an authority.</p>
 <li><a name="method_outgoing_request_authority.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
 <h4><a name="method_outgoing_request_set_authority"></a><code>[method]outgoing-request.set-authority: func</code></h4>
-<p>Set the HTTP Authority for the Request. A value of <code>none</code> may be used
-with Related Schemes which do not require an Authority. The HTTP and
+<p>Set the authority of the Request's target URI. A value of <code>none</code> may be used
+with Related Schemes which do not require an authority. The HTTP and
 HTTPS schemes always require an authority. Fails if the string given is
-not a syntactically valid uri authority.</p>
+not a syntactically valid URI authority.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="method_outgoing_request_set_authority.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a>&gt;</li>

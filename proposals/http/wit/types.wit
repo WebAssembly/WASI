@@ -267,7 +267,7 @@ interface types {
     @since(version = 0.2.0)
     scheme: func() -> option<scheme>;
 
-    /// Returns the authority from the request, if it was present.
+    /// Returns the authority of the Request's target URI, if present.
     @since(version = 0.2.0)
     authority: func() -> option<string>;
 
@@ -344,15 +344,15 @@ interface types {
     @since(version = 0.2.0)
     set-scheme: func(scheme: option<scheme>) -> result;
 
-    /// Get the HTTP Authority for the Request. A value of `none` may be used
-    /// with Related Schemes which do not require an Authority. The HTTP and
+    /// Get the authority of the Request's target URI. A value of `none` may be used
+    /// with Related Schemes which do not require an authority. The HTTP and
     /// HTTPS schemes always require an authority.
     @since(version = 0.2.0)
     authority: func() -> option<string>;
-    /// Set the HTTP Authority for the Request. A value of `none` may be used
-    /// with Related Schemes which do not require an Authority. The HTTP and
+    /// Set the authority of the Request's target URI. A value of `none` may be used
+    /// with Related Schemes which do not require an authority. The HTTP and
     /// HTTPS schemes always require an authority. Fails if the string given is
-    /// not a syntactically valid uri authority.
+    /// not a syntactically valid URI authority.
     @since(version = 0.2.0)
     set-authority: func(authority: option<string>) -> result;
 
