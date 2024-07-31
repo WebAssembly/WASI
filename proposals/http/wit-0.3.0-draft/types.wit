@@ -133,6 +133,9 @@ interface types {
   }
 
   /// Field keys are always strings.
+  ///
+  /// Field keys should always be treated as case insensitive by the `fields`
+  /// resource for the purposes of equality checking.
   type field-key = string;
 
   /// Field values should always be ASCII strings. However, in
@@ -150,6 +153,11 @@ interface types {
   /// `request.headers`) might be be immutable. In an immutable fields, the
   /// `set`, `append`, and `delete` operations will fail with
   /// `header-error.immutable`.
+  ///
+  /// A `fields` resource should store `field-key`s and `field-value`s in their
+  /// original casing used to construct or mutate the `fields` resource. The `fields`
+  /// resource should use that original casing when serializing the fields for
+  /// transport or when returning them from a method.
   resource fields {
 
     /// Construct an empty HTTP Fields.
@@ -218,6 +226,9 @@ interface types {
     /// The outer list represents each key-value pair in the Fields. Keys
     /// which have multiple values are represented by multiple entries in this
     /// list with the same key.
+    ///
+    /// The keys and values are always returned in the original casing and in
+    /// the order in which they will be serialized for transport.
     entries: func() -> list<tuple<field-key,field-value>>;
 
     /// Make a deep copy of the Fields. Equivalent in behavior to calling the
