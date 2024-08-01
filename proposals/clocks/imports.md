@@ -2,14 +2,14 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_poll_0_2_0"><code>wasi:io/poll@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_timezone_0_2_0"><code>wasi:clocks/timezone@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_1"><code>wasi:io/poll@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_1"><code>wasi:clocks/monotonic-clock@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_1"><code>wasi:clocks/wall-clock@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_2_1"><code>wasi:clocks/timezone@0.2.1</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi_io_poll_0_2_0"></a>Import interface wasi:io/poll@0.2.0</h2>
+<h2><a name="wasi_io_poll_0_2_1"></a>Import interface wasi:io/poll@0.2.1</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -43,14 +43,17 @@ containing only this pollable.</p>
 interest, and waits until one or more of the events is ready for I/O.</p>
 <p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
 argument list that is ready for I/O.</p>
-<p>If the list contains more elements than can be indexed with a <code>u32</code>
-value, this function traps.</p>
+<p>This function traps if either:</p>
+<ul>
+<li>the list is empty, or:</li>
+<li>the list contains more elements than can be indexed with a <code>u32</code> value.</li>
+</ul>
 <p>A timeout can be implemented by adding a pollable from the
 wasi-clocks API to the list.</p>
 <p>This function does not return a <code>result</code>; polling in itself does not
 do any I/O so it doesn't fail. If any of the I/O sources identified by
 the pollables has an error, it is indicated by marking the source as
-being reaedy for I/O.</p>
+being ready for I/O.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll.in"></a><code>in</code>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
@@ -59,7 +62,7 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_monotonic_clock_0_2_0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_monotonic_clock_0_2_1"></a>Import interface wasi:clocks/monotonic-clock@0.2.1</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -118,7 +121,7 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_wall_clock_0_2_1"></a>Import interface wasi:clocks/wall-clock@0.2.1</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -159,7 +162,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi_clocks_timezone_0_2_0"></a>Import interface wasi:clocks/timezone@0.2.0</h2>
+<h2><a name="wasi_clocks_timezone_0_2_1"></a>Import interface wasi:clocks/timezone@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="datetime"></a><code>type datetime</code></h4>
