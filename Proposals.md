@@ -36,6 +36,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                                                       | Champion                                   | Versions |
 | ------------------------------------------------------------------------------ | ------------------------------------------ | -------- |
 | [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                 |          |
+| [CLI: Exit With Code][wasi-cli]                                                | Dan Gohman                             |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun               |          |
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
