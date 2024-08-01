@@ -6,26 +6,26 @@ outgoing HTTP requests.</p>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_poll_0_2_0"><code>wasi:io/poll@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_0"><code>wasi:clocks/monotonic-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi_io_error_0_2_0"><code>wasi:io/error@0.2.0</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_0"><code>wasi:io/streams@0.2.0</code></a></li>
-<li>interface <a href="#wasi_http_types_0_2_0"><code>wasi:http/types@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi_random_random_0_2_0"><code>wasi:random/random@0.2.0</code></a></li>
-<li>interface <a href="#wasi_cli_stdout_0_2_0"><code>wasi:cli/stdout@0.2.0</code></a></li>
-<li>interface <a href="#wasi_cli_stderr_0_2_0"><code>wasi:cli/stderr@0.2.0</code></a></li>
-<li>interface <a href="#wasi_cli_stdin_0_2_0"><code>wasi:cli/stdin@0.2.0</code></a></li>
-<li>interface <a href="#wasi_http_outgoing_handler_0_2_0"><code>wasi:http/outgoing-handler@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_1"><code>wasi:io/poll@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_1"><code>wasi:clocks/monotonic-clock@0.2.1</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_1"><code>wasi:io/error@0.2.1</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_1"><code>wasi:io/streams@0.2.1</code></a></li>
+<li>interface <a href="#wasi_http_types_0_2_1"><code>wasi:http/types@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_1"><code>wasi:clocks/wall-clock@0.2.1</code></a></li>
+<li>interface <a href="#wasi_random_random_0_2_1"><code>wasi:random/random@0.2.1</code></a></li>
+<li>interface <a href="#wasi_cli_stdout_0_2_1"><code>wasi:cli/stdout@0.2.1</code></a></li>
+<li>interface <a href="#wasi_cli_stderr_0_2_1"><code>wasi:cli/stderr@0.2.1</code></a></li>
+<li>interface <a href="#wasi_cli_stdin_0_2_1"><code>wasi:cli/stdin@0.2.1</code></a></li>
+<li>interface <a href="#wasi_http_outgoing_handler_0_2_1"><code>wasi:http/outgoing-handler@0.2.1</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi_http_incoming_handler_0_2_0"><code>wasi:http/incoming-handler@0.2.0</code></a></li>
+<li>interface <a href="#wasi_http_incoming_handler_0_2_1"><code>wasi:http/incoming-handler@0.2.1</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi_io_poll_0_2_0"></a>Import interface wasi:io/poll@0.2.0</h2>
+<h2><a name="wasi_io_poll_0_2_1"></a>Import interface wasi:io/poll@0.2.1</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -78,7 +78,7 @@ being ready for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_monotonic_clock_0_2_0"></a>Import interface wasi:clocks/monotonic-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_monotonic_clock_0_2_1"></a>Import interface wasi:clocks/monotonic-clock@0.2.1</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -137,7 +137,7 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_io_error_0_2_0"></a>Import interface wasi:io/error@0.2.0</h2>
+<h2><a name="wasi_io_error_0_2_1"></a>Import interface wasi:io/error@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="error"></a><code>resource error</code></h4>
@@ -170,7 +170,7 @@ hazard.</p>
 <ul>
 <li><a name="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a name="wasi_io_streams_0_2_0"></a>Import interface wasi:io/streams@0.2.0</h2>
+<h2><a name="wasi_io_streams_0_2_1"></a>Import interface wasi:io/streams@0.2.1</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -498,7 +498,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_http_types_0_2_0"></a>Import interface wasi:http/types@0.2.0</h2>
+<h2><a name="wasi_http_types_0_2_1"></a>Import interface wasi:http/types@0.2.1</h2>
 <p>This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
@@ -1388,7 +1388,7 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a name="method_future_incoming_response_get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_wall_clock_0_2_1"></a>Import interface wasi:clocks/wall-clock@0.2.1</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -1429,7 +1429,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi_random_random_0_2_0"></a>Import interface wasi:random/random@0.2.0</h2>
+<h2><a name="wasi_random_random_0_2_1"></a>Import interface wasi:random/random@0.2.1</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -1462,7 +1462,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a name="wasi_cli_stdout_0_2_0"></a>Import interface wasi:cli/stdout@0.2.0</h2>
+<h2><a name="wasi_cli_stdout_0_2_1"></a>Import interface wasi:cli/stdout@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"></a><code>type output-stream</code></h4>
@@ -1475,7 +1475,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_cli_stderr_0_2_0"></a>Import interface wasi:cli/stderr@0.2.0</h2>
+<h2><a name="wasi_cli_stderr_0_2_1"></a>Import interface wasi:cli/stderr@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="output_stream"></a><code>type output-stream</code></h4>
@@ -1488,7 +1488,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_cli_stdin_0_2_0"></a>Import interface wasi:cli/stdin@0.2.0</h2>
+<h2><a name="wasi_cli_stdin_0_2_1"></a>Import interface wasi:cli/stdin@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="input_stream"></a><code>type input-stream</code></h4>
@@ -1501,7 +1501,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a name="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_http_outgoing_handler_0_2_0"></a>Import interface wasi:http/outgoing-handler@0.2.0</h2>
+<h2><a name="wasi_http_outgoing_handler_0_2_1"></a>Import interface wasi:http/outgoing-handler@0.2.1</h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
 <hr />
@@ -1538,7 +1538,7 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 <ul>
 <li><a name="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_http_incoming_handler_0_2_0"></a>Export interface wasi:http/incoming-handler@0.2.0</h2>
+<h2><a name="wasi_http_incoming_handler_0_2_1"></a>Export interface wasi:http/incoming-handler@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="incoming_request"></a><code>type incoming-request</code></h4>

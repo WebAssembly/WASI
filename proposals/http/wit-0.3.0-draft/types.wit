@@ -1,8 +1,8 @@
 /// This interface defines all of the types and methods for implementing HTTP
 /// Requests and Responses, as well as their headers, trailers, and bodies.
 interface types {
-  use wasi:clocks/monotonic-clock@0.2.0.{duration};
-  use wasi:io/error@0.2.0.{error};
+  use wasi:clocks/monotonic-clock@0.2.1.{duration};
+  use wasi:io/error@0.2.1.{error};
 
   /// This type corresponds to HTTP standard Methods.
   variant method {
