@@ -2,16 +2,16 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_0"><code>wasi:io/error@0.2.0</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_0"><code>wasi:io/poll@0.2.0</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_0"><code>wasi:io/streams@0.2.0</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_0"><code>wasi:clocks/wall-clock@0.2.0</code></a></li>
-<li>interface <a href="#wasi_filesystem_types_0_2_0"><code>wasi:filesystem/types@0.2.0</code></a></li>
-<li>interface <a href="#wasi_filesystem_preopens_0_2_0"><code>wasi:filesystem/preopens@0.2.0</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_1"><code>wasi:io/error@0.2.1</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_1"><code>wasi:io/poll@0.2.1</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_1"><code>wasi:io/streams@0.2.1</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_1"><code>wasi:clocks/wall-clock@0.2.1</code></a></li>
+<li>interface <a href="#wasi_filesystem_types_0_2_1"><code>wasi:filesystem/types@0.2.1</code></a></li>
+<li>interface <a href="#wasi_filesystem_preopens_0_2_1"><code>wasi:filesystem/preopens@0.2.1</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi_io_error_0_2_0"></a>Import interface wasi:io/error@0.2.0</h2>
+<h2><a name="wasi_io_error_0_2_1"></a>Import interface wasi:io/error@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="error"></a><code>resource error</code></h4>
@@ -21,13 +21,11 @@ which provides some human-readable information about the error.</p>
 <p>In the <code>wasi:io</code> package, this resource is returned through the
 <code>wasi:io/streams/stream-error</code> type.</p>
 <p>To provide more specific error information, other interfaces may
-provide functions to further &quot;downcast&quot; this error into more specific
-error information. For example, <a href="#error"><code>error</code></a>s returned in streams derived
-from filesystem types to be described using the filesystem's own
-error-code type, using the function
-<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a parameter
-<code>borrow&lt;error&gt;</code> and returns
-<code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+offer functions to &quot;downcast&quot; this error into more specific types. For example,
+errors returned from streams derived from filesystem types can be described using
+the filesystem's own error-code type. This is done using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
+parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
 <h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
 concrete type is open.</h2>
 <h3>Functions</h3>
@@ -46,7 +44,7 @@ hazard.</p>
 <ul>
 <li><a name="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a name="wasi_io_poll_0_2_0"></a>Import interface wasi:io/poll@0.2.0</h2>
+<h2><a name="wasi_io_poll_0_2_1"></a>Import interface wasi:io/poll@0.2.1</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -80,14 +78,17 @@ containing only this pollable.</p>
 interest, and waits until one or more of the events is ready for I/O.</p>
 <p>The result <code>list&lt;u32&gt;</code> contains one or more indices of handles in the
 argument list that is ready for I/O.</p>
-<p>If the list contains more elements than can be indexed with a <code>u32</code>
-value, this function traps.</p>
+<p>This function traps if either:</p>
+<ul>
+<li>the list is empty, or:</li>
+<li>the list contains more elements than can be indexed with a <code>u32</code> value.</li>
+</ul>
 <p>A timeout can be implemented by adding a pollable from the
 wasi-clocks API to the list.</p>
 <p>This function does not return a <code>result</code>; polling in itself does not
 do any I/O so it doesn't fail. If any of the I/O sources identified by
 the pollables has an error, it is indicated by marking the source as
-being reaedy for I/O.</p>
+being ready for I/O.</p>
 <h5>Params</h5>
 <ul>
 <li><a name="poll.in"></a><code>in</code>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
@@ -96,7 +97,7 @@ being reaedy for I/O.</p>
 <ul>
 <li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi_io_streams_0_2_0"></a>Import interface wasi:io/streams@0.2.0</h2>
+<h2><a name="wasi_io_streams_0_2_1"></a>Import interface wasi:io/streams@0.2.1</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -135,12 +136,15 @@ use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>po
 for using <code>wasi:io/poll</code>.</p>
 <h4><a name="output_stream"></a><code>resource output-stream</code></h4>
 <p>An output bytestream.</p>
-<h2><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
+<p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
 underlying platforms. Except where specified otherwise, I/O operations also
 always return promptly, after the number of bytes that can be written
 promptly, which could even be zero. To wait for the stream to be ready to
 accept data, the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be
-polled for using <code>wasi:io/poll</code>.</h2>
+polled for using <code>wasi:io/poll</code>.</p>
+<h2>Dropping an <a href="#output_stream"><code>output-stream</code></a> while there's still an active write in
+progress may result in the data being lost. Before dropping the stream,
+be sure to fully flush your writes.</h2>
 <h3>Functions</h3>
 <h4><a name="method_input_stream_read"></a><code>[method]input-stream.read: func</code></h4>
 <p>Perform a non-blocking read from the stream.</p>
@@ -322,7 +326,7 @@ and stream is ready for writing again.</p>
 </ul>
 <h4><a name="method_output_stream_subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
-is ready for more writing, or an error has occured. When this
+is ready for more writing, or an error has occurred. When this
 pollable is ready, <code>check-write</code> will return <code>ok(n)</code> with n&gt;0, or an
 error.</p>
 <p>If the stream is closed, this pollable is always ready immediately.</p>
@@ -385,7 +389,7 @@ let _ = this.check-write();         // eliding error handling
 </ul>
 <h4><a name="method_output_stream_splice"></a><code>[method]output-stream.splice: func</code></h4>
 <p>Read from one stream and write to another.</p>
-<p>The behavior of splice is equivelant to:</p>
+<p>The behavior of splice is equivalent to:</p>
 <ol>
 <li>calling <code>check-write</code> on the <a href="#output_stream"><code>output-stream</code></a></li>
 <li>calling <code>read</code> on the <a href="#input_stream"><code>input-stream</code></a> with the smaller of the
@@ -421,7 +425,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a name="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_wall_clock_0_2_0"></a>Import interface wasi:clocks/wall-clock@0.2.0</h2>
+<h2><a name="wasi_clocks_wall_clock_0_2_1"></a>Import interface wasi:clocks/wall-clock@0.2.1</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -462,7 +466,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a name="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a name="wasi_filesystem_types_0_2_0"></a>Import interface wasi:filesystem/types@0.2.0</h2>
+<h2><a name="wasi_filesystem_types_0_2_1"></a>Import interface wasi:filesystem/types@0.2.1</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -1342,7 +1346,7 @@ errors are filesystem-related errors.</p>
 <ul>
 <li><a name="filesystem_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_filesystem_preopens_0_2_0"></a>Import interface wasi:filesystem/preopens@0.2.0</h2>
+<h2><a name="wasi_filesystem_preopens_0_2_1"></a>Import interface wasi:filesystem/preopens@0.2.1</h2>
 <hr />
 <h3>Types</h3>
 <h4><a name="descriptor"></a><code>type descriptor</code></h4>
