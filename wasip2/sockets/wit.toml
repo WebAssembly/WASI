@@ -1,0 +1,5 @@
+version = "0.2.1"
+
+[dependencies]
+"wasi:clocks" = { path = "../clocks" }
+"wasi:io" = { path = "../io" }

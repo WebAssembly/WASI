@@ -1,0 +1,7 @@
+version = "0.2.1"
+
+[dependencies]
+"ricochet:io" = { path = "../io" }
+
+[registries]
+default = "https://ghcr.io/"

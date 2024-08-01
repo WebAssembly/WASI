@@ -1,0 +1,14 @@
+version = "0.2.1"
+
+[dependencies]
+"wasi:cli" = { path = "../cli" }
+"wasi:random" = { path = "../random" }
+"wasi:io" = { path = "../io" }
+"wasi:clocks" = { path = "../clocks" }
+
+# not used by http/proxy, but included to allow full contents of wasi-cli to validate
+"wasi:filesystem" = { path = "../filesystem" }
+"wasi:sockets" = { path = "../sockets" }
+
+[registries]
+default = "https://ghcr.io/"
