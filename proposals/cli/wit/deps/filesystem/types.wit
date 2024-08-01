@@ -1,4 +1,4 @@
-package wasi:filesystem@0.2.0;
+package wasi:filesystem@0.2.1;
 /// WASI filesystem is a filesystem API primarily intended to let users run WASI
 /// programs that access their files on their existing filesystems, without
 /// significant overhead.
@@ -26,9 +26,9 @@ package wasi:filesystem@0.2.0;
 @since(version = 0.2.0)
 interface types {
     @since(version = 0.2.0)
-    use wasi:io/streams@0.2.0.{input-stream, output-stream, error};
+    use wasi:io/streams@0.2.1.{input-stream, output-stream, error};
     @since(version = 0.2.0)
-    use wasi:clocks/wall-clock@0.2.0.{datetime};
+    use wasi:clocks/wall-clock@0.2.1.{datetime};
 
     /// File size or length of a region within a file.
     @since(version = 0.2.0)
@@ -83,7 +83,7 @@ interface types {
         /// WASI. At this time, it should be interpreted as a request, and not a
         /// requirement.
         data-integrity-sync,
-        /// Requests that reads be performed at the same level of integrety
+        /// Requests that reads be performed at the same level of integrity
         /// requested for writes. This is similar to `O_RSYNC` in POSIX.
         ///
         /// The precise semantics of this operation have not yet been defined for
