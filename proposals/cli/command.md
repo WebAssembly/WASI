@@ -73,6 +73,17 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a name="exit.status"></a><code>status</code>: result</li>
 </ul>
+<h4><a name="exit_with_code"></a><code>exit-with-code: func</code></h4>
+<p>Exit the current instance and any linked instances, reporting the
+specified status code to the host.</p>
+<p>The meaning of the code depends on the context, with 0 usually meaning
+&quot;success&quot;, and other values indicating various types of failure.</p>
+<p>This function does not return; the effect is analogous to a trap, but
+without the connotation that something bad has happened.</p>
+<h5>Params</h5>
+<ul>
+<li><a name="exit_with_code.status_code"></a><code>status-code</code>: <code>u8</code></li>
+</ul>
 <h2><a name="wasi_io_error_0_2_0"></a>Import interface wasi:io/error@0.2.0</h2>
 <hr />
 <h3>Types</h3>
