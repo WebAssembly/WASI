@@ -6,6 +6,3 @@ version = "0.2.1"
 "wasi:filesystem" = { path = "../filesystem" }
 "wasi:sockets" = { path = "../sockets" }
 "wasi:random" = { path = "../random" }
-
-[registries]
-default = "https://ghcr.io/webassembly"
