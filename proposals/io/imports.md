@@ -115,6 +115,8 @@ when it does, they are expected to subsume this API.</p>
 <p><a name="stream_error.last_operation_failed"></a><code>last-operation-failed</code>: own&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</p>
 <p>The last operation (a write or flush) failed before completion.
 <p>More information is available in the <a href="#error"><code>error</code></a> payload.</p>
+<p>After this, the stream will be closed. All future operations return
+<a href="#stream_error.closed"><code>stream-error::closed</code></a>.</p>
 </li>
 <li>
 <p><a name="stream_error.closed"></a><code>closed</code></p>
