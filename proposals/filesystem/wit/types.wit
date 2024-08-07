@@ -523,12 +523,6 @@ interface types {
 
         /// Open a file or directory.
         ///
-        /// The returned descriptor is not guaranteed to be the lowest-numbered
-        /// descriptor not currently open/ it is randomized to prevent applications
-        /// from depending on making assumptions about indexes, since this is
-        /// error-prone in multi-threaded contexts. The returned descriptor is
-        /// guaranteed to be less than 2**31.
-        ///
         /// If `flags` contains `descriptor-flags::mutate-directory`, and the base
         /// descriptor doesn't have `descriptor-flags::mutate-directory` set,
         /// `open-at` fails with `error-code::read-only`.

@@ -1170,11 +1170,6 @@ WASI.</p>
 </ul>
 <h4><a name="method_descriptor_open_at"></a><code>[method]descriptor.open-at: func</code></h4>
 <p>Open a file or directory.</p>
-<p>The returned descriptor is not guaranteed to be the lowest-numbered
-descriptor not currently open/ it is randomized to prevent applications
-from depending on making assumptions about indexes, since this is
-error-prone in multi-threaded contexts. The returned descriptor is
-guaranteed to be less than 2**31.</p>
 <p>If <code>flags</code> contains <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a>, and the base
 descriptor doesn't have <a href="#descriptor_flags.mutate_directory"><code>descriptor-flags::mutate-directory</code></a> set,
 <code>open-at</code> fails with <a href="#error_code.read_only"><code>error-code::read-only</code></a>.</p>
