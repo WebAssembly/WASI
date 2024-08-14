@@ -139,6 +139,9 @@ interface types {
   }
 
   /// Field keys are always strings.
+  ///
+  /// Field keys should always be treated as case insensitive by the `fields`
+  /// resource for the purposes of equality checking.
   @since(version = 0.2.0)
   type field-key = string;
 
