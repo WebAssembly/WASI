@@ -18,5 +18,5 @@ jobs:
         ./wit-deps lock --check
     - uses: WebAssembly/wit-abi-up-to-date@v21
       with:
-        wit-bindgen: '0.28.0'
+        wit-bindgen: '0.30.0'
         worlds: 'imports proxy'
