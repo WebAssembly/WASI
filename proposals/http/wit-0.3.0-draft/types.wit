@@ -107,12 +107,12 @@ interface types {
   /// This type enumerates the different kinds of errors that may occur when
   /// setting or appending to a `fields` resource.
   variant header-error {
-    /// This error indicates that a `field-key` or `field-value` was
+    /// This error indicates that a `field-name` or `field-value` was
     /// syntactically invalid when used with an operation that sets headers in a
     /// `fields`.
     invalid-syntax,
 
-    /// This error indicates that a forbidden `field-key` was used when trying
+    /// This error indicates that a forbidden `field-name` was used when trying
     /// to set a header in a `fields`.
     forbidden,
 
@@ -132,11 +132,11 @@ interface types {
     immutable,
   }
 
-  /// Field keys are always strings.
+  /// Field names are always strings.
   ///
-  /// Field keys should always be treated as case insensitive by the `fields`
+  /// Field names should always be treated as case insensitive by the `fields`
   /// resource for the purposes of equality checking.
-  type field-key = string;
+  type field-name = string;
 
   /// Field values should always be ASCII strings. However, in
   /// reality, HTTP implementations often have to interpret malformed values,
@@ -154,7 +154,7 @@ interface types {
   /// `set`, `append`, and `delete` operations will fail with
   /// `header-error.immutable`.
   ///
-  /// A `fields` resource should store `field-key`s and `field-value`s in their
+  /// A `fields` resource should store `field-name`s and `field-value`s in their
   /// original casing used to construct or mutate the `fields` resource. The `fields`
   /// resource should use that original casing when serializing the fields for
   /// transport or when returning them from a method.
@@ -169,67 +169,67 @@ interface types {
     ///
     /// The resulting `fields` is mutable.
     ///
-    /// The list represents each key-value pair in the Fields. Keys
+    /// The list represents each name-value pair in the Fields. Names
     /// which have multiple values are represented by multiple entries in this
-    /// list with the same key.
+    /// list with the same name.
     ///
-    /// The tuple is a pair of the field key, represented as a string, and
-    /// Value, represented as a list of bytes. In a valid Fields, all keys
+    /// The tuple is a pair of the field name, represented as a string, and
+    /// Value, represented as a list of bytes. In a valid Fields, all names
     /// and values are valid UTF-8 strings. However, values are not always
     /// well-formed, so they are represented as a raw list of bytes.
     ///
     /// An error result will be returned if any header or value was
     /// syntactically invalid, or if a header was forbidden.
     from-list: static func(
-      entries: list<tuple<field-key,field-value>>
+      entries: list<tuple<field-name,field-value>>
     ) -> result<fields, header-error>;
 
-    /// Get all of the values corresponding to a key. If the key is not present
-    /// in this `fields`, an empty list is returned. However, if the key is
+    /// Get all of the values corresponding to a name. If the name is not present
+    /// in this `fields`, an empty list is returned. However, if the name is
     /// present but empty, this is represented by a list with one or more
     /// empty field-values present.
-    get: func(name: field-key) -> list<field-value>;
+    get: func(name: field-name) -> list<field-value>;
 
-    /// Returns `true` when the key is present in this `fields`. If the key is
+    /// Returns `true` when the name is present in this `fields`. If the name is
     /// syntactically invalid, `false` is returned.
-    has: func(name: field-key) -> bool;
+    has: func(name: field-name) -> bool;
 
-    /// Set all of the values for a key. Clears any existing values for that
-    /// key, if they have been set.
+    /// Set all of the values for a name. Clears any existing values for that
+    /// name, if they have been set.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
-    set: func(name: field-key, value: list<field-value>) -> result<_, header-error>;
+    set: func(name: field-name, value: list<field-value>) -> result<_, header-error>;
 
-    /// Delete all values for a key. Does nothing if no values for the key
+    /// Delete all values for a name. Does nothing if no values for the name
     /// exist.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
-    delete: func(name: field-key) -> result<_, header-error>;
+    delete: func(name: field-name) -> result<_, header-error>;
 
-    /// Delete all values for a key. Does nothing if no values for the key
+    /// Delete all values for a name. Does nothing if no values for the name
     /// exist.
     ///
-    /// Returns all values previously corresponding to the key, if any.
+    /// Returns all values previously corresponding to the name, if any.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
-    get-and-delete: func(name: field-key) -> result<list<field-value>, header-error>;
+    get-and-delete: func(name: field-name) -> result<list<field-value>, header-error>;
 
-    /// Append a value for a key. Does not change or delete any existing
-    /// values for that key.
+    /// Append a value for a name. Does not change or delete any existing
+    /// values for that name.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
-    append: func(name: field-key, value: field-value) -> result<_, header-error>;
+    append: func(name: field-name, value: field-value) -> result<_, header-error>;
 
-    /// Retrieve the full set of keys and values in the Fields. Like the
-    /// constructor, the list represents each key-value pair.
+    /// Retrieve the full set of names and values in the Fields. Like the
+    /// constructor, the list represents each name-value pair.
     ///
-    /// The outer list represents each key-value pair in the Fields. Keys
+    /// The outer list represents each name-value pair in the Fields. Names
     /// which have multiple values are represented by multiple entries in this
-    /// list with the same key.
+    /// list with the same name.
     ///
-    /// The keys and values are always returned in the original casing and in
+    /// The names and values are always returned in the original casing and in
     /// the order in which they will be serialized for transport.
-    entries: func() -> list<tuple<field-key,field-value>>;
+    entries: func() -> list<tuple<field-name,field-value>>;
 
     /// Make a deep copy of the Fields. Equivalent in behavior to calling the
     /// `fields` constructor on the return value of `entries`. The resulting
