@@ -154,7 +154,8 @@ interface types {
   /// `set`, `append`, and `delete` operations will fail with
   /// `header-error.immutable`.
   ///
-  /// A `fields` resource should store `field-name`s and `field-value`s in their /// original casing used to construct or mutate the `fields` resource. The `fields`
+  /// A `fields` resource should store `field-name`s and `field-value`s in their
+  /// original casing used to construct or mutate the `fields` resource. The `fields`
   /// resource should use that original casing when serializing the fields for
   /// transport or when returning them from a method.
   resource fields {
