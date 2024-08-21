@@ -751,7 +751,7 @@ resource for the purposes of equality checking.</p>
 <h4><a id="field_name"></a><code>type field-name</code></h4>
 <p><a href="#field_key"><a href="#field_key"><code>field-key</code></a></a></p>
 <p>Field names are always strings.
-<p>Field keys should always be treated as case insensitive by the <a href="#fields"><code>fields</code></a>
+<p>Field names should always be treated as case insensitive by the <a href="#fields"><code>fields</code></a>
 resource for the purposes of equality checking.</p>
 <h4><a id="field_value"></a><code>type field-value</code></h4>
 <p><a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></p>
@@ -858,10 +858,10 @@ http-related errors.</p>
 <h4><a id="static_fields_from_list"></a><code>[static]fields.from-list: func</code></h4>
 <p>Construct an HTTP Fields.</p>
 <p>The resulting <a href="#fields"><code>fields</code></a> is mutable.</p>
-<p>The list represents each key-value pair in the Fields. Keys
+<p>The list represents each name-value pair in the Fields. Names
 which have multiple values are represented by multiple entries in this
-list with the same key.</p>
-<p>The tuple is a pair of the field key, represented as a string, and
+list with the same name.</p>
+<p>The tuple is a pair of the field name, represented as a string, and
 Value, represented as a list of bytes.</p>
 <p>An error result will be returned if any <a href="#field_name"><code>field-name</code></a> or <a href="#field_value"><code>field-value</code></a> is
 syntactically invalid, or if a field is forbidden.</p>
@@ -874,9 +874,9 @@ syntactically invalid, or if a field is forbidden.</p>
 <li><a id="static_fields_from_list.0"></a> result&lt;own&lt;<a href="#fields"><a href="#fields"><code>fields</code></a></a>&gt;, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_fields_get"></a><code>[method]fields.get: func</code></h4>
-<p>Get all of the values corresponding to a key. If the key is not present
+<p>Get all of the values corresponding to a name. If the name is not present
 in this <a href="#fields"><code>fields</code></a> or is syntactically invalid, an empty list is returned.
-However, if the key is present but empty, this is represented by a list
+However, if the name is present but empty, this is represented by a list
 with one or more empty field-values present.</p>
 <h5>Params</h5>
 <ul>
@@ -888,7 +888,7 @@ with one or more empty field-values present.</p>
 <li><a id="method_fields_get.0"></a> list&lt;<a href="#field_value"><a href="#field_value"><code>field-value</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_fields_has"></a><code>[method]fields.has: func</code></h4>
-<p>Returns <code>true</code> when the key is present in this <a href="#fields"><code>fields</code></a>. If the key is
+<p>Returns <code>true</code> when the name is present in this <a href="#fields"><code>fields</code></a>. If the name is
 syntactically invalid, <code>false</code> is returned.</p>
 <h5>Params</h5>
 <ul>
@@ -900,8 +900,8 @@ syntactically invalid, <code>false</code> is returned.</p>
 <li><a id="method_fields_has.0"></a> <code>bool</code></li>
 </ul>
 <h4><a id="method_fields_set"></a><code>[method]fields.set: func</code></h4>
-<p>Set all of the values for a key. Clears any existing values for that
-key, if they have been set.</p>
+<p>Set all of the values for a name. Clears any existing values for that
+name, if they have been set.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_name"><code>field-name</code></a> or any of
 the <a href="#field_value"><code>field-value</code></a>s are syntactically invalid.</p>
@@ -916,7 +916,7 @@ the <a href="#field_value"><code>field-value</code></a>s are syntactically inval
 <li><a id="method_fields_set.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_fields_delete"></a><code>[method]fields.delete: func</code></h4>
-<p>Delete all values for a key. Does nothing if no values for the key
+<p>Delete all values for a name. Does nothing if no values for the name
 exist.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_name"><code>field-name</code></a> is
@@ -931,8 +931,8 @@ syntactically invalid.</p>
 <li><a id="method_fields_delete.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_fields_append"></a><code>[method]fields.append: func</code></h4>
-<p>Append a value for a key. Does not change or delete any existing
-values for that key.</p>
+<p>Append a value for a name. Does not change or delete any existing
+values for that name.</p>
 <p>Fails with <code>header-error.immutable</code> if the <a href="#fields"><code>fields</code></a> are immutable.</p>
 <p>Fails with <code>header-error.invalid-syntax</code> if the <a href="#field_name"><code>field-name</code></a> or
 <a href="#field_value"><code>field-value</code></a> are syntactically invalid.</p>
@@ -947,12 +947,12 @@ values for that key.</p>
 <li><a id="method_fields_append.0"></a> result&lt;_, <a href="#header_error"><a href="#header_error"><code>header-error</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_fields_entries"></a><code>[method]fields.entries: func</code></h4>
-<p>Retrieve the full set of keys and values in the Fields. Like the
-constructor, the list represents each key-value pair.</p>
-<p>The outer list represents each key-value pair in the Fields. Keys
+<p>Retrieve the full set of names and values in the Fields. Like the
+constructor, the list represents each name-value pair.</p>
+<p>The outer list represents each name-value pair in the Fields. Names
 which have multiple values are represented by multiple entries in this
-list with the same key.</p>
-<p>The keys and values are always returned in the original casing and in
+list with the same name.</p>
+<p>The names and values are always returned in the original casing and in
 the order in which they will be serialized for transport.</p>
 <h5>Params</h5>
 <ul>
