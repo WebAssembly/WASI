@@ -154,7 +154,7 @@ interface types {
   /// 
   /// This type has been deprecated in favor of the `field-name` type.
   @since(version = 0.2.0)
-  @deprecated(version = 0.2.1)
+  @deprecated(version = 0.2.2)
   type field-key = string;
 
   /// Field values should always be ASCII strings. However, in
