@@ -208,6 +208,7 @@ interface streams {
         /// The created `pollable` is a child resource of the `output-stream`.
         /// Implementations may trap if the `output-stream` is dropped before
         /// all derived `pollable`s created with this function are dropped.
+        @since(version = 0.2.0)
         subscribe: func() -> pollable;
 
         /// Write zeroes to a stream.
