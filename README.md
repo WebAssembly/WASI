@@ -19,7 +19,7 @@ source languages, modularity, a more expressive type system,
 virtualizability, and more.
 
 [Preview 1]: https://github.com/WebAssembly/WASI/tree/main/legacy/README.md
-[WASI Preview 2]: https://github.com/WebAssembly/WASI/tree/main/preview2/README.md
+[WASI Preview 2]: https://github.com/WebAssembly/WASI/blob/main/wasip2/README.md
 [Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 
 ## Find the APIs
