@@ -52,7 +52,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Messaging][wasi-messaging]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Observe][wasi-observe]    | Chris Dickinson                           |          |
+| [Observe][wasi-observe]    | Caleb Schoepp                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
 | [SPI][wasi-spi]                      | Emiel Van Severen |          |
