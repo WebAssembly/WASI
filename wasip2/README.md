@@ -20,13 +20,13 @@ WASI Preview 2 contains the following APIs:
 
 | Proposal           | Versions |
 | ------------------ | -------- |
-| [wasi-io]          | 0.2.1 |
-| [wasi-clocks]      | 0.2.1 |
-| [wasi-random]      | 0.2.1 |
-| [wasi-filesystem]  | 0.2.1 |
-| [wasi-sockets]     | 0.2.1 |
-| [wasi-cli]         | 0.2.1 |
-| [wasi-http]        | 0.2.1 |
+| [wasi-io]          | 0.2.2 |
+| [wasi-clocks]      | 0.2.2 |
+| [wasi-random]      | 0.2.2 |
+| [wasi-filesystem]  | 0.2.2 |
+| [wasi-sockets]     | 0.2.2 |
+| [wasi-cli]         | 0.2.2 |
+| [wasi-http]        | 0.2.2 |
 
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
