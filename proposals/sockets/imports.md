@@ -1,29 +1,29 @@
-<h1><a name="imports">World imports</a></h1>
+<h1><a id="imports"></a>World imports</h1>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_sockets_network_0_2_1"><code>wasi:sockets/network@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_instance_network_0_2_1"><code>wasi:sockets/instance-network@0.2.1</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_1"><code>wasi:io/poll@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_0_2_1"><code>wasi:sockets/udp@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_1"><code>wasi:sockets/udp-create-socket@0.2.1</code></a></li>
-<li>interface <a href="#wasi_io_error_0_2_1"><code>wasi:io/error@0.2.1</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_1"><code>wasi:io/streams@0.2.1</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_1"><code>wasi:clocks/monotonic-clock@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_0_2_1"><code>wasi:sockets/tcp@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_1"><code>wasi:sockets/tcp-create-socket@0.2.1</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_1"><code>wasi:sockets/ip-name-lookup@0.2.1</code></a></li>
+<li>interface <a href="#wasi_sockets_network_0_2_2"><code>wasi:sockets/network@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_instance_network_0_2_2"><code>wasi:sockets/instance-network@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_2"><code>wasi:io/poll@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_0_2_2"><code>wasi:sockets/udp@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_2"><code>wasi:sockets/udp-create-socket@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_2"><code>wasi:io/error@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_2"><code>wasi:io/streams@0.2.2</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_2"><code>wasi:clocks/monotonic-clock@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_0_2_2"><code>wasi:sockets/tcp@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_2"><code>wasi:sockets/tcp-create-socket@0.2.2</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_2"><code>wasi:sockets/ip-name-lookup@0.2.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a name="wasi_sockets_network_0_2_1"></a>Import interface wasi:sockets/network@0.2.1</h2>
+<h2><a id="wasi_sockets_network_0_2_2"></a>Import interface wasi:sockets/network@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="network"></a><code>resource network</code></h4>
+<h4><a id="network"></a><code>resource network</code></h4>
 <p>An opaque resource that represents access to (a subset of) the network.
 This enables context-based security for networking.
 There is no need for this to map 1:1 to a physical network interface.</p>
-<h4><a name="error_code"></a><code>enum error-code</code></h4>
+<h4><a id="error_code"></a><code>enum error-code</code></h4>
 <p>Error codes.</p>
 <p>In theory, every API can return any error code.
 In practice, API's typically only return the errors documented per API
@@ -39,220 +39,220 @@ combined with a couple of errors that are always possible:</p>
 <h5>Enum Cases</h5>
 <ul>
 <li>
-<p><a name="error_code.unknown"></a><code>unknown</code></p>
+<p><a id="error_code.unknown"></a><code>unknown</code></p>
 <p>Unknown error
 </li>
 <li>
-<p><a name="error_code.access_denied"></a><code>access-denied</code></p>
+<p><a id="error_code.access_denied"></a><code>access-denied</code></p>
 <p>Access denied.
 <p>POSIX equivalent: EACCES, EPERM</p>
 </li>
 <li>
-<p><a name="error_code.not_supported"></a><code>not-supported</code></p>
+<p><a id="error_code.not_supported"></a><code>not-supported</code></p>
 <p>The operation is not supported.
 <p>POSIX equivalent: EOPNOTSUPP</p>
 </li>
 <li>
-<p><a name="error_code.invalid_argument"></a><code>invalid-argument</code></p>
+<p><a id="error_code.invalid_argument"></a><code>invalid-argument</code></p>
 <p>One of the arguments is invalid.
 <p>POSIX equivalent: EINVAL</p>
 </li>
 <li>
-<p><a name="error_code.out_of_memory"></a><code>out-of-memory</code></p>
+<p><a id="error_code.out_of_memory"></a><code>out-of-memory</code></p>
 <p>Not enough memory to complete the operation.
 <p>POSIX equivalent: ENOMEM, ENOBUFS, EAI_MEMORY</p>
 </li>
 <li>
-<p><a name="error_code.timeout"></a><code>timeout</code></p>
+<p><a id="error_code.timeout"></a><code>timeout</code></p>
 <p>The operation timed out before it could finish completely.
 </li>
 <li>
-<p><a name="error_code.concurrency_conflict"></a><code>concurrency-conflict</code></p>
+<p><a id="error_code.concurrency_conflict"></a><code>concurrency-conflict</code></p>
 <p>This operation is incompatible with another asynchronous operation that is already in progress.
 <p>POSIX equivalent: EALREADY</p>
 </li>
 <li>
-<p><a name="error_code.not_in_progress"></a><code>not-in-progress</code></p>
+<p><a id="error_code.not_in_progress"></a><code>not-in-progress</code></p>
 <p>Trying to finish an asynchronous operation that:
 - has not been started yet, or:
 - was already finished by a previous `finish-*` call.
 <p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
 </li>
 <li>
-<p><a name="error_code.would_block"></a><code>would-block</code></p>
+<p><a id="error_code.would_block"></a><code>would-block</code></p>
 <p>The operation has been aborted because it could not be completed immediately.
 <p>Note: this is scheduled to be removed when <code>future</code>s are natively supported.</p>
 </li>
 <li>
-<p><a name="error_code.invalid_state"></a><code>invalid-state</code></p>
+<p><a id="error_code.invalid_state"></a><code>invalid-state</code></p>
 <p>The operation is not valid in the socket's current state.
 </li>
 <li>
-<p><a name="error_code.new_socket_limit"></a><code>new-socket-limit</code></p>
+<p><a id="error_code.new_socket_limit"></a><code>new-socket-limit</code></p>
 <p>A new socket resource could not be created because of a system limit.
 </li>
 <li>
-<p><a name="error_code.address_not_bindable"></a><code>address-not-bindable</code></p>
+<p><a id="error_code.address_not_bindable"></a><code>address-not-bindable</code></p>
 <p>A bind operation failed because the provided address is not an address that the `network` can bind to.
 </li>
 <li>
-<p><a name="error_code.address_in_use"></a><code>address-in-use</code></p>
+<p><a id="error_code.address_in_use"></a><code>address-in-use</code></p>
 <p>A bind operation failed because the provided address is already in use or because there are no ephemeral ports available.
 </li>
 <li>
-<p><a name="error_code.remote_unreachable"></a><code>remote-unreachable</code></p>
+<p><a id="error_code.remote_unreachable"></a><code>remote-unreachable</code></p>
 <p>The remote address is not reachable
 </li>
 <li>
-<p><a name="error_code.connection_refused"></a><code>connection-refused</code></p>
+<p><a id="error_code.connection_refused"></a><code>connection-refused</code></p>
 <p>The TCP connection was forcefully rejected
 </li>
 <li>
-<p><a name="error_code.connection_reset"></a><code>connection-reset</code></p>
+<p><a id="error_code.connection_reset"></a><code>connection-reset</code></p>
 <p>The TCP connection was reset.
 </li>
 <li>
-<p><a name="error_code.connection_aborted"></a><code>connection-aborted</code></p>
+<p><a id="error_code.connection_aborted"></a><code>connection-aborted</code></p>
 <p>A TCP connection was aborted.
 </li>
 <li>
-<p><a name="error_code.datagram_too_large"></a><code>datagram-too-large</code></p>
+<p><a id="error_code.datagram_too_large"></a><code>datagram-too-large</code></p>
 <p>The size of a datagram sent to a UDP socket exceeded the maximum
 supported size.
 </li>
 <li>
-<p><a name="error_code.name_unresolvable"></a><code>name-unresolvable</code></p>
+<p><a id="error_code.name_unresolvable"></a><code>name-unresolvable</code></p>
 <p>Name does not exist or has no suitable associated IP addresses.
 </li>
 <li>
-<p><a name="error_code.temporary_resolver_failure"></a><code>temporary-resolver-failure</code></p>
+<p><a id="error_code.temporary_resolver_failure"></a><code>temporary-resolver-failure</code></p>
 <p>A temporary failure in name resolution occurred.
 </li>
 <li>
-<p><a name="error_code.permanent_resolver_failure"></a><code>permanent-resolver-failure</code></p>
+<p><a id="error_code.permanent_resolver_failure"></a><code>permanent-resolver-failure</code></p>
 <p>A permanent failure in name resolution occurred.
 </li>
 </ul>
-<h4><a name="ip_address_family"></a><code>enum ip-address-family</code></h4>
+<h4><a id="ip_address_family"></a><code>enum ip-address-family</code></h4>
 <h5>Enum Cases</h5>
 <ul>
 <li>
-<p><a name="ip_address_family.ipv4"></a><code>ipv4</code></p>
+<p><a id="ip_address_family.ipv4"></a><code>ipv4</code></p>
 <p>Similar to `AF_INET` in POSIX.
 </li>
 <li>
-<p><a name="ip_address_family.ipv6"></a><code>ipv6</code></p>
+<p><a id="ip_address_family.ipv6"></a><code>ipv6</code></p>
 <p>Similar to `AF_INET6` in POSIX.
 </li>
 </ul>
-<h4><a name="ipv4_address"></a><code>tuple ipv4-address</code></h4>
+<h4><a id="ipv4_address"></a><code>tuple ipv4-address</code></h4>
 <h5>Tuple Fields</h5>
 <ul>
-<li><a name="ipv4_address.0"></a><code>0</code>: <code>u8</code></li>
-<li><a name="ipv4_address.1"></a><code>1</code>: <code>u8</code></li>
-<li><a name="ipv4_address.2"></a><code>2</code>: <code>u8</code></li>
-<li><a name="ipv4_address.3"></a><code>3</code>: <code>u8</code></li>
+<li><a id="ipv4_address.0"></a><code>0</code>: <code>u8</code></li>
+<li><a id="ipv4_address.1"></a><code>1</code>: <code>u8</code></li>
+<li><a id="ipv4_address.2"></a><code>2</code>: <code>u8</code></li>
+<li><a id="ipv4_address.3"></a><code>3</code>: <code>u8</code></li>
 </ul>
-<h4><a name="ipv6_address"></a><code>tuple ipv6-address</code></h4>
+<h4><a id="ipv6_address"></a><code>tuple ipv6-address</code></h4>
 <h5>Tuple Fields</h5>
 <ul>
-<li><a name="ipv6_address.0"></a><code>0</code>: <code>u16</code></li>
-<li><a name="ipv6_address.1"></a><code>1</code>: <code>u16</code></li>
-<li><a name="ipv6_address.2"></a><code>2</code>: <code>u16</code></li>
-<li><a name="ipv6_address.3"></a><code>3</code>: <code>u16</code></li>
-<li><a name="ipv6_address.4"></a><code>4</code>: <code>u16</code></li>
-<li><a name="ipv6_address.5"></a><code>5</code>: <code>u16</code></li>
-<li><a name="ipv6_address.6"></a><code>6</code>: <code>u16</code></li>
-<li><a name="ipv6_address.7"></a><code>7</code>: <code>u16</code></li>
+<li><a id="ipv6_address.0"></a><code>0</code>: <code>u16</code></li>
+<li><a id="ipv6_address.1"></a><code>1</code>: <code>u16</code></li>
+<li><a id="ipv6_address.2"></a><code>2</code>: <code>u16</code></li>
+<li><a id="ipv6_address.3"></a><code>3</code>: <code>u16</code></li>
+<li><a id="ipv6_address.4"></a><code>4</code>: <code>u16</code></li>
+<li><a id="ipv6_address.5"></a><code>5</code>: <code>u16</code></li>
+<li><a id="ipv6_address.6"></a><code>6</code>: <code>u16</code></li>
+<li><a id="ipv6_address.7"></a><code>7</code>: <code>u16</code></li>
 </ul>
-<h4><a name="ip_address"></a><code>variant ip-address</code></h4>
+<h4><a id="ip_address"></a><code>variant ip-address</code></h4>
 <h5>Variant Cases</h5>
 <ul>
-<li><a name="ip_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></li>
-<li><a name="ip_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></li>
+<li><a id="ip_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></li>
+<li><a id="ip_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></li>
 </ul>
-<h4><a name="ipv4_socket_address"></a><code>record ipv4-socket-address</code></h4>
+<h4><a id="ipv4_socket_address"></a><code>record ipv4-socket-address</code></h4>
 <h5>Record Fields</h5>
 <ul>
 <li>
-<p><a name="ipv4_socket_address.port"></a><code>port</code>: <code>u16</code></p>
+<p><a id="ipv4_socket_address.port"></a><code>port</code>: <code>u16</code></p>
 <p>sin_port
 </li>
 <li>
-<p><a name="ipv4_socket_address.address"></a><code>address</code>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></p>
+<p><a id="ipv4_socket_address.address"></a><code>address</code>: <a href="#ipv4_address"><a href="#ipv4_address"><code>ipv4-address</code></a></a></p>
 <p>sin_addr
 </li>
 </ul>
-<h4><a name="ipv6_socket_address"></a><code>record ipv6-socket-address</code></h4>
+<h4><a id="ipv6_socket_address"></a><code>record ipv6-socket-address</code></h4>
 <h5>Record Fields</h5>
 <ul>
 <li>
-<p><a name="ipv6_socket_address.port"></a><code>port</code>: <code>u16</code></p>
+<p><a id="ipv6_socket_address.port"></a><code>port</code>: <code>u16</code></p>
 <p>sin6_port
 </li>
 <li>
-<p><a name="ipv6_socket_address.flow_info"></a><code>flow-info</code>: <code>u32</code></p>
+<p><a id="ipv6_socket_address.flow_info"></a><code>flow-info</code>: <code>u32</code></p>
 <p>sin6_flowinfo
 </li>
 <li>
-<p><a name="ipv6_socket_address.address"></a><code>address</code>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></p>
+<p><a id="ipv6_socket_address.address"></a><code>address</code>: <a href="#ipv6_address"><a href="#ipv6_address"><code>ipv6-address</code></a></a></p>
 <p>sin6_addr
 </li>
 <li>
-<p><a name="ipv6_socket_address.scope_id"></a><code>scope-id</code>: <code>u32</code></p>
+<p><a id="ipv6_socket_address.scope_id"></a><code>scope-id</code>: <code>u32</code></p>
 <p>sin6_scope_id
 </li>
 </ul>
-<h4><a name="ip_socket_address"></a><code>variant ip-socket-address</code></h4>
+<h4><a id="ip_socket_address"></a><code>variant ip-socket-address</code></h4>
 <h5>Variant Cases</h5>
 <ul>
-<li><a name="ip_socket_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
-<li><a name="ip_socket_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
+<li><a id="ip_socket_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
+<li><a id="ip_socket_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
 </ul>
-<h2><a name="wasi_sockets_instance_network_0_2_1"></a>Import interface wasi:sockets/instance-network@0.2.1</h2>
+<h2><a id="wasi_sockets_instance_network_0_2_2"></a>Import interface wasi:sockets/instance-network@0.2.2</h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="network"></a><code>type network</code></h4>
+<h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
 ----
 <h3>Functions</h3>
-<h4><a name="instance_network"></a><code>instance-network: func</code></h4>
+<h4><a id="instance_network"></a><code>instance-network: func</code></h4>
 <p>Get a handle to the default network.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a id="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_io_poll_0_2_1"></a>Import interface wasi:io/poll@0.2.1</h2>
+<h2><a id="wasi_io_poll_0_2_2"></a>Import interface wasi:io/poll@0.2.2</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"></a><code>resource pollable</code></h4>
+<h4><a id="pollable"></a><code>resource pollable</code></h4>
 <h2><a href="#pollable"><code>pollable</code></a> represents a single I/O event which may be ready, or not.</h2>
 <h3>Functions</h3>
-<h4><a name="method_pollable_ready"></a><code>[method]pollable.ready: func</code></h4>
+<h4><a id="method_pollable_ready"></a><code>[method]pollable.ready: func</code></h4>
 <p>Return the readiness of a pollable. This function never blocks.</p>
 <p>Returns <code>true</code> when the pollable is ready, and <code>false</code> otherwise.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_pollable_ready.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_pollable_ready.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_pollable_ready.0"></a> <code>bool</code></li>
+<li><a id="method_pollable_ready.0"></a> <code>bool</code></li>
 </ul>
-<h4><a name="method_pollable_block"></a><code>[method]pollable.block: func</code></h4>
+<h4><a id="method_pollable_block"></a><code>[method]pollable.block: func</code></h4>
 <p><code>block</code> returns immediately if the pollable is ready, and otherwise
 blocks until ready.</p>
 <p>This function is equivalent to calling <code>poll.poll</code> on a list
 containing only this pollable.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_pollable_block.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_pollable_block.self"></a><code>self</code>: borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="poll"></a><code>poll: func</code></h4>
+<h4><a id="poll"></a><code>poll: func</code></h4>
 <p>Poll for completion on a set of pollables.</p>
 <p>This function takes a list of pollables, which identify I/O sources of
 interest, and waits until one or more of the events is ready for I/O.</p>
@@ -271,56 +271,56 @@ the pollables has an error, it is indicated by marking the source as
 being ready for I/O.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="poll.in"></a><code>in</code>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
+<li><a id="poll.in"></a><code>in</code>: list&lt;borrow&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
+<li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a name="wasi_sockets_udp_0_2_1"></a>Import interface wasi:sockets/udp@0.2.1</h2>
+<h2><a id="wasi_sockets_udp_0_2_2"></a>Import interface wasi:sockets/udp@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"></a><code>type pollable</code></h4>
+<h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="network"></a>`type network`
+#### <a id="network"></a>`type network`
 [`network`](#network)
 <p>
-#### <a name="error_code"></a>`type error-code`
+#### <a id="error_code"></a>`type error-code`
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_socket_address"></a>`type ip-socket-address`
+#### <a id="ip_socket_address"></a>`type ip-socket-address`
 [`ip-socket-address`](#ip_socket_address)
 <p>
-#### <a name="ip_address_family"></a>`type ip-address-family`
+#### <a id="ip_address_family"></a>`type ip-address-family`
 [`ip-address-family`](#ip_address_family)
 <p>
-#### <a name="incoming_datagram"></a>`record incoming-datagram`
+#### <a id="incoming_datagram"></a>`record incoming-datagram`
 <p>A received datagram.</p>
 <h5>Record Fields</h5>
 <ul>
 <li>
-<p><a name="incoming_datagram.data"></a><code>data</code>: list&lt;<code>u8</code>&gt;</p>
+<p><a id="incoming_datagram.data"></a><code>data</code>: list&lt;<code>u8</code>&gt;</p>
 <p>The payload.
 <p>Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.</p>
 </li>
 <li>
-<p><a name="incoming_datagram.remote_address"></a><code>remote-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
+<p><a id="incoming_datagram.remote_address"></a><code>remote-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
 <p>The source address.
 <p>This field is guaranteed to match the remote address the stream was initialized with, if any.</p>
 <p>Equivalent to the <code>src_addr</code> out parameter of <code>recvfrom</code>.</p>
 </li>
 </ul>
-<h4><a name="outgoing_datagram"></a><code>record outgoing-datagram</code></h4>
+<h4><a id="outgoing_datagram"></a><code>record outgoing-datagram</code></h4>
 <p>A datagram to be sent out.</p>
 <h5>Record Fields</h5>
 <ul>
 <li>
-<p><a name="outgoing_datagram.data"></a><code>data</code>: list&lt;<code>u8</code>&gt;</p>
+<p><a id="outgoing_datagram.data"></a><code>data</code>: list&lt;<code>u8</code>&gt;</p>
 <p>The payload.
 </li>
 <li>
-<p><a name="outgoing_datagram.remote_address"></a><code>remote-address</code>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</p>
+<p><a id="outgoing_datagram.remote_address"></a><code>remote-address</code>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</p>
 <p>The destination address.
 <p>The requirements on this field depend on how the stream was initialized:</p>
 <ul>
@@ -330,13 +330,13 @@ being ready for I/O.</p>
 <p>If this value is None, the send operation is equivalent to <code>send</code> in POSIX. Otherwise it is equivalent to <code>sendto</code>.</p>
 </li>
 </ul>
-<h4><a name="udp_socket"></a><code>resource udp-socket</code></h4>
+<h4><a id="udp_socket"></a><code>resource udp-socket</code></h4>
 <p>A UDP socket handle.</p>
-<h4><a name="incoming_datagram_stream"></a><code>resource incoming-datagram-stream</code></h4>
-<h4><a name="outgoing_datagram_stream"></a><code>resource outgoing-datagram-stream</code></h4>
+<h4><a id="incoming_datagram_stream"></a><code>resource incoming-datagram-stream</code></h4>
+<h4><a id="outgoing_datagram_stream"></a><code>resource outgoing-datagram-stream</code></h4>
 <hr />
 <h3>Functions</h3>
-<h4><a name="method_udp_socket_start_bind"></a><code>[method]udp-socket.start-bind: func</code></h4>
+<h4><a id="method_udp_socket_start_bind"></a><code>[method]udp-socket.start-bind: func</code></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
@@ -365,24 +365,24 @@ don't want to make use of this ability can simply call the native
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_start_bind.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_start_bind.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_start_bind.local_address"></a><code>local-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a id="method_udp_socket_start_bind.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_start_bind.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_start_bind.local_address"></a><code>local-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_finish_bind"></a><code>[method]udp-socket.finish-bind: func</code></h4>
+<h4><a id="method_udp_socket_finish_bind"></a><code>[method]udp-socket.finish-bind: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_finish_bind.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_finish_bind.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_stream"></a><code>[method]udp-socket.stream: func</code></h4>
+<h4><a id="method_udp_socket_stream"></a><code>[method]udp-socket.stream: func</code></h4>
 <p>Set up inbound &amp; outbound communication channels, optionally to a specific peer.</p>
 <p>This function only changes the local socket configuration and does not generate any network traffic.
 On success, the <code>remote-address</code> of the socket is updated. The <code>local-address</code> may be updated as well,
@@ -423,14 +423,14 @@ if (remote_address is Some) {
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_stream.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_stream.remote_address"></a><code>remote-address</code>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_stream.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_stream.remote_address"></a><code>remote-address</code>: option&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_stream.0"></a> result&lt;(own&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;, own&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_stream.0"></a> result&lt;(own&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;, own&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_local_address"></a><code>[method]udp-socket.local-address: func</code></h4>
+<h4><a id="method_udp_socket_local_address"></a><code>[method]udp-socket.local-address: func</code></h4>
 <p>Get the current bound address.</p>
 <p>POSIX mentions:</p>
 <blockquote>
@@ -451,13 +451,13 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_local_address.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_local_address.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_remote_address"></a><code>[method]udp-socket.remote-address: func</code></h4>
+<h4><a id="method_udp_socket_remote_address"></a><code>[method]udp-socket.remote-address: func</code></h4>
 <p>Get the address the socket is currently streaming to.</p>
 <h1>Typical errors</h1>
 <ul>
@@ -472,24 +472,24 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_remote_address.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_remote_address.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_address_family"></a><code>[method]udp-socket.address-family: func</code></h4>
+<h4><a id="method_udp_socket_address_family"></a><code>[method]udp-socket.address-family: func</code></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
 <p>Equivalent to the SO_DOMAIN socket option.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_address_family.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_address_family.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+<li><a id="method_udp_socket_address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
-<h4><a name="method_udp_socket_unicast_hop_limit"></a><code>[method]udp-socket.unicast-hop-limit: func</code></h4>
+<h4><a id="method_udp_socket_unicast_hop_limit"></a><code>[method]udp-socket.unicast-hop-limit: func</code></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
 <h1>Typical errors</h1>
@@ -498,23 +498,23 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_unicast_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_unicast_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_unicast_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_set_unicast_hop_limit"></a><code>[method]udp-socket.set-unicast-hop-limit: func</code></h4>
+<h4><a id="method_udp_socket_set_unicast_hop_limit"></a><code>[method]udp-socket.set-unicast-hop-limit: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_set_unicast_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_set_unicast_hop_limit.value"></a><code>value</code>: <code>u8</code></li>
+<li><a id="method_udp_socket_set_unicast_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_unicast_hop_limit.value"></a><code>value</code>: <code>u8</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_unicast_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_receive_buffer_size"></a><code>[method]udp-socket.receive-buffer-size: func</code></h4>
+<h4><a id="method_udp_socket_receive_buffer_size"></a><code>[method]udp-socket.receive-buffer-size: func</code></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.
@@ -526,54 +526,54 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_set_receive_buffer_size"></a><code>[method]udp-socket.set-receive-buffer-size: func</code></h4>
+<h4><a id="method_udp_socket_set_receive_buffer_size"></a><code>[method]udp-socket.set-receive-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_set_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_set_receive_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
+<li><a id="method_udp_socket_set_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_receive_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_send_buffer_size"></a><code>[method]udp-socket.send-buffer-size: func</code></h4>
+<h4><a id="method_udp_socket_send_buffer_size"></a><code>[method]udp-socket.send-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_set_send_buffer_size"></a><code>[method]udp-socket.set-send-buffer-size: func</code></h4>
+<h4><a id="method_udp_socket_set_send_buffer_size"></a><code>[method]udp-socket.set-send-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_set_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
-<li><a name="method_udp_socket_set_send_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
+<li><a id="method_udp_socket_set_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_send_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_udp_socket_subscribe"></a><code>[method]udp-socket.subscribe: func</code></h4>
+<h4><a id="method_udp_socket_subscribe"></a><code>[method]udp-socket.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_udp_socket_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_udp_socket_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_udp_socket_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_datagram_stream_receive"></a><code>[method]incoming-datagram-stream.receive: func</code></h4>
+<h4><a id="method_incoming_datagram_stream_receive"></a><code>[method]incoming-datagram-stream.receive: func</code></h4>
 <p>Receive messages on the socket.</p>
 <p>This function attempts to receive up to <code>max-results</code> datagrams on the socket without blocking.
 The returned list may contain fewer elements than requested, but never more.</p>
@@ -601,26 +601,26 @@ This function never returns <code>error(would-block)</code>.</li>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_datagram_stream_receive.self"></a><code>self</code>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
-<li><a name="method_incoming_datagram_stream_receive.max_results"></a><code>max-results</code>: <code>u64</code></li>
+<li><a id="method_incoming_datagram_stream_receive.self"></a><code>self</code>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+<li><a id="method_incoming_datagram_stream_receive.max_results"></a><code>max-results</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_datagram_stream_receive.0"></a> result&lt;list&lt;<a href="#incoming_datagram"><a href="#incoming_datagram"><code>incoming-datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_incoming_datagram_stream_receive.0"></a> result&lt;list&lt;<a href="#incoming_datagram"><a href="#incoming_datagram"><code>incoming-datagram</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_incoming_datagram_stream_subscribe"></a><code>[method]incoming-datagram-stream.subscribe: func</code></h4>
+<h4><a id="method_incoming_datagram_stream_subscribe"></a><code>[method]incoming-datagram-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to receive again.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_incoming_datagram_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
+<li><a id="method_incoming_datagram_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#incoming_datagram_stream"><a href="#incoming_datagram_stream"><code>incoming-datagram-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_incoming_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_incoming_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_datagram_stream_check_send"></a><code>[method]outgoing-datagram-stream.check-send: func</code></h4>
+<h4><a id="method_outgoing_datagram_stream_check_send"></a><code>[method]outgoing-datagram-stream.check-send: func</code></h4>
 <p>Check readiness for sending. This function never blocks.</p>
 <p>Returns the number of datagrams permitted for the next call to <code>send</code>,
 or an error. Calling <code>send</code> with more datagrams than this function has
@@ -631,13 +631,13 @@ error.</p>
 <p>Never returns <code>would-block</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_check_send.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_check_send.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_check_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_check_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_datagram_stream_send"></a><code>[method]outgoing-datagram-stream.send: func</code></h4>
+<h4><a id="method_outgoing_datagram_stream_send"></a><code>[method]outgoing-datagram-stream.send: func</code></h4>
 <p>Send messages on the socket.</p>
 <p>This function attempts to send all provided <code>datagrams</code> on the socket without blocking and
 returns how many messages were actually sent (or queued for sending). This function never
@@ -672,43 +672,43 @@ either <code>check-send</code> was not called or <code>datagrams</code> contains
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_send.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
-<li><a name="method_outgoing_datagram_stream_send.datagrams"></a><code>datagrams</code>: list&lt;<a href="#outgoing_datagram"><a href="#outgoing_datagram"><code>outgoing-datagram</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_send.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_send.datagrams"></a><code>datagrams</code>: list&lt;<a href="#outgoing_datagram"><a href="#outgoing_datagram"><code>outgoing-datagram</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_send.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_outgoing_datagram_stream_subscribe"></a><code>[method]outgoing-datagram-stream.subscribe: func</code></h4>
+<h4><a id="method_outgoing_datagram_stream_subscribe"></a><code>[method]outgoing-datagram-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to send again.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#outgoing_datagram_stream"><a href="#outgoing_datagram_stream"><code>outgoing-datagram-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_outgoing_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_outgoing_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_sockets_udp_create_socket_0_2_1"></a>Import interface wasi:sockets/udp-create-socket@0.2.1</h2>
+<h2><a id="wasi_sockets_udp_create_socket_0_2_2"></a>Import interface wasi:sockets/udp-create-socket@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="network"></a><code>type network</code></h4>
+<h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error_code"></a>`type error-code`
+#### <a id="error_code"></a>`type error-code`
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_address_family"></a>`type ip-address-family`
+#### <a id="ip_address_family"></a>`type ip-address-family`
 [`ip-address-family`](#ip_address_family)
 <p>
-#### <a name="udp_socket"></a>`type udp-socket`
+#### <a id="udp_socket"></a>`type udp-socket`
 [`udp-socket`](#udp_socket)
 <p>
 ----
 <h3>Functions</h3>
-<h4><a name="create_udp_socket"></a><code>create-udp-socket: func</code></h4>
+<h4><a id="create_udp_socket"></a><code>create-udp-socket: func</code></h4>
 <p>Create a new UDP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)</code> in POSIX.
 On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
@@ -730,16 +730,16 @@ the socket is effectively an in-memory configuration object, unable to communica
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="create_udp_socket.address_family"></a><code>address-family</code>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+<li><a id="create_udp_socket.address_family"></a><code>address-family</code>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_io_error_0_2_1"></a>Import interface wasi:io/error@0.2.1</h2>
+<h2><a id="wasi_io_error_0_2_2"></a>Import interface wasi:io/error@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="error"></a><code>resource error</code></h4>
+<h4><a id="error"></a><code>resource error</code></h4>
 <p>A resource which represents some error information.</p>
 <p>The only method provided by this resource is <code>to-debug-string</code>,
 which provides some human-readable information about the error.</p>
@@ -754,7 +754,7 @@ parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</c
 <h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
 concrete type is open.</h2>
 <h3>Functions</h3>
-<h4><a name="method_error_to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
+<h4><a id="method_error_to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
 <p>Returns a string that is suitable to assist humans in debugging
 this error.</p>
 <p>WARNING: The returned string should not be consumed mechanically!
@@ -763,42 +763,44 @@ details. Parsing this string is a major platform-compatibility
 hazard.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_error_to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+<li><a id="method_error_to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_error_to_debug_string.0"></a> <code>string</code></li>
+<li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a name="wasi_io_streams_0_2_1"></a>Import interface wasi:io/streams@0.2.1</h2>
+<h2><a id="wasi_io_streams_0_2_2"></a>Import interface wasi:io/streams@0.2.2</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
 when it does, they are expected to subsume this API.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="error"></a><code>type error</code></h4>
+<h4><a id="error"></a><code>type error</code></h4>
 <p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-#### <a name="pollable"></a>`type pollable`
+#### <a id="pollable"></a>`type pollable`
 [`pollable`](#pollable)
 <p>
-#### <a name="stream_error"></a>`variant stream-error`
+#### <a id="stream_error"></a>`variant stream-error`
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
 <ul>
 <li>
-<p><a name="stream_error.last_operation_failed"></a><code>last-operation-failed</code>: own&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</p>
+<p><a id="stream_error.last_operation_failed"></a><code>last-operation-failed</code>: own&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</p>
 <p>The last operation (a write or flush) failed before completion.
 <p>More information is available in the <a href="#error"><code>error</code></a> payload.</p>
+<p>After this, the stream will be closed. All future operations return
+<a href="#stream_error.closed"><code>stream-error::closed</code></a>.</p>
 </li>
 <li>
-<p><a name="stream_error.closed"></a><code>closed</code></p>
+<p><a id="stream_error.closed"></a><code>closed</code></p>
 <p>The stream is closed: no more input will be accepted by the
 stream. A closed output-stream will return this error on all
 future operations.
 </li>
 </ul>
-<h4><a name="input_stream"></a><code>resource input-stream</code></h4>
+<h4><a id="input_stream"></a><code>resource input-stream</code></h4>
 <p>An input bytestream.</p>
 <p><a href="#input_stream"><code>input-stream</code></a>s are <em>non-blocking</em> to the extent practical on underlying
 platforms. I/O operations always return promptly; if fewer bytes are
@@ -806,7 +808,7 @@ promptly available than requested, they return the number of bytes promptly
 available, which could even be zero. To wait for data to be available,
 use the <code>subscribe</code> function to obtain a <a href="#pollable"><code>pollable</code></a> which can be polled
 for using <code>wasi:io/poll</code>.</p>
-<h4><a name="output_stream"></a><code>resource output-stream</code></h4>
+<h4><a id="output_stream"></a><code>resource output-stream</code></h4>
 <p>An output bytestream.</p>
 <p><a href="#output_stream"><code>output-stream</code></a>s are <em>non-blocking</em> to the extent practical on
 underlying platforms. Except where specified otherwise, I/O operations also
@@ -818,7 +820,7 @@ polled for using <code>wasi:io/poll</code>.</p>
 progress may result in the data being lost. Before dropping the stream,
 be sure to fully flush your writes.</h2>
 <h3>Functions</h3>
-<h4><a name="method_input_stream_read"></a><code>[method]input-stream.read: func</code></h4>
+<h4><a id="method_input_stream_read"></a><code>[method]input-stream.read: func</code></h4>
 <p>Perform a non-blocking read from the stream.</p>
 <p>When the source of a <code>read</code> is binary data, the bytes from the source
 are returned verbatim. When the source of a <code>read</code> is known to the
@@ -842,51 +844,51 @@ as a return value by the callee. The callee may return a list of bytes
 less than <code>len</code> in size while more bytes are available for reading.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream_read.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_input_stream_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_input_stream_read.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_input_stream_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream_blocking_read"></a><code>[method]input-stream.blocking-read: func</code></h4>
+<h4><a id="method_input_stream_blocking_read"></a><code>[method]input-stream.blocking-read: func</code></h4>
 <p>Read bytes from a stream, after blocking until at least one byte can
 be read. Except for blocking, behavior is identical to <code>read</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream_blocking_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream_blocking_read.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_input_stream_blocking_read.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_input_stream_blocking_read.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream_blocking_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_input_stream_blocking_read.0"></a> result&lt;list&lt;<code>u8</code>&gt;, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream_skip"></a><code>[method]input-stream.skip: func</code></h4>
+<h4><a id="method_input_stream_skip"></a><code>[method]input-stream.skip: func</code></h4>
 <p>Skip bytes from a stream. Returns number of bytes skipped.</p>
 <p>Behaves identical to <code>read</code>, except instead of returning a list
 of bytes, returns the number of bytes consumed from the stream.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream_skip.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_input_stream_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_input_stream_skip.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_input_stream_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream_blocking_skip"></a><code>[method]input-stream.blocking-skip: func</code></h4>
+<h4><a id="method_input_stream_blocking_skip"></a><code>[method]input-stream.blocking-skip: func</code></h4>
 <p>Skip bytes from a stream, after blocking until at least one byte
 can be skipped. Except for blocking behavior, identical to <code>skip</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream_blocking_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_input_stream_blocking_skip.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_input_stream_blocking_skip.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_input_stream_blocking_skip.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream_blocking_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_input_stream_blocking_skip.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_input_stream_subscribe"></a><code>[method]input-stream.subscribe: func</code></h4>
+<h4><a id="method_input_stream_subscribe"></a><code>[method]input-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once either the specified stream
 has bytes available to read or the other end of the stream has been
 closed.
@@ -895,13 +897,13 @@ Implementations may trap if the <a href="#input_stream"><code>input-stream</code
 all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_input_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_input_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_input_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_input_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_check_write"></a><code>[method]output-stream.check-write: func</code></h4>
+<h4><a id="method_output_stream_check_write"></a><code>[method]output-stream.check-write: func</code></h4>
 <p>Check readiness for writing. This function never blocks.</p>
 <p>Returns the number of bytes permitted for the next call to <code>write</code>,
 or an error. Calling <code>write</code> with more bytes than this function has
@@ -911,13 +913,13 @@ become ready when this function will report at least 1 byte, or an
 error.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_check_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_check_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_check_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_check_write.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_write"></a><code>[method]output-stream.write: func</code></h4>
+<h4><a id="method_output_stream_write"></a><code>[method]output-stream.write: func</code></h4>
 <p>Perform a write. This function never blocks.</p>
 <p>When the destination of a <code>write</code> is binary data, the bytes from
 <code>contents</code> are written verbatim. When the destination of a <code>write</code> is
@@ -930,14 +932,14 @@ length of less than or equal to n. Otherwise, this function will trap.</p>
 the last call to check-write provided a permit.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_write.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a id="method_output_stream_write.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_write.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_write.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_write.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
+<h4><a id="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 bytes, and then flush the stream. Block
 until all of these operations are complete, or an error occurs.</p>
 <p>This is a convenience wrapper around the use of <code>check-write</code>,
@@ -961,14 +963,14 @@ let _ = this.check-write();         // eliding error handling
 </code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_blocking_write_and_flush.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
+<li><a id="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_write_and_flush.contents"></a><code>contents</code>: list&lt;<code>u8</code>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_blocking_write_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_write_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_flush"></a><code>[method]output-stream.flush: func</code></h4>
+<h4><a id="method_output_stream_flush"></a><code>[method]output-stream.flush: func</code></h4>
 <p>Request to flush buffered output. This function never blocks.</p>
 <p>This tells the output-stream that the caller intends any buffered
 output to be flushed. the output which is expected to be flushed
@@ -979,24 +981,24 @@ completed. The <code>subscribe</code> pollable will become ready when the
 flush has completed and the stream can accept more writes.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_blocking_flush"></a><code>[method]output-stream.blocking-flush: func</code></h4>
+<h4><a id="method_output_stream_blocking_flush"></a><code>[method]output-stream.blocking-flush: func</code></h4>
 <p>Request to flush buffered output, and block until flush completes
 and stream is ready for writing again.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_blocking_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_blocking_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
+<h4><a id="method_output_stream_subscribe"></a><code>[method]output-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the output-stream
 is ready for more writing, or an error has occurred. When this
 pollable is ready, <code>check-write</code> will return <code>ok(n)</code> with n&gt;0, or an
@@ -1007,13 +1009,13 @@ Implementations may trap if the <a href="#output_stream"><code>output-stream</co
 all derived <a href="#pollable"><code>pollable</code></a>s created with this function are dropped.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_output_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_write_zeroes"></a><code>[method]output-stream.write-zeroes: func</code></h4>
+<h4><a id="method_output_stream_write_zeroes"></a><code>[method]output-stream.write-zeroes: func</code></h4>
 <p>Write zeroes to a stream.</p>
 <p>This should be used precisely like <code>write</code> with the exact same
 preconditions (must use check-write first), but instead of
@@ -1021,14 +1023,14 @@ passing a list of bytes, you simply pass the number of zero-bytes
 that should be written.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_write_zeroes.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_write_zeroes.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_output_stream_write_zeroes.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_write_zeroes.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_write_zeroes.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_write_zeroes.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_blocking_write_zeroes_and_flush"></a><code>[method]output-stream.blocking-write-zeroes-and-flush: func</code></h4>
+<h4><a id="method_output_stream_blocking_write_zeroes_and_flush"></a><code>[method]output-stream.blocking-write-zeroes-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 zeroes, and then flush the stream.
 Block until all of these operations are complete, or an error
 occurs.</p>
@@ -1052,14 +1054,14 @@ let _ = this.check-write();         // eliding error handling
 </code></pre>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_blocking_write_zeroes_and_flush.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_write_zeroes_and_flush.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_blocking_write_zeroes_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_write_zeroes_and_flush.0"></a> result&lt;_, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_splice"></a><code>[method]output-stream.splice: func</code></h4>
+<h4><a id="method_output_stream_splice"></a><code>[method]output-stream.splice: func</code></h4>
 <p>Read from one stream and write to another.</p>
 <p>The behavior of splice is equivalent to:</p>
 <ol>
@@ -1074,30 +1076,30 @@ let _ = this.check-write();         // eliding error handling
 than <code>len</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_splice.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_output_stream_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_splice.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_output_stream_blocking_splice"></a><code>[method]output-stream.blocking-splice: func</code></h4>
+<h4><a id="method_output_stream_blocking_splice"></a><code>[method]output-stream.blocking-splice: func</code></h4>
 <p>Read from one stream and write to another, with blocking.</p>
 <p>This is similar to <code>splice</code>, except that it blocks until the
 <a href="#output_stream"><code>output-stream</code></a> is ready for writing, and the <a href="#input_stream"><code>input-stream</code></a>
 is ready for reading, before performing the <code>splice</code>.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_output_stream_blocking_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_blocking_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-<li><a name="method_output_stream_blocking_splice.len"></a><code>len</code>: <code>u64</code></li>
+<li><a id="method_output_stream_blocking_splice.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_splice.src"></a><code>src</code>: borrow&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_splice.len"></a><code>len</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
+<li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_clocks_monotonic_clock_0_2_1"></a>Import interface wasi:clocks/monotonic-clock@0.2.1</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_2"></a>Import interface wasi:clocks/monotonic-clock@0.2.2</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -1106,100 +1108,100 @@ Windows.</p>
 successive reads of the clock will produce non-decreasing values.</p>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"></a><code>type pollable</code></h4>
+<h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="instant"></a>`type instant`
+#### <a id="instant"></a>`type instant`
 `u64`
 <p>An instant in time, in nanoseconds. An instant is relative to an
 unspecified initial value, and can only be compared to instances from
 the same monotonic-clock.
-<h4><a name="duration"></a><code>type duration</code></h4>
+<h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
 <hr />
 <h3>Functions</h3>
-<h4><a name="now"></a><code>now: func</code></h4>
+<h4><a id="now"></a><code>now: func</code></h4>
 <p>Read the current value of the clock.</p>
 <p>The clock is monotonic, therefore calling this function repeatedly will
 produce a sequence of non-decreasing values.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+<li><a id="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
 </ul>
-<h4><a name="resolution"></a><code>resolution: func</code></h4>
+<h4><a id="resolution"></a><code>resolution: func</code></h4>
 <p>Query the resolution of the clock. Returns the duration of time
 corresponding to a clock tick.</p>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+<li><a id="resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h4><a name="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
+<h4><a id="subscribe_instant"></a><code>subscribe-instant: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the specified instant
 has occurred.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
+<li><a id="subscribe_instant.when"></a><code>when</code>: <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="subscribe_instant.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="subscribe_duration"></a><code>subscribe-duration: func</code></h4>
+<h4><a id="subscribe_duration"></a><code>subscribe-duration: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> that will resolve after the specified duration has
 elapsed from the time this function is invoked.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="subscribe_duration.when"></a><code>when</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+<li><a id="subscribe_duration.when"></a><code>when</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_sockets_tcp_0_2_1"></a>Import interface wasi:sockets/tcp@0.2.1</h2>
+<h2><a id="wasi_sockets_tcp_0_2_2"></a>Import interface wasi:sockets/tcp@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="input_stream"></a><code>type input-stream</code></h4>
+<h4><a id="input_stream"></a><code>type input-stream</code></h4>
 <p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
 <p>
-#### <a name="output_stream"></a>`type output-stream`
+#### <a id="output_stream"></a>`type output-stream`
 [`output-stream`](#output_stream)
 <p>
-#### <a name="pollable"></a>`type pollable`
+#### <a id="pollable"></a>`type pollable`
 [`pollable`](#pollable)
 <p>
-#### <a name="duration"></a>`type duration`
+#### <a id="duration"></a>`type duration`
 [`duration`](#duration)
 <p>
-#### <a name="network"></a>`type network`
+#### <a id="network"></a>`type network`
 [`network`](#network)
 <p>
-#### <a name="error_code"></a>`type error-code`
+#### <a id="error_code"></a>`type error-code`
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_socket_address"></a>`type ip-socket-address`
+#### <a id="ip_socket_address"></a>`type ip-socket-address`
 [`ip-socket-address`](#ip_socket_address)
 <p>
-#### <a name="ip_address_family"></a>`type ip-address-family`
+#### <a id="ip_address_family"></a>`type ip-address-family`
 [`ip-address-family`](#ip_address_family)
 <p>
-#### <a name="shutdown_type"></a>`enum shutdown-type`
+#### <a id="shutdown_type"></a>`enum shutdown-type`
 <h5>Enum Cases</h5>
 <ul>
 <li>
-<p><a name="shutdown_type.receive"></a><code>receive</code></p>
+<p><a id="shutdown_type.receive"></a><code>receive</code></p>
 <p>Similar to `SHUT_RD` in POSIX.
 </li>
 <li>
-<p><a name="shutdown_type.send"></a><code>send</code></p>
+<p><a id="shutdown_type.send"></a><code>send</code></p>
 <p>Similar to `SHUT_WR` in POSIX.
 </li>
 <li>
-<p><a name="shutdown_type.both"></a><code>both</code></p>
+<p><a id="shutdown_type.both"></a><code>both</code></p>
 <p>Similar to `SHUT_RDWR` in POSIX.
 </li>
 </ul>
-<h4><a name="tcp_socket"></a><code>resource tcp-socket</code></h4>
+<h4><a id="tcp_socket"></a><code>resource tcp-socket</code></h4>
 <p>A TCP socket resource.</p>
 <p>The socket can be in one of the following states:</p>
 <ul>
@@ -1221,7 +1223,7 @@ the term &quot;bound&quot; without backticks it actually means: in the <code>bou
 <code>network::error-code</code> type, TCP socket methods may always return
 <code>error(invalid-state)</code> when in the <code>closed</code> state.</h2>
 <h3>Functions</h3>
-<h4><a name="method_tcp_socket_start_bind"></a><code>[method]tcp-socket.start-bind: func</code></h4>
+<h4><a id="method_tcp_socket_start_bind"></a><code>[method]tcp-socket.start-bind: func</code></h4>
 <p>Bind the socket to a specific network on the provided IP address and port.</p>
 <p>If the IP address is zero (<code>0.0.0.0</code> in IPv4, <code>::</code> in IPv6), it is left to the implementation to decide which
 network interface(s) to bind to.
@@ -1260,24 +1262,24 @@ don't want to make use of this ability can simply call the native
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_start_bind.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_start_bind.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_start_bind.local_address"></a><code>local-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a id="method_tcp_socket_start_bind.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_bind.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_bind.local_address"></a><code>local-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_finish_bind"></a><code>[method]tcp-socket.finish-bind: func</code></h4>
+<h4><a id="method_tcp_socket_finish_bind"></a><code>[method]tcp-socket.finish-bind: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_bind.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_bind.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_bind.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_start_connect"></a><code>[method]tcp-socket.start-connect: func</code></h4>
+<h4><a id="method_tcp_socket_start_connect"></a><code>[method]tcp-socket.start-connect: func</code></h4>
 <p>Connect to a remote endpoint.</p>
 <p>On success:</p>
 <ul>
@@ -1322,24 +1324,24 @@ the <code>SO_ERROR</code> socket option, in case the poll signaled readiness.</p
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_start_connect.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_start_connect.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_start_connect.remote_address"></a><code>remote-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
+<li><a id="method_tcp_socket_start_connect.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_connect.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_connect.remote_address"></a><code>remote-address</code>: <a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_connect.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_finish_connect"></a><code>[method]tcp-socket.finish-connect: func</code></h4>
+<h4><a id="method_tcp_socket_finish_connect"></a><code>[method]tcp-socket.finish-connect: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_connect.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_connect.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_connect.0"></a> result&lt;(own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;, own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_connect.0"></a> result&lt;(own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;, own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_start_listen"></a><code>[method]tcp-socket.start-listen: func</code></h4>
+<h4><a id="method_tcp_socket_start_listen"></a><code>[method]tcp-socket.start-listen: func</code></h4>
 <p>Start listening for new connections.</p>
 <p>Transitions the socket into the <code>listening</code> state.</p>
 <p>Unlike POSIX, the socket must already be explicitly bound.</p>
@@ -1366,22 +1368,22 @@ don't want to make use of this ability can simply call the native
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_start_listen.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_listen.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_start_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_start_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_finish_listen"></a><code>[method]tcp-socket.finish-listen: func</code></h4>
+<h4><a id="method_tcp_socket_finish_listen"></a><code>[method]tcp-socket.finish-listen: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_listen.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_listen.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_finish_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_finish_listen.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_accept"></a><code>[method]tcp-socket.accept: func</code></h4>
+<h4><a id="method_tcp_socket_accept"></a><code>[method]tcp-socket.accept: func</code></h4>
 <p>Accept a new client socket.</p>
 <p>The returned socket is bound and in the <code>connected</code> state. The following properties are inherited from the listener socket:</p>
 <ul>
@@ -1412,13 +1414,13 @@ a pair of streams that can be used to read &amp; write to the connection.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_accept.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_accept.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_accept.0"></a> result&lt;(own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;, own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_accept.0"></a> result&lt;(own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;, own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;), <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_local_address"></a><code>[method]tcp-socket.local-address: func</code></h4>
+<h4><a id="method_tcp_socket_local_address"></a><code>[method]tcp-socket.local-address: func</code></h4>
 <p>Get the bound local address.</p>
 <p>POSIX mentions:</p>
 <blockquote>
@@ -1439,13 +1441,13 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_local_address.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_local_address.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_local_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_remote_address"></a><code>[method]tcp-socket.remote-address: func</code></h4>
+<h4><a id="method_tcp_socket_remote_address"></a><code>[method]tcp-socket.remote-address: func</code></h4>
 <p>Get the remote address.</p>
 <h1>Typical errors</h1>
 <ul>
@@ -1460,35 +1462,35 @@ stored in the object pointed to by <code>address</code> is unspecified.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_remote_address.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_remote_address.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_remote_address.0"></a> result&lt;<a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_is_listening"></a><code>[method]tcp-socket.is-listening: func</code></h4>
+<h4><a id="method_tcp_socket_is_listening"></a><code>[method]tcp-socket.is-listening: func</code></h4>
 <p>Whether the socket is in the <code>listening</code> state.</p>
 <p>Equivalent to the SO_ACCEPTCONN socket option.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_is_listening.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_is_listening.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_is_listening.0"></a> <code>bool</code></li>
+<li><a id="method_tcp_socket_is_listening.0"></a> <code>bool</code></li>
 </ul>
-<h4><a name="method_tcp_socket_address_family"></a><code>[method]tcp-socket.address-family: func</code></h4>
+<h4><a id="method_tcp_socket_address_family"></a><code>[method]tcp-socket.address-family: func</code></h4>
 <p>Whether this is a IPv4 or IPv6 socket.</p>
 <p>Equivalent to the SO_DOMAIN socket option.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_address_family.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_address_family.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+<li><a id="method_tcp_socket_address_family.0"></a> <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
-<h4><a name="method_tcp_socket_set_listen_backlog_size"></a><code>[method]tcp-socket.set-listen-backlog-size: func</code></h4>
+<h4><a id="method_tcp_socket_set_listen_backlog_size"></a><code>[method]tcp-socket.set-listen-backlog-size: func</code></h4>
 <p>Hints the desired listen queue size. Implementations are free to ignore this.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.</p>
@@ -1500,14 +1502,14 @@ Any other value will never cause an error, but it might be silently clamped and/
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_listen_backlog_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_listen_backlog_size.value"></a><code>value</code>: <code>u64</code></li>
+<li><a id="method_tcp_socket_set_listen_backlog_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_listen_backlog_size.value"></a><code>value</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_listen_backlog_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_listen_backlog_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_keep_alive_enabled"></a><code>[method]tcp-socket.keep-alive-enabled: func</code></h4>
+<h4><a id="method_tcp_socket_keep_alive_enabled"></a><code>[method]tcp-socket.keep-alive-enabled: func</code></h4>
 <p>Enables or disables keepalive.</p>
 <p>The keepalive behavior can be adjusted using:</p>
 <ul>
@@ -1519,23 +1521,23 @@ These properties can be configured while <code>keep-alive-enabled</code> is fals
 <p>Equivalent to the SO_KEEPALIVE socket option.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_enabled.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_enabled.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_enabled.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_enabled.0"></a> result&lt;<code>bool</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_keep_alive_enabled"></a><code>[method]tcp-socket.set-keep-alive-enabled: func</code></h4>
+<h4><a id="method_tcp_socket_set_keep_alive_enabled"></a><code>[method]tcp-socket.set-keep-alive-enabled: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_enabled.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_keep_alive_enabled.value"></a><code>value</code>: <code>bool</code></li>
+<li><a id="method_tcp_socket_set_keep_alive_enabled.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_enabled.value"></a><code>value</code>: <code>bool</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_enabled.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_enabled.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_keep_alive_idle_time"></a><code>[method]tcp-socket.keep-alive-idle-time: func</code></h4>
+<h4><a id="method_tcp_socket_keep_alive_idle_time"></a><code>[method]tcp-socket.keep-alive-idle-time: func</code></h4>
 <p>Amount of time the connection has to be idle before TCP starts sending keepalive packets.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.
@@ -1547,23 +1549,23 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_idle_time.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_idle_time.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_idle_time.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_idle_time.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_keep_alive_idle_time"></a><code>[method]tcp-socket.set-keep-alive-idle-time: func</code></h4>
+<h4><a id="method_tcp_socket_set_keep_alive_idle_time"></a><code>[method]tcp-socket.set-keep-alive-idle-time: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_idle_time.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_keep_alive_idle_time.value"></a><code>value</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+<li><a id="method_tcp_socket_set_keep_alive_idle_time.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_idle_time.value"></a><code>value</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_idle_time.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_idle_time.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_keep_alive_interval"></a><code>[method]tcp-socket.keep-alive-interval: func</code></h4>
+<h4><a id="method_tcp_socket_keep_alive_interval"></a><code>[method]tcp-socket.keep-alive-interval: func</code></h4>
 <p>The time between keepalive packets.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.
@@ -1575,23 +1577,23 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_interval.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_interval.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_interval.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_interval.0"></a> result&lt;<a href="#duration"><a href="#duration"><code>duration</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_keep_alive_interval"></a><code>[method]tcp-socket.set-keep-alive-interval: func</code></h4>
+<h4><a id="method_tcp_socket_set_keep_alive_interval"></a><code>[method]tcp-socket.set-keep-alive-interval: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_interval.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_keep_alive_interval.value"></a><code>value</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
+<li><a id="method_tcp_socket_set_keep_alive_interval.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_interval.value"></a><code>value</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_interval.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_interval.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_keep_alive_count"></a><code>[method]tcp-socket.keep-alive-count: func</code></h4>
+<h4><a id="method_tcp_socket_keep_alive_count"></a><code>[method]tcp-socket.keep-alive-count: func</code></h4>
 <p>The maximum amount of keepalive packets TCP should send before aborting the connection.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.
@@ -1603,23 +1605,23 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_count.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_count.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_keep_alive_count.0"></a> result&lt;<code>u32</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_keep_alive_count.0"></a> result&lt;<code>u32</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_keep_alive_count"></a><code>[method]tcp-socket.set-keep-alive-count: func</code></h4>
+<h4><a id="method_tcp_socket_set_keep_alive_count"></a><code>[method]tcp-socket.set-keep-alive-count: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_count.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_keep_alive_count.value"></a><code>value</code>: <code>u32</code></li>
+<li><a id="method_tcp_socket_set_keep_alive_count.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_count.value"></a><code>value</code>: <code>u32</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_keep_alive_count.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_keep_alive_count.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_hop_limit"></a><code>[method]tcp-socket.hop-limit: func</code></h4>
+<h4><a id="method_tcp_socket_hop_limit"></a><code>[method]tcp-socket.hop-limit: func</code></h4>
 <p>Equivalent to the IP_TTL &amp; IPV6_UNICAST_HOPS socket options.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.</p>
 <h1>Typical errors</h1>
@@ -1628,23 +1630,23 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_hop_limit.0"></a> result&lt;<code>u8</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_hop_limit"></a><code>[method]tcp-socket.set-hop-limit: func</code></h4>
+<h4><a id="method_tcp_socket_set_hop_limit"></a><code>[method]tcp-socket.set-hop-limit: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_hop_limit.value"></a><code>value</code>: <code>u8</code></li>
+<li><a id="method_tcp_socket_set_hop_limit.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_hop_limit.value"></a><code>value</code>: <code>u8</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_hop_limit.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_receive_buffer_size"></a><code>[method]tcp-socket.receive-buffer-size: func</code></h4>
+<h4><a id="method_tcp_socket_receive_buffer_size"></a><code>[method]tcp-socket.receive-buffer-size: func</code></h4>
 <p>The kernel buffer space reserved for sends/receives on this socket.</p>
 <p>If the provided value is 0, an <code>invalid-argument</code> error is returned.
 Any other value will never cause an error, but it might be silently clamped and/or rounded.
@@ -1656,42 +1658,42 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_receive_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_receive_buffer_size"></a><code>[method]tcp-socket.set-receive-buffer-size: func</code></h4>
+<h4><a id="method_tcp_socket_set_receive_buffer_size"></a><code>[method]tcp-socket.set-receive-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_receive_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
+<li><a id="method_tcp_socket_set_receive_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_receive_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_receive_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_send_buffer_size"></a><code>[method]tcp-socket.send-buffer-size: func</code></h4>
+<h4><a id="method_tcp_socket_send_buffer_size"></a><code>[method]tcp-socket.send-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_send_buffer_size.0"></a> result&lt;<code>u64</code>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_set_send_buffer_size"></a><code>[method]tcp-socket.set-send-buffer-size: func</code></h4>
+<h4><a id="method_tcp_socket_set_send_buffer_size"></a><code>[method]tcp-socket.set-send-buffer-size: func</code></h4>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_set_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_set_send_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
+<li><a id="method_tcp_socket_set_send_buffer_size.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_send_buffer_size.value"></a><code>value</code>: <code>u64</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_subscribe"></a><code>[method]tcp-socket.subscribe: func</code></h4>
+<h4><a id="method_tcp_socket_subscribe"></a><code>[method]tcp-socket.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which can be used to poll for, or block on,
 completion of any of the asynchronous operations of this socket.</p>
 <p>When <code>finish-bind</code>, <code>finish-listen</code>, <code>finish-connect</code> or <code>accept</code>
@@ -1707,13 +1709,13 @@ for more information.</p>
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_tcp_socket_shutdown"></a><code>[method]tcp-socket.shutdown: func</code></h4>
+<h4><a id="method_tcp_socket_shutdown"></a><code>[method]tcp-socket.shutdown: func</code></h4>
 <p>Initiate a graceful shutdown.</p>
 <ul>
 <li><code>receive</code>: The socket is not expecting to receive any data from
@@ -1740,31 +1742,31 @@ has no effect and returns <code>ok</code>.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_tcp_socket_shutdown.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
-<li><a name="method_tcp_socket_shutdown.shutdown_type"></a><a href="#shutdown_type"><code>shutdown-type</code></a>: <a href="#shutdown_type"><a href="#shutdown_type"><code>shutdown-type</code></a></a></li>
+<li><a id="method_tcp_socket_shutdown.self"></a><code>self</code>: borrow&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_shutdown.shutdown_type"></a><a href="#shutdown_type"><code>shutdown-type</code></a>: <a href="#shutdown_type"><a href="#shutdown_type"><code>shutdown-type</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_tcp_socket_shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_tcp_socket_shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_sockets_tcp_create_socket_0_2_1"></a>Import interface wasi:sockets/tcp-create-socket@0.2.1</h2>
+<h2><a id="wasi_sockets_tcp_create_socket_0_2_2"></a>Import interface wasi:sockets/tcp-create-socket@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="network"></a><code>type network</code></h4>
+<h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a name="error_code"></a>`type error-code`
+#### <a id="error_code"></a>`type error-code`
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_address_family"></a>`type ip-address-family`
+#### <a id="ip_address_family"></a>`type ip-address-family`
 [`ip-address-family`](#ip_address_family)
 <p>
-#### <a name="tcp_socket"></a>`type tcp-socket`
+#### <a id="tcp_socket"></a>`type tcp-socket`
 [`tcp-socket`](#tcp_socket)
 <p>
 ----
 <h3>Functions</h3>
-<h4><a name="create_tcp_socket"></a><code>create-tcp-socket: func</code></h4>
+<h4><a id="create_tcp_socket"></a><code>create-tcp-socket: func</code></h4>
 <p>Create a new TCP socket.</p>
 <p>Similar to <code>socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_TCP)</code> in POSIX.
 On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.</p>
@@ -1786,31 +1788,31 @@ is called, the socket is effectively an in-memory configuration object, unable t
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="create_tcp_socket.address_family"></a><code>address-family</code>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
+<li><a id="create_tcp_socket.address_family"></a><code>address-family</code>: <a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a name="wasi_sockets_ip_name_lookup_0_2_1"></a>Import interface wasi:sockets/ip-name-lookup@0.2.1</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_2_2"></a>Import interface wasi:sockets/ip-name-lookup@0.2.2</h2>
 <hr />
 <h3>Types</h3>
-<h4><a name="pollable"></a><code>type pollable</code></h4>
+<h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a name="network"></a>`type network`
+#### <a id="network"></a>`type network`
 [`network`](#network)
 <p>
-#### <a name="error_code"></a>`type error-code`
+#### <a id="error_code"></a>`type error-code`
 [`error-code`](#error_code)
 <p>
-#### <a name="ip_address"></a>`type ip-address`
+#### <a id="ip_address"></a>`type ip-address`
 [`ip-address`](#ip_address)
 <p>
-#### <a name="resolve_address_stream"></a>`resource resolve-address-stream`
+#### <a id="resolve_address_stream"></a>`resource resolve-address-stream`
 <hr />
 <h3>Functions</h3>
-<h4><a name="resolve_addresses"></a><code>resolve-addresses: func</code></h4>
+<h4><a id="resolve_addresses"></a><code>resolve-addresses: func</code></h4>
 <p>Resolve an internet host name to a list of IP addresses.</p>
 <p>Unicode domain names are automatically converted to ASCII using IDNA encoding.
 If the input is an IP address string, the address is parsed and returned
@@ -1832,14 +1834,14 @@ to (asynchronously) fetch the results.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="resolve_addresses.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
-<li><a name="resolve_addresses.name"></a><code>name</code>: <code>string</code></li>
+<li><a id="resolve_addresses.network"></a><a href="#network"><code>network</code></a>: borrow&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
+<li><a id="resolve_addresses.name"></a><code>name</code>: <code>string</code></li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="resolve_addresses.0"></a> result&lt;own&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="resolve_addresses.0"></a> result&lt;own&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_resolve_address_stream_resolve_next_address"></a><code>[method]resolve-address-stream.resolve-next-address: func</code></h4>
+<h4><a id="method_resolve_address_stream_resolve_next_address"></a><code>[method]resolve-address-stream.resolve-next-address: func</code></h4>
 <p>Returns the next address from the resolver.</p>
 <p>This function should be called multiple times. On each call, it will
 return the next address in connection order preference. If all
@@ -1854,21 +1856,21 @@ addresses have been exhausted, this function returns <code>none</code>.</p>
 </ul>
 <h5>Params</h5>
 <ul>
-<li><a name="method_resolve_address_stream_resolve_next_address.self"></a><code>self</code>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+<li><a id="method_resolve_address_stream_resolve_next_address.self"></a><code>self</code>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_resolve_address_stream_resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+<li><a id="method_resolve_address_stream_resolve_next_address.0"></a> result&lt;option&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h4><a name="method_resolve_address_stream_subscribe"></a><code>[method]resolve-address-stream.subscribe: func</code></h4>
+<h4><a id="method_resolve_address_stream_subscribe"></a><code>[method]resolve-address-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
 <p>Note: this function is here for WASI Preview2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
-<li><a name="method_resolve_address_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
+<li><a id="method_resolve_address_stream_subscribe.self"></a><code>self</code>: borrow&lt;<a href="#resolve_address_stream"><a href="#resolve_address_stream"><code>resolve-address-stream</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a name="method_resolve_address_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
+<li><a id="method_resolve_address_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
