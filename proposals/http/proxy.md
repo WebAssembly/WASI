@@ -6,26 +6,26 @@ outgoing HTTP requests.</p>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_poll_0_2_1"><code>wasi:io/poll@0.2.1</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_1"><code>wasi:clocks/monotonic-clock@0.2.1</code></a></li>
-<li>interface <a href="#wasi_io_error_0_2_1"><code>wasi:io/error@0.2.1</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_1"><code>wasi:io/streams@0.2.1</code></a></li>
-<li>interface <a href="#wasi_http_types_0_2_1"><code>wasi:http/types@0.2.1</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_1"><code>wasi:clocks/wall-clock@0.2.1</code></a></li>
-<li>interface <a href="#wasi_random_random_0_2_1"><code>wasi:random/random@0.2.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdout_0_2_1"><code>wasi:cli/stdout@0.2.1</code></a></li>
-<li>interface <a href="#wasi_cli_stderr_0_2_1"><code>wasi:cli/stderr@0.2.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdin_0_2_1"><code>wasi:cli/stdin@0.2.1</code></a></li>
-<li>interface <a href="#wasi_http_outgoing_handler_0_2_1"><code>wasi:http/outgoing-handler@0.2.1</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_2"><code>wasi:io/poll@0.2.2</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_2"><code>wasi:clocks/monotonic-clock@0.2.2</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_2"><code>wasi:clocks/wall-clock@0.2.2</code></a></li>
+<li>interface <a href="#wasi_random_random_0_2_2"><code>wasi:random/random@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_2"><code>wasi:io/error@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_2"><code>wasi:io/streams@0.2.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdout_0_2_2"><code>wasi:cli/stdout@0.2.2</code></a></li>
+<li>interface <a href="#wasi_cli_stderr_0_2_2"><code>wasi:cli/stderr@0.2.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdin_0_2_2"><code>wasi:cli/stdin@0.2.2</code></a></li>
+<li>interface <a href="#wasi_http_types_0_2_2"><code>wasi:http/types@0.2.2</code></a></li>
+<li>interface <a href="#wasi_http_outgoing_handler_0_2_2"><code>wasi:http/outgoing-handler@0.2.2</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi_http_incoming_handler_0_2_1"><code>wasi:http/incoming-handler@0.2.1</code></a></li>
+<li>interface <a href="#wasi_http_incoming_handler_0_2_2"><code>wasi:http/incoming-handler@0.2.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_1"></a>Import interface wasi:io/poll@0.2.1</h2>
+<h2><a id="wasi_io_poll_0_2_2"></a>Import interface wasi:io/poll@0.2.2</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -78,7 +78,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_2_1"></a>Import interface wasi:clocks/monotonic-clock@0.2.1</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_2"></a>Import interface wasi:clocks/monotonic-clock@0.2.2</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -137,7 +137,81 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_error_0_2_1"></a>Import interface wasi:io/error@0.2.1</h2>
+<h2><a id="wasi_clocks_wall_clock_0_2_2"></a>Import interface wasi:clocks/wall-clock@0.2.2</h2>
+<p>WASI Wall Clock is a clock API intended to let users query the current
+time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
+is not necessarily monotonic as it may be reset.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<p>A wall clock is a clock which measures the date and time according to
+some external reference.</p>
+<p>External references may be reset, so this clock is not necessarily
+monotonic, making it unsuitable for measuring elapsed time.</p>
+<p>It is intended for reporting the current date and time for humans.</p>
+<hr />
+<h3>Types</h3>
+<h4><a id="datetime"></a><code>record datetime</code></h4>
+<p>A time and date in seconds plus nanoseconds.</p>
+<h5>Record Fields</h5>
+<ul>
+<li><a id="datetime.seconds"></a><code>seconds</code>: <code>u64</code></li>
+<li><a id="datetime.nanoseconds"></a><code>nanoseconds</code>: <code>u32</code></li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a id="now"></a><code>now: func</code></h4>
+<p>Read the current value of the clock.</p>
+<p>This clock is not monotonic, therefore calling this function repeatedly
+will not necessarily produce a sequence of non-decreasing values.</p>
+<p>The returned timestamps represent the number of seconds since
+1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
+also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a id="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h4><a id="resolution"></a><code>resolution: func</code></h4>
+<p>Query the resolution of the clock.</p>
+<p>The nanoseconds field of the output is always less than 1000000000.</p>
+<h5>Return values</h5>
+<ul>
+<li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h2><a id="wasi_random_random_0_2_2"></a>Import interface wasi:random/random@0.2.2</h2>
+<p>WASI Random is a random data API.</p>
+<p>It is intended to be portable at least between Unix-family platforms and
+Windows.</p>
+<hr />
+<h3>Functions</h3>
+<h4><a id="get_random_bytes"></a><code>get-random-bytes: func</code></h4>
+<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
+<p>This function must produce data at least as cryptographically secure and
+fast as an adequately seeded cryptographically-secure pseudo-random
+number generator (CSPRNG). It must not block, from the perspective of
+the calling program, under any circumstances, including on the first
+request and on requests for numbers of bytes. The returned data must
+always be unpredictable.</p>
+<p>This function must always return fresh data. Deterministic environments
+must omit this function, rather than implementing it with deterministic
+data.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="get_random_bytes.len"></a><code>len</code>: <code>u64</code></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
+</ul>
+<h4><a id="get_random_u64"></a><code>get-random-u64: func</code></h4>
+<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
+<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
+represented as a <code>u64</code>.</p>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_random_u64.0"></a> <code>u64</code></li>
+</ul>
+<h2><a id="wasi_io_error_0_2_2"></a>Import interface wasi:io/error@0.2.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -170,7 +244,7 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_1"></a>Import interface wasi:io/streams@0.2.1</h2>
+<h2><a id="wasi_io_streams_0_2_2"></a>Import interface wasi:io/streams@0.2.2</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -191,6 +265,8 @@ when it does, they are expected to subsume this API.</p>
 <p><a id="stream_error.last_operation_failed"></a><code>last-operation-failed</code>: own&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</p>
 <p>The last operation (a write or flush) failed before completion.
 <p>More information is available in the <a href="#error"><code>error</code></a> payload.</p>
+<p>After this, the stream will be closed. All future operations return
+<a href="#stream_error.closed"><code>stream-error::closed</code></a>.</p>
 </li>
 <li>
 <p><a id="stream_error.closed"></a><code>closed</code></p>
@@ -498,7 +574,46 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_http_types_0_2_1"></a>Import interface wasi:http/types@0.2.1</h2>
+<h2><a id="wasi_cli_stdout_0_2_2"></a>Import interface wasi:cli/stdout@0.2.2</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="output_stream"></a><code>type output-stream</code></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a id="get_stdout"></a><code>get-stdout: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a id="wasi_cli_stderr_0_2_2"></a>Import interface wasi:cli/stderr@0.2.2</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="output_stream"></a><code>type output-stream</code></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a id="get_stderr"></a><code>get-stderr: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a id="wasi_cli_stdin_0_2_2"></a>Import interface wasi:cli/stdin@0.2.2</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="input_stream"></a><code>type input-stream</code></h4>
+<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+<p>
+----
+<h3>Functions</h3>
+<h4><a id="get_stdin"></a><code>get-stdin: func</code></h4>
+<h5>Return values</h5>
+<ul>
+<li><a id="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
+</ul>
+<h2><a id="wasi_http_types_0_2_2"></a>Import interface wasi:http/types@0.2.2</h2>
 <p>This interface defines all of the types and methods for implementing
 HTTP Requests and Responses, both incoming and outgoing, as well as
 their headers, trailers, and bodies.</p>
@@ -1399,120 +1514,7 @@ but those will be reported by the <a href="#incoming_body"><code>incoming-body</
 <ul>
 <li><a id="method_future_incoming_response_get.0"></a> option&lt;result&lt;result&lt;own&lt;<a href="#incoming_response"><a href="#incoming_response"><code>incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_wall_clock_0_2_1"></a>Import interface wasi:clocks/wall-clock@0.2.1</h2>
-<p>WASI Wall Clock is a clock API intended to let users query the current
-time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
-is not necessarily monotonic as it may be reset.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<p>A wall clock is a clock which measures the date and time according to
-some external reference.</p>
-<p>External references may be reset, so this clock is not necessarily
-monotonic, making it unsuitable for measuring elapsed time.</p>
-<p>It is intended for reporting the current date and time for humans.</p>
-<hr />
-<h3>Types</h3>
-<h4><a id="datetime"></a><code>record datetime</code></h4>
-<p>A time and date in seconds plus nanoseconds.</p>
-<h5>Record Fields</h5>
-<ul>
-<li><a id="datetime.seconds"></a><code>seconds</code>: <code>u64</code></li>
-<li><a id="datetime.nanoseconds"></a><code>nanoseconds</code>: <code>u32</code></li>
-</ul>
-<hr />
-<h3>Functions</h3>
-<h4><a id="now"></a><code>now: func</code></h4>
-<p>Read the current value of the clock.</p>
-<p>This clock is not monotonic, therefore calling this function repeatedly
-will not necessarily produce a sequence of non-decreasing values.</p>
-<p>The returned timestamps represent the number of seconds since
-1970-01-01T00:00:00Z, also known as <a href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16">POSIX's Seconds Since the Epoch</a>,
-also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Return values</h5>
-<ul>
-<li><a id="now.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
-</ul>
-<h4><a id="resolution"></a><code>resolution: func</code></h4>
-<p>Query the resolution of the clock.</p>
-<p>The nanoseconds field of the output is always less than 1000000000.</p>
-<h5>Return values</h5>
-<ul>
-<li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
-</ul>
-<h2><a id="wasi_random_random_0_2_1"></a>Import interface wasi:random/random@0.2.1</h2>
-<p>WASI Random is a random data API.</p>
-<p>It is intended to be portable at least between Unix-family platforms and
-Windows.</p>
-<hr />
-<h3>Functions</h3>
-<h4><a id="get_random_bytes"></a><code>get-random-bytes: func</code></h4>
-<p>Return <code>len</code> cryptographically-secure random or pseudo-random bytes.</p>
-<p>This function must produce data at least as cryptographically secure and
-fast as an adequately seeded cryptographically-secure pseudo-random
-number generator (CSPRNG). It must not block, from the perspective of
-the calling program, under any circumstances, including on the first
-request and on requests for numbers of bytes. The returned data must
-always be unpredictable.</p>
-<p>This function must always return fresh data. Deterministic environments
-must omit this function, rather than implementing it with deterministic
-data.</p>
-<h5>Params</h5>
-<ul>
-<li><a id="get_random_bytes.len"></a><code>len</code>: <code>u64</code></li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a id="get_random_bytes.0"></a> list&lt;<code>u8</code>&gt;</li>
-</ul>
-<h4><a id="get_random_u64"></a><code>get-random-u64: func</code></h4>
-<p>Return a cryptographically-secure random or pseudo-random <code>u64</code> value.</p>
-<p>This function returns the same type of data as <a href="#get_random_bytes"><code>get-random-bytes</code></a>,
-represented as a <code>u64</code>.</p>
-<h5>Return values</h5>
-<ul>
-<li><a id="get_random_u64.0"></a> <code>u64</code></li>
-</ul>
-<h2><a id="wasi_cli_stdout_0_2_1"></a>Import interface wasi:cli/stdout@0.2.1</h2>
-<hr />
-<h3>Types</h3>
-<h4><a id="output_stream"></a><code>type output-stream</code></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a id="get_stdout"></a><code>get-stdout: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a id="get_stdout.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a id="wasi_cli_stderr_0_2_1"></a>Import interface wasi:cli/stderr@0.2.1</h2>
-<hr />
-<h3>Types</h3>
-<h4><a id="output_stream"></a><code>type output-stream</code></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a id="get_stderr"></a><code>get-stderr: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a id="get_stderr.0"></a> own&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a id="wasi_cli_stdin_0_2_1"></a>Import interface wasi:cli/stdin@0.2.1</h2>
-<hr />
-<h3>Types</h3>
-<h4><a id="input_stream"></a><code>type input-stream</code></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
-<p>
-----
-<h3>Functions</h3>
-<h4><a id="get_stdin"></a><code>get-stdin: func</code></h4>
-<h5>Return values</h5>
-<ul>
-<li><a id="get_stdin.0"></a> own&lt;<a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a>&gt;</li>
-</ul>
-<h2><a id="wasi_http_outgoing_handler_0_2_1"></a>Import interface wasi:http/outgoing-handler@0.2.1</h2>
+<h2><a id="wasi_http_outgoing_handler_0_2_2"></a>Import interface wasi:http/outgoing-handler@0.2.2</h2>
 <p>This interface defines a handler of outgoing HTTP Requests. It should be
 imported by components which wish to make HTTP Requests.</p>
 <hr />
@@ -1549,7 +1551,7 @@ through the <a href="#future_incoming_response"><code>future-incoming-response</
 <ul>
 <li><a id="handle.0"></a> result&lt;own&lt;<a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_http_incoming_handler_0_2_1"></a>Export interface wasi:http/incoming-handler@0.2.1</h2>
+<h2><a id="wasi_http_incoming_handler_0_2_2"></a>Export interface wasi:http/incoming-handler@0.2.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="incoming_request"></a><code>type incoming-request</code></h4>
