@@ -563,7 +563,7 @@ I.e. after setting a value, reading the same setting back may return a different
 </ul>
 <h4><a id="method_udp_socket_subscribe"></a><code>[method]udp-socket.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the socket is ready for I/O.</p>
-<p>Note: this function is here for WASI Preview2 only.
+<p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
@@ -610,7 +610,7 @@ This function never returns <code>error(would-block)</code>.</li>
 </ul>
 <h4><a id="method_incoming_datagram_stream_subscribe"></a><code>[method]incoming-datagram-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to receive again.</p>
-<p>Note: this function is here for WASI Preview2 only.
+<p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
@@ -681,7 +681,7 @@ either <code>check-send</code> was not called or <code>datagrams</code> contains
 </ul>
 <h4><a id="method_outgoing_datagram_stream_subscribe"></a><code>[method]outgoing-datagram-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready to send again.</p>
-<p>Note: this function is here for WASI Preview2 only.
+<p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
@@ -1705,7 +1705,7 @@ in progress at the time of calling <code>subscribe</code> (if any). Theoreticall
 (re)used for the remainder of the socket's lifetime.</p>
 <p>See <a href="https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness">https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness</a>
 for more information.</p>
-<p>Note: this function is here for WASI Preview2 only.
+<p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
@@ -1864,7 +1864,7 @@ addresses have been exhausted, this function returns <code>none</code>.</p>
 </ul>
 <h4><a id="method_resolve_address_stream_subscribe"></a><code>[method]resolve-address-stream.subscribe: func</code></h4>
 <p>Create a <a href="#pollable"><code>pollable</code></a> which will resolve once the stream is ready for I/O.</p>
-<p>Note: this function is here for WASI Preview2 only.
+<p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
 <h5>Params</h5>
 <ul>
