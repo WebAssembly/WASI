@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: WebAssembly/wit-abi-up-to-date@v21
+    - uses: WebAssembly/wit-abi-up-to-date@v22
       with:
-        wit-bindgen: '0.28.0'
+        wit-bindgen: '0.33.0'
