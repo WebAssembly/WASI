@@ -1,10 +1,10 @@
 # WASI proposals
 
-WASI APIs are developed as proposals. These proposals go through 5 phases of development (following the [WebAssembly CG's Phase Process]).
+WASI APIs are developed as proposals. These proposals go through 5 phases of development (following [the WASI Subgroup's Phase Process]).
 
 You can learn more about contributing new proposals (and other ways to contribute) in our [Contributing] guide.
 
-[WebAssembly CG's Phase Process]: https://github.com/WebAssembly/meetings/blob/main/process/phases.md
+[the WASI Subgroup's Phase Process]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#the-phase-process
 [Contributing]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md
 
 ## Active Proposals
