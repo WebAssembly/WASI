@@ -37,6 +37,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | ------------------------------------------ | -------- |
 | [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                 |          |
 | [CLI: Exit With Code][wasi-cli]                                                | Dan Gohman                             |          |
+| [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun               |          |
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
@@ -49,7 +50,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Messaging][wasi-messaging]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Observe][wasi-observe]    | Caleb Schoepp                           |          |
