@@ -79,7 +79,7 @@ Proposals remain in the 0.x semver range until they reach Phase 5 and are fully 
 
 For some APIs, it makes sense to add new features after the API itself has reached Phase 5. These feature additions should go through the same standardization process. Once they have reached Phase 5, the minor version number of the release should be incremented.
 
-Some APIs may require backwards-incompatible changes over time. In these cases, we allow proposals to increment the major version number _only if_ the old API can be implmented in terms of the new API. As part of the new version, champions are expected to provide a tool that enables this backwards-compatibility. If that is not possible, then a new API proposal with a new name should be started. The original API can then be deprecated over time if it makes sense to do so.
+Some APIs may require backwards-incompatible changes over time. In these cases, we allow proposals to increment the major version number _only if_ the old API can be implemented in terms of the new API. As part of the new version, champions are expected to provide a tool that enables this backwards-compatibility. If that is not possible, then a new API proposal with a new name should be started. The original API can then be deprecated over time if it makes sense to do so.
 
 [WebAssembly CG Phases process]: https://github.com/WebAssembly/meetings/blob/master/process/phases.md
 [witx]: https://github.com/WebAssembly/WASI/blob/main/tools/witx-docs.md
