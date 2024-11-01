@@ -55,7 +55,7 @@ interface udp {
         /// - `not-in-progress`:           A `bind` operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         ///
-        /// # Implementors note
+        /// # Implementers note
         /// Unlike in POSIX, in WASI the bind operation is async. This enables
         /// interactive WASI hosts to inject permission prompts. Runtimes that
         /// don't want to make use of this ability can simply call the native

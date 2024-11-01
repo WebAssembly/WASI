@@ -66,7 +66,7 @@ interface tcp {
         /// - `not-in-progress`:           A `bind` operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         /// 
-        /// # Implementors note
+        /// # Implementers note
         /// When binding to a non-zero port, this bind operation shouldn't be affected by the TIME_WAIT
         /// state of a recently closed socket on the same local address. In practice this means that the SO_REUSEADDR 
         /// socket option should be set implicitly on all platforms, except on Windows where this is the default behavior
@@ -115,7 +115,7 @@ interface tcp {
         /// - `not-in-progress`:           A connect operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         ///
-        /// # Implementors note
+        /// # Implementers note
         /// The POSIX equivalent of `start-connect` is the regular `connect` syscall.
         /// Because all WASI sockets are non-blocking this is expected to return
         /// EINPROGRESS, which should be translated to `ok()` in WASI.
@@ -148,7 +148,7 @@ interface tcp {
         /// - `not-in-progress`:           A listen operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         ///
-        /// # Implementors note
+        /// # Implementers note
         /// Unlike in POSIX, in WASI the listen operation is async. This enables
         /// interactive WASI hosts to inject permission prompts. Runtimes that
         /// don't want to make use of this ability can simply call the native
