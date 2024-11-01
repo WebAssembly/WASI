@@ -41,6 +41,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun               |          |
 | [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [GFX][wasi-gfx]                                                                | Mendy Berger, Sean Isom                    |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -61,7 +62,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
 | [URL][wasi-url]                                                                | Radu Matei       |          |
 | [USB][wasi-usb]                                                                | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts | |
-| [WebGPU][wasi-webgpu]                                                          | Mendy Berger, Sean Isom                   |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
