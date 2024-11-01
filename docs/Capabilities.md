@@ -2,7 +2,7 @@
 
 What is a capability?
 
-The Wasm language has no syscall instructions or builtin I/O facilities.
+The Wasm language has no syscall instructions or built-in I/O facilities.
 To let interact with the outside world, Wasm programs can be provided
 with *capabilities*.
 
@@ -14,7 +14,7 @@ and runtime capabilities.
 In short, link-time capabilities are functions that you can import that
 do things.
 
-They're called link-time capabilities, because the exports that satisfy the
+They're called link-time capabilities because the exports that satisfy the
 imports are chosen at link time. And if someone wants to virtualize those
 capabilities, or attenuate them to provide a restricted functionality, they
 may use a component that provides the needed exports and link them in
@@ -25,7 +25,7 @@ Strictly speaking, link-time capabilities in the Wasm component model are
 Being already instantiated, the instance already has some capabilities of
 its own that were granted to it at its own link time.
 
-Link-time capabilities may also be called *instantiation-time* capabilties,
+Link-time capabilities may also be called *instantiation-time* capabilities,
 because the linking we're talking about here is the linking that happens
 as part of instantiation.
 
