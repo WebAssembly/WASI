@@ -112,5 +112,5 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-threads]: https://github.com/WebAssembly/wasi-native-threads
 [wasi-url]: https://github.com/WebAssembly/wasi-url
 [wasi-usb]: https://github.com/WebAssembly/wasi-usb
-[wasi-webgpu]: https://github.com/WebAssembly/wasi-webgpu
+[wasi-gfx]: https://github.com/WebAssembly/wasi-gfx
 [wasi-cli]: https://github.com/WebAssembly/wasi-cli
