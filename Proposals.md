@@ -35,19 +35,17 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                                   | Versions |
 | ------------------------------------------------------------------------------ | ------------------------------------------ | -------- |
-| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                 |          |
-| [CLI: Exit With Code][wasi-cli]                                                | Dan Gohman                             |          |
 | [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun               |          |
-| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [GFX][wasi-gfx]                                                                | Mendy Berger, Sean Isom                    |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
 | Proposal                                                                       | Champion                               | Versions |
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          | 
+| [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
 | [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
