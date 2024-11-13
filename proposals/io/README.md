@@ -91,7 +91,6 @@ types, `input-stream`, and `output-stream`, which support `read` and
        }
        Ok(())
    }
-}
 ```
 
 #### Use case: copying from input to output using `splice`
@@ -113,7 +112,6 @@ types, `input-stream`, and `output-stream`, which support `read` and
        }
        Ok(())
    }
-}
 ```
 
 #### Use case: copying from input to output using `forward`
@@ -123,7 +121,6 @@ types, `input-stream`, and `output-stream`, which support `read` and
        output.forward(input)?;
        Ok(())
    }
-}
 ```
 
 ### Detailed design discussion
