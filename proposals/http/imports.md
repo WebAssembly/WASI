@@ -673,7 +673,7 @@ their headers, trailers, and bodies.</p>
 </ul>
 <h4><a id="error_code"></a><code>variant error-code</code></h4>
 <p>These cases are inspired by the IANA HTTP Proxy Error Types:
-https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types</p>
+<a href="https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types">https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types</a></p>
 <h5>Variant Cases</h5>
 <ul>
 <li><a id="error_code.dns_timeout"></a><code>DNS-timeout</code></li>
