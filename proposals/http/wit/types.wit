@@ -36,7 +36,7 @@ interface types {
   }
 
   /// These cases are inspired by the IANA HTTP Proxy Error Types:
-  ///   https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types
+  ///   <https://www.iana.org/assignments/http-proxy-status/http-proxy-status.xhtml#table-http-proxy-error-types>
   @since(version = 0.2.0)
   variant error-code {
     DNS-timeout,
