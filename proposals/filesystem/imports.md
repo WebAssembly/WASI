@@ -937,7 +937,7 @@ POSIX.</p>
 <p>Return a stream for appending to a file, if available.</p>
 <p>May fail with an error-code describing why the file cannot be appended.</p>
 <p>Note: This allows using <code>write-stream</code>, which is similar to <code>write</code> with
-<code>O_APPEND</code> in in POSIX.</p>
+<code>O_APPEND</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_descriptor_append_via_stream.self"></a><code>self</code>: borrow&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;</li>
@@ -1284,7 +1284,7 @@ may also include the inode number, device number, birth timestamp, and
 other metadata fields that may change when the file is modified or
 replaced. It may also include a secret value chosen by the
 implementation and not otherwise exposed.</p>
-<p>Implementations are encourated to provide the following properties:</p>
+<p>Implementations are encouraged to provide the following properties:</p>
 <ul>
 <li>If the file is not modified or replaced, the computed hash value should
 usually not change.</li>
@@ -1352,7 +1352,7 @@ errors are filesystem-related errors.</p>
 ----
 <h3>Functions</h3>
 <h4><a id="get_directories"></a><code>get-directories: func</code></h4>
-<p>Return the set of preopened directories, and their path.</p>
+<p>Return the set of preopened directories, and their paths.</p>
 <h5>Return values</h5>
 <ul>
 <li><a id="get_directories.0"></a> list&lt;(own&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;, <code>string</code>)&gt;</li>
