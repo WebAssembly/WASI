@@ -12,7 +12,7 @@ WASI started with launching what is now called [Preview 1], an API using
 the witx IDL, and it is now widely used. Its major influences are POSIX and
 CloudABI.
 
-[WASI Preview 2] is now in development, which is a modular collection of
+[WASI Preview 2] is now stable, and is a modular collection of
 APIs defined with the [Wit IDL], and it incorporates many of the lessons
 learned from Preview 1, including adding support for a wider range of
 source languages, modularity, a more expressive type system,
