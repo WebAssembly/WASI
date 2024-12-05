@@ -1,5 +1,6 @@
 name: Publish a Wasm Component package to GitHub Artifacts
 
+# Run this action whenever a new release is tagged
 on:
   push:
     tags:
@@ -14,26 +15,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repo and install dependencies
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Docker meta
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.15
+      - name: Install wkg
+        shell: bash
+        run: cargo binstall wkg
+ 
+      # To version our image we want to obtain the version from the tag
+      - name: Get version
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/WebAssembly/wasi/io
           tags: |
             type=semver,pattern={{version}}
-      - name: Login to GitHub Container Registry
+      
+      # To upload our image to the GitHub registry, we first have to login
+      - name: Login to the GitHub registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Build our `.wit` files into a Wasm binary
+      - name: Build
+        shell: bash
+        run: wkg wit build -o wasi-io.wasm
 
-      - uses: bytecodealliance/wkg-github-action@v1
+      # Upload the Wasm binary to the GitHub registry
+      - uses: bytecodealliance/wkg-github-action@v2
         with:
-            description: 'A WASI API providing I/O stream abstractions.'
             oci-reference-without-tag: 'ghcr.io/WebAssembly/wasi/io'
+            file: 'wasi-io.wasm'
+            description: 'A WASI API providing I/O stream abstractions.'
             source: 'https://github.com/webassembly/wasi'
             homepage: 'https://wasi.dev'
             version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
