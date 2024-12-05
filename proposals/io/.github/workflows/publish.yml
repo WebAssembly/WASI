@@ -49,7 +49,7 @@ jobs:
       # Upload the Wasm binary to the GitHub registry
       - uses: bytecodealliance/wkg-github-action@v3
         with:
-            oci-reference-without-tag: 'ghcr.io/WebAssembly/wasi/io'
+            oci-reference-without-tag: 'ghcr.io/webassembly/wasi/io'
             file: 'wasi-io.wasm'
             description: 'A WASI API providing I/O stream abstractions.'
             source: 'https://github.com/webassembly/wasi'
