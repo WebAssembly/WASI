@@ -1,11 +1,11 @@
 @since(version = 0.2.0)
 interface tcp {
     @since(version = 0.2.0)
-    use wasi:io/streams@0.2.2.{input-stream, output-stream};
+    use wasi:io/streams@0.2.3.{input-stream, output-stream};
     @since(version = 0.2.0)
-    use wasi:io/poll@0.2.2.{pollable};
+    use wasi:io/poll@0.2.3.{pollable};
     @since(version = 0.2.0)
-    use wasi:clocks/monotonic-clock@0.2.2.{duration};
+    use wasi:clocks/monotonic-clock@0.2.3.{duration};
     @since(version = 0.2.0)
     use network.{network, error-code, ip-socket-address, ip-address-family};
 
@@ -66,7 +66,7 @@ interface tcp {
         /// - `not-in-progress`:           A `bind` operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         /// 
-        /// # Implementers note
+        /// # Implementors note
         /// When binding to a non-zero port, this bind operation shouldn't be affected by the TIME_WAIT
         /// state of a recently closed socket on the same local address. In practice this means that the SO_REUSEADDR 
         /// socket option should be set implicitly on all platforms, except on Windows where this is the default behavior
@@ -115,7 +115,7 @@ interface tcp {
         /// - `not-in-progress`:           A connect operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         ///
-        /// # Implementers note
+        /// # Implementors note
         /// The POSIX equivalent of `start-connect` is the regular `connect` syscall.
         /// Because all WASI sockets are non-blocking this is expected to return
         /// EINPROGRESS, which should be translated to `ok()` in WASI.
@@ -148,7 +148,7 @@ interface tcp {
         /// - `not-in-progress`:           A listen operation is not in progress.
         /// - `would-block`:               Can't finish the operation, it is still in progress. (EWOULDBLOCK, EAGAIN)
         ///
-        /// # Implementers note
+        /// # Implementors note
         /// Unlike in POSIX, in WASI the listen operation is async. This enables
         /// interactive WASI hosts to inject permission prompts. Runtimes that
         /// don't want to make use of this ability can simply call the native
