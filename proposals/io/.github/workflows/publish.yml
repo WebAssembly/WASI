@@ -10,6 +10,9 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}
 
+permissions:
+  packages: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
