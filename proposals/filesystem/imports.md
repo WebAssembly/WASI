@@ -2,16 +2,16 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_2"><code>wasi:io/error@0.2.2</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_2"><code>wasi:io/poll@0.2.2</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_2"><code>wasi:io/streams@0.2.2</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_2"><code>wasi:clocks/wall-clock@0.2.2</code></a></li>
-<li>interface <a href="#wasi_filesystem_types_0_2_2"><code>wasi:filesystem/types@0.2.2</code></a></li>
-<li>interface <a href="#wasi_filesystem_preopens_0_2_2"><code>wasi:filesystem/preopens@0.2.2</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_3"><code>wasi:io/error@0.2.3</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_3"><code>wasi:io/poll@0.2.3</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_3"><code>wasi:io/streams@0.2.3</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_3"><code>wasi:clocks/wall-clock@0.2.3</code></a></li>
+<li>interface <a href="#wasi_filesystem_types_0_2_3"><code>wasi:filesystem/types@0.2.3</code></a></li>
+<li>interface <a href="#wasi_filesystem_preopens_0_2_3"><code>wasi:filesystem/preopens@0.2.3</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_2"></a>Import interface wasi:io/error@0.2.2</h2>
+<h2><a id="wasi_io_error_0_2_3"></a>Import interface wasi:io/error@0.2.3</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -44,7 +44,7 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_2"></a>Import interface wasi:io/poll@0.2.2</h2>
+<h2><a id="wasi_io_poll_0_2_3"></a>Import interface wasi:io/poll@0.2.3</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -97,7 +97,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_2"></a>Import interface wasi:io/streams@0.2.2</h2>
+<h2><a id="wasi_io_streams_0_2_3"></a>Import interface wasi:io/streams@0.2.3</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -427,7 +427,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_wall_clock_0_2_2"></a>Import interface wasi:clocks/wall-clock@0.2.2</h2>
+<h2><a id="wasi_clocks_wall_clock_0_2_3"></a>Import interface wasi:clocks/wall-clock@0.2.3</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -468,7 +468,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a id="wasi_filesystem_types_0_2_2"></a>Import interface wasi:filesystem/types@0.2.2</h2>
+<h2><a id="wasi_filesystem_types_0_2_3"></a>Import interface wasi:filesystem/types@0.2.3</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -1343,7 +1343,7 @@ errors are filesystem-related errors.</p>
 <ul>
 <li><a id="filesystem_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_filesystem_preopens_0_2_2"></a>Import interface wasi:filesystem/preopens@0.2.2</h2>
+<h2><a id="wasi_filesystem_preopens_0_2_3"></a>Import interface wasi:filesystem/preopens@0.2.3</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="descriptor"></a><code>type descriptor</code></h4>
