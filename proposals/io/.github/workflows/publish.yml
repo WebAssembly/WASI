@@ -30,7 +30,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: bytecodealliance/wkg-github-action
+      - uses: bytecodealliance/wkg-github-action@v1
         with:
             description: 'A WASI API providing I/O stream abstractions.'
             oci-reference-without-tag: 'ghcr.io/WebAssembly/wasi/io'
