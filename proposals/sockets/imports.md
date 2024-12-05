@@ -2,12 +2,12 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_3"><code>wasi:io/error@0.2.3</code></a></li>
 <li>interface <a href="#wasi_sockets_network_0_2_3"><code>wasi:sockets/network@0.2.3</code></a></li>
 <li>interface <a href="#wasi_sockets_instance_network_0_2_3"><code>wasi:sockets/instance-network@0.2.3</code></a></li>
 <li>interface <a href="#wasi_io_poll_0_2_3"><code>wasi:io/poll@0.2.3</code></a></li>
 <li>interface <a href="#wasi_sockets_udp_0_2_3"><code>wasi:sockets/udp@0.2.3</code></a></li>
 <li>interface <a href="#wasi_sockets_udp_create_socket_0_2_3"><code>wasi:sockets/udp-create-socket@0.2.3</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_3"><code>wasi:io/error@0.2.3</code></a></li>
 <li>interface <a href="#wasi_io_streams_0_2_3"><code>wasi:io/streams@0.2.3</code></a></li>
 <li>interface <a href="#wasi_clocks_monotonic_clock_0_2_3"><code>wasi:clocks/monotonic-clock@0.2.3</code></a></li>
 <li>interface <a href="#wasi_sockets_tcp_0_2_3"><code>wasi:sockets/tcp@0.2.3</code></a></li>
@@ -16,46 +16,10 @@
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_3"></a>Import interface wasi:io/error@0.2.3</h2>
-<hr />
-<h3>Types</h3>
-<h4><a id="error"></a><code>resource error</code></h4>
-<p>A resource which represents some error information.</p>
-<p>The only method provided by this resource is <code>to-debug-string</code>,
-which provides some human-readable information about the error.</p>
-<p>In the <code>wasi:io</code> package, this resource is returned through the
-<code>wasi:io/streams/stream-error</code> type.</p>
-<p>To provide more specific error information, other interfaces may
-offer functions to &quot;downcast&quot; this error into more specific types. For example,
-errors returned from streams derived from filesystem types can be described using
-the filesystem's own error-code type. This is done using the function
-<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
-parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
-<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
-concrete type is open.</h2>
-<h3>Functions</h3>
-<h4><a id="method_error_to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
-<p>Returns a string that is suitable to assist humans in debugging
-this error.</p>
-<p>WARNING: The returned string should not be consumed mechanically!
-It may change across platforms, hosts, or other implementation
-details. Parsing this string is a major platform-compatibility
-hazard.</p>
-<h5>Params</h5>
-<ul>
-<li><a id="method_error_to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
-</ul>
 <h2><a id="wasi_sockets_network_0_2_3"></a>Import interface wasi:sockets/network@0.2.3</h2>
 <hr />
 <h3>Types</h3>
-<h4><a id="error"></a><code>type error</code></h4>
-<p><a href="#error"><a href="#error"><code>error</code></a></a></p>
-<p>
-#### <a id="network"></a>`resource network`
+<h4><a id="network"></a><code>resource network</code></h4>
 <p>An opaque resource that represents access to (a subset of) the network.
 This enables context-based security for networking.
 There is no need for this to map 1:1 to a physical network interface.</p>
@@ -244,25 +208,6 @@ supported size.
 <ul>
 <li><a id="ip_socket_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
 <li><a id="ip_socket_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
-</ul>
-<hr />
-<h3>Functions</h3>
-<h4><a id="network_error_code"></a><code>network-error-code: func</code></h4>
-<p>Attempts to extract a network-related <a href="#error_code"><code>error-code</code></a> from the stream
-<a href="#error"><code>error</code></a> provided.</p>
-<p>Stream operations which return <a href="#stream_error.last_operation_failed"><code>stream-error::last-operation-failed</code></a>
-have a payload with more information about the operation that failed.
-This payload can be passed through to this function to see if there's
-network-related information about the error to return.</p>
-<p>Note that this function is fallible because not all stream-related
-errors are network-related errors.</p>
-<h5>Params</h5>
-<ul>
-<li><a id="network_error_code.err"></a><code>err</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
-</ul>
-<h5>Return values</h5>
-<ul>
-<li><a id="network_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a id="wasi_sockets_instance_network_0_2_3"></a>Import interface wasi:sockets/instance-network@0.2.3</h2>
 <p>This interface provides a value-export of the default network handle..</p>
@@ -790,6 +735,39 @@ the socket is effectively an in-memory configuration object, unable to communica
 <h5>Return values</h5>
 <ul>
 <li><a id="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
+<h2><a id="wasi_io_error_0_2_3"></a>Import interface wasi:io/error@0.2.3</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="error"></a><code>resource error</code></h4>
+<p>A resource which represents some error information.</p>
+<p>The only method provided by this resource is <code>to-debug-string</code>,
+which provides some human-readable information about the error.</p>
+<p>In the <code>wasi:io</code> package, this resource is returned through the
+<code>wasi:io/streams/stream-error</code> type.</p>
+<p>To provide more specific error information, other interfaces may
+offer functions to &quot;downcast&quot; this error into more specific types. For example,
+errors returned from streams derived from filesystem types can be described using
+the filesystem's own error-code type. This is done using the function
+<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
+parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+<h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
+concrete type is open.</h2>
+<h3>Functions</h3>
+<h4><a id="method_error_to_debug_string"></a><code>[method]error.to-debug-string: func</code></h4>
+<p>Returns a string that is suitable to assist humans in debugging
+this error.</p>
+<p>WARNING: The returned string should not be consumed mechanically!
+It may change across platforms, hosts, or other implementation
+details. Parsing this string is a major platform-compatibility
+hazard.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="method_error_to_debug_string.self"></a><code>self</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
 <h2><a id="wasi_io_streams_0_2_3"></a>Import interface wasi:io/streams@0.2.3</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
