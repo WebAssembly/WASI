@@ -1,0 +1,40 @@
+name: Publish a Wasm Component package to GitHub Artifacts
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/WebAssembly/wasi/io
+          tags: |
+            type=semver,pattern={{version}}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: bytecodealliance/wkg-github-action
+        with:
+            description: 'A WASI API providing I/O stream abstractions.'
+            oci-reference-without-tag: 'ghcr.io/WebAssembly/wasi/io'
+            source: 'https://github.com/webassembly/wasi'
+            homepage: 'https://wasi.dev'
+            version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            licenses: 'Apache-2.0 WITH LLVM-exception'
