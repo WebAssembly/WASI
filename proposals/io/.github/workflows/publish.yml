@@ -47,7 +47,7 @@ jobs:
         run: wkg wit build -o wasi-io.wasm
 
       # Upload the Wasm binary to the GitHub registry
-      - uses: bytecodealliance/wkg-github-action@v2
+      - uses: bytecodealliance/wkg-github-action@v3
         with:
             oci-reference-without-tag: 'ghcr.io/WebAssembly/wasi/io'
             file: 'wasi-io.wasm'
