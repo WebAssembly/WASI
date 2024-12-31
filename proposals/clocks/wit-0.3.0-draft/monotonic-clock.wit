@@ -31,17 +31,15 @@ interface monotonic-clock {
     @since(version = 0.3.0)
     resolution: func() -> duration;
 
-    /// Create a `future` which will resolve once the specified instant
-    /// has occurred.
+    /// Wait until the specified instant has occurred.
     @since(version = 0.3.0)
-    subscribe-instant: func(
+    wait-until: func(
         when: instant,
-    ) -> future;
+    );
 
-    /// Create a `future` that will resolve after the specified duration has
-    /// elapsed from the time this function is invoked.
+    /// Wait for the specified duration has elapsed.
     @since(version = 0.3.0)
-    subscribe-duration: func(
-        when: duration,
-    ) -> future;
+    wait-for: func(
+        how-long: duration,
+    );
 }
