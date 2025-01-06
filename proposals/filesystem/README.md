@@ -39,7 +39,7 @@ WASI filesystem must have at least two complete independent implementations.
 ### Introduction
 
 WASI filesystem is a WASI API primarily for accessing host filesystems. It
-has function for opening, reading, and writing files, and for working with
+has functions for opening, reading, and writing files, and for working with
 directories.
 
 Unlike many filesystem APIs, WASI filesystem is capability-oriented. Instead
