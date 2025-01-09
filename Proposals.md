@@ -58,6 +58,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
+| [TLS][wasi-tls]                                                                | Joel Dice, Dave Bakker, James Sturtevant  |          |
 | [URL][wasi-url]                                                                | Radu Matei       |          |
 | [USB][wasi-usb]                                                                | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts | |
 
@@ -108,6 +109,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-sql]: https://github.com/WebAssembly/wasi-sql
 [wasi-sql-embed]: https://github.com/WebAssembly/wasi-sql-embed
 [wasi-threads]: https://github.com/WebAssembly/wasi-native-threads
+[wasi-tls]: https://github.com/WebAssembly/wasi-tls
 [wasi-url]: https://github.com/WebAssembly/wasi-url
 [wasi-usb]: https://github.com/WebAssembly/wasi-usb
 [wasi-gfx]: https://github.com/WebAssembly/wasi-gfx
