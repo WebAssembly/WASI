@@ -435,6 +435,21 @@ interface types {
   /// other argument to `incoming-handler.handle`.
   @since(version = 0.2.0)
   resource response-outparam {
+    /// Send an HTTP 1xx response.
+    ///
+    /// Unlike `response-outparam.set`, this does not consume the
+    /// `response-outparam`, allowing the guest to send an arbitrary number of
+    /// informational responses before sending the final response using
+    /// `response-outparam.set`.
+    ///
+    /// This will return an `HTTP-protocol-error` if `status` is not in the
+    /// range [100-199], or an `internal-error` if the implementation does not
+    /// support informational responses.
+    @unstable(feature = informational-outbound-responses)
+    send-informational: func(
+      status: u16,
+      headers: headers
+    ) -> result<_, error-code>;
 
     /// Set the value of the `response-outparam` to either send a response,
     /// or indicate an error.

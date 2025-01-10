@@ -18,6 +18,6 @@ jobs:
         ./wit-deps lock --check
     - uses: WebAssembly/wit-abi-up-to-date@v22
       with:
-        wasm-tools: '1.218.0'
-        wit-bindgen: '0.33.0'
+        wasm-tools: '1.223.0'
+        wit-bindgen: '0.37.0'
         worlds: 'imports proxy'
