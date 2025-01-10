@@ -767,7 +767,7 @@ Headers and Trailers.</p>
 <p>A <a href="#fields"><code>fields</code></a> may be mutable or immutable. A <a href="#fields"><code>fields</code></a> created using the
 constructor, <code>from-list</code>, or <code>clone</code> will be mutable, but a <a href="#fields"><code>fields</code></a>
 resource given by other means (including, but not limited to,
-<code>incoming-request.headers</code>, <code>outgoing-request.headers</code>) might be be
+<code>incoming-request.headers</code>, <code>outgoing-request.headers</code>) might be
 immutable. In an immutable fields, the <code>set</code>, <code>append</code>, and <code>delete</code>
 operations will fail with <code>header-error.immutable</code>.</p>
 <h4><a id="headers"></a><code>type headers</code></h4>
