@@ -90,7 +90,7 @@ pub fn main() {
             if check {
                 let output = output.expect("output argument required in docs --check mode");
                 if diff_against_filesystem(&doc.to_md(), &output).is_err() {
-                    println!("Docs in tree are out-of-date with witx files. Re-run this executable with the following arguments to to re-generate:");
+                    println!("Docs in tree are out-of-date with witx files. Re-run this executable with the following arguments to re-generate:");
                     println!(
                         "> witx docs {} --output {}",
                         input
