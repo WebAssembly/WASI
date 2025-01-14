@@ -1,10 +1,10 @@
-@since(version = 0.2.0)
+@since(version = 0.3.0)
 interface udp {
-    @since(version = 0.2.0)
+    @since(version = 0.3.0)
     use network.{network, error-code, ip-socket-address, ip-address-family};
 
     /// A received datagram.
-    @since(version = 0.2.0)
+    @since(version = 0.3.0)
     record incoming-datagram {
         /// The payload.
         /// 
@@ -20,7 +20,7 @@ interface udp {
     }
 
     /// A datagram to be sent out.
-    @since(version = 0.2.0)
+    @since(version = 0.3.0)
     record outgoing-datagram {
         /// The payload.
         data: list<u8>,
@@ -36,7 +36,7 @@ interface udp {
     }
 
     /// A UDP socket handle.
-    @since(version = 0.2.0)
+    @since(version = 0.3.0)
     resource udp-socket {
         /// Bind the socket to a specific network on the provided IP address and port.
         ///
@@ -153,7 +153,7 @@ interface udp {
         /// - <https://man7.org/linux/man-pages/man2/getsockname.2.html>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getsockname>
         /// - <https://man.freebsd.org/cgi/man.cgi?getsockname>
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         local-address: func() -> result<ip-socket-address, error-code>;
 
         /// Get the address the socket is currently streaming to.
@@ -166,13 +166,13 @@ interface udp {
         /// - <https://man7.org/linux/man-pages/man2/getpeername.2.html>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-getpeername>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=getpeername&sektion=2&n=1>
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         remote-address: func() -> result<ip-socket-address, error-code>;
 
         /// Whether this is a IPv4 or IPv6 socket.
         ///
         /// Equivalent to the SO_DOMAIN socket option.
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         address-family: func() -> ip-address-family;
 
         /// Equivalent to the IP_TTL & IPV6_UNICAST_HOPS socket options.
@@ -181,9 +181,9 @@ interface udp {
         ///
         /// # Typical errors
         /// - `invalid-argument`:     (set) The TTL value must be 1 or higher.
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         unicast-hop-limit: func() -> result<u8, error-code>;
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         set-unicast-hop-limit: func(value: u8) -> result<_, error-code>;
 
         /// The kernel buffer space reserved for sends/receives on this socket.
@@ -196,13 +196,13 @@ interface udp {
         ///
         /// # Typical errors
         /// - `invalid-argument`:     (set) The provided value was 0.
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         receive-buffer-size: func() -> result<u64, error-code>;
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         set-receive-buffer-size: func(value: u64) -> result<_, error-code>;
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         send-buffer-size: func() -> result<u64, error-code>;
-        @since(version = 0.2.0)
+        @since(version = 0.3.0)
         set-send-buffer-size: func(value: u64) -> result<_, error-code>;
     }
 }
