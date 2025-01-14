@@ -77,9 +77,13 @@ interface tcp {
         /// Connect to a remote endpoint.
         /// This function takes a stream as a parameter, which will be used for data transmission to the server.
         ///
-        /// On success:
-        /// - the socket is transitioned into the `connected` state.
-        /// - a stream is returned that can be used to read from the connection
+        /// On success, the socket is transitioned into the `connected` state and this function returns:
+        /// - Future, which will resolve to an optional error code if writing full contents of the stream to the connection fails.
+        ///   The future resolves to `none` once full contents of the stream are transmitted successfully and the writing side of the
+        ///   connection is closed.
+        /// - A stream that can be used to read from the connection
+        /// - Future, which will resolve to an optional error code if reading contents from the connection fails.
+        ///   The future resolves to `none` once receiving side of the stream is closed.
         ///
         /// After a failed connection attempt, the socket will be in the `closed`
         /// state and the only valid action left is to `drop` the socket. A single
@@ -106,7 +110,7 @@ interface tcp {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
         /// - <https://man.freebsd.org/cgi/man.cgi?connect>
         @since(version = 0.3.0)
-        connect: func(network: borrow<network>, remote-address: ip-socket-address, tx: stream<u8>) -> result<stream<u8>, error-code>;
+        connect: func(network: borrow<network>, remote-address: ip-socket-address, tx: stream<u8>) -> result<tuple<future<option<error-code>>, stream<u8>, future<option<error-code>>>, error-code>;
 
         /// Start listening for new connections.
         ///
@@ -141,8 +145,14 @@ interface tcp {
         /// - `receive-buffer-size`
         /// - `send-buffer-size`
         ///
-        /// On success, this function returns the newly accepted client socket along with
-        /// a streams that can be used to read from the connection.
+        /// On success, this function returns:
+        /// - Future, which will resolve to an optional error code if writing full contents of the stream to the connection fails.
+        ///   The future resolves to `none` once full contents of the stream are transmitted successfully and the writing side of the
+        ///   connection is closed.
+        /// - Newly accepted client socket
+        /// - A stream that can be used to read from the connection
+        /// - Future, which will resolve to an optional error code if reading contents from the connection fails.
+        ///   The future resolves to `none` once receiving side of the stream is closed.
         ///
         /// # Typical errors
         /// - `invalid-state`:      Socket is not in the `listening` state. (EINVAL)
@@ -155,7 +165,7 @@ interface tcp {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=accept&sektion=2>
         @since(version = 0.3.0)
-        accept: func(tx: stream<u8>) -> result<tuple<tcp-socket, stream<u8>>, error-code>;
+        accept: func(tx: stream<u8>) -> result<tuple<future<option<error-code>>, tcp-socket, stream<u8>, future<option<error-code>>>, error-code>;
 
         /// Get the bound local address.
         ///
