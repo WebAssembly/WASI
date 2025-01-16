@@ -9,7 +9,6 @@ interface network {
     /// - `access-denied`
     /// - `not-supported`
     /// - `out-of-memory`
-    /// - `concurrency-conflict`
     ///
     /// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
     @since(version = 0.3.0)
@@ -39,11 +38,6 @@ interface network {
 
         /// The operation timed out before it could finish completely.
         timeout,
-
-        /// This operation is incompatible with another asynchronous operation that is already in progress.
-        ///
-        /// POSIX equivalent: EALREADY
-        concurrency-conflict,
 
         /// The operation is not valid in the socket's current state.
         invalid-state,
