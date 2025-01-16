@@ -11,12 +11,19 @@ interface ip-name-lookup {
     ///
     /// See the wasi-socket proposal README.md for a comparison with getaddrinfo.
     ///
-    /// This function never blocks. It either immediately fails or immediately
-    /// returns successfully with a `resolve-address-stream` that can be used
-    /// to (asynchronously) fetch the results.
+    /// This function returns a stream that can be used
+    /// to (asynchronously) fetch the resolved IP addresses.
+    /// Addresses are fetched in connection order preference.
+    /// This stream will never contain IPv4-mapped IPv6 addresses.
+    ///
+    /// The returned future will resolve to an error code in case of failure.
+    /// It will resolve to success once the returned stream is exhausted.
     ///
     /// # Typical errors
-    /// - `invalid-argument`: `name` is a syntactically invalid domain name or IP address.
+    /// - `invalid-argument`:           `name` is a syntactically invalid domain name or IP address.
+    /// - `name-unresolvable`:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)
+    /// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
+    /// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
     ///
     /// # References:
     /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html>
@@ -24,23 +31,5 @@ interface ip-name-lookup {
     /// - <https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo>
     /// - <https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&sektion=3>
     @since(version = 0.3.0)
-    resolve-addresses: func(network: borrow<network>, name: string) -> result<resolve-address-stream, error-code>;
-
-    @since(version = 0.3.0)
-    resource resolve-address-stream {
-        /// Returns the next address from the resolver.
-        ///
-        /// This function should be called multiple times. On each call, it will
-        /// return the next address in connection order preference. If all
-        /// addresses have been exhausted, this function returns `none`.
-        ///
-        /// This function never returns IPv4-mapped IPv6 addresses.
-        ///
-        /// # Typical errors
-        /// - `name-unresolvable`:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)
-        /// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
-        /// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
-        @since(version = 0.3.0)
-        resolve-next-address: func() -> result<option<ip-address>, error-code>;
-    }
+    resolve-addresses: func(network: borrow<network>, name: string) -> tuple<stream<ip-address>, future<result<_, error-code>>>;
 }
