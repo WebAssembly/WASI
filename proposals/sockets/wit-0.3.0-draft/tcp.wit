@@ -8,6 +8,7 @@ interface tcp {
     /// A TCP connection resource
     ///
     /// The connection is used to transmit and receive data.
+    @since(version = 0.3.0)
     resource tcp-connection {
         /// Transmit data to peer.
         ///
@@ -18,6 +19,7 @@ interface tcp {
         ///
         /// This function may be called at most once and returns once the full
         /// contents of the stream are transmitted or an error is encountered.
+        @since(version = 0.3.0)
         send: func(data: stream<u8>) -> result<_, error-code>;
 
         /// Read data from peer.
@@ -32,6 +34,7 @@ interface tcp {
         /// they may cancel the receive task. Any data still in the receive queue
         /// will be discarded. This is equivalent to calling `shutdown(SHUT_RD)`
         /// in POSIX.
+        @since(version = 0.3.0)
         receive: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
     }
     
