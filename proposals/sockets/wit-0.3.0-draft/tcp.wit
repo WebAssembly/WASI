@@ -39,11 +39,9 @@ interface tcp {
     ///
     /// The socket can be in one of the following states:
     /// - `unbound`
-    /// - `bind-in-progress`
     /// - `bound` (See note below)
-    /// - `listen-in-progress`
     /// - `listening`
-    /// - `connect-in-progress`
+    /// - `connecting`
     /// - `connected`
     /// - `closed`
     /// See <https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md>
@@ -51,7 +49,7 @@ interface tcp {
     ///
     /// Note: Except where explicitly mentioned, whenever this documentation uses
     /// the term "bound" without backticks it actually means: in the `bound` state *or higher*.
-    /// (i.e. `bound`, `listen-in-progress`, `listening`, `connect-in-progress` or `connected`)
+    /// (i.e. `bound`, `listening`, `connecting` or `connected`)
     ///
     /// In addition to the general error codes documented on the
     /// `network::error-code` type, TCP socket methods may always return
@@ -226,7 +224,7 @@ interface tcp {
         /// # Typical errors
         /// - `not-supported`:        (set) The platform does not support changing the backlog size after the initial listen.
         /// - `invalid-argument`:     (set) The provided value was 0.
-        /// - `invalid-state`:        (set) The socket is in the `connect-in-progress` or `connected` state.
+        /// - `invalid-state`:        (set) The socket is in the `connecting` or `connected` state.
         @since(version = 0.3.0)
         set-listen-backlog-size: func(value: u64) -> result<_, error-code>;
 
