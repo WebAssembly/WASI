@@ -11,9 +11,14 @@ interface ip-name-lookup {
     ///
     /// See the wasi-socket proposal README.md for a comparison with getaddrinfo.
     ///
-    /// This function never succeeds with 0 results. It either fails succeeds
+    /// The results are returned in connection order preference.
+    ///
+    /// This function never succeeds with 0 results. It either fails or succeeds
     /// with at least one address. Additionally, this function never returns
     /// IPv4-mapped IPv6 addresses.
+    ///
+    /// The returned future will resolve to an error code in case of failure.
+    /// It will resolve to success once the returned stream is exhausted.
     ///
     /// # References:
     /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html>
