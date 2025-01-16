@@ -79,9 +79,12 @@ interface udp {
 
         /// Set up inbound & outbound communication channels, optionally to a specific peer.
         ///
-        /// This function only changes the local socket configuration and does not generate any network traffic.
-        /// On success, the `remote-address` of the socket is updated. The `local-address` may be updated as well,
-        /// based on the best network path to `remote-address`.
+        /// This function only changes the local socket configuration and does
+        /// not generate any network traffic. On success, the `remote-address`
+        /// of the socket is updated. The `local-address` may be updated as well,
+        /// based on the best network path to `remote-address`. If the socket was
+        /// not already explicitly bound, this function will implicitly bind the
+        /// socket to a random free port.
         ///
         /// When a `remote-address` is provided, the returned streams are limited to communicating with that specific peer:
         /// - `send` can only be used to send to this destination.
@@ -100,14 +103,11 @@ interface udp {
         /// 	connect(s, remote_address)
         /// }
         /// ```
-        ///
-        /// Unlike in POSIX, the socket must already be explicitly bound.
         /// 
         /// # Typical errors
         /// - `invalid-argument`:          The `remote-address` has the wrong address family. (EAFNOSUPPORT)
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `invalid-argument`:          The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
-        /// - `invalid-state`:             The socket is not bound.
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
         /// - `remote-unreachable`:        The remote address is not reachable. (ECONNRESET, ENETRESET, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
         /// - `connection-refused`:        The connection was refused. (ECONNREFUSED)
