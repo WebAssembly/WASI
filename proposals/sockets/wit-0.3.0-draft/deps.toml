@@ -1,1 +1,1 @@
-clocks = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz"
+clocks = { url = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz", subdir = "wit-0.3.0-draft" }
