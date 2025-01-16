@@ -112,7 +112,6 @@ interface tcp {
         bind: func(local-address: ip-socket-address) -> result<_, error-code>;
 
         /// Connect to a remote endpoint.
-        /// This function takes a stream as a parameter, which will be used for data transmission to the server.
         ///
         /// On success, the socket is transitioned into the `connected` state and this function returns a connection resource.
         ///
