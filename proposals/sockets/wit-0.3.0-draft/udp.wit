@@ -79,6 +79,9 @@ interface udp {
 
         /// Set up inbound & outbound communication channels, optionally to a specific peer.
         ///
+        /// The `datagrams` stream parameter represents the data to be sent out.
+        /// The returned stream represents the data that was received.
+        ///
         /// This function only changes the local socket configuration and does
         /// not generate any network traffic. On success, the `remote-address`
         /// of the socket is updated. The `local-address` may be updated as well,
@@ -86,13 +89,15 @@ interface udp {
         /// not already explicitly bound, this function will implicitly bind the
         /// socket to a random free port.
         ///
-        /// When a `remote-address` is provided, the returned streams are limited to communicating with that specific peer:
-        /// - `send` can only be used to send to this destination.
-        /// - `receive` will only return datagrams sent from the provided `remote-address`.
-        ///
-        /// This method may be called multiple times on the same socket to change its association, but
-        /// only the most recently returned pair of streams will be operational. Implementations may trap if
-        /// the streams returned by a previous invocation haven't been dropped yet before calling `stream` again.
+        /// When a `remote-address` is provided, the streams are limited to
+        /// communicating with that specific peer:
+        /// - The `outgoing-datagram` stream can only be used to send to this destination.
+        /// - The `incoming-datagram` stream will only return datagrams sent from the provided `remote-address`.
+        /// 
+        /// This method may be called multiple times on the same socket to change
+        /// its association, but only the most recent pair of streams will be
+        /// operational. Calling this function more than once effectively cancels
+        /// any previously started `%stream` tasks.
         /// 
         /// The POSIX equivalent in pseudo-code is:
         /// ```text
@@ -109,51 +114,30 @@ interface udp {
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `invalid-argument`:          The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
-        /// - `remote-unreachable`:        The remote address is not reachable. (ECONNRESET, ENETRESET, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
-        /// - `connection-refused`:        The connection was refused. (ECONNREFUSED)
         ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
-        /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
-        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
-        /// - <https://man.freebsd.org/cgi/man.cgi?connect>
-        @since(version = 0.3.0)
-        %stream: func(remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
-
-        /// Send messages on the socket.
-        ///
-        /// This function attempts to send all provided `datagrams` on the socket without blocking and
-        /// returns how many messages were actually sent (or queued for sending).
-        /// If none of the datagrams were able to be sent, `ok(0)` is returned.
-        ///
-        /// This function semantically behaves the same as iterating the `datagrams` list and sequentially
-        /// sending each individual datagram until either the end of the list has been reached or the first error occurred.
-        /// If at least one datagram has been sent successfully, this function never returns an error.
-        ///
-        /// If the input list is empty, the function returns `ok(0)`.
-        ///
-        /// # Typical errors
-        /// - `invalid-argument`:        The `remote-address` has the wrong address family. (EAFNOSUPPORT)
-        /// - `invalid-argument`:        The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
-        /// - `invalid-argument`:        The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
-        /// - `invalid-argument`:        The socket is in "connected" mode and `remote-address` is `some` value that does not match the address passed to `stream`. (EISCONN)
-        /// - `invalid-argument`:        The socket is not "connected" and no value for `remote-address` was provided. (EDESTADDRREQ)
-        /// - `remote-unreachable`:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
-        /// - `connection-refused`:      The connection was refused. (ECONNREFUSED)
-        /// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
-        ///
-        /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html>
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html>
+        /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
         /// - <https://man7.org/linux/man-pages/man2/send.2.html>
         /// - <https://man7.org/linux/man-pages/man2/sendmmsg.2.html>
+        /// - <https://man7.org/linux/man-pages/man2/recv.2.html>
+        /// - <https://man7.org/linux/man-pages/man2/recvmmsg.2.html>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom>
+        /// - <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)>
+        /// - <https://man.freebsd.org/cgi/man.cgi?connect>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
+        /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        send: func(datagrams: list<outgoing-datagram>) -> result<u64, error-code>;
-
+        %stream: func(datagrams: list<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
 
         /// Get the current bound address.
         ///
