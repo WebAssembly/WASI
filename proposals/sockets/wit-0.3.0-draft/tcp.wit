@@ -121,6 +121,7 @@ interface tcp {
         /// - `invalid-argument`:          `remote-address` is an IPv4-mapped IPv6 address. (EINVAL, EADDRNOTAVAIL on Illumos)
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EADDRNOTAVAIL on Windows)
         /// - `invalid-argument`:          The port in `remote-address` is set to 0. (EADDRNOTAVAIL on Windows)
+        /// - `invalid-state`:             The socket is already in the `connecting` state. (EALREADY)
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN)
         /// - `invalid-state`:             The socket is already in the `listening` state. (EOPNOTSUPP, EINVAL on Windows)
         /// - `timeout`:                   Connection timed out. (ETIMEDOUT)
