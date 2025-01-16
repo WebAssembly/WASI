@@ -24,8 +24,8 @@ interface tcp {
         /// Transmit data to peer.
         ///
         /// This function returns once full contents of the stream are transmitted
-        /// or an error is encoutered.
-        write: func(data: stream<u8>) -> result<_, error-code>;
+        /// or an error is encountered.
+        send: func(data: stream<u8>) -> result<_, error-code>;
 
         /// Read data from peer.
         ///
@@ -34,7 +34,7 @@ interface tcp {
         /// On sucess, this function returns a stream and a future, which will resolve
         /// to an error code if receiving data from stream fails.
         /// The returned future resolves to success if receiving side of the connection is closed.
-        read: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
+        receive: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
     }
     
     /// A TCP socket resource.
