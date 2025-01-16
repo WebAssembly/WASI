@@ -1,5 +1,5 @@
 @since(version = 0.3.0)
-interface network {
+interface types {
     /// Error codes.
     ///
     /// In theory, every API can return any error code.

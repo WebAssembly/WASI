@@ -3,7 +3,7 @@ interface tcp {
     @since(version = 0.3.0)
     use wasi:clocks/monotonic-clock@0.3.0.{duration};
     @since(version = 0.3.0)
-    use network.{error-code, ip-socket-address, ip-address-family};
+    use types.{error-code, ip-socket-address, ip-address-family};
 
     /// A TCP connection resource
     ///
@@ -55,7 +55,7 @@ interface tcp {
     /// (i.e. `bound`, `listening`, `connecting` or `connected`)
     ///
     /// In addition to the general error codes documented on the
-    /// `network::error-code` type, TCP socket methods may always return
+    /// `types::error-code` type, TCP socket methods may always return
     /// `error(invalid-state)` when in the `closed` state.
     @since(version = 0.3.0)
     resource tcp-socket {
