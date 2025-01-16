@@ -5,26 +5,19 @@ interface tcp {
     @since(version = 0.3.0)
     use network.{error-code, ip-socket-address, ip-address-family};
 
-    @since(version = 0.3.0)
-    enum shutdown-type {
-        /// Similar to `SHUT_RD` in POSIX.
-        receive,
-
-        /// Similar to `SHUT_WR` in POSIX.
-        send,
-
-        /// Similar to `SHUT_RDWR` in POSIX.
-        both,
-    }
-
     /// A TCP connection resource
     ///
     /// The connection is used to transmit and receive data.
     resource tcp-connection {
         /// Transmit data to peer.
         ///
-        /// This function returns once full contents of the stream are transmitted
-        /// or an error is encountered.
+        /// The caller should close the stream when it has no more data to send
+        /// to the peer. Under normal circumstances this will cause a FIN packet
+        /// to be sent. Closing the stream is equivalent to calling
+        /// `shutdown(SHUT_WR)` in POSIX.
+        ///
+        /// This function may be called at most once and returns once the full
+        /// contents of the stream are transmitted or an error is encountered.
         send: func(data: stream<u8>) -> result<_, error-code>;
 
         /// Read data from peer.
@@ -34,6 +27,11 @@ interface tcp {
         /// On sucess, this function returns a stream and a future, which will resolve
         /// to an error code if receiving data from stream fails.
         /// The returned future resolves to success if receiving side of the connection is closed.
+        ///
+        /// If the caller is not expecting to receive any data from the peer,
+        /// they may cancel the receive task. Any data still in the receive queue
+        /// will be discarded. This is equivalent to calling `shutdown(SHUT_RD)`
+        /// in POSIX.
         receive: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
     }
     
@@ -332,31 +330,5 @@ interface tcp {
         send-buffer-size: func() -> result<u64, error-code>;
         @since(version = 0.3.0)
         set-send-buffer-size: func(value: u64) -> result<_, error-code>;
-
-        /// Initiate a graceful shutdown.
-        ///
-        /// - `receive`: The socket is not expecting to receive any data from
-        ///   the peer. The `input-stream` associated with this socket will be
-        ///   closed. Any data still in the receive queue at time of calling
-        ///   this method will be discarded.
-        /// - `send`: The socket has no more data to send to the peer. The `output-stream`
-        ///   associated with this socket will be closed and a FIN packet will be sent.
-        /// - `both`: Same effect as `receive` & `send` combined.
-        ///
-        /// This function is idempotent; shutting down a direction more than once
-        /// has no effect and returns `ok`.
-        ///
-        /// The shutdown function does not close (drop) the socket.
-        ///
-        /// # Typical errors
-        /// - `invalid-state`: The socket is not in the `connected` state. (ENOTCONN)
-        ///
-        /// # References
-        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/shutdown.html>
-        /// - <https://man7.org/linux/man-pages/man2/shutdown.2.html>
-        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-shutdown>
-        /// - <https://man.freebsd.org/cgi/man.cgi?query=shutdown&sektion=2>
-        @since(version = 0.3.0)
-        shutdown: func(shutdown-type: shutdown-type) -> result<_, error-code>;
     }
 }
