@@ -143,10 +143,10 @@ interface tcp {
         ///
         /// Transitions the socket into the `listening` state.
         ///
-        /// Unlike POSIX, the socket must already be explicitly bound.
+        /// If the socket is not already explicitly bound, this function will
+        /// implicitly bind the socket to a random free port.
         ///
         /// # Typical errors
-        /// - `invalid-state`:             The socket is not bound to any local address. (EDESTADDRREQ)
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN, EINVAL on BSD)
         /// - `invalid-state`:             The socket is already in the `listening` state.
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)

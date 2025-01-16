@@ -44,6 +44,7 @@ stateDiagram-v2
 
     Bound --> Connecting: connect()
     Bound --> Listening: listen() -> ok
+    Unbound --> Listening: listen() -> ok
 ```
 
 - Transitions annotated with `-> ok` only apply when the method returns successfully.
