@@ -50,5 +50,5 @@ stateDiagram-v2
 - Transitions annotated with `-> ok` only apply when the method returns successfully.
 - Calling a method from the wrong state returns `error(invalid-state)` and does not affect the state of the socket.
 - This diagram only includes the methods that impact the socket's state. For an overview of all methods and their required states, see [tcp.wit](./wit/tcp.wit)
-- Client sockets returned by `accept()` are in immediately in the `connected` state.
+- Client sockets returned by `listen()` are in immediately in the `connected` state.
 - A socket resource can be dropped in any state.

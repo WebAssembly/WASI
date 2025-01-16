@@ -139,29 +139,15 @@ interface tcp {
         @since(version = 0.3.0)
         connect: func(remote-address: ip-socket-address) -> result<tcp-connection, error-code>;
 
-        /// Start listening for new connections.
+        /// Start listening return a stream of new inbound connections.
         ///
         /// Transitions the socket into the `listening` state.
         ///
         /// If the socket is not already explicitly bound, this function will
         /// implicitly bind the socket to a random free port.
         ///
-        /// # Typical errors
-        /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN, EINVAL on BSD)
-        /// - `invalid-state`:             The socket is already in the `listening` state.
-        /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)
-        ///
-        /// # References
-        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html>
-        /// - <https://man7.org/linux/man-pages/man2/listen.2.html>
-        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen>
-        /// - <https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2>
-        @since(version = 0.3.0)
-        listen: func() -> result<_, error-code>;
-
-        /// Accept a new client socket.
-        ///
-        /// The returned socket is bound and in the `connected` state. The following properties are inherited from the listener socket:
+        /// The returned sockets are bound and in the `connected` state.
+        /// The following properties are inherited from the listener socket:
         /// - `address-family`
         /// - `keep-alive-enabled`
         /// - `keep-alive-idle-time`
@@ -171,20 +157,22 @@ interface tcp {
         /// - `receive-buffer-size`
         /// - `send-buffer-size`
         ///
-        /// On success, this function returns the newly accepted client socket and associated TCP connection.
-        ///
         /// # Typical errors
-        /// - `invalid-state`:      Socket is not in the `listening` state. (EINVAL)
-        /// - `connection-aborted`: An incoming connection was pending, but was terminated by the client before this listener could accept it. (ECONNABORTED)
-        /// - `new-socket-limit`:   The new socket resource could not be created because of a system limit. (EMFILE, ENFILE)
+        /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN, EINVAL on BSD)
+        /// - `invalid-state`:             The socket is already in the `listening` state.
+        /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)
         ///
         /// # References
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html>
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html>
+        /// - <https://man7.org/linux/man-pages/man2/listen.2.html>
         /// - <https://man7.org/linux/man-pages/man2/accept.2.html>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept>
+        /// - <https://man.freebsd.org/cgi/man.cgi?query=listen&sektion=2>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=accept&sektion=2>
         @since(version = 0.3.0)
-        accept: func() -> result<tuple<tcp-socket, tcp-connection>, error-code>;
+        listen: func() -> result<stream<tuple<tcp-socket, tcp-connection>>, error-code>;
 
         /// Get the bound local address.
         ///
