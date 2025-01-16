@@ -1,11 +1,5 @@
 @since(version = 0.3.0)
 interface network {
-    /// An opaque resource that represents access to (a subset of) the network.
-    /// This enables context-based security for networking.
-    /// There is no need for this to map 1:1 to a physical network interface.
-    @since(version = 0.3.0)
-    resource network;
-
     /// Error codes.
     ///
     /// In theory, every API can return any error code.

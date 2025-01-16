@@ -3,8 +3,6 @@ package wasi:sockets@0.3.0-draft;
 @since(version = 0.3.0)
 world imports {
     @since(version = 0.3.0)
-    import instance-network;
-    @since(version = 0.3.0)
     import network;
     @since(version = 0.3.0)
     import udp;

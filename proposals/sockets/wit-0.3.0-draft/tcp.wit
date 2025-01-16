@@ -3,7 +3,7 @@ interface tcp {
     @since(version = 0.3.0)
     use wasi:clocks/monotonic-clock@0.3.0.{duration};
     @since(version = 0.3.0)
-    use network.{network, error-code, ip-socket-address, ip-address-family};
+    use network.{error-code, ip-socket-address, ip-address-family};
 
     @since(version = 0.3.0)
     enum shutdown-type {
@@ -60,7 +60,7 @@ interface tcp {
     /// `error(invalid-state)` when in the `closed` state.
     @since(version = 0.3.0)
     resource tcp-socket {
-        /// Bind the socket to a specific network on the provided IP address and port.
+        /// Bind the socket to the provided IP address and port.
         ///
         /// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
         /// network interface(s) to bind to.
@@ -78,7 +78,7 @@ interface tcp {
         /// - `invalid-state`:             The socket is already bound. (EINVAL)
         /// - `address-in-use`:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)
         /// - `address-in-use`:            Address is already in use. (EADDRINUSE)
-        /// - `address-not-bindable`:      `local-address` is not an address that the `network` can bind to. (EADDRNOTAVAIL)
+        /// - `address-not-bindable`:      `local-address` is not an address that can be bound to. (EADDRNOTAVAIL)
         /// 
         /// # Implementors note
         /// When binding to a non-zero port, this bind operation shouldn't be affected by the TIME_WAIT
@@ -92,7 +92,7 @@ interface tcp {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
         @since(version = 0.3.0)
-        bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>;
+        bind: func(local-address: ip-socket-address) -> result<_, error-code>;
 
         /// Connect to a remote endpoint.
         /// This function takes a stream as a parameter, which will be used for data transmission to the server.
@@ -109,7 +109,6 @@ interface tcp {
         /// - `invalid-argument`:          `remote-address` is an IPv4-mapped IPv6 address. (EINVAL, EADDRNOTAVAIL on Illumos)
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EADDRNOTAVAIL on Windows)
         /// - `invalid-argument`:          The port in `remote-address` is set to 0. (EADDRNOTAVAIL on Windows)
-        /// - `invalid-argument`:          The socket is already attached to a different network. The `network` passed to `connect` must be identical to the one passed to `bind`.
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN)
         /// - `invalid-state`:             The socket is already in the `listening` state. (EOPNOTSUPP, EINVAL on Windows)
         /// - `timeout`:                   Connection timed out. (ETIMEDOUT)
@@ -124,7 +123,7 @@ interface tcp {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
         /// - <https://man.freebsd.org/cgi/man.cgi?connect>
         @since(version = 0.3.0)
-        connect: func(network: borrow<network>, remote-address: ip-socket-address) -> result<tcp-connection, error-code>;
+        connect: func(remote-address: ip-socket-address) -> result<tcp-connection, error-code>;
 
         /// Start listening for new connections.
         ///

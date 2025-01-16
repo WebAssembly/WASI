@@ -1,7 +1,7 @@
 @since(version = 0.3.0)
 interface udp {
     @since(version = 0.3.0)
-    use network.{network, error-code, ip-socket-address, ip-address-family};
+    use network.{error-code, ip-socket-address, ip-address-family};
 
     /// A received datagram.
     @since(version = 0.3.0)
@@ -38,7 +38,7 @@ interface udp {
     /// A UDP socket handle.
     @since(version = 0.3.0)
     resource udp-socket {
-        /// Bind the socket to a specific network on the provided IP address and port.
+        /// Bind the socket to the provided IP address and port.
         ///
         /// If the IP address is zero (`0.0.0.0` in IPv4, `::` in IPv6), it is left to the implementation to decide which
         /// network interface(s) to bind to.
@@ -49,7 +49,7 @@ interface udp {
         /// - `invalid-state`:             The socket is already bound. (EINVAL)
         /// - `address-in-use`:            No ephemeral ports available. (EADDRINUSE, ENOBUFS on Windows)
         /// - `address-in-use`:            Address is already in use. (EADDRINUSE)
-        /// - `address-not-bindable`:      `local-address` is not an address that the `network` can bind to. (EADDRNOTAVAIL)
+        /// - `address-not-bindable`:      `local-address` is not an address that can be bound to. (EADDRNOTAVAIL)
         ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html>
@@ -57,7 +57,7 @@ interface udp {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-bind>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=bind&sektion=2&format=html>
         @since(version = 0.3.0)
-        bind: func(network: borrow<network>, local-address: ip-socket-address) -> result<_, error-code>;
+        bind: func(local-address: ip-socket-address) -> result<_, error-code>;
 
         /// Set up inbound & outbound communication channels, optionally to a specific peer.
         ///
