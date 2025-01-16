@@ -5,9 +5,5 @@ world imports {
     @since(version = 0.3.0)
     import types;
     @since(version = 0.3.0)
-    import udp;
-    @since(version = 0.3.0)
-    import tcp;
-    @since(version = 0.3.0)
     import ip-name-lookup;
 }
