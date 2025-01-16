@@ -44,7 +44,9 @@ interface udp {
         /// Similar to `socket(AF_INET or AF_INET6, SOCK_DGRAM, IPPROTO_UDP)` in POSIX.
         /// On IPv6 sockets, IPV6_V6ONLY is enabled by default and can't be configured otherwise.
         ///
-        /// All sockets are non-blocking. Use the wasi-poll interface to block on asynchronous operations.
+        /// Unlike POSIX, WASI sockets have no notion of a socket-level
+        /// `O_NONBLOCK` flag. Instead they fully rely on the Component Model's
+        /// async support.
         ///
         /// # References:
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>
