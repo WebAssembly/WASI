@@ -1,7 +1,7 @@
 @since(version = 0.3.0)
 interface ip-name-lookup {
     @since(version = 0.3.0)
-    use network.{network, error-code, ip-address};
+    use network.{network, lookup-error, ip-address};
 
     /// Resolve an internet host name to a list of IP addresses.
     ///
@@ -15,17 +15,11 @@ interface ip-name-lookup {
     /// with at least one address. Additionally, this function never returns
     /// IPv4-mapped IPv6 addresses.
     ///
-    /// # Typical errors
-    /// - `invalid-argument`:           `name` is a syntactically invalid domain name or IP address.
-    /// - `name-unresolvable`:          Name does not exist or has no suitable associated IP addresses. (EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY)
-    /// - `temporary-resolver-failure`: A temporary failure in name resolution occurred. (EAI_AGAIN)
-    /// - `permanent-resolver-failure`: A permanent failure in name resolution occurred. (EAI_FAIL)
-    ///
     /// # References:
     /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html>
     /// - <https://man7.org/linux/man-pages/man3/getaddrinfo.3.html>
     /// - <https://learn.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-getaddrinfo>
     /// - <https://man.freebsd.org/cgi/man.cgi?query=getaddrinfo&sektion=3>
     @since(version = 0.3.0)
-    resolve-addresses: func(network: borrow<network>, name: string) -> result<list<ip-address>, error-code>;
+    resolve-addresses: func(network: borrow<network>, name: string) -> result<list<ip-address>, lookup-error>;
 }

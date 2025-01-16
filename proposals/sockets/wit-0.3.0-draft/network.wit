@@ -80,15 +80,37 @@ interface network {
         /// The size of a datagram sent to a UDP socket exceeded the maximum
         /// supported size.
         datagram-too-large,
+    }
 
+    /// Lookup error codes.
+    @since(version = 0.3.0)
+    enum lookup-error {
+        /// Unknown error
+        unknown,
+
+        /// Access denied.
+        ///
+        /// POSIX equivalent: EACCES, EPERM
+        access-denied,
+
+        /// `name` is a syntactically invalid domain name or IP address.
+        ///
+        /// POSIX equivalent: EINVAL
+        invalid-argument,
 
         /// Name does not exist or has no suitable associated IP addresses.
+        ///
+        /// POSIX equivalent: EAI_NONAME, EAI_NODATA, EAI_ADDRFAMILY
         name-unresolvable,
 
         /// A temporary failure in name resolution occurred.
+        ///
+        /// POSIX equivalent: EAI_AGAIN
         temporary-resolver-failure,
 
         /// A permanent failure in name resolution occurred.
+        ///
+        /// POSIX equivalent: EAI_FAIL
         permanent-resolver-failure,
     }
 
