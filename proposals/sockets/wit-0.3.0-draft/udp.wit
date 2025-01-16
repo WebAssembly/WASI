@@ -97,7 +97,7 @@ interface udp {
         /// This method may be called multiple times on the same socket to change
         /// its association, but only the most recent pair of streams will be
         /// operational. Calling this function more than once effectively cancels
-        /// any previously started `%stream` tasks.
+        /// any previously started `transfer` tasks.
         /// 
         /// The POSIX equivalent in pseudo-code is:
         /// ```text
@@ -137,7 +137,7 @@ interface udp {
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        %stream: func(datagrams: list<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
+        transfer: func(datagrams: list<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
 
         /// Get the current bound address.
         ///
