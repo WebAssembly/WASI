@@ -48,9 +48,6 @@ interface network {
         /// The operation is not valid in the socket's current state.
         invalid-state,
 
-        /// A new socket resource could not be created because of a system limit.
-        new-socket-limit,
-
         /// A bind operation failed because the provided address is not an address that the `network` can bind to.
         address-not-bindable,
 
