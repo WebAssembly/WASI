@@ -568,7 +568,7 @@ interface types {
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        transfer: func(datagrams: list<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
+        transfer: func(datagrams: stream<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
 
         /// Get the current bound address.
         ///
