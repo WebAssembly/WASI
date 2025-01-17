@@ -1,5 +1,3 @@
-clocks = "https://github.com/WebAssembly/wasi-clocks/archive/v0.2.3.tar.gz"
 filesystem = "https://github.com/WebAssembly/wasi-filesystem/archive/v0.2.3.tar.gz"
-io = "https://github.com/WebAssembly/wasi-io/archive/v0.2.3.tar.gz"
 random = "https://github.com/WebAssembly/wasi-random/archive/v0.2.3.tar.gz"
 sockets = "https://github.com/WebAssembly/wasi-sockets/archive/v0.2.3.tar.gz"
