@@ -212,6 +212,7 @@ interface types {
         /// - `connection-aborted`:        The connection was aborted. (ECONNABORTED)
         /// - `remote-unreachable`:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
+        ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
         /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
@@ -492,7 +493,7 @@ interface types {
 
         /// The source address.
         ///
-        /// This field is guaranteed to match the remote address the stream was initialized with, if any.
+        /// This field is guaranteed to match the remote address the socket is connected to, if any.
         ///
         /// Equivalent to the `src_addr` out parameter of `recvfrom`.
         remote-address: ip-socket-address,
@@ -506,8 +507,8 @@ interface types {
 
         /// The destination address.
         ///
-        /// The requirements on this field depend on how the stream was initialized:
-        /// - with a remote address: this field must be None or match the stream's remote address exactly.
+        /// The requirements on this field depend on how the socket is configured:
+        /// - with a remote address: this field must be None or match the socket's remote address exactly.
         /// - without a remote address: this field is required.
         ///
         /// If this value is None, the send operation is equivalent to `send` in POSIX. Otherwise it is equivalent to `sendto`.
@@ -556,67 +557,105 @@ interface types {
         @since(version = 0.3.0)
         bind: func(local-address: ip-socket-address) -> result<_, error-code>;
 
-        /// Set up inbound & outbound communication channels, optionally to a specific peer.
+        /// Associate this socket with a specific peer address.
         ///
-        /// The `datagrams` stream parameter represents the data to be sent out.
-        /// The returned stream represents the data that was received.
+        /// On success, the `remote-address` of the socket is updated.
+        /// The `local-address` may be updated as well, based on the best network
+        /// path to `remote-address`. If the socket was not already explicitly
+        /// bound, this function will implicitly bind the socket to a random
+        /// free port.
         ///
-        /// This function only changes the local socket configuration and does
-        /// not generate any network traffic. On success, the `remote-address`
-        /// of the socket is updated. The `local-address` may be updated as well,
-        /// based on the best network path to `remote-address`. If the socket was
-        /// not already explicitly bound, this function will implicitly bind the
-        /// socket to a random free port.
+        /// When a UDP socket is "connected", the `send` and `receive` methods
+        /// are limited to communicating with that peer only:
+        /// - `send` can only be used to send to this destination.
+        /// - `receive` will only return datagrams sent from the provided `remote-address`.
         ///
-        /// When a `remote-address` is provided, the streams are limited to
-        /// communicating with that specific peer:
-        /// - The `outgoing-datagram` stream can only be used to send to this destination.
-        /// - The `incoming-datagram` stream will only return datagrams sent from the provided `remote-address`.
-        /// 
+        /// The name "connect" was kept to align with the existing POSIX
+        /// terminology. Other than that, this function only changes the local
+        /// socket configuration and does not generate any network traffic.
+        /// The peer is not aware of this "connection".
+        ///
         /// This method may be called multiple times on the same socket to change
-        /// its association, but only the most recent pair of streams will be
-        /// operational. Calling this function more than once effectively cancels
-        /// any previously started `transfer` tasks.
-        /// 
-        /// The POSIX equivalent in pseudo-code is:
-        /// ```text
-        /// if (was previously connected) {
-        /// 	connect(s, AF_UNSPEC)
-        /// }
-        /// if (remote_address is Some) {
-        /// 	connect(s, remote_address)
-        /// }
-        /// ```
-        /// 
+        /// its association, but only the most recent one will be effective.
+        ///
         /// # Typical errors
         /// - `invalid-argument`:          The `remote-address` has the wrong address family. (EAFNOSUPPORT)
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `invalid-argument`:          The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE, EADDRNOTAVAIL on Linux, EAGAIN on BSD)
         ///
+        /// # Implementors note
+        /// If the socket is already connected, some platforms (e.g. Linux)
+        /// require a disconnect before connecting to a different peer address.
+        ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
+        /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
+        /// - <https://man.freebsd.org/cgi/man.cgi?connect>
+        @since(version = 0.3.0)
+        connect: func(remote-address: ip-socket-address) -> result<_, error-code>;
+
+        /// Dissociate this socket from its peer address.
+        ///
+        /// After calling this method, `send` & `receive` are free to communicate
+        /// with any address again.
+        ///
+        /// The POSIX equivalent of this is calling `connect` with an `AF_UNSPEC` address.
+        ///
+        /// # Typical errors
+        /// - `invalid-state`:           The socket is not connected.
+        ///
+        /// # References
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html>
+        /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
+        /// - <https://man.freebsd.org/cgi/man.cgi?connect>
+        @since(version = 0.3.0)
+        disconnect: func() -> result<_, error-code>;
+
+        /// Send a message on the socket.
+        ///
+        /// # Typical errors
+        /// - `invalid-argument`:        The `remote-address` has the wrong address family. (EAFNOSUPPORT)
+        /// - `invalid-argument`:        The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
+        /// - `invalid-argument`:        The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
+        /// - `invalid-argument`:        The socket is in "connected" mode and `remote-address` is `some` value that does not match the address passed to `connect`. (EISCONN)
+        /// - `invalid-argument`:        The socket is not "connected" and no value for `remote-address` was provided. (EDESTADDRREQ)
+        /// - `invalid-state`:           The socket has not been bound yet.
+        /// - `remote-unreachable`:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
+        /// - `connection-refused`:      The connection was refused. (ECONNREFUSED)
+        /// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
+        ///
+        /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html>
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendmsg.html>
-        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
-        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html>
-        /// - <https://man7.org/linux/man-pages/man2/connect.2.html>
         /// - <https://man7.org/linux/man-pages/man2/send.2.html>
         /// - <https://man7.org/linux/man-pages/man2/sendmmsg.2.html>
-        /// - <https://man7.org/linux/man-pages/man2/recv.2.html>
-        /// - <https://man7.org/linux/man-pages/man2/recvmmsg.2.html>
-        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
-        /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv>
+        /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
+        @since(version = 0.3.0)
+        send: func(data: outgoing-datagram) -> result<_, error-code>;
+
+        /// Receive a message on the socket.
+        ///
+        /// # Typical errors
+        /// - `invalid-state`:        The socket has not been bound yet.
+        /// - `remote-unreachable`:   The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
+        /// - `connection-refused`:   The connection was refused. (ECONNREFUSED)
+        ///
+        /// # References
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html>
+        /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html>
+        /// - <https://man7.org/linux/man-pages/man2/recv.2.html>
+        /// - <https://man7.org/linux/man-pages/man2/recvmmsg.2.html>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nc-mswsock-lpfn_wsarecvmsg>
-        /// - <https://man.freebsd.org/cgi/man.cgi?connect>
-        /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        transfer: func(datagrams: stream<outgoing-datagram>, remote-address: option<ip-socket-address>) -> result<stream<incoming-datagram>, error-code>;
+        receive: func() -> result<incoming-datagram, error-code>;
 
         /// Get the current bound address.
         ///
@@ -637,10 +676,10 @@ interface types {
         @since(version = 0.3.0)
         local-address: func() -> result<ip-socket-address, error-code>;
 
-        /// Get the address the socket is currently streaming to.
+        /// Get the address the socket is currently "connected" to.
         ///
         /// # Typical errors
-        /// - `invalid-state`: The socket is not streaming to a specific remote address. (ENOTCONN)
+        /// - `invalid-state`: The socket is not "connected" to a specific remote address. (ENOTCONN)
         ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpeername.html>
