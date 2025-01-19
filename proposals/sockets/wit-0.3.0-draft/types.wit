@@ -483,38 +483,6 @@ interface types {
         set-send-buffer-size: func(value: u64) -> result<_, error-code>;
     }
 
-    /// A received datagram.
-    @since(version = 0.3.0)
-    record incoming-datagram {
-        /// The payload.
-        /// 
-        /// Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.
-        data: list<u8>,
-
-        /// The source address.
-        ///
-        /// This field is guaranteed to match the remote address the socket is connected to, if any.
-        ///
-        /// Equivalent to the `src_addr` out parameter of `recvfrom`.
-        remote-address: ip-socket-address,
-    }
-
-    /// A datagram to be sent out.
-    @since(version = 0.3.0)
-    record outgoing-datagram {
-        /// The payload.
-        data: list<u8>,
-
-        /// The destination address.
-        ///
-        /// The requirements on this field depend on how the socket is configured:
-        /// - with a remote address: this field must be None or match the socket's remote address exactly.
-        /// - without a remote address: this field is required.
-        ///
-        /// If this value is None, the send operation is equivalent to `send` in POSIX. Otherwise it is equivalent to `sendto`.
-        remote-address: option<ip-socket-address>,
-    }
-
     /// A UDP socket handle.
     @since(version = 0.3.0)
     resource udp-socket {
@@ -614,7 +582,17 @@ interface types {
         @since(version = 0.3.0)
         disconnect: func() -> result<_, error-code>;
 
-        /// Send a message on the socket.
+        /// Send a message on the socket to a particular peer.
+        ///
+        /// If the socket is connected, the peer address may be left empty. In
+        /// that case this is equivalent to `send` in POSIX. Otherwise it is
+        /// equivalent to `sendto`.
+        ///
+        /// Additionally, if the socket is connected, a `remote-address` argument
+        /// _may_ be provided but then it must be identical to the address
+        /// passed to `connect`.
+        ///
+        /// Implementations may trap if the `data` length exceeds 64 KiB.
         ///
         /// # Typical errors
         /// - `invalid-argument`:        The `remote-address` has the wrong address family. (EAFNOSUPPORT)
@@ -637,9 +615,17 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         @since(version = 0.3.0)
-        send: func(data: outgoing-datagram) -> result<_, error-code>;
+        send: func(data: list<u8>, remote-address: option<ip-socket-address>) -> result<_, error-code>;
 
         /// Receive a message on the socket.
+        ///
+        /// On success, the return value contains a tuple of the received data
+        /// and the address of the sender. Theoretical maximum length of the
+        /// data is 64 KiB. Though in practice, it will typically be less than
+        /// 1500 bytes.
+        ///
+        /// If the socket is connected, the sender address is guaranteed to
+        /// match the remote address passed to `connect`.
         ///
         /// # Typical errors
         /// - `invalid-state`:        The socket has not been bound yet.
@@ -655,7 +641,7 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nc-mswsock-lpfn_wsarecvmsg>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        receive: func() -> result<incoming-datagram, error-code>;
+        receive: func() -> result<tuple<list<u8>, ip-socket-address>, error-code>;
 
         /// Get the current bound address.
         ///
@@ -664,7 +650,7 @@ interface types {
         /// > stored in the object pointed to by `address` is unspecified.
         ///
         /// WASI is stricter and requires `local-address` to return `invalid-state` when the socket hasn't been bound yet.
-        /// 
+        ///
         /// # Typical errors
         /// - `invalid-state`: The socket is not bound to any local address.
         ///
