@@ -563,7 +563,7 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasendmsg>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv>
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom>
-        /// - <https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms741687(v=vs.85)>
+        /// - <https://learn.microsoft.com/en-us/windows/win32/api/mswsock/nc-mswsock-lpfn_wsarecvmsg>
         /// - <https://man.freebsd.org/cgi/man.cgi?connect>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
