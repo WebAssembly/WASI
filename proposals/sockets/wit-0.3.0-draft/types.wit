@@ -255,12 +255,19 @@ interface types {
 
         /// Start listening return a stream of new inbound connections.
         ///
-        /// Transitions the socket into the `listening` state.
+        /// Transitions the socket into the `listening` state. This can be called
+        /// at most once per socket.
         ///
         /// If the socket is not already explicitly bound, this function will
         /// implicitly bind the socket to a random free port.
         ///
-        /// The returned sockets are bound and in the `connected` state.
+        /// Normally, the returned sockets are bound, in the `connected` state
+        /// and immediately ready for I/O. Though, depending on exact timing and
+        /// circumstances, a newly accepted connection may already be `closed`
+        /// by the time the server attempts to perform its first I/O on it. This
+        /// is true regardless of whether the WASI implementation uses
+        /// "synthesized" sockets or not (see Implementors Notes below).
+        ///
         /// The following properties are inherited from the listener socket:
         /// - `address-family`
         /// - `keep-alive-enabled`
@@ -275,6 +282,31 @@ interface types {
         /// - `invalid-state`:             The socket is already in the `connected` state. (EISCONN, EINVAL on BSD)
         /// - `invalid-state`:             The socket is already in the `listening` state.
         /// - `address-in-use`:            Tried to perform an implicit bind, but there were no ephemeral ports available. (EADDRINUSE)
+        ///
+        /// # Implementors note
+        /// This method returns a single perpetual stream that should only close
+        /// on fatal errors (if any). Yet, the POSIX' `accept` function may also
+        /// return transient errors (e.g. ECONNABORTED). The exact details differ
+        /// per operation system. For example, the Linux manual mentions:
+        ///
+        /// > Linux accept() passes already-pending network errors on the new
+        /// > socket as an error code from accept(). This behavior differs from
+        /// > other BSD socket implementations. For reliable operation the
+        /// > application should detect the network errors defined for the
+        /// > protocol after accept() and treat them like EAGAIN by retrying.
+        /// > In the case of TCP/IP, these are ENETDOWN, EPROTO, ENOPROTOOPT,
+        /// > EHOSTDOWN, ENONET, EHOSTUNREACH, EOPNOTSUPP, and ENETUNREACH.
+        /// Source: https://man7.org/linux/man-pages/man2/accept.2.html
+        ///
+        /// WASI implementations have two options to handle this:
+        /// - Optionally log it and then skip over non-fatal errors returned by
+        ///   `accept`. Guest code never gets to see these failures. Or:
+        /// - Synthesize a `tcp-socket` resource that exposes the error when
+        ///   attempting to send or receive on it. Guest code then sees these
+        ///   failures as regular I/O errors.
+        ///
+        /// In either case, the stream returned by this `listen` method remains
+        /// operational.
         ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html>

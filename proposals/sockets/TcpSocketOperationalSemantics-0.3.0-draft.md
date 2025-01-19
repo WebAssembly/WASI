@@ -15,7 +15,7 @@ interface tcp {
         listening(accept-stream),
         connecting(connect-future),
         connected,
-        closed,
+        closed(option<error-code>),
     }
 }
 ```
