@@ -335,7 +335,7 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2>
         @since(version = 0.3.0)
-        receive: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
+        receive: func() -> tuple<stream<u8>, future<result<_, error-code>>>;
 
         /// Get the bound local address.
         ///
