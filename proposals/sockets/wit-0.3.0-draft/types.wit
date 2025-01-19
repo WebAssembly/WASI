@@ -377,6 +377,8 @@ interface types {
 
         /// Whether this is a IPv4 or IPv6 socket.
         ///
+        /// This is the value passed to the constructor.
+        ///
         /// Equivalent to the SO_DOMAIN socket option.
         @since(version = 0.3.0)
         address-family: func() -> ip-address-family;
@@ -676,6 +678,8 @@ interface types {
         remote-address: func() -> result<ip-socket-address, error-code>;
 
         /// Whether this is a IPv4 or IPv6 socket.
+        ///
+        /// This is the value passed to the constructor.
         ///
         /// Equivalent to the SO_DOMAIN socket option.
         @since(version = 0.3.0)
