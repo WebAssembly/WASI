@@ -313,11 +313,19 @@ interface types {
 
         /// Read data from peer.
         ///
-        /// This function fails if `receive` was already called before on this connection.
+        /// This function returns a `stream` which provides the data received from the
+        /// socket, and a `future` providing additional error information in case the
+        /// socket is closed abnormally.
         ///
-        /// On success, this function returns a stream and a future, which will resolve
-        /// to an error code if receiving data from stream fails.
-        /// The returned future resolves to success if receiving side of the connection is closed.
+        /// If the socket is closed normally, `stream.read` on the `stream` will return
+        /// `read-status::closed` with no `error-context` and the future resolves to
+        /// the value `ok`. If the socket is closed abnormally, `stream.read` on the
+        /// `stream` returns `read-status::closed` with an `error-context` and the future
+        /// resolves to `err` with an `error-code`.
+        ///
+        /// `receive` is meant to be called only once per socket. If it is called more
+        /// than once, the subsequent calls return a new `stream` that fails as if it
+        /// were closed abnormally.
         ///
         /// If the caller is not expecting to receive any data from the peer,
         /// they may cancel the receive task. Any data still in the receive queue
