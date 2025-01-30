@@ -9,7 +9,7 @@ interface udp {
     @since(version = 0.2.0)
     record incoming-datagram {
         /// The payload.
-        /// 
+        ///
         /// Theoretical max size: ~64 KiB. In practice, typically less than 1500 bytes.
         data: list<u8>,
 
@@ -84,7 +84,7 @@ interface udp {
         /// This method may be called multiple times on the same socket to change its association, but
         /// only the most recently returned pair of streams will be operational. Implementations may trap if
         /// the streams returned by a previous invocation haven't been dropped yet before calling `stream` again.
-        /// 
+        ///
         /// The POSIX equivalent in pseudo-code is:
         /// ```text
         /// if (was previously connected) {
@@ -96,7 +96,7 @@ interface udp {
         /// ```
         ///
         /// Unlike in POSIX, the socket must already be explicitly bound.
-        /// 
+        ///
         /// # Typical errors
         /// - `invalid-argument`:          The `remote-address` has the wrong address family. (EAFNOSUPPORT)
         /// - `invalid-argument`:          The IP address in `remote-address` is set to INADDR_ANY (`0.0.0.0` / `::`). (EDESTADDRREQ, EADDRNOTAVAIL)
@@ -121,7 +121,7 @@ interface udp {
         /// > stored in the object pointed to by `address` is unspecified.
         ///
         /// WASI is stricter and requires `local-address` to return `invalid-state` when the socket hasn't been bound yet.
-        /// 
+        ///
         /// # Typical errors
         /// - `invalid-state`: The socket is not bound to any local address.
         ///
@@ -237,7 +237,7 @@ interface udp {
         /// When this function returns ok(0), the `subscribe` pollable will
         /// become ready when this function will report at least ok(1), or an
         /// error.
-        /// 
+        ///
         /// Never returns `would-block`.
         check-send: func() -> result<u64, error-code>;
 
@@ -277,7 +277,7 @@ interface udp {
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         @since(version = 0.2.0)
         send: func(datagrams: list<outgoing-datagram>) -> result<u64, error-code>;
-        
+
         /// Create a `pollable` which will resolve once the stream is ready to send again.
         ///
         /// Note: this function is here for WASI 0.2 only.

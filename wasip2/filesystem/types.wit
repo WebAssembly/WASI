@@ -285,10 +285,10 @@ interface types {
     /// 128-bit integer type.
     @since(version = 0.2.0)
     record metadata-hash-value {
-       /// 64 bits of a 128-bit hash value.
-       lower: u64,
-       /// Another 64 bits of a 128-bit hash value.
-       upper: u64,
+        /// 64 bits of a 128-bit hash value.
+        lower: u64,
+        /// Another 64 bits of a 128-bit hash value.
+        upper: u64,
     }
 
     /// A descriptor is a reference to a filesystem object, which may be a file,
