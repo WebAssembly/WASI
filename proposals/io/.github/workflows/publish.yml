@@ -10,12 +10,13 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}
 
-permissions:
-  packages: write
-
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
 
     steps:
       # Checkout the repo and install dependencies
@@ -26,13 +27,15 @@ jobs:
       - name: Install wkg
         shell: bash
         run: cargo binstall wkg
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.7.0
  
       # To version our image we want to obtain the version from the tag
       - name: Get version
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/WebAssembly/wasi/io
+          images: ghcr.io/webassembly/wasi/io
           tags: |
             type=semver,pattern={{version}}
       
@@ -50,7 +53,9 @@ jobs:
         run: wkg wit build -o wasi-io.wasm
 
       # Upload the Wasm binary to the GitHub registry
-      - uses: bytecodealliance/wkg-github-action@v4
+      - name: Publish to GitHub Container Registry
+        id: publish
+        uses: bytecodealliance/wkg-github-action@v5
         with:
             oci-reference-without-tag: 'ghcr.io/webassembly/wasi/io'
             file: 'wasi-io.wasm'
@@ -59,3 +64,7 @@ jobs:
             homepage: 'https://wasi.dev'
             version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
             licenses: 'Apache-2.0 WITH LLVM-exception'
+
+      # Sign the output component
+      - name: Sign the wasm component
+        run: cosign sign --yes ghcr.io/webassembly/wasi/io@${{ steps.publish.outputs.digest }}
