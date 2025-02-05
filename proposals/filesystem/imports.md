@@ -1157,6 +1157,9 @@ WASI.</p>
 </ul>
 <h4><a id="method_descriptor_link_at"></a><code>[method]descriptor.link-at: func</code></h4>
 <p>Create a hard link.</p>
+<p>Fails with <a href="#error_code.no_entry"><code>error-code::no-entry</code></a> if the old path does not exist,
+with <a href="#error_code.exist"><code>error-code::exist</code></a> if the new path already exists, and
+<a href="#error_code.not_permitted"><code>error-code::not-permitted</code></a> if the old path is not a file.</p>
 <p>Note: This is similar to <code>linkat</code> in POSIX.</p>
 <h5>Params</h5>
 <ul>
