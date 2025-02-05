@@ -1,0 +1,70 @@
+name: Publish a Wasm Component package to GitHub Artifacts
+
+# Run this action whenever a new release is tagged
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+
+    steps:
+      # Checkout the repo and install dependencies
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.15
+      - name: Install wkg
+        shell: bash
+        run: cargo binstall wkg
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.7.0
+ 
+      # To version our image we want to obtain the version from the tag
+      - name: Get version
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/webassembly/wasi/http
+          tags: |
+            type=semver,pattern={{version}}
+      
+      # To upload our image to the GitHub registry, we first have to login
+      - name: Login to the GitHub registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Build our `.wit` files into a Wasm binary
+      - name: Build
+        shell: bash
+        run: wkg wit build -o wasi-http.wasm
+
+      # Upload the Wasm binary to the GitHub registry
+      - name: Publish to GitHub Container Registry
+        id: publish
+        uses: bytecodealliance/wkg-github-action@v5
+        with:
+            oci-reference-without-tag: 'ghcr.io/webassembly/wasi/http'
+            file: 'wasi-http.wasm'
+            description: 'A WASI API for sending and receiving HTTP requests and responses.'
+            source: 'https://github.com/webassembly/wasi'
+            homepage: 'https://wasi.dev'
+            version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            licenses: 'Apache-2.0 WITH LLVM-exception'
+
+      # Sign the output component
+      - name: Sign the wasm component
+        run: cosign sign --yes ghcr.io/webassembly/wasi/http@${{ steps.publish.outputs.digest }}
