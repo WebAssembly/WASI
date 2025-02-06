@@ -40,8 +40,8 @@ jobs:
       # upgrade
       - name: Upgrade tag
         run:  find . -type f -name "*.wit" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
-      # - name: Upgrade wit deps
-      #   run:  wit-deps update
+      - name: Upgrade wit deps
+        run:  wit-deps update
       - name: Generate markdown
         run:  wit-bindgen markdown wit --html-in-md --all-features
 
