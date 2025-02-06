@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 jobs:
-  print-versions:
+  update-versions:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repo and install dependencies
@@ -48,7 +48,7 @@ jobs:
       # file PR
       - name: Create feature branch
         env:
-          FEATURE_BRANCH: v${{ inputs.next_version }}
+          FEATURE_BRANCH: release-v${{ inputs.next_version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
