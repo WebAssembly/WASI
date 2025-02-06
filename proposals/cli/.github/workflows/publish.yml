@@ -33,7 +33,7 @@ jobs:
       # To version our image we want to obtain the version from the tag
       - name: Get version
         id: meta
-:        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/webassembly/wasi/cli
           tags: |
