@@ -45,7 +45,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.PAT_TOKEN }}
+          password: ${{ secrets.ORG_PAT }}
       
       # Build our `.wit` files into a Wasm binary
       - name: Build
