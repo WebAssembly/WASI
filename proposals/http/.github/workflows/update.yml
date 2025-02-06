@@ -1,0 +1,64 @@
+name: Create a PR to upgrade WIT to a new version
+
+# Manually dispatch this action from the Actions page
+on:
+  workflow_dispatch:
+    inputs:
+      prev_version:
+        description: 'Upgrading from version (without the v)'
+        required: true
+        type: string
+      next_version:
+        description: 'Upgrading to version (without the v)'
+        required: true
+        type: string
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  update-versions:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo and install dependencies
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.15
+      - name: Install wit-bindgen
+        shell: bash
+        run: cargo binstall wit-bindgen-cli
+      - name: Install wit-deps
+        shell: bash
+        run: cargo binstall wit-deps-cli
+
+      # echo input
+      - name: Print the versions
+        run: echo Upgrading from ${{ inputs.prev_version }} to ${{ inputs.next_version }} 
+
+      # upgrade
+      - name: Upgrade tag
+        run:  find . -type f -name "*.wit" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
+      - name: Upgrade wit deps
+        run:  wit-deps update
+      - name: Generate markdown
+        run:  wit-bindgen markdown wit --html-in-md --all-features
+
+      # file PR
+      - name: Create feature branch
+        env:
+          FEATURE_BRANCH: release-v${{ inputs.next_version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git checkout -b $FEATURE_BRANCH
+          git push -u origin $FEATURE_BRANCH
+          git commit -m "Update to v${{ inputs.next_version }}"
+          git push
+
+      - name: Create pull request
+        run: gh pr create -B main -H release-v${{ inputs.next_version }} --title 'Release v${{ inputs.next_version }}' --body 'Updates the package version to v${{ inputs.next_version }}. Thanks!'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

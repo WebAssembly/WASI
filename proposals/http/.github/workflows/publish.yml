@@ -16,7 +16,7 @@ jobs:
     permissions:
       id-token: write
       packages: write
-      contents: read
+      contents: write
 
     steps:
       # Checkout the repo and install dependencies
@@ -45,7 +45,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.PAT_TOKEN }}
       
       # Build our `.wit` files into a Wasm binary
       - name: Build
