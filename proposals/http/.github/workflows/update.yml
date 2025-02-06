@@ -42,8 +42,10 @@ jobs:
         run:  find . -type f -name "*.wit" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
       - name: Upgrade wit deps
         run:  wit-deps update
-      - name: Generate markdown
-        run:  wit-bindgen markdown wit --html-in-md --all-features
+      - name: Generate markdown for the proxy world
+        run:  wit-bindgen markdown wit -w proxy --html-in-md --all-features
+      - name: Generate markdown for the imports world
+        run:  wit-bindgen markdown wit -w imports --html-in-md --all-features
 
       # file PR
       - name: Create feature branch
