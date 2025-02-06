@@ -1,0 +1,23 @@
+[clocks]
+sha256 = "26e315db0d371495f8834edfc0e479042f94152ce677d96d54d3623d0e4ffb1e"
+sha512 = "e1c76f499435841316f9287b88d8173558e64f277c321ff390556de8707a0b18dd6c1749bbb17bbbba8d523da246ef6eb05c990ceddb762e03efb2ae30cacc76"
+
+[filesystem]
+url = "https://github.com/WebAssembly/wasi-filesystem/archive/main.tar.gz"
+subdir = "wit-0.3.0-draft"
+sha256 = "f8a82b21e18cad3498b53475666a3f00c4c1b5f030b7ed47c79262e3dbe97461"
+sha512 = "0e62fe9ff3ba0572d890a2edd969e88a5c2327279cec681d3f2688ed8442820333f6041b0f0956b44941f971a6afb785bd2f5248ca0c99b51f13521496cadbcc"
+deps = ["clocks"]
+
+[random]
+url = "https://github.com/WebAssembly/wasi-random/archive/main.tar.gz"
+subdir = "wit-0.3.0-draft"
+sha256 = "7a483077cc23fc9dc7a3f067d62795663cceee7dbbd23f205934282b1164a83e"
+sha512 = "b99280fd60699f781f20209659e94c0058ce6b9e973ddbd0b8865d752f88c74633485d486d5a86b709385b6e60357470d1c6fbcb3a2769af210c0b1f52417506"
+
+[sockets]
+url = "https://github.com/WebAssembly/wasi-sockets/archive/main.tar.gz"
+subdir = "wit-0.3.0-draft"
+sha256 = "48fa617cdf64b66adc7136e4f0c14886061e6d5134072bf8e1698b84e2579669"
+sha512 = "786b8a03c14d3f529500275762a37c497ea1e6479e71028e8173aa07594beb77226904d77970a7c356ff3f59aa4a5c10f2e68537cc96b9916ff03a317b05a229"
+deps = ["clocks"]
