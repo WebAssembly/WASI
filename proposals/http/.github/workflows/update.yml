@@ -40,6 +40,8 @@ jobs:
       # upgrade
       - name: Upgrade tag
         run:  find . -type f -name "*.wit" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
+      - name: Upgrade deps tags
+        run:  find . -type f -name "deps.toml" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +   
       - name: Upgrade wit deps
         run:  wit-deps update
       - name: Generate markdown for the proxy world
