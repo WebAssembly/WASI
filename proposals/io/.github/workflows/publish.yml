@@ -44,7 +44,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ secrets.DOCKER_USER }}
+          username: ${{ github.actor }}
           password: ${{ secrets.ORG_PAT }}
       
       # Build our `.wit` files into a Wasm binary
