@@ -43,9 +43,9 @@ jobs:
       - name: Upgrade wit deps
         run:  wit-deps update
       - name: Generate markdown for the proxy world
-        run:  wit-bindgen markdown wit -w proxy --html-in-md --all-features
+        run:  wit-bindgen markdown wit -w proxy --html-in-md --features=informational-outbound-responses
       - name: Generate markdown for the imports world
-        run:  wit-bindgen markdown wit -w imports --html-in-md --all-features
+        run:  wit-bindgen markdown wit -w imports --html-in-md --features=informational-outbound-responses
 
       # file PR
       - name: Create feature branch
