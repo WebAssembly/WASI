@@ -508,6 +508,10 @@ interface types {
 
         /// Create a hard link.
         ///
+        /// Fails with `error-code::no-entry` if the old path does not exist,
+        /// with `error-code::exist` if the new path already exists, and
+        /// `error-code::not-permitted` if the old path is not a file.
+        ///
         /// Note: This is similar to `linkat` in POSIX.
         @since(version = 0.2.0)
         link-at: func(
