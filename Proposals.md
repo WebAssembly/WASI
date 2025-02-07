@@ -35,6 +35,8 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                       | Champion                                                      | Versions |
 | ------------------------------------------------------------------------------ |---------------------------------------------------------------| -------- |
+| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                                    |          |
+| [CLI: Exit With Code][wasi-cli]                                                | Dan Gohman                                                    |          |
 | [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
 | [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice                    |          |
 | [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun                                  |          |
