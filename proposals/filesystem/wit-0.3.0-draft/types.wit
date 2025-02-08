@@ -297,8 +297,15 @@ interface types {
         /// Multiple read, write, and append streams may be active on the same open
         /// file and they do not interfere with each other.
         ///
-        /// This function returns a future, which will resolve to an error code if
-        /// reading full contents of the file fails.
+        /// This function returns a `stream` which provides the data received from the
+        /// file, and a `future` providing additional error information in case an
+        /// error is encountered.
+        ///
+        /// If no error is encountered, `stream.read` on the `stream` will return
+        /// `read-status::closed` with no `error-context` and the future resolves to
+        /// the value `ok`. If an error is encounttered, `stream.read` on the
+        /// `stream` returns `read-status::closed` with an `error-context` and the future
+        /// resolves to `err` with an `error-code`.
         ///
         /// Note: This is similar to `pread` in POSIX.
         @since(version = 0.3.0)
