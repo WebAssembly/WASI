@@ -663,7 +663,11 @@ Append mode: Data written to the file is always appended to the file's end.
 Bit: 0
 
 - <a href="#fdflags.dsync" name="fdflags.dsync"></a> `dsync`: `bool`
-Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
+Write according to synchronized I/O data integrity completion. Only the data
+stored in the file is synchronized.  This feature is not available on all
+platforms and therefore [`path_open`](#path_open) and other such functions which
+accept [`fdflags`](#fdflags) may return [`errno.notsup`](#errno.notsup) in the
+case that this flag is set.
 
 Bit: 1
 
@@ -674,13 +678,20 @@ Bit: 2
 
 - <a href="#fdflags.rsync" name="fdflags.rsync"></a> `rsync`: `bool`
 Synchronized read I/O operations.
+This feature is not available on all platforms and therefore
+[`path_open`](#path_open) and other such functions which accept
+[`fdflags`](#fdflags) may return [`errno.notsup`](#errno.notsup) in the case
+that this flag is set.
 
 Bit: 3
 
 - <a href="#fdflags.sync" name="fdflags.sync"></a> `sync`: `bool`
-Write according to synchronized I/O file integrity completion. In
-addition to synchronizing the data stored in the file, the implementation
-may also synchronously update the file's metadata.
+Write according to synchronized I/O file integrity completion. In addition to
+synchronizing the data stored in the file, the implementation may also
+synchronously update the file's metadata.  This feature is not available on all
+platforms and therefore [`path_open`](#path_open) and other such functions which
+accept [`fdflags`](#fdflags) may return [`errno.notsup`](#errno.notsup) in the
+case that this flag is set.
 
 Bit: 4
 
