@@ -20,6 +20,7 @@ jobs:
         git add -N wit/deps
         git add -N wit-0.3.0-draft/deps
         git diff --exit-code
-    - uses: WebAssembly/wit-abi-up-to-date@v22
+    - uses: WebAssembly/wit-abi-up-to-date@v23
       with:
-        wit-bindgen: '0.33.0'
+        wit-bindgen: '0.37.0'
+        all-features: 'true'
