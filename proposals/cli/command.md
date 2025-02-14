@@ -17,6 +17,7 @@
 <li>interface <a href="#wasi_cli_terminal_stderr_0_2_4"><code>wasi:cli/terminal-stderr@0.2.4</code></a></li>
 <li>interface <a href="#wasi_clocks_monotonic_clock_0_2_4"><code>wasi:clocks/monotonic-clock@0.2.4</code></a></li>
 <li>interface <a href="#wasi_clocks_wall_clock_0_2_4"><code>wasi:clocks/wall-clock@0.2.4</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_2_4"><code>wasi:clocks/timezone@0.2.4</code></a></li>
 <li>interface <a href="#wasi_filesystem_types_0_2_4"><code>wasi:filesystem/types@0.2.4</code></a></li>
 <li>interface <a href="#wasi_filesystem_preopens_0_2_4"><code>wasi:filesystem/preopens@0.2.4</code></a></li>
 <li>interface <a href="#wasi_sockets_network_0_2_4"><code>wasi:sockets/network@0.2.4</code></a></li>
@@ -707,6 +708,71 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <h5>Return values</h5>
 <ul>
 <li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h2><a id="wasi_clocks_timezone_0_2_4"></a>Import interface wasi:clocks/timezone@0.2.4</h2>
+<hr />
+<h3>Types</h3>
+<h4><a id="datetime"></a><code>type datetime</code></h4>
+<p><a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></p>
+<p>
+#### <a id="timezone_display"></a>`record timezone-display`
+<p>Information useful for displaying the timezone of a specific <a href="#datetime"><code>datetime</code></a>.</p>
+<p>This information may vary within a single <code>timezone</code> to reflect daylight
+saving time adjustments.</p>
+<h5>Record Fields</h5>
+<ul>
+<li>
+<p><a id="timezone_display.utc_offset"></a><a href="#utc_offset"><code>utc-offset</code></a>: <code>s32</code></p>
+<p>The number of seconds difference between UTC time and the local
+time of the timezone.
+<p>The returned value will always be less than 86400 which is the
+number of seconds in a day (24<em>60</em>60).</p>
+<p>In implementations that do not expose an actual time zone, this
+should return 0.</p>
+</li>
+<li>
+<p><a id="timezone_display.name"></a><code>name</code>: <code>string</code></p>
+<p>The abbreviated name of the timezone to display to a user. The name
+`UTC` indicates Coordinated Universal Time. Otherwise, this should
+reference local standards for the name of the time zone.
+<p>In implementations that do not expose an actual time zone, this
+should be the string <code>UTC</code>.</p>
+<p>In time zones that do not have an applicable name, a formatted
+representation of the UTC offset may be returned, such as <code>-04:00</code>.</p>
+</li>
+<li>
+<p><a id="timezone_display.in_daylight_saving_time"></a><code>in-daylight-saving-time</code>: <code>bool</code></p>
+<p>Whether daylight saving time is active.
+<p>In implementations that do not expose an actual time zone, this
+should return false.</p>
+</li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a id="display"></a><code>display: func</code></h4>
+<p>Return information needed to display the given <a href="#datetime"><code>datetime</code></a>. This includes
+the UTC offset, the time zone name, and a flag indicating whether
+daylight saving time is active.</p>
+<p>If the timezone cannot be determined for the given <a href="#datetime"><code>datetime</code></a>, return a
+<a href="#timezone_display"><code>timezone-display</code></a> for <code>UTC</code> with a <a href="#utc_offset"><code>utc-offset</code></a> of 0 and no daylight
+saving time.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="display.when"></a><code>when</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="display.0"></a> <a href="#timezone_display"><a href="#timezone_display"><code>timezone-display</code></a></a></li>
+</ul>
+<h4><a id="utc_offset"></a><code>utc-offset: func</code></h4>
+<p>The same as <a href="#display"><code>display</code></a>, but only return the UTC offset.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="utc_offset.when"></a><code>when</code>: <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="utc_offset.0"></a> <code>s32</code></li>
 </ul>
 <h2><a id="wasi_filesystem_types_0_2_4"></a>Import interface wasi:filesystem/types@0.2.4</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
@@ -1603,7 +1669,10 @@ errors are filesystem-related errors.</p>
 <h2><a id="wasi_sockets_network_0_2_4"></a>Import interface wasi:sockets/network@0.2.4</h2>
 <hr />
 <h3>Types</h3>
-<h4><a id="network"></a><code>resource network</code></h4>
+<h4><a id="error"></a><code>type error</code></h4>
+<p><a href="#error"><a href="#error"><code>error</code></a></a></p>
+<p>
+#### <a id="network"></a>`resource network`
 <p>An opaque resource that represents access to (a subset of) the network.
 This enables context-based security for networking.
 There is no need for this to map 1:1 to a physical network interface.</p>
@@ -1792,6 +1861,25 @@ supported size.
 <ul>
 <li><a id="ip_socket_address.ipv4"></a><code>ipv4</code>: <a href="#ipv4_socket_address"><a href="#ipv4_socket_address"><code>ipv4-socket-address</code></a></a></li>
 <li><a id="ip_socket_address.ipv6"></a><code>ipv6</code>: <a href="#ipv6_socket_address"><a href="#ipv6_socket_address"><code>ipv6-socket-address</code></a></a></li>
+</ul>
+<hr />
+<h3>Functions</h3>
+<h4><a id="network_error_code"></a><code>network-error-code: func</code></h4>
+<p>Attempts to extract a network-related <a href="#error_code"><code>error-code</code></a> from the stream
+<a href="#error"><code>error</code></a> provided.</p>
+<p>Stream operations which return <a href="#stream_error.last_operation_failed"><code>stream-error::last-operation-failed</code></a>
+have a payload with more information about the operation that failed.
+This payload can be passed through to this function to see if there's
+network-related information about the error to return.</p>
+<p>Note that this function is fallible because not all stream-related
+errors are network-related errors.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="network_error_code.err"></a><code>err</code>: borrow&lt;<a href="#error"><a href="#error"><code>error</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="network_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
 <h2><a id="wasi_sockets_instance_network_0_2_4"></a>Import interface wasi:sockets/instance-network@0.2.4</h2>
 <p>This interface provides a value-export of the default network handle..</p>
