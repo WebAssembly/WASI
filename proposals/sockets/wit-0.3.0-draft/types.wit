@@ -328,7 +328,7 @@ interface types {
         /// were closed abnormally.
         ///
         /// If the caller is not expecting to receive any data from the peer,
-        /// they may cancel the receive task. Any data still in the receive queue
+        /// they may drop the stream. Any data still in the receive queue
         /// will be discarded. This is equivalent to calling `shutdown(SHUT_RD)`
         /// in POSIX.
         ///
