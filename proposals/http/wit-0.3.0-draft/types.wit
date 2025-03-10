@@ -240,14 +240,27 @@ interface types {
   /// trailers at any given time.
   resource body {
 
-    /// Construct a new `body` with the specified stream and trailers.
+    /// Construct a new `body` with the specified stream.
+    ///
     /// This function returns a future, which will resolve
-    /// to an error code if transmitting stream data or trailers fails.
-    /// The returned future resolves to success once body stream and trailers
-    /// are fully transmitted.
+    /// to an error code if transmitting stream data fails.
+    ///
+    /// The returned future resolves to success once body stream
+    /// is fully transmitted.
     new: static func(
       %stream: stream<u8>,
-      trailers: option<future<trailers>>
+    ) -> tuple<body, future<result<_, error-code>>>;
+
+    /// Construct a new `body` with the specified stream and trailers.
+    ///
+    /// This function returns a future, which will resolve
+    /// to an error code if transmitting stream data or trailers fails.
+    ///
+    /// The returned future resolves to success once body stream and trailers
+    /// are fully transmitted.
+    new-with-trailers: static func(
+      %stream: stream<u8>,
+      trailers: future<trailers>
     ) -> tuple<body, future<result<_, error-code>>>;
 
     /// Returns the contents of the body, as a stream of bytes.
@@ -260,9 +273,10 @@ interface types {
     /// The returned future resolves to success if body is closed.
     %stream: func() -> result<tuple<stream<u8>>, future<result<_, error-code>>>;
 
-    /// Takes ownership of `body`, and returns a `trailers`.  This function will
-    /// trap if a `stream` child is still alive.
-    finish: static func(this: body) -> result<option<trailers>, error-code>;
+    /// Takes ownership of `body`, and returns an unresolved optional `trailers`.
+    ///
+    /// This function will trap if a `stream` child is still alive.
+    finish: static func(this: body) -> future<option<trailers>>;
   }
 
   /// Represents an HTTP Request.
