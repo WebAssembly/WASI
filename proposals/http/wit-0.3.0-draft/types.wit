@@ -271,7 +271,7 @@ interface types {
     /// On success, this function returns a stream and a future, which will resolve
     /// to an error code if receiving data from stream fails.
     /// The returned future resolves to success if body is closed.
-    %stream: func() -> result<tuple<stream<u8>>, future<result<_, error-code>>>;
+    %stream: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
 
     /// Takes ownership of `body`, and returns an unresolved optional `trailers`.
     ///
