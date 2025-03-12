@@ -273,10 +273,10 @@ interface types {
     /// The returned future resolves to success if body is closed.
     %stream: func() -> result<tuple<stream<u8>, future<result<_, error-code>>>>;
 
-    /// Takes ownership of `body`, and returns an unresolved optional `trailers`.
+    /// Takes ownership of `body`, and returns an unresolved optional `trailers` result.
     ///
     /// This function will trap if a `stream` child is still alive.
-    finish: static func(this: body) -> future<option<trailers>>;
+    finish: static func(this: body) -> future<result<option<trailers>, error-code>>;
   }
 
   /// Represents an HTTP Request.
