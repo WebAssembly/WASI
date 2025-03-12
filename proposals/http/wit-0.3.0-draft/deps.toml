@@ -1,3 +1,1 @@
-cli = "https://github.com/WebAssembly/wasi-cli/archive/v0.2.4.tar.gz" # TODO: update to v0.3.0-draft and remove custom clock and random imports
-clocks-0-3-0 = { url = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz", subdir = "wit-0.3.0-draft" }
-random-0-3-0 = { url = "https://github.com/WebAssembly/wasi-random/archive/main.tar.gz", subdir = "wit-0.3.0-draft" }
+cli = { url = "https://github.com/WebAssembly/wasi-cli/archive/main.tar.gz", subdir = "wit-0.3.0-draft" }
