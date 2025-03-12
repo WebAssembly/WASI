@@ -361,9 +361,9 @@ interface types {
     /// component by e.g. `handler.handle`.
     body: func() -> option<body>;
 
-    /// Takes ownership of the `request` and returns the `headers` and `body`,
-    /// if any.
-    into-parts: static func(this: request) -> tuple<headers, option<body>>;
+    /// Takes ownership of the `request` and returns the `headers`, `body`
+    /// and `request-options`, if any.
+    into-parts: static func(this: request) -> tuple<headers, option<body>, option<request-options>>;
   }
 
   /// Parameters for making an HTTP Request. Each of these parameters is
