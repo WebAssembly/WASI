@@ -18,15 +18,15 @@ numbered `0.2.x` in Wit packages and related identifiers. It is also known as
 
 WASI Preview 2 contains the following APIs:
 
-| Proposal           | Versions |
-| ------------------ | -------- |
-| [wasi-io]          | 0.2.2 |
-| [wasi-clocks]      | 0.2.2 |
-| [wasi-random]      | 0.2.2 |
-| [wasi-filesystem]  | 0.2.2 |
-| [wasi-sockets]     | 0.2.2 |
-| [wasi-cli]         | 0.2.2 |
-| [wasi-http]        | 0.2.2 |
+| Proposal          | Version |
+|-------------------|---------|
+| [wasi-io]         | 0.2.4   |
+| [wasi-clocks]     | 0.2.4   |
+| [wasi-random]     | 0.2.4   |
+| [wasi-filesystem] | 0.2.4   |
+| [wasi-sockets]    | 0.2.4   |
+| [wasi-cli]        | 0.2.4   |
+| [wasi-http]       | 0.2.4   |
 
 [wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
