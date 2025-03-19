@@ -51,7 +51,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
-| [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
+| [GPIO][wasi-gpio]                      | Merlijn Sebrechts, Michiel Van Kenhove |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Observe][wasi-observe]    | Caleb Schoepp                           |          |
@@ -91,7 +91,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
 [wasi-data]: https://github.com/singlestore-labs/wasi-data
-[wasi-digital-io]: https://github.com/WebAssembly/wasi-digital-io
+[wasi-gpio]: https://github.com/WebAssembly/wasi-gpio
 [wasi-distributed-lock-service]: https://github.com/WebAssembly/wasi-distributed-lock-service
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-http]: https://github.com/WebAssembly/wasi-http
