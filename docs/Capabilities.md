@@ -3,7 +3,7 @@
 What is a capability?
 
 The Wasm language has no syscall instructions or built-in I/O facilities.
-To let interact with the outside world, Wasm programs can be provided
+To let programs interact with the outside world, Wasm programs can be provided
 with *capabilities*.
 
 There are two main kinds of capabilities in WASI, link-time capabilities
