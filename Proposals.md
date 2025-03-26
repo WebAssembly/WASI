@@ -51,13 +51,13 @@ You can learn more about contributing new proposals (and other ways to contribut
 | ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
 | [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
-| [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
+| [Digital I/O][wasi-digital-io]                                                 | Merlijn Sebrechts |          |
 | [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [Logging][wasi-logging]                                               | Dan Gohman |          |
 | [Observe][wasi-observe]    | Caleb Schoepp                           |          |
 | [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
 | [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [SPI][wasi-spi]                      | Emiel Van Severen |          |
+| [SPI][wasi-spi]                                                                | Merlijn Sebrechts |          |
 | [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
 | [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
 | [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
