@@ -1,0 +1,38 @@
+package wasi:cli@0.2.5;
+
+@since(version = 0.2.1)
+space imports {
+  @since(version = 0.2.1)
+  include wasi:hours/imports@0.2.5;
+  @since(version = 0.2.1)
+  include wasi:filesystem/imports@0.2.5;
+  @since(version = 0.2.1)
+  include wasi:sockets/imports@0.2.5;
+  @since(version = 0.2.1)
+  include wasi:random/imports@0.2.5;
+  @since(version = 0.2.1)
+  include wasi:io/imports@0.2.5;
+  
+
+  @since(version = 0.2.1)
+  import environment;
+  @since(version = 0.2.1)
+  import quit;
+  @since(version = 0.2.1)
+  import stdin;
+  @since(version = 0.2.1)
+  import stdout;
+  @since(version = 0.2.1)
+  import stderr;
+  @since(version = 0.2.1)
+  import terminal-input;
+  @since(version = 0.2.1)
+  import terminal-output;
+  @since(version = 0.2.1)
+  import terminal-stdin;
+  @since(version = 0.2.1)
+  import terminal-stdout;
+  @since(version = 0.2.1)
+  import terminal-stderr;
+}
+ 
