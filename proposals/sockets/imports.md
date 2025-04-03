@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_4"><code>wasi:io/error@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_network_0_2_4"><code>wasi:sockets/network@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_instance_network_0_2_4"><code>wasi:sockets/instance-network@0.2.4</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_4"><code>wasi:io/poll@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_0_2_4"><code>wasi:sockets/udp@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_4"><code>wasi:sockets/udp-create-socket@0.2.4</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_4"><code>wasi:io/streams@0.2.4</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_4"><code>wasi:clocks/monotonic-clock@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_0_2_4"><code>wasi:sockets/tcp@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_4"><code>wasi:sockets/tcp-create-socket@0.2.4</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_4"><code>wasi:sockets/ip-name-lookup@0.2.4</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_5"><code>wasi:io/error@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_network_0_2_5"><code>wasi:sockets/network@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_instance_network_0_2_5"><code>wasi:sockets/instance-network@0.2.5</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_5"><code>wasi:io/poll@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_0_2_5"><code>wasi:sockets/udp@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_5"><code>wasi:sockets/udp-create-socket@0.2.5</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_5"><code>wasi:io/streams@0.2.5</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_5"><code>wasi:clocks/monotonic-clock@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_0_2_5"><code>wasi:sockets/tcp@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_5"><code>wasi:sockets/tcp-create-socket@0.2.5</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_5"><code>wasi:sockets/ip-name-lookup@0.2.5</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_4"></a>Import interface wasi:io/error@0.2.4</h2>
+<h2><a id="wasi_io_error_0_2_5"></a>Import interface wasi:io/error@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -49,7 +49,7 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_sockets_network_0_2_4"></a>Import interface wasi:sockets/network@0.2.4</h2>
+<h2><a id="wasi_sockets_network_0_2_5"></a>Import interface wasi:sockets/network@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>type error</code></h4>
@@ -264,7 +264,7 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="network_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_instance_network_0_2_4"></a>Import interface wasi:sockets/instance-network@0.2.4</h2>
+<h2><a id="wasi_sockets_instance_network_0_2_5"></a>Import interface wasi:sockets/instance-network@0.2.5</h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -279,7 +279,7 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_4"></a>Import interface wasi:io/poll@0.2.4</h2>
+<h2><a id="wasi_io_poll_0_2_5"></a>Import interface wasi:io/poll@0.2.5</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -332,7 +332,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_0_2_4"></a>Import interface wasi:sockets/udp@0.2.4</h2>
+<h2><a id="wasi_sockets_udp_0_2_5"></a>Import interface wasi:sockets/udp@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
@@ -746,7 +746,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a id="method_outgoing_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_create_socket_0_2_4"></a>Import interface wasi:sockets/udp-create-socket@0.2.4</h2>
+<h2><a id="wasi_sockets_udp_create_socket_0_2_5"></a>Import interface wasi:sockets/udp-create-socket@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
@@ -791,7 +791,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a id="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_4"></a>Import interface wasi:io/streams@0.2.4</h2>
+<h2><a id="wasi_io_streams_0_2_5"></a>Import interface wasi:io/streams@0.2.5</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -1121,7 +1121,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_2_4"></a>Import interface wasi:clocks/monotonic-clock@0.2.4</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_5"></a>Import interface wasi:clocks/monotonic-clock@0.2.5</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -1180,7 +1180,7 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_0_2_4"></a>Import interface wasi:sockets/tcp@0.2.4</h2>
+<h2><a id="wasi_sockets_tcp_0_2_5"></a>Import interface wasi:sockets/tcp@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="input_stream"></a><code>type input-stream</code></h4>
@@ -1771,7 +1771,7 @@ has no effect and returns <code>ok</code>.</p>
 <ul>
 <li><a id="method_tcp_socket_shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_create_socket_0_2_4"></a>Import interface wasi:sockets/tcp-create-socket@0.2.4</h2>
+<h2><a id="wasi_sockets_tcp_create_socket_0_2_5"></a>Import interface wasi:sockets/tcp-create-socket@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
@@ -1816,7 +1816,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a id="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_ip_name_lookup_0_2_4"></a>Import interface wasi:sockets/ip-name-lookup@0.2.4</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_2_5"></a>Import interface wasi:sockets/ip-name-lookup@0.2.5</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
