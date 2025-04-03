@@ -45,9 +45,9 @@ jobs:
       - name: Upgrade wit deps
         run:  wit-deps update
       - name: Generate markdown for the command world
-        run:  wit-bindgen markdown wit -w command --html-in-md --features=cli-with-exit-code
+        run:  wit-bindgen markdown wit -w command --html-in-md --all-features
       - name: Generate markdown for the imports world
-        run:  wit-bindgen markdown wit -w imports --html-in-md --features=cli-with-exit-code
+        run:  wit-bindgen markdown wit -w imports --html-in-md --all-features
 
       # file PR
       - name: Create feature branch
