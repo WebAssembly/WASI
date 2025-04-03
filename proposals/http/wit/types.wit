@@ -4,13 +4,13 @@
 @since(version = 0.2.0)
 interface types {
   @since(version = 0.2.0)
-  use wasi:clocks/monotonic-clock@0.2.4.{duration};
+  use wasi:clocks/monotonic-clock@0.2.5.{duration};
   @since(version = 0.2.0)
-  use wasi:io/streams@0.2.4.{input-stream, output-stream};
+  use wasi:io/streams@0.2.5.{input-stream, output-stream};
   @since(version = 0.2.0)
-  use wasi:io/error@0.2.4.{error as io-error};
+  use wasi:io/error@0.2.5.{error as io-error};
   @since(version = 0.2.0)
-  use wasi:io/poll@0.2.4.{pollable};
+  use wasi:io/poll@0.2.5.{pollable};
 
   /// This type corresponds to HTTP standard Methods.
   @since(version = 0.2.0)
