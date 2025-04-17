@@ -11,67 +11,67 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 ### Phase 5 - The Feature is Standardized (WG)
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| Proposal | Champion | Versions |
+| -------- | -------- | -------- |
 
 ### Phase 4 - Standardize the Feature (WG)
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
+| Proposal | Champion | Versions |
+| -------- | -------- | -------- |
 
 ### Phase 3 - Implementation Phase (CG + WG)
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [I/O][wasi-io]                                                                 | Dan Gohman                             |          |
-| [Clocks][wasi-clocks]                                                          | Dan Gohman                             |          |
-| [Random][wasi-random]                                                          | Dan Gohman                             |          |
-| [Filesystem][wasi-filesystem]                                                  | Dan Gohman                             |          |
-| [Sockets][wasi-sockets]                                                        | Dave Bakker                            |          |
-| [CLI][wasi-cli]                                                                | Dan Gohman                             |          |
-| [HTTP][wasi-http]                                                              | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
+| Proposal                      | Champion                                                              | Versions |
+| ----------------------------- | --------------------------------------------------------------------- | -------- |
+| [I/O][wasi-io]                | Dan Gohman                                                            |          |
+| [Clocks][wasi-clocks]         | Dan Gohman                                                            |          |
+| [Random][wasi-random]         | Dan Gohman                                                            |          |
+| [Filesystem][wasi-filesystem] | Dan Gohman                                                            |          |
+| [Sockets][wasi-sockets]       | Dave Bakker                                                           |          |
+| [CLI][wasi-cli]               | Dan Gohman                                                            |          |
+| [HTTP][wasi-http]             | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
-| Proposal                                                                       | Champion                                                      | Versions |
-| ------------------------------------------------------------------------------ |---------------------------------------------------------------| -------- |
-| [Clocks: Timezone][wasi-clocks]                                                | Dan Gohman                                                    |          |
-| [CLI: Exit With Code][wasi-cli]                                                | Dan Gohman                                                    |          |
-| [HTTP: Informational Outbound Response][wasi-http]                             | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
-| [I2C][wasi-i2c]                                                                | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
-| [Key-value Store][wasi-kv-store]                                               | Jiaxiao Zhou, Dan Chiarlone, David Justice                    |          |
-| [Machine Learning (wasi-nn)][wasi-nn]                                          | Andrew Brown and Mingqiu Sun                                  |          |
-| [Runtime Config][wasi-runtime-config]                                          | Jiaxiao Zhou, Dan Chiarlone, David Justice                    |          |
-| [GFX][wasi-gfx]                                                                | Mendy Berger, Sean Isom                                       |          |
-| [Messaging][wasi-messaging]                                            | Jiaxiao Zhou, Dan Chiarlone, David Justice, Taylor Thomas     |          |
+| Proposal                                           | Champion                                                              | Versions |
+| -------------------------------------------------- | --------------------------------------------------------------------- | -------- |
+| [Clocks: Timezone][wasi-clocks]                    | Dan Gohman                                                            |          |
+| [CLI: Exit With Code][wasi-cli]                    | Dan Gohman                                                            |          |
+| [HTTP: Informational Outbound Response][wasi-http] | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
+| [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler         |          |
+| [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
+| [Machine Learning (wasi-nn)][wasi-nn]              | Andrew Brown and Mingqiu Sun                                          |          |
+| [Runtime Config][wasi-runtime-config]              | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
+| [GFX][wasi-gfx]                                    | Mendy Berger, Sean Isom                                               |          |
+| [Messaging][wasi-messaging]                        | Jiaxiao Zhou, Dan Chiarlone, David Justice, Taylor Thomas             |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [Blob Store][wasi-blob-store]                                                  | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Crypto][wasi-crypto]                                                          | Frank Denis and Daiki Ueno             |          |
-| [Digital I/O][wasi-digital-io]                      | Emiel Van Severen |          |
-| [Distributed Lock Service][wasi-distributed-lock-service]                      | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [Logging][wasi-logging]                                               | Dan Gohman |          |
-| [Observe][wasi-observe]    | Caleb Schoepp                           |          |
-| [Parallel][wasi-parallel]                                                      | Andrew Brown                           |          |
-| [Pattern Match][wasi-pattern-match]                                                      | Jianjun Zhu                           |          |
-| [SPI][wasi-spi]                      | Emiel Van Severen |          |
-| [SQL][wasi-sql]                                                                | Jiaxiao Zhou, Dan Chiarlone, David Justice |          |
-| [SQL Embed][wasi-sql-embed]                                                                | Robin Brown |          |
-| [Threads][wasi-threads]                                                        | Alexandru Ene, Marcin Kolny, Andrew Brown |          |
-| [TLS][wasi-tls]                                                                | Joel Dice, Dave Bakker, James Sturtevant  |          |
-| [URL][wasi-url]                                                                | Radu Matei       |          |
-| [USB][wasi-usb]                                                                | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts | |
+| Proposal                                                  | Champion                                         | Versions |
+| --------------------------------------------------------- | ------------------------------------------------ | -------- |
+| [Blob Store][wasi-blob-store]                             | Jiaxiao Zhou, Dan Chiarlone, David Justice       |          |
+| [Crypto][wasi-crypto]                                     | Frank Denis and Daiki Ueno                       |          |
+| [GPIO][wasi-gpio]                                         | Merlijn Sebrechts, Maximilian Seidler            |          |
+| [Distributed Lock Service][wasi-distributed-lock-service] | Jiaxiao Zhou, Dan Chiarlone, David Justice       |          |
+| [Logging][wasi-logging]                                   | Dan Gohman                                       |          |
+| [Observe][wasi-observe]                                   | Caleb Schoepp                                    |          |
+| [Parallel][wasi-parallel]                                 | Andrew Brown                                     |          |
+| [Pattern Match][wasi-pattern-match]                       | Jianjun Zhu                                      |          |
+| [SPI][wasi-spi]                                           | Merlijn Sebrechts                                |          |
+| [SQL][wasi-sql]                                           | Jiaxiao Zhou, Dan Chiarlone, David Justice       |          |
+| [SQL Embed][wasi-sql-embed]                               | Robin Brown                                      |          |
+| [Threads][wasi-threads]                                   | Alexandru Ene, Marcin Kolny, Andrew Brown        |          |
+| [TLS][wasi-tls]                                           | Joel Dice, Dave Bakker, James Sturtevant         |          |
+| [URL][wasi-url]                                           | Radu Matei                                       |          |
+| [USB][wasi-usb]                                           | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
 **Note:** The pre-proposal phase is simply meant as a way to share ideas. This means that there may be overlap between pre-proposals. It also means that the WASI subgroup has not yet decided that the pre-proposal is in scope for WASI.
 
-| Proposal                                                                       | Champion                               | Versions |
-| ------------------------------------------------------------------------------ | -------------------------------------- | -------- |
-| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals)    | Piotr Sikora                           |          |
+| Proposal                                                                         | Champion     | Versions |
+| -------------------------------------------------------------------------------- | ------------ | -------- |
+| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora |          |
 
 ## Versioning
 
@@ -90,8 +90,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-blob-store]: https://github.com/WebAssembly/wasi-blob-store
 [wasi-clocks]: https://github.com/WebAssembly/wasi-clocks
 [wasi-crypto]: https://github.com/WebAssembly/wasi-crypto
-[wasi-data]: https://github.com/singlestore-labs/wasi-data
-[wasi-digital-io]: https://github.com/WebAssembly/wasi-digital-io
+[wasi-gpio]: https://github.com/WebAssembly/wasi-gpio
 [wasi-distributed-lock-service]: https://github.com/WebAssembly/wasi-distributed-lock-service
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-http]: https://github.com/WebAssembly/wasi-http
