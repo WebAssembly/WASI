@@ -69,9 +69,10 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 **Note:** The pre-proposal phase is simply meant as a way to share ideas. This means that there may be overlap between pre-proposals. It also means that the WASI subgroup has not yet decided that the pre-proposal is in scope for WASI.
 
-| Proposal                                                                         | Champion     | Versions |
-| -------------------------------------------------------------------------------- | ------------ | -------- |
-| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora |          |
+| Proposal                                                                         | Champion      | Versions |
+| -------------------------------------------------------------------------------- | ------------- | -------- |
+| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |
+| [OTel][wasi-otel]                                                                | Caleb Schoepp |          |
 
 ## Versioning
 
@@ -101,6 +102,7 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-messaging]: https://github.com/WebAssembly/wasi-messaging
 [wasi-nn]: https://github.com/WebAssembly/wasi-nn
 [wasi-observe]: https://github.com/dylibso/wasi-observe
+[wasi-otel]: https://github.com/calebschoepp/wasi-otel
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
 [wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
