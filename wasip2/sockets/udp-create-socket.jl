@@ -1,5 +1,5 @@
 @since(version = 0.2.0)
-interface udp-create-socket {
+           udp-create-socket {
     @since(version = 0.2.0)
     use network.{network, error-code, ip-address-family};
     @since(version = 0.2.0)
