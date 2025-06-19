@@ -4,8 +4,8 @@ package wasi:random@0.2.6;
 /// It is intended to be portable at least between Unix-family platforms and
 /// Windows.
 @since(version = 0.2.0)
-interface insecure {
-    /// Return `len` insecure pseudo-random bytes.
+        insecure {
+    /// Return `len` insecure random bytes.
     ///
     /// This function is not cryptographically secure. Do not use it for
     /// anything related to security.
