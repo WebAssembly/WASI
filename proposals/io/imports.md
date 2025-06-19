@@ -267,25 +267,13 @@ the last call to check-write provided a permit.</p>
 <h4><a id="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 bytes, and then flush the stream. Block
 until all of these operations are complete, or an error occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write</code>, and <code>flush</code>, and is implemented with the
-following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while !contents.is_empty() {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, contents.len());
-  let (chunk, rest) = contents.split_at(len);
-  this.write(chunk  );            // eliding error handling
-  contents = rest;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Returns success when all of the contents written are successfully
+flushed to output. If an error occurs at any point before all
+contents are successfully flushed, that error is returned as soon as
+possible. If writing and flushing the complete contents causes the
+stream to become closed, this call should return success, and
+subsequent calls to check-write or other interfaces should return
+stream-error::closed.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
@@ -359,24 +347,8 @@ that should be written.</p>
 <p>Perform a write of up to 4096 zeroes, and then flush the stream.
 Block until all of these operations are complete, or an error
 occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write-zeroes</code>, and <code>flush</code>, and is implemented with
-the following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while num_zeroes != 0 {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, num_zeroes);
-  this.write-zeroes(len);         // eliding error handling
-  num_zeroes -= len;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Functionality is equivelant to <code>blocking-write-and-flush</code> with
+contents given as a list of len containing only zeroes.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
