@@ -303,7 +303,7 @@ interface types {
         ///
         /// If no error is encountered, `stream.read` on the `stream` will return
         /// `read-status::closed` with no `error-context` and the future resolves to
-        /// the value `ok`. If an error is encounttered, `stream.read` on the
+        /// the value `ok`. If an error is encountered, `stream.read` on the
         /// `stream` returns `read-status::closed` with an `error-context` and the future
         /// resolves to `err` with an `error-code`.
         ///
