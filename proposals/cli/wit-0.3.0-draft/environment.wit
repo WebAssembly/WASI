@@ -18,5 +18,5 @@ interface environment {
   /// Return a path that programs should use as their initial current working
   /// directory, interpreting `.` as shorthand for this.
   @since(version = 0.3.0)
-  initial-cwd: func() -> option<string>;
+  get-initial-cwd: func() -> option<string>;
 }
