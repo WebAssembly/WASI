@@ -328,7 +328,7 @@ interface types {
         /// were closed abnormally.
         ///
         /// If the caller is not expecting to receive any data from the peer,
-        /// they may cancel the receive task. Any data still in the receive queue
+        /// they may drop the stream. Any data still in the receive queue
         /// will be discarded. This is equivalent to calling `shutdown(SHUT_RD)`
         /// in POSIX.
         ///
@@ -610,7 +610,6 @@ interface types {
         /// - `invalid-argument`:        The port in `remote-address` is set to 0. (EDESTADDRREQ, EADDRNOTAVAIL)
         /// - `invalid-argument`:        The socket is in "connected" mode and `remote-address` is `some` value that does not match the address passed to `connect`. (EISCONN)
         /// - `invalid-argument`:        The socket is not "connected" and no value for `remote-address` was provided. (EDESTADDRREQ)
-        /// - `invalid-state`:           The socket has not been bound yet.
         /// - `remote-unreachable`:      The remote address is not reachable. (ECONNRESET, ENETRESET on Windows, EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
         /// - `connection-refused`:      The connection was refused. (ECONNREFUSED)
         /// - `datagram-too-large`:      The datagram is too large. (EMSGSIZE)
