@@ -2,16 +2,16 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_6"><code>wasi:io/error@0.2.6</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_6"><code>wasi:io/poll@0.2.6</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_6"><code>wasi:io/streams@0.2.6</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_6"><code>wasi:clocks/wall-clock@0.2.6</code></a></li>
-<li>interface <a href="#wasi_filesystem_types_0_2_6"><code>wasi:filesystem/types@0.2.6</code></a></li>
-<li>interface <a href="#wasi_filesystem_preopens_0_2_6"><code>wasi:filesystem/preopens@0.2.6</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_7"><code>wasi:io/error@0.2.7</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_7"><code>wasi:io/poll@0.2.7</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_7"><code>wasi:io/streams@0.2.7</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_7"><code>wasi:clocks/wall-clock@0.2.7</code></a></li>
+<li>interface <a href="#wasi_filesystem_types_0_2_7"><code>wasi:filesystem/types@0.2.7</code></a></li>
+<li>interface <a href="#wasi_filesystem_preopens_0_2_7"><code>wasi:filesystem/preopens@0.2.7</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_6"></a>Import interface wasi:io/error@0.2.6</h2>
+<h2><a id="wasi_io_error_0_2_7"></a>Import interface wasi:io/error@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -44,7 +44,7 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_6"></a>Import interface wasi:io/poll@0.2.6</h2>
+<h2><a id="wasi_io_poll_0_2_7"></a>Import interface wasi:io/poll@0.2.7</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -97,7 +97,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_6"></a>Import interface wasi:io/streams@0.2.6</h2>
+<h2><a id="wasi_io_streams_0_2_7"></a>Import interface wasi:io/streams@0.2.7</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -270,25 +270,13 @@ the last call to check-write provided a permit.</p>
 <h4><a id="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 bytes, and then flush the stream. Block
 until all of these operations are complete, or an error occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write</code>, and <code>flush</code>, and is implemented with the
-following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while !contents.is_empty() {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, contents.len());
-  let (chunk, rest) = contents.split_at(len);
-  this.write(chunk  );            // eliding error handling
-  contents = rest;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Returns success when all of the contents written are successfully
+flushed to output. If an error occurs at any point before all
+contents are successfully flushed, that error is returned as soon as
+possible. If writing and flushing the complete contents causes the
+stream to become closed, this call should return success, and
+subsequent calls to check-write or other interfaces should return
+stream-error::closed.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
@@ -362,24 +350,8 @@ that should be written.</p>
 <p>Perform a write of up to 4096 zeroes, and then flush the stream.
 Block until all of these operations are complete, or an error
 occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write-zeroes</code>, and <code>flush</code>, and is implemented with
-the following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while num_zeroes != 0 {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, num_zeroes);
-  this.write-zeroes(len);         // eliding error handling
-  num_zeroes -= len;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Functionality is equivelant to <code>blocking-write-and-flush</code> with
+contents given as a list of len containing only zeroes.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
@@ -427,7 +399,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_wall_clock_0_2_6"></a>Import interface wasi:clocks/wall-clock@0.2.6</h2>
+<h2><a id="wasi_clocks_wall_clock_0_2_7"></a>Import interface wasi:clocks/wall-clock@0.2.7</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -468,7 +440,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a id="wasi_filesystem_types_0_2_6"></a>Import interface wasi:filesystem/types@0.2.6</h2>
+<h2><a id="wasi_filesystem_types_0_2_7"></a>Import interface wasi:filesystem/types@0.2.7</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -1346,7 +1318,7 @@ errors are filesystem-related errors.</p>
 <ul>
 <li><a id="filesystem_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_filesystem_preopens_0_2_6"></a>Import interface wasi:filesystem/preopens@0.2.6</h2>
+<h2><a id="wasi_filesystem_preopens_0_2_7"></a>Import interface wasi:filesystem/preopens@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="descriptor"></a><code>type descriptor</code></h4>
