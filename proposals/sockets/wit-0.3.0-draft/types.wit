@@ -153,7 +153,7 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsasocketw>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=socket&sektion=2>
         @since(version = 0.3.0)
-        new: static func(address-family: ip-address-family) -> result<tcp-socket, error-code>;
+        create: static func(address-family: ip-address-family) -> result<tcp-socket, error-code>;
 
         /// Bind the socket to the provided IP address and port.
         ///
