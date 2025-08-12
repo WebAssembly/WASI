@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_6"><code>wasi:io/error@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_network_0_2_6"><code>wasi:sockets/network@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_instance_network_0_2_6"><code>wasi:sockets/instance-network@0.2.6</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_6"><code>wasi:io/poll@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_0_2_6"><code>wasi:sockets/udp@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_6"><code>wasi:sockets/udp-create-socket@0.2.6</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_6"><code>wasi:io/streams@0.2.6</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_6"><code>wasi:clocks/monotonic-clock@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_0_2_6"><code>wasi:sockets/tcp@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_6"><code>wasi:sockets/tcp-create-socket@0.2.6</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_6"><code>wasi:sockets/ip-name-lookup@0.2.6</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_7"><code>wasi:io/error@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_network_0_2_7"><code>wasi:sockets/network@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_instance_network_0_2_7"><code>wasi:sockets/instance-network@0.2.7</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_7"><code>wasi:io/poll@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_0_2_7"><code>wasi:sockets/udp@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_7"><code>wasi:sockets/udp-create-socket@0.2.7</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_7"><code>wasi:io/streams@0.2.7</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_7"><code>wasi:clocks/monotonic-clock@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_0_2_7"><code>wasi:sockets/tcp@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_7"><code>wasi:sockets/tcp-create-socket@0.2.7</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_7"><code>wasi:sockets/ip-name-lookup@0.2.7</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_6"></a>Import interface wasi:io/error@0.2.6</h2>
+<h2><a id="wasi_io_error_0_2_7"></a>Import interface wasi:io/error@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -49,7 +49,7 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_sockets_network_0_2_6"></a>Import interface wasi:sockets/network@0.2.6</h2>
+<h2><a id="wasi_sockets_network_0_2_7"></a>Import interface wasi:sockets/network@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>type error</code></h4>
@@ -264,7 +264,7 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="network_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_instance_network_0_2_6"></a>Import interface wasi:sockets/instance-network@0.2.6</h2>
+<h2><a id="wasi_sockets_instance_network_0_2_7"></a>Import interface wasi:sockets/instance-network@0.2.7</h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
@@ -279,7 +279,7 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_6"></a>Import interface wasi:io/poll@0.2.6</h2>
+<h2><a id="wasi_io_poll_0_2_7"></a>Import interface wasi:io/poll@0.2.7</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -332,7 +332,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_0_2_6"></a>Import interface wasi:sockets/udp@0.2.6</h2>
+<h2><a id="wasi_sockets_udp_0_2_7"></a>Import interface wasi:sockets/udp@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
@@ -746,7 +746,7 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a id="method_outgoing_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_create_socket_0_2_6"></a>Import interface wasi:sockets/udp-create-socket@0.2.6</h2>
+<h2><a id="wasi_sockets_udp_create_socket_0_2_7"></a>Import interface wasi:sockets/udp-create-socket@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
@@ -791,7 +791,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a id="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_6"></a>Import interface wasi:io/streams@0.2.6</h2>
+<h2><a id="wasi_io_streams_0_2_7"></a>Import interface wasi:io/streams@0.2.7</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -964,25 +964,13 @@ the last call to check-write provided a permit.</p>
 <h4><a id="method_output_stream_blocking_write_and_flush"></a><code>[method]output-stream.blocking-write-and-flush: func</code></h4>
 <p>Perform a write of up to 4096 bytes, and then flush the stream. Block
 until all of these operations are complete, or an error occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write</code>, and <code>flush</code>, and is implemented with the
-following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while !contents.is_empty() {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, contents.len());
-  let (chunk, rest) = contents.split_at(len);
-  this.write(chunk  );            // eliding error handling
-  contents = rest;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Returns success when all of the contents written are successfully
+flushed to output. If an error occurs at any point before all
+contents are successfully flushed, that error is returned as soon as
+possible. If writing and flushing the complete contents causes the
+stream to become closed, this call should return success, and
+subsequent calls to check-write or other interfaces should return
+stream-error::closed.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
@@ -1056,24 +1044,8 @@ that should be written.</p>
 <p>Perform a write of up to 4096 zeroes, and then flush the stream.
 Block until all of these operations are complete, or an error
 occurs.</p>
-<p>This is a convenience wrapper around the use of <code>check-write</code>,
-<code>subscribe</code>, <code>write-zeroes</code>, and <code>flush</code>, and is implemented with
-the following pseudo-code:</p>
-<pre><code class="language-text">let pollable = this.subscribe();
-while num_zeroes != 0 {
-  // Wait for the stream to become writable
-  pollable.block();
-  let Ok(n) = this.check-write(); // eliding error handling
-  let len = min(n, num_zeroes);
-  this.write-zeroes(len);         // eliding error handling
-  num_zeroes -= len;
-}
-this.flush();
-// Wait for completion of `flush`
-pollable.block();
-// Check for any errors that arose during `flush`
-let _ = this.check-write();         // eliding error handling
-</code></pre>
+<p>Functionality is equivelant to <code>blocking-write-and-flush</code> with
+contents given as a list of len containing only zeroes.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_output_stream_blocking_write_zeroes_and_flush.self"></a><code>self</code>: borrow&lt;<a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a>&gt;</li>
@@ -1121,7 +1093,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_2_6"></a>Import interface wasi:clocks/monotonic-clock@0.2.6</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_7"></a>Import interface wasi:clocks/monotonic-clock@0.2.7</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -1180,7 +1152,7 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_0_2_6"></a>Import interface wasi:sockets/tcp@0.2.6</h2>
+<h2><a id="wasi_sockets_tcp_0_2_7"></a>Import interface wasi:sockets/tcp@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="input_stream"></a><code>type input-stream</code></h4>
@@ -1771,7 +1743,7 @@ has no effect and returns <code>ok</code>.</p>
 <ul>
 <li><a id="method_tcp_socket_shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_create_socket_0_2_6"></a>Import interface wasi:sockets/tcp-create-socket@0.2.6</h2>
+<h2><a id="wasi_sockets_tcp_create_socket_0_2_7"></a>Import interface wasi:sockets/tcp-create-socket@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
@@ -1816,7 +1788,7 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a id="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_ip_name_lookup_0_2_6"></a>Import interface wasi:sockets/ip-name-lookup@0.2.6</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_2_7"></a>Import interface wasi:sockets/ip-name-lookup@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
