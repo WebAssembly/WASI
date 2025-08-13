@@ -2394,9 +2394,6 @@ Note: This is similar to [`sched_yield`](#sched_yield) in POSIX.
 Write high-quality random data into a buffer.
 This function blocks when the implementation is unable to immediately
 provide sufficient high-quality random data.
-This function may execute slowly, so when large mounts of random data are
-required, it's advisable to use this function to seed a pseudo-random
-number generator, rather than to provide the random data directly.
 
 ##### Params
 - <a href="#random_get.buf" name="random_get.buf"></a> `buf`: `Pointer<u8>`
