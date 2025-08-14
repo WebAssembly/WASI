@@ -4,7 +4,7 @@ name: Publish a Wasm Component package to GitHub Artifacts
 on:
   push:
     tags:
-      - v*
+      - v0.2.*
   workflow_dispatch:
 
 env:
