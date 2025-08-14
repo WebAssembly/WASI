@@ -1,0 +1,71 @@
+name: Publish 0.3.0 WIT Definitions
+
+# Run this action when changes are pushed to the main branch and affect files in the wit-0.3.0-draft directory
+on:
+  push:
+    tags:
+      - v0.3.0-rc-*
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
+    steps:
+      # Checkout the repo and install dependencies
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@8aac5aa2bf0dfaa2863eccad9f43c68fe40e5ec8 # v1.14.1
+        
+      - name: Install wkg
+        shell: bash
+        run: cargo binstall wkg
+        
+      - name: Install cosign
+        uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
+
+      # To version our image we want to obtain the version from the tag
+      - name: Get version
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/webassembly/wasi/clocks-0.3.0
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Login to the GitHub registry
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.ORG_PAT }}
+      
+      - name: Build
+        shell: bash
+        run: wkg wit build -o "${{ github.event.repository.name }}-0.3.0.wasm" --wit-dir wit-0.3.0-draft
+
+      # Upload the Wasm binary to the GitHub registry
+      - name: Publish to GitHub Container Registry
+        id: publish
+        uses: bytecodealliance/wkg-github-action@v5
+        with:
+            oci-reference-without-tag: "ghcr.io/webassembly/wasi/clocks-0.3.0"
+            file: "${{ github.event.repository.name }}-0.3.0.wasm"
+            description: "A WASI API for reading the current time and measuring elapsed time (0.3.0 version)."
+            source: 'https://github.com/webassembly/wasi'
+            homepage: 'https://wasi.dev'
+            version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            licenses: 'Apache-2.0 WITH LLVM-exception'
+
+      # Sign the output component
+      - name: Sign the wasm component
+        run: cosign sign --yes ghcr.io/webassembly/wasi/clocks-0.3.0@${{ steps.publish.outputs.digest }}
