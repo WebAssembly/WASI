@@ -56,8 +56,7 @@ jobs:
 
       - name: Update wit deps
         run: |
-          cd wit-0.3.0-draft
-          wit-deps update || true  # Continue even if no deps to update
+          wit-deps -m wit-0.3.0-draft/deps.toml -l wit-0.3.0-draft/deps.lock -d wit-0.3.0-draft/deps update
 
       # Create PR with changes using create-pull-request action
       - name: Create Pull Request
