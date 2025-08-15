@@ -37,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/webassembly/wasi/random-0.3.0
+          images: ghcr.io/webassembly/wasi/random
           tags: |
             type=semver,pattern={{version}}
 
@@ -57,7 +57,7 @@ jobs:
         id: publish
         uses: bytecodealliance/wkg-github-action@v5
         with:
-            oci-reference-without-tag: "ghcr.io/webassembly/wasi/random-0.3.0"
+            oci-reference-without-tag: "ghcr.io/webassembly/wasi/random"
             file: "${{ github.event.repository.name }}-0.3.0.wasm"
             description: "A WASI API for reading the current time and measuring elapsed time (0.3.0 version)."
             source: 'https://github.com/webassembly/wasi'
@@ -67,4 +67,4 @@ jobs:
 
       # Sign the output component
       - name: Sign the wasm component
-        run: cosign sign --yes ghcr.io/webassembly/wasi/random-0.3.0@${{ steps.publish.outputs.digest }}
+        run: cosign sign --yes ghcr.io/webassembly/wasi/random@${{ steps.publish.outputs.digest }}
