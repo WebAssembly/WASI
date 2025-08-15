@@ -1,0 +1,80 @@
+name: Update 0.3.0 WIT Definitions
+
+# Manually dispatch this action from the Actions page
+on:
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  update-versions:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repo and install dependencies
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@8aac5aa2bf0dfaa2863eccad9f43c68fe40e5ec8 # v1.14.1
+        
+      # TODO: we don't pin the versions here. It's not great but this will simplify our iteration
+      # while we rapidly iterate on these tools. Pin when we're stable.
+      - name: Install wit-bindgen
+        shell: bash
+        run: cargo binstall wit-bindgen-cli
+        
+      - name: Install wit-deps
+        shell: bash
+        run: cargo binstall wit-deps-cli
+
+      - name: Set version with RC timestamp
+        id: version
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          BASE_VERSION="0.3.0-rc-${DATE}"
+          COUNTER=1
+          VERSION="${BASE_VERSION}"
+          
+          # Check if the tag already exists
+          while git ls-remote --tags origin | grep -q "refs/tags/v${VERSION}$"; do
+            VERSION="${BASE_VERSION}-${COUNTER}"
+            COUNTER=$((COUNTER + 1))
+          done
+          
+          echo "value=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version will be: ${VERSION}"
+
+      # Update version in WIT definitions
+      - name: Update version in WIT files
+        run: |
+          # Update @since version annotations
+          find wit-0.3.0-draft -name "*.wit" -exec sed -i "s/\(@since(version = \)[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc-[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\(-[0-9]\+\)\?\)\?\()\)/\1${{ steps.version.outputs.value }}\4/g" {} +
+          # Update all wasi package references (package, use, import, export, from)
+          find wit-0.3.0-draft -name "*.wit" -exec sed -i "s/\( wasi:[a-zA-Z0-9_/-]\+@\)[0-9]\+\.[0-9]\+\.[0-9]\+\(-rc-[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\(-[0-9]\+\)\?\)\?/\1${{ steps.version.outputs.value }}/g" {} +
+
+      - name: Update wit deps
+        run: |
+          wit-deps -m wit-0.3.0-draft/deps.toml -l wit-0.3.0-draft/deps.lock -d wit-0.3.0-draft/deps update
+
+      # Create PR with changes using create-pull-request action
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update 0.3.0 WIT definitions to ${{ steps.version.outputs.value }}"
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: update-wit-${{ steps.version.outputs.value }}
+          title: "Update 0.3.0 WIT definitions to ${{ steps.version.outputs.value }}"
+          body: |
+            Updates the 0.3.0 WIT definitions with version ${{ steps.version.outputs.value }}.
+            
+            This is an automated update to rev the RC timestamp.
+            
+            ## Changes
+            - Updated package and since version in WIT files
+            - Updated WIT dependencies if applicable
+          draft: false
+          delete-branch: true
