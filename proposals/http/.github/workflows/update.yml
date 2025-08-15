@@ -23,9 +23,9 @@ jobs:
     steps:
       # Checkout the repo and install dependencies
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@v1.10.15
+        uses: cargo-bins/cargo-binstall@8aac5aa2bf0dfaa2863eccad9f43c68fe40e5ec8 # v1.14.1
       - name: Install wit-bindgen
         shell: bash
         run: cargo binstall wit-bindgen-cli
@@ -41,7 +41,7 @@ jobs:
       - name: Upgrade tag
         run:  find . -type f -name "*.wit" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
       - name: Upgrade deps tags
-        run:  find . -type f -name "deps.toml" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +   
+        run:  find . -type f -name "deps.toml" -exec sed -i "s/${{ inputs.prev_version }}/${{ inputs.next_version }}/g" {} +
       - name: Upgrade wit deps
         run:  wit-deps update
       - name: Generate markdown for the proxy world

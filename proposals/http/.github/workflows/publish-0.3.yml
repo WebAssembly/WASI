@@ -1,11 +1,10 @@
-name: Publish a Wasm Component package to GitHub Artifacts
+name: Publish 0.3.0 WIT Definitions
 
-# Run this action whenever a new release is tagged
 on:
   push:
     tags:
-      - v0.2.*
-  workflow_dispatch:
+      - v0.3.0-rc-*
+  workflow_dispatch:  # Allow manual triggering
 
 env:
   IMAGE_NAME: ${{ github.repository }}
@@ -21,15 +20,20 @@ jobs:
     steps:
       # Checkout the repo and install dependencies
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@8aac5aa2bf0dfaa2863eccad9f43c68fe40e5ec8 # v1.14.1
+
+      # TODO: we don't pin the versions here. It's not great but this will simplify our iteration
+      # while we rapidly iterate on these tools. Pin when we're stable.
       - name: Install wkg
         shell: bash
         run: cargo binstall wkg
+
       - name: Install cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
- 
+
       # To version our image we want to obtain the version from the tag
       - name: Get version
         id: meta
@@ -38,8 +42,7 @@ jobs:
           images: ghcr.io/webassembly/wasi/http
           tags: |
             type=semver,pattern={{version}}
-      
-      # To upload our image to the GitHub registry, we first have to login
+
       - name: Login to the GitHub registry
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
@@ -47,19 +50,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.ORG_PAT }}
       
-      # Build our `.wit` files into a Wasm binary
       - name: Build
         shell: bash
-        run: wkg wit build -o wasi-http.wasm
+        run: wkg wit build -o "${{ github.event.repository.name }}-0.3.0.wasm" --wit-dir wit-0.3.0-draft
 
       # Upload the Wasm binary to the GitHub registry
       - name: Publish to GitHub Container Registry
         id: publish
         uses: bytecodealliance/wkg-github-action@v5
         with:
-            oci-reference-without-tag: 'ghcr.io/webassembly/wasi/http'
-            file: 'wasi-http.wasm'
-            description: 'A WASI API for sending and receiving HTTP requests and responses.'
+            oci-reference-without-tag: "ghcr.io/webassembly/wasi/http"
+            file: "${{ github.event.repository.name }}-0.3.0.wasm"
+            description: "A WASI API for sending and receiving HTTP requests and responses."
             source: 'https://github.com/webassembly/wasi'
             homepage: 'https://wasi.dev'
             version: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
