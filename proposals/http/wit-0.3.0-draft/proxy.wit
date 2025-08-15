@@ -1,4 +1,4 @@
-package wasi:http@0.3.0-rc-2025-08-15-draft;
+package wasi:http@0.3.0-rc-2025-08-15;
 
 /// The `wasi:http/imports` world imports all the APIs for HTTP proxies.
 /// It is intended to be `include`d in other worlds.
