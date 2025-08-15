@@ -11,7 +11,7 @@ interface handler {
   ///
   /// When imported, this function may be used to either send an outgoing
   /// request over the network or pass it to another component.
-  handle: func(
+  handle: async func(
     request: request,
   ) -> result<response, error-code>;
 }
