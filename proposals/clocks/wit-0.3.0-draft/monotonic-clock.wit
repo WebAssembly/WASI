@@ -37,7 +37,7 @@ interface monotonic-clock {
         when: instant,
     );
 
-    /// Wait for the specified duration has elapsed.
+    /// Wait for the specified duration to elapse.
     @since(version = 0.3.0-rc-2025-08-15)
     wait-for: async func(
         how-long: duration,
