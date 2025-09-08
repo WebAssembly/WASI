@@ -9,15 +9,13 @@ package wasi:clocks@0.3.0-rc-2025-08-15;
 /// successive reads of the clock will produce non-decreasing values.
 @since(version = 0.3.0-rc-2025-08-15)
 interface monotonic-clock {
+    use types.{duration};
+
     /// An instant in time, in nanoseconds. An instant is relative to an
     /// unspecified initial value, and can only be compared to instances from
     /// the same monotonic-clock.
     @since(version = 0.3.0-rc-2025-08-15)
     type instant = u64;
-
-    /// A duration of time, in nanoseconds.
-    @since(version = 0.3.0-rc-2025-08-15)
-    type duration = u64;
 
     /// Read the current value of the clock.
     ///
