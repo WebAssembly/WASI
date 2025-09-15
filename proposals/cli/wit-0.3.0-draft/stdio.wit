@@ -27,12 +27,12 @@ interface stdin {
   /// Multiple streams may be active at the same time. The behavior of concurrent
   /// reads is implementation-specific.
   @since(version = 0.3.0-rc-2025-08-15)
-  read-stdin: func() -> tuple<stream<u8>, future<result<_, error-code>>>;
+  read-via-stream: func() -> tuple<stream<u8>, future<result<_, error-code>>>;
 }
 
 @since(version = 0.3.0-rc-2025-08-15)
 interface stdout {
-  /// Append from the given stream to stdout.
+  /// Write the given stream to stdout.
   ///
   /// If the stream's writable end is dropped this function will either return
   /// success once the entire contents of the stream have been written or an
@@ -41,12 +41,12 @@ interface stdout {
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
   @since(version = 0.3.0-rc-2025-08-15)
-  append-stdout: async func(data: stream<u8>) -> result<_, error-code>;
+  write-via-stream: async func(data: stream<u8>) -> result<_, error-code>;
 }
 
 @since(version = 0.3.0-rc-2025-08-15)
 interface stderr {
-  /// Append from the given stream to stderr.
+  /// Write the given stream to stderr.
   ///
   /// If the stream's writable end is dropped this function will either return
   /// success once the entire contents of the stream have been written or an
@@ -55,5 +55,5 @@ interface stderr {
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
   @since(version = 0.3.0-rc-2025-08-15)
-  append-stderr: async func(data: stream<u8>) -> result<_, error-code>;
+  write-via-stream: async func(data: stream<u8>) -> result<_, error-code>;
 }
