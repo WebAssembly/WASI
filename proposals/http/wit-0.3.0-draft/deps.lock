@@ -1,8 +1,8 @@
 [cli]
 url = "https://github.com/WebAssembly/wasi-cli/archive/main.tar.gz"
 subdir = "wit-0.3.0-draft"
-sha256 = "7f9cf181100ca1cadcb49a1efa3e80828d375df2d5ddf10a8f66e848d423aea5"
-sha512 = "569f6b4ed2a3bec913e5e06fd35caab564048cf31632795c2fbdd8c40ddb5f5eea7b1cc59d33c80e5d7b642ed246ba4a3e40d3edeaaa2c6a5c4bcd02e0b67212"
+sha256 = "5ff03c236a6fed89d2968c3fd5d9e2b3f4fcd7a606dc94ead51df5357bdabe76"
+sha512 = "d0277a9b3692de917ef8b1bbe6be9247157d548962dde181b159788064a06513c6f6d775fcca94a3170fe2149ca75d609664938716f4dc877ef65cd7db07eb76"
 deps = ["clocks", "filesystem", "random", "sockets"]
 
 [clocks]
