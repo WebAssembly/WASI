@@ -1,13 +1,13 @@
-package wasi:random@0.3.0-rc-2025-08-15;
+package wasi:random@0.3.0-rc-2025-09-16-1;
 
-@since(version = 0.3.0-rc-2025-08-15)
+@since(version = 0.3.0-rc-2025-09-16-1)
 world imports {
-    @since(version = 0.3.0-rc-2025-08-15)
+    @since(version = 0.3.0-rc-2025-09-16-1)
     import random;
 
-    @since(version = 0.3.0-rc-2025-08-15)
+    @since(version = 0.3.0-rc-2025-09-16-1)
     import insecure;
 
-    @since(version = 0.3.0-rc-2025-08-15)
+    @since(version = 0.3.0-rc-2025-09-16-1)
     import insecure-seed;
 }
