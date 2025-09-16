@@ -12,8 +12,8 @@ deps = ["clocks"]
 [random]
 url = "https://github.com/WebAssembly/wasi-random/archive/main.tar.gz"
 subdir = "wit-0.3.0-draft"
-sha256 = "fcc4d3b51564274bb05ebd7cad65ff036eed5c1ac1316639e0c04aa0d64fc938"
-sha512 = "d3b10e7791fc354730551f8e21beff96bdbf16f96ef655cd0ac7e0489a9e28c4a7a602d50b199de4a27981643bdbea7ec075cfa80ca351aea6ae74ea660b0568"
+sha256 = "45a5fa540deaf386de72bcf53c4462901919532e6dc1a80226c117a0d6e7c5e5"
+sha512 = "984b48f604992236530c190b00de9feba45f908b83a0dad31b6a1c117b6146bdfc838f4669d23763604a464bc6b980e35c07943e1bc22305e94a87c6acc51e5a"
 
 [sockets]
 url = "https://github.com/WebAssembly/wasi-sockets/archive/main.tar.gz"
