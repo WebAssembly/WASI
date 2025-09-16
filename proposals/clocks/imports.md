@@ -88,6 +88,10 @@ the same monotonic-clock.
 <p>Read the current value of the clock.</p>
 <p>The clock is monotonic, therefore calling this function repeatedly will
 produce a sequence of non-decreasing values.</p>
+<p>For completeness, this function traps if it's not possible to represent
+the value of the clock in an <a href="#instant"><code>instant</code></a>. Consequently, implementations
+should ensure that the starting time is low enough to avoid the
+possibility of overflow in practice.</p>
 <h5>Return values</h5>
 <ul>
 <li><a id="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
