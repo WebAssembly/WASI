@@ -1,5 +1,5 @@
 @since(version = 0.3.0-rc-2025-08-15)
-interface stdio {
+interface types {
   @since(version = 0.3.0-rc-2025-08-15)
   enum error-code {
     /// Input/output error
@@ -13,6 +13,8 @@ interface stdio {
 
 @since(version = 0.3.0-rc-2025-08-15)
 interface stdin {
+  use types.{error-code};
+
   /// Return a stream for reading from stdin.
   ///
   /// This function returns a stream which provides data read from stdin,
@@ -32,6 +34,8 @@ interface stdin {
 
 @since(version = 0.3.0-rc-2025-08-15)
 interface stdout {
+  use types.{error-code};
+
   /// Write the given stream to stdout.
   ///
   /// If the stream's writable end is dropped this function will either return
@@ -46,6 +50,8 @@ interface stdout {
 
 @since(version = 0.3.0-rc-2025-08-15)
 interface stderr {
+  use types.{error-code};
+
   /// Write the given stream to stderr.
   ///
   /// If the stream's writable end is dropped this function will either return
