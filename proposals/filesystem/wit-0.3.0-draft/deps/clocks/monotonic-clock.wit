@@ -9,20 +9,23 @@ package wasi:clocks@0.3.0-rc-2025-08-15;
 /// successive reads of the clock will produce non-decreasing values.
 @since(version = 0.3.0-rc-2025-08-15)
 interface monotonic-clock {
+    use types.{duration};
+
     /// An instant in time, in nanoseconds. An instant is relative to an
     /// unspecified initial value, and can only be compared to instances from
     /// the same monotonic-clock.
     @since(version = 0.3.0-rc-2025-08-15)
     type instant = u64;
 
-    /// A duration of time, in nanoseconds.
-    @since(version = 0.3.0-rc-2025-08-15)
-    type duration = u64;
-
     /// Read the current value of the clock.
     ///
     /// The clock is monotonic, therefore calling this function repeatedly will
     /// produce a sequence of non-decreasing values.
+    ///
+    /// For completeness, this function traps if it's not possible to represent
+    /// the value of the clock in an `instant`. Consequently, implementations
+    /// should ensure that the starting time is low enough to avoid the
+    /// possibility of overflow in practice.
     @since(version = 0.3.0-rc-2025-08-15)
     now: func() -> instant;
 
@@ -37,7 +40,7 @@ interface monotonic-clock {
         when: instant,
     );
 
-    /// Wait for the specified duration has elapsed.
+    /// Wait for the specified duration to elapse.
     @since(version = 0.3.0-rc-2025-08-15)
     wait-for: async func(
         how-long: duration,
