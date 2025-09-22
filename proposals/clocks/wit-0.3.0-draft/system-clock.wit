@@ -1,26 +1,37 @@
 package wasi:clocks@0.3.0-rc-2025-09-16;
-/// WASI Wall Clock is a clock API intended to let users query the current
-/// time. The name "wall" makes an analogy to a "clock on the wall", which
-/// is not necessarily monotonic as it may be reset.
+/// WASI System Clock is a clock API intended to let users query the current
+/// time. The clock is not necessarily monotonic as it may be reset.
 ///
 /// It is intended to be portable at least between Unix-family platforms and
 /// Windows.
-///
-/// A wall clock is a clock which measures the date and time according to
-/// some external reference.
 ///
 /// External references may be reset, so this clock is not necessarily
 /// monotonic, making it unsuitable for measuring elapsed time.
 ///
 /// It is intended for reporting the current date and time for humans.
 @since(version = 0.3.0-rc-2025-09-16)
-interface wall-clock {
-    /// A time and date in seconds plus nanoseconds.
+interface system-clock {
+    /// An "instant", or "exact time", is a point in time without regard to any
+    /// time zone: just the time since a particular external reference point,
+    /// often called an "epoch".
+    /// Note that even if the seconds field is negative, incrementing
+    /// nanoseconds always represents moving forwards in time.
+    /// For example, `{ -1 seconds, 999999999 nanoseconds }` represents the
+    /// instant one nanosecond before the epoch.
+    /// For more on various different ways to represent time, see
+    /// https://tc39.es/proposal-temporal/docs/timezone.html
     @since(version = 0.3.0-rc-2025-09-16)
-    record datetime {
-        seconds: u64,
+    record instant {
+        seconds: s64,
         nanoseconds: u32,
     }
+
+    /// A duration of time, in seconds plus nanoseconds.
+    @since(version = 0.3.0-rc-2025-09-16)
+    type duration = {
+        seconds: u64,
+        nanoseconds: u32,
+    };
 
     /// Read the current value of the clock.
     ///
@@ -36,11 +47,11 @@ interface wall-clock {
     /// [POSIX's Seconds Since the Epoch]: https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_16
     /// [Unix Time]: https://en.wikipedia.org/wiki/Unix_time
     @since(version = 0.3.0-rc-2025-09-16)
-    now: func() -> datetime;
+    now: func() -> instant;
 
     /// Query the resolution of the clock.
     ///
     /// The nanoseconds field of the output is always less than 1000000000.
     @since(version = 0.3.0-rc-2025-09-16)
-    get-resolution: func() -> datetime;
+    get-resolution: func() -> duration;
 }

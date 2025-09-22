@@ -71,20 +71,20 @@ default-monotonic-clock: monotonic-clock
 ```
 
 ```rust
-   let start: Instant = monotonic_clock::now(clock);
+   let start: Mark = monotonic_clock::now(clock);
 
    // some stuff
 
-   let stop: Instant = monotonic_clock::now(clock);
+   let stop: Mark = monotonic_clock::now(clock);
 
-   let elapsed: Instant = stop - start;
+   let elapsed: Duration = stop - start;
 ```
 
 
 #### Telling the current human time:
 
 ```rust
-    let the_current_time = wall_clock::now();
+    let the_current_time = system_clock::now();
 
     println!("it has been {} seconds and {} nanoseconds since the Unix epoch!", the_current_time.seconds, the_current_time.nanoseconds);
 ```
@@ -92,9 +92,9 @@ default-monotonic-clock: monotonic-clock
 #### Retrieving the timezone:
 
 ```rust
-    let datetime: Datetime = wall_clock::now();
+    let instant: Instant = system_clock::now();
 
-    let timezone_display: TimezoneDisplay = timezone::display(datetime);
+    let timezone_display: TimezoneDisplay = timezone::display(instant);
 
     println!("the timezone is {}", timezone_display.name);
 ```
@@ -105,14 +105,14 @@ default-monotonic-clock: monotonic-clock
 
 In POSIX, `clock_gettime` uses a single `timespec` type to represent timestamps
 from all clocks, with two fields: seconds and nanoseconds. However, in applications
-that just need to measure elapsed time, and don't need to care about wall clock
+that just need to measure elapsed time, and don't need to care about absolute
 time, working with seconds and nanoseconds as separate fields adds extra code size
 and complexity. For these use cases, a single 64-bit nanoseconds value, which can
 measure up to about 584 years, is sufficient and simpler.
 
-For wall clock time, it's still useful to have both seconds and nanoseconds, both
+For system time, it's still useful to have both seconds and nanoseconds, both
 to be able to represent dates in the far future, and to reflect the fact that
-code working with wall clock time will often want to treat seconds and fractions
+code working with system time will often want to treat seconds and fractions
 of seconds differently.
 
 And so, this API uses different data types for different types of clocks.

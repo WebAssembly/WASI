@@ -3,23 +3,23 @@ package wasi:clocks@0.3.0-rc-2025-09-16;
 @unstable(feature = clocks-timezone)
 interface timezone {
     @unstable(feature = clocks-timezone)
-    use wall-clock.{datetime};
+    use system-clock.{instant};
 
-    /// Return information needed to display the given `datetime`. This includes
+    /// Return information needed to display the given `instant`. This includes
     /// the UTC offset, the time zone name, and a flag indicating whether
     /// daylight saving time is active.
     ///
-    /// If the timezone cannot be determined for the given `datetime`, return a
+    /// If the timezone cannot be determined for the given `instant`, return a
     /// `timezone-display` for `UTC` with a `utc-offset` of 0 and no daylight
     /// saving time.
     @unstable(feature = clocks-timezone)
-    display: func(when: datetime) -> timezone-display;
+    display: func(when: instant) -> timezone-display;
 
     /// The same as `display`, but only return the UTC offset.
     @unstable(feature = clocks-timezone)
-    utc-offset: func(when: datetime) -> s32;
+    utc-offset: func(when: instant) -> s32;
 
-    /// Information useful for displaying the timezone of a specific `datetime`.
+    /// Information useful for displaying the timezone of a specific `instant`.
     ///
     /// This information may vary within a single `timezone` to reflect daylight
     /// saving time adjustments.
