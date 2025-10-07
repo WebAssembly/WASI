@@ -2,14 +2,14 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_poll_0_2_5"><code>wasi:io/poll@0.2.5</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_5"><code>wasi:clocks/monotonic-clock@0.2.5</code></a></li>
-<li>interface <a href="#wasi_clocks_wall_clock_0_2_5"><code>wasi:clocks/wall-clock@0.2.5</code></a></li>
-<li>interface <a href="#wasi_clocks_timezone_0_2_5"><code>wasi:clocks/timezone@0.2.5</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_7"><code>wasi:io/poll@0.2.7</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_7"><code>wasi:clocks/monotonic-clock@0.2.7</code></a></li>
+<li>interface <a href="#wasi_clocks_wall_clock_0_2_7"><code>wasi:clocks/wall-clock@0.2.7</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_2_7"><code>wasi:clocks/timezone@0.2.7</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_5"></a>Import interface wasi:io/poll@0.2.5</h2>
+<h2><a id="wasi_io_poll_0_2_7"></a>Import interface wasi:io/poll@0.2.7</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -62,7 +62,7 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_2_5"></a>Import interface wasi:clocks/monotonic-clock@0.2.5</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_7"></a>Import interface wasi:clocks/monotonic-clock@0.2.7</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -125,7 +125,7 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_wall_clock_0_2_5"></a>Import interface wasi:clocks/wall-clock@0.2.5</h2>
+<h2><a id="wasi_clocks_wall_clock_0_2_7"></a>Import interface wasi:clocks/wall-clock@0.2.7</h2>
 <p>WASI Wall Clock is a clock API intended to let users query the current
 time. The name &quot;wall&quot; makes an analogy to a &quot;clock on the wall&quot;, which
 is not necessarily monotonic as it may be reset.</p>
@@ -166,7 +166,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_timezone_0_2_5"></a>Import interface wasi:clocks/timezone@0.2.5</h2>
+<h2><a id="wasi_clocks_timezone_0_2_7"></a>Import interface wasi:clocks/timezone@0.2.7</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="datetime"></a><code>type datetime</code></h4>
