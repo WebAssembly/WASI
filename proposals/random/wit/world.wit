@@ -1,4 +1,4 @@
-package wasi:random@0.2.8;
+package wasi:random@0.2.7;
 
 @since(version = 0.2.0)
 world imports {
