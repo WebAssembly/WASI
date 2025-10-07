@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_io_error_0_2_7"><code>wasi:io/error@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_network_0_2_7"><code>wasi:sockets/network@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_instance_network_0_2_7"><code>wasi:sockets/instance-network@0.2.7</code></a></li>
-<li>interface <a href="#wasi_io_poll_0_2_7"><code>wasi:io/poll@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_0_2_7"><code>wasi:sockets/udp@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_7"><code>wasi:sockets/udp-create-socket@0.2.7</code></a></li>
-<li>interface <a href="#wasi_io_streams_0_2_7"><code>wasi:io/streams@0.2.7</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_7"><code>wasi:clocks/monotonic-clock@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_0_2_7"><code>wasi:sockets/tcp@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_7"><code>wasi:sockets/tcp-create-socket@0.2.7</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_7"><code>wasi:sockets/ip-name-lookup@0.2.7</code></a></li>
+<li>interface <a href="#wasi_io_error_0_2_8"><code>wasi:io/error@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_network_0_2_8"><code>wasi:sockets/network@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_instance_network_0_2_8"><code>wasi:sockets/instance-network@0.2.8</code></a></li>
+<li>interface <a href="#wasi_io_poll_0_2_8"><code>wasi:io/poll@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_0_2_8"><code>wasi:sockets/udp@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_udp_create_socket_0_2_8"><code>wasi:sockets/udp-create-socket@0.2.8</code></a></li>
+<li>interface <a href="#wasi_io_streams_0_2_8"><code>wasi:io/streams@0.2.8</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_2_8"><code>wasi:clocks/monotonic-clock@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_0_2_8"><code>wasi:sockets/tcp@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_tcp_create_socket_0_2_8"><code>wasi:sockets/tcp-create-socket@0.2.8</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_2_8"><code>wasi:sockets/ip-name-lookup@0.2.8</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_io_error_0_2_7"></a>Import interface wasi:io/error@0.2.7</h2>
+<h2><a id="wasi_io_error_0_2_8"></a>Import interface wasi:io/error@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>resource error</code></h4>
@@ -49,13 +49,13 @@ hazard.</p>
 <ul>
 <li><a id="method_error_to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_sockets_network_0_2_7"></a>Import interface wasi:sockets/network@0.2.7</h2>
+<h2><a id="wasi_sockets_network_0_2_8"></a>Import interface wasi:sockets/network@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error"></a><code>type error</code></h4>
 <p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-#### <a id="network"></a>`resource network`
+<h4><a id="network"></a><code>resource network</code></h4>
 <p>An opaque resource that represents access to (a subset of) the network.
 This enables context-based security for networking.
 There is no need for this to map 1:1 to a physical network interface.</p>
@@ -264,14 +264,14 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="network_error_code.0"></a> option&lt;<a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_instance_network_0_2_7"></a>Import interface wasi:sockets/instance-network@0.2.7</h2>
+<h2><a id="wasi_sockets_instance_network_0_2_8"></a>Import interface wasi:sockets/instance-network@0.2.8</h2>
 <p>This interface provides a value-export of the default network handle..</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-----
+<hr />
 <h3>Functions</h3>
 <h4><a id="instance_network"></a><code>instance-network: func</code></h4>
 <p>Get a handle to the default network.</p>
@@ -279,7 +279,7 @@ errors are network-related errors.</p>
 <ul>
 <li><a id="instance_network.0"></a> own&lt;<a href="#network"><a href="#network"><code>network</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_poll_0_2_7"></a>Import interface wasi:io/poll@0.2.7</h2>
+<h2><a id="wasi_io_poll_0_2_8"></a>Import interface wasi:io/poll@0.2.8</h2>
 <p>A poll API intended to let users wait for I/O events on multiple handles
 at once.</p>
 <hr />
@@ -332,25 +332,25 @@ being ready for I/O.</p>
 <ul>
 <li><a id="poll.0"></a> list&lt;<code>u32</code>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_0_2_7"></a>Import interface wasi:sockets/udp@0.2.7</h2>
+<h2><a id="wasi_sockets_udp_0_2_8"></a>Import interface wasi:sockets/udp@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a id="network"></a>`type network`
-[`network`](#network)
+<h4><a id="network"></a><code>type network</code></h4>
+<p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a id="error_code"></a>`type error-code`
-[`error-code`](#error_code)
+<h4><a id="error_code"></a><code>type error-code</code></h4>
+<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
 <p>
-#### <a id="ip_socket_address"></a>`type ip-socket-address`
-[`ip-socket-address`](#ip_socket_address)
+<h4><a id="ip_socket_address"></a><code>type ip-socket-address</code></h4>
+<p><a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
 <p>
-#### <a id="ip_address_family"></a>`type ip-address-family`
-[`ip-address-family`](#ip_address_family)
+<h4><a id="ip_address_family"></a><code>type ip-address-family</code></h4>
+<p><a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></p>
 <p>
-#### <a id="incoming_datagram"></a>`record incoming-datagram`
+<h4><a id="incoming_datagram"></a><code>record incoming-datagram</code></h4>
 <p>A received datagram.</p>
 <h5>Record Fields</h5>
 <ul>
@@ -746,22 +746,22 @@ It's planned to be removed when <code>future</code> is natively supported in Pre
 <ul>
 <li><a id="method_outgoing_datagram_stream_subscribe.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_udp_create_socket_0_2_7"></a>Import interface wasi:sockets/udp-create-socket@0.2.7</h2>
+<h2><a id="wasi_sockets_udp_create_socket_0_2_8"></a>Import interface wasi:sockets/udp-create-socket@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a id="error_code"></a>`type error-code`
-[`error-code`](#error_code)
+<h4><a id="error_code"></a><code>type error-code</code></h4>
+<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
 <p>
-#### <a id="ip_address_family"></a>`type ip-address-family`
-[`ip-address-family`](#ip_address_family)
+<h4><a id="ip_address_family"></a><code>type ip-address-family</code></h4>
+<p><a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></p>
 <p>
-#### <a id="udp_socket"></a>`type udp-socket`
-[`udp-socket`](#udp_socket)
+<h4><a id="udp_socket"></a><code>type udp-socket</code></h4>
+<p><a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a></p>
 <p>
-----
+<hr />
 <h3>Functions</h3>
 <h4><a id="create_udp_socket"></a><code>create-udp-socket: func</code></h4>
 <p>Create a new UDP socket.</p>
@@ -791,7 +791,7 @@ the socket is effectively an in-memory configuration object, unable to communica
 <ul>
 <li><a id="create_udp_socket.0"></a> result&lt;own&lt;<a href="#udp_socket"><a href="#udp_socket"><code>udp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_io_streams_0_2_7"></a>Import interface wasi:io/streams@0.2.7</h2>
+<h2><a id="wasi_io_streams_0_2_8"></a>Import interface wasi:io/streams@0.2.8</h2>
 <p>WASI I/O is an I/O abstraction API which is currently focused on providing
 stream types.</p>
 <p>In the future, the component model is expected to add built-in stream types;
@@ -801,10 +801,10 @@ when it does, they are expected to subsume this API.</p>
 <h4><a id="error"></a><code>type error</code></h4>
 <p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-#### <a id="pollable"></a>`type pollable`
-[`pollable`](#pollable)
+<h4><a id="pollable"></a><code>type pollable</code></h4>
+<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a id="stream_error"></a>`variant stream-error`
+<h4><a id="stream_error"></a><code>variant stream-error</code></h4>
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
 <ul>
@@ -1093,7 +1093,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <ul>
 <li><a id="method_output_stream_blocking_splice.0"></a> result&lt;<code>u64</code>, <a href="#stream_error"><a href="#stream_error"><code>stream-error</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_2_7"></a>Import interface wasi:clocks/monotonic-clock@0.2.7</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_2_8"></a>Import interface wasi:clocks/monotonic-clock@0.2.8</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -1105,8 +1105,8 @@ successive reads of the clock will produce non-decreasing values.</p>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a id="instant"></a>`type instant`
-`u64`
+<h4><a id="instant"></a><code>type instant</code></h4>
+<p><code>u64</code></p>
 <p>An instant in time, in nanoseconds. An instant is relative to an
 unspecified initial value, and can only be compared to instances from
 the same monotonic-clock.
@@ -1119,6 +1119,10 @@ the same monotonic-clock.
 <p>Read the current value of the clock.</p>
 <p>The clock is monotonic, therefore calling this function repeatedly will
 produce a sequence of non-decreasing values.</p>
+<p>For completeness, this function traps if it's not possible to represent
+the value of the clock in an <a href="#instant"><code>instant</code></a>. Consequently, implementations
+should ensure that the starting time is low enough to avoid the
+possibility of overflow in practice.</p>
 <h5>Return values</h5>
 <ul>
 <li><a id="now.0"></a> <a href="#instant"><a href="#instant"><code>instant</code></a></a></li>
@@ -1152,34 +1156,34 @@ elapsed from the time this function is invoked.</p>
 <ul>
 <li><a id="subscribe_duration.0"></a> own&lt;<a href="#pollable"><a href="#pollable"><code>pollable</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_0_2_7"></a>Import interface wasi:sockets/tcp@0.2.7</h2>
+<h2><a id="wasi_sockets_tcp_0_2_8"></a>Import interface wasi:sockets/tcp@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="input_stream"></a><code>type input-stream</code></h4>
 <p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
 <p>
-#### <a id="output_stream"></a>`type output-stream`
-[`output-stream`](#output_stream)
+<h4><a id="output_stream"></a><code>type output-stream</code></h4>
+<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
 <p>
-#### <a id="pollable"></a>`type pollable`
-[`pollable`](#pollable)
+<h4><a id="pollable"></a><code>type pollable</code></h4>
+<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a id="duration"></a>`type duration`
-[`duration`](#duration)
+<h4><a id="duration"></a><code>type duration</code></h4>
+<p><a href="#duration"><a href="#duration"><code>duration</code></a></a></p>
 <p>
-#### <a id="network"></a>`type network`
-[`network`](#network)
+<h4><a id="network"></a><code>type network</code></h4>
+<p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a id="error_code"></a>`type error-code`
-[`error-code`](#error_code)
+<h4><a id="error_code"></a><code>type error-code</code></h4>
+<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
 <p>
-#### <a id="ip_socket_address"></a>`type ip-socket-address`
-[`ip-socket-address`](#ip_socket_address)
+<h4><a id="ip_socket_address"></a><code>type ip-socket-address</code></h4>
+<p><a href="#ip_socket_address"><a href="#ip_socket_address"><code>ip-socket-address</code></a></a></p>
 <p>
-#### <a id="ip_address_family"></a>`type ip-address-family`
-[`ip-address-family`](#ip_address_family)
+<h4><a id="ip_address_family"></a><code>type ip-address-family</code></h4>
+<p><a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></p>
 <p>
-#### <a id="shutdown_type"></a>`enum shutdown-type`
+<h4><a id="shutdown_type"></a><code>enum shutdown-type</code></h4>
 <h5>Enum Cases</h5>
 <ul>
 <li>
@@ -1743,22 +1747,22 @@ has no effect and returns <code>ok</code>.</p>
 <ul>
 <li><a id="method_tcp_socket_shutdown.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_tcp_create_socket_0_2_7"></a>Import interface wasi:sockets/tcp-create-socket@0.2.7</h2>
+<h2><a id="wasi_sockets_tcp_create_socket_0_2_8"></a>Import interface wasi:sockets/tcp-create-socket@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="network"></a><code>type network</code></h4>
 <p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a id="error_code"></a>`type error-code`
-[`error-code`](#error_code)
+<h4><a id="error_code"></a><code>type error-code</code></h4>
+<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
 <p>
-#### <a id="ip_address_family"></a>`type ip-address-family`
-[`ip-address-family`](#ip_address_family)
+<h4><a id="ip_address_family"></a><code>type ip-address-family</code></h4>
+<p><a href="#ip_address_family"><a href="#ip_address_family"><code>ip-address-family</code></a></a></p>
 <p>
-#### <a id="tcp_socket"></a>`type tcp-socket`
-[`tcp-socket`](#tcp_socket)
+<h4><a id="tcp_socket"></a><code>type tcp-socket</code></h4>
+<p><a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a></p>
 <p>
-----
+<hr />
 <h3>Functions</h3>
 <h4><a id="create_tcp_socket"></a><code>create-tcp-socket: func</code></h4>
 <p>Create a new TCP socket.</p>
@@ -1788,22 +1792,22 @@ is called, the socket is effectively an in-memory configuration object, unable t
 <ul>
 <li><a id="create_tcp_socket.0"></a> result&lt;own&lt;<a href="#tcp_socket"><a href="#tcp_socket"><code>tcp-socket</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_ip_name_lookup_0_2_7"></a>Import interface wasi:sockets/ip-name-lookup@0.2.7</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_2_8"></a>Import interface wasi:sockets/ip-name-lookup@0.2.8</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-#### <a id="network"></a>`type network`
-[`network`](#network)
+<h4><a id="network"></a><code>type network</code></h4>
+<p><a href="#network"><a href="#network"><code>network</code></a></a></p>
 <p>
-#### <a id="error_code"></a>`type error-code`
-[`error-code`](#error_code)
+<h4><a id="error_code"></a><code>type error-code</code></h4>
+<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
 <p>
-#### <a id="ip_address"></a>`type ip-address`
-[`ip-address`](#ip_address)
+<h4><a id="ip_address"></a><code>type ip-address</code></h4>
+<p><a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a></p>
 <p>
-#### <a id="resolve_address_stream"></a>`resource resolve-address-stream`
+<h4><a id="resolve_address_stream"></a><code>resource resolve-address-stream</code></h4>
 <hr />
 <h3>Functions</h3>
 <h4><a id="resolve_addresses"></a><code>resolve-addresses: func</code></h4>
