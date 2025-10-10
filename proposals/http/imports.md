@@ -83,8 +83,8 @@ successive reads of the clock will produce non-decreasing values.</p>
 <h4><a id="pollable"></a><code>type pollable</code></h4>
 <p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
 <p>
-<h4><a id="instant"></a><code>type instant</code></h4>
-<p><code>u64</code></p>
+#### <a id="instant"></a>`type instant`
+`u64`
 <p>An instant in time, in nanoseconds. An instant is relative to an
 unspecified initial value, and can only be compared to instances from
 the same monotonic-clock.
@@ -251,10 +251,10 @@ when it does, they are expected to subsume this API.</p>
 <h4><a id="error"></a><code>type error</code></h4>
 <p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-<h4><a id="pollable"></a><code>type pollable</code></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+#### <a id="pollable"></a>`type pollable`
+[`pollable`](#pollable)
 <p>
-<h4><a id="stream_error"></a><code>variant stream-error</code></h4>
+#### <a id="stream_error"></a>`variant stream-error`
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
 <ul>
@@ -549,7 +549,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <h4><a id="output_stream"></a><code>type output-stream</code></h4>
 <p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
 <p>
-<hr />
+----
 <h3>Functions</h3>
 <h4><a id="get_stdout"></a><code>get-stdout: func</code></h4>
 <h5>Return values</h5>
@@ -562,7 +562,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <h4><a id="output_stream"></a><code>type output-stream</code></h4>
 <p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
 <p>
-<hr />
+----
 <h3>Functions</h3>
 <h4><a id="get_stderr"></a><code>get-stderr: func</code></h4>
 <h5>Return values</h5>
@@ -575,7 +575,7 @@ is ready for reading, before performing the <code>splice</code>.</p>
 <h4><a id="input_stream"></a><code>type input-stream</code></h4>
 <p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
 <p>
-<hr />
+----
 <h3>Functions</h3>
 <h4><a id="get_stdin"></a><code>get-stdin: func</code></h4>
 <h5>Return values</h5>
@@ -591,19 +591,19 @@ their headers, trailers, and bodies.</p>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><a href="#duration"><a href="#duration"><code>duration</code></a></a></p>
 <p>
-<h4><a id="input_stream"></a><code>type input-stream</code></h4>
-<p><a href="#input_stream"><a href="#input_stream"><code>input-stream</code></a></a></p>
+#### <a id="input_stream"></a>`type input-stream`
+[`input-stream`](#input_stream)
 <p>
-<h4><a id="output_stream"></a><code>type output-stream</code></h4>
-<p><a href="#output_stream"><a href="#output_stream"><code>output-stream</code></a></a></p>
+#### <a id="output_stream"></a>`type output-stream`
+[`output-stream`](#output_stream)
 <p>
-<h4><a id="io_error"></a><code>type io-error</code></h4>
-<p><a href="#error"><a href="#error"><code>error</code></a></a></p>
+#### <a id="io_error"></a>`type io-error`
+[`error`](#error)
 <p>
-<h4><a id="pollable"></a><code>type pollable</code></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+#### <a id="pollable"></a>`type pollable`
+[`pollable`](#pollable)
 <p>
-<h4><a id="method"></a><code>variant method</code></h4>
+#### <a id="method"></a>`variant method`
 <p>This type corresponds to HTTP standard Methods.</p>
 <h5>Variant Cases</h5>
 <ul>
@@ -1510,16 +1510,16 @@ imported by components which wish to make HTTP Requests.</p>
 <h4><a id="outgoing_request"></a><code>type outgoing-request</code></h4>
 <p><a href="#outgoing_request"><a href="#outgoing_request"><code>outgoing-request</code></a></a></p>
 <p>
-<h4><a id="request_options"></a><code>type request-options</code></h4>
-<p><a href="#request_options"><a href="#request_options"><code>request-options</code></a></a></p>
+#### <a id="request_options"></a>`type request-options`
+[`request-options`](#request_options)
 <p>
-<h4><a id="future_incoming_response"></a><code>type future-incoming-response</code></h4>
-<p><a href="#future_incoming_response"><a href="#future_incoming_response"><code>future-incoming-response</code></a></a></p>
+#### <a id="future_incoming_response"></a>`type future-incoming-response`
+[`future-incoming-response`](#future_incoming_response)
 <p>
-<h4><a id="error_code"></a><code>type error-code</code></h4>
-<p><a href="#error_code"><a href="#error_code"><code>error-code</code></a></a></p>
+#### <a id="error_code"></a>`type error-code`
+[`error-code`](#error_code)
 <p>
-<hr />
+----
 <h3>Functions</h3>
 <h4><a id="handle"></a><code>handle: func</code></h4>
 <p>This function is invoked with an outgoing HTTP Request, and it returns
