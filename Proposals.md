@@ -72,7 +72,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                                                         | Champion      | Versions |
 | -------------------------------------------------------------------------------- | ------------- | -------- |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |
-| [OTel][wasi-otel]                                                                | Caleb Schoepp |          |
+| [OTel][wasi-otel]                                                                | Caleb Schoepp, Andrew Steurer |          |
 
 ## Versioning
 
