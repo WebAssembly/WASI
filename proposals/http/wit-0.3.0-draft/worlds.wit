@@ -69,7 +69,8 @@ interface handler {
 /// The type signature of `client.send` is the same as `handler.handle`. This
 /// duplication is currently necessary because some Component Model tooling
 /// (including WIT itself) is unable to represent a component importing two
-/// instances of the same interface.
+/// instances of the same interface. A `client.send` import may be linked
+/// directly to a `handler.handle` export to bypass the network.
 interface client {
   use types.{request, response, error-code};
 
