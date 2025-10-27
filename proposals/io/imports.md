@@ -16,13 +16,13 @@
 <p>The only method provided by this resource is <code>to-debug-string</code>,
 which provides some human-readable information about the error.</p>
 <p>In the <code>wasi:io</code> package, this resource is returned through the
-<code>wasi:io/streams/stream-error</code> type.</p>
+<code>wasi:io/streams.stream-error</code> type.</p>
 <p>To provide more specific error information, other interfaces may
 offer functions to &quot;downcast&quot; this error into more specific types. For example,
 errors returned from streams derived from filesystem types can be described using
 the filesystem's own error-code type. This is done using the function
-<code>wasi:filesystem/types/filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
-parameter and returns an <code>option&lt;wasi:filesystem/types/error-code&gt;</code>.</p>
+<code>wasi:filesystem/types.filesystem-error-code</code>, which takes a <code>borrow&lt;error&gt;</code>
+parameter and returns an <code>option&lt;wasi:filesystem/types.error-code&gt;</code>.</p>
 <h2>The set of functions which can &quot;downcast&quot; an <a href="#error"><code>error</code></a> into a more
 concrete type is open.</h2>
 <h3>Functions</h3>
