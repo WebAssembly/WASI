@@ -17,7 +17,7 @@ jobs:
         chmod +x ./wit-deps
         ./wit-deps lock --check
         ./wit-deps -m wit-0.3.0-draft/deps.toml -l wit-0.3.0-draft/deps.lock -d wit-0.3.0-draft/deps lock --check
-    - uses: WebAssembly/wit-abi-up-to-date@v24
+    - uses: WebAssembly/wit-abi-up-to-date@v25
       with:
         worlds: 'imports proxy'
         all-features: 'true'
