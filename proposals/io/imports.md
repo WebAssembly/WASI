@@ -104,10 +104,10 @@ when it does, they are expected to subsume this API.</p>
 <h4><a id="error"></a><code>type error</code></h4>
 <p><a href="#error"><a href="#error"><code>error</code></a></a></p>
 <p>
-<h4><a id="pollable"></a><code>type pollable</code></h4>
-<p><a href="#pollable"><a href="#pollable"><code>pollable</code></a></a></p>
+#### <a id="pollable"></a>`type pollable`
+[`pollable`](#pollable)
 <p>
-<h4><a id="stream_error"></a><code>variant stream-error</code></h4>
+#### <a id="stream_error"></a>`variant stream-error`
 <p>An error for input-stream and output-stream operations.</p>
 <h5>Variant Cases</h5>
 <ul>
