@@ -1243,6 +1243,25 @@ supported.</p>
 <ul>
 <li><a id="method_request_options_set_between_bytes_timeout.0"></a> result</li>
 </ul>
+<h4><a id="method_response_outparam_send_informational"></a><code>[method]response-outparam.send-informational: func</code></h4>
+<p>Send an HTTP 1xx response.</p>
+<p>Unlike <code>response-outparam.set</code>, this does not consume the
+<a href="#response_outparam"><code>response-outparam</code></a>, allowing the guest to send an arbitrary number of
+informational responses before sending the final response using
+<code>response-outparam.set</code>.</p>
+<p>This will return an <code>HTTP-protocol-error</code> if <code>status</code> is not in the
+range [100-199], or an <code>internal-error</code> if the implementation does not
+support informational responses.</p>
+<h5>Params</h5>
+<ul>
+<li><a id="method_response_outparam_send_informational.self"></a><code>self</code>: borrow&lt;<a href="#response_outparam"><a href="#response_outparam"><code>response-outparam</code></a></a>&gt;</li>
+<li><a id="method_response_outparam_send_informational.status"></a><code>status</code>: <code>u16</code></li>
+<li><a id="method_response_outparam_send_informational.headers"></a><a href="#headers"><code>headers</code></a>: own&lt;<a href="#headers"><a href="#headers"><code>headers</code></a></a>&gt;</li>
+</ul>
+<h5>Return values</h5>
+<ul>
+<li><a id="method_response_outparam_send_informational.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
+</ul>
 <h4><a id="static_response_outparam_set"></a><code>[static]response-outparam.set: func</code></h4>
 <p>Set the value of the <a href="#response_outparam"><code>response-outparam</code></a> to either send a response,
 or indicate an error.</p>
