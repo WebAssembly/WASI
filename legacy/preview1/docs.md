@@ -936,7 +936,7 @@ If non-zero, an error that occurred while processing the subscription request.
 Offset: 8
 
 - <a href="#event.type" name="event.type"></a> `type`: [`eventtype`](#eventtype)
-The type of event that occured
+The type of event that occurred
 
 Offset: 10
 
