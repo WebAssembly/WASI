@@ -1,0 +1,12 @@
+# WASI CG co-chairs are assigned by default when there are no other assignees
+*                       @ricochet @yoshuawuyts
+
+# Individual proposals all have their own champions
+# TODO: consider replacing this with GitHub org-level (sub)-teams
+proposals/cli           @sunfishcode
+proposals/clocks        @sunfishcode
+proposals/random        @sunfishcode
+proposals/filesystem    @sunfishcode
+proposals/sockets       @badeend
+proposals/cli           @sunfishcode
+proposals/http          @PiotrSikora @mossaka @danbugs @devigned @lukewagner
