@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'proposals/**/wit/**'
+      - 'proposals/**/wit-0.3.0-draft/**'
+      - '.github/scripts/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'proposals/**/wit/**'
+      - 'proposals/**/wit-0.3.0-draft/**'
+      - '.github/scripts/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  validate:
+    name: Validate WIT
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: changes
+        with:
+          list-files: json
+          filters: |
+            wit-02:
+              - 'proposals/*/wit/**'
+            wit-03:
+              - 'proposals/*/wit-0.3.0-draft/**'
+
+      - name: Install tools
+        if: steps.changes.outputs.wit-02 == 'true' || steps.changes.outputs.wit-03 == 'true'
+        uses: ./.github/actions/install-tools
+
+      - name: Validate changed proposals
+        if: steps.changes.outputs.wit-02 == 'true' || steps.changes.outputs.wit-03 == 'true'
+        run: node .github/scripts/validate-proposals.js
+        env:
+          WIT_02_FILES: ${{ steps.changes.outputs.wit-02_files }}
+          WIT_03_FILES: ${{ steps.changes.outputs.wit-03_files }}
