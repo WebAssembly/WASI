@@ -1,11 +1,10 @@
-# WASI CG co-chairs are assigned by default when there are no other assignees
-*                       @ricochet @yoshuawuyts
+# WASI SG chairs are assigned when there are no other assignees
+*   @WebAssembly/wasi-chairs
 
 # Individual proposals all have their own champions
 proposals/cli           @WebAssembly/wasi-cli-champions
 proposals/clocks        @WebAssembly/wasi-clocks-champions
-proposals/random        @WebAssembly/wasi-random-champions
 proposals/filesystem    @WebAssembly/wasi-filesystem-champions
-proposals/sockets       @WebAssembly/wasi-sockets-champions
-proposals/cli           @WebAssembly/wasi-cli-champions
 proposals/http          @WebAssembly/wasi-http-champions
+proposals/random        @WebAssembly/wasi-random-champions
+proposals/sockets       @WebAssembly/wasi-sockets-champions
