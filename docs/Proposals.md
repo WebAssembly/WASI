@@ -4,8 +4,8 @@ WASI APIs are developed as proposals. These proposals go through 5 phases of dev
 
 You can learn more about contributing new proposals (and other ways to contribute) in our [Contributing] guide.
 
-[the WASI Subgroup's Phase Process]: https://github.com/WebAssembly/WASI/blob/main/docs/Contributing.md#the-phase-process
-[Contributing]: https://github.com/WebAssembly/WASI/blob/main/docs/Contributing.md
+[the WASI Subgroup's Phase Process]: https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md#the-phase-process
+[Contributing]: https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md
 
 ## Active Proposals
 

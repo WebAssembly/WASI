@@ -33,7 +33,7 @@ and high-level goals.
 ## Propose a new API
 
 If you would like to create a new proposal, get started with our
-[Contributing guide](docs/Contributing.md).
+[Contributing guide](CONTRIBUTING.md).
 
 All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
 
