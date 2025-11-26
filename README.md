@@ -25,7 +25,7 @@ virtualizability, and more.
 ## Find the APIs
 
 Development of each API happens in its own repo, which you can access
-from the [proposals list](Proposals.md).
+from the [proposals list](docs/Proposals.md).
 
 This repo is for general discussion, as well as documenting how we work
 and high-level goals.
@@ -33,7 +33,7 @@ and high-level goals.
 ## Propose a new API
 
 If you would like to create a new proposal, get started with our
-[Contributing guide](Contributing.md).
+[Contributing guide](docs/Contributing.md).
 
 All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
 
