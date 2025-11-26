@@ -2,7 +2,7 @@
     
 # WebAssembly System Interface
 
-![WASI](WASI.png)
+![WASI](assets/WASI.png)
 
 The WebAssembly System Interface (WASI) is a set of APIs for WASI being
 developed for eventual standardization by the WASI Subgroup, which is a
