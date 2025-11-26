@@ -6,7 +6,7 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 WASI-clocks is currently in [Phase 3].
 
-[Phase 3]: https://github.com/WebAssembly/WASI/blob/main/Proposals.md#phase-3---implementation-phase-cg--wg
+[Phase 3]: https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md#phase-3---implementation-phase-cg--wg
 
 ### Champions
 

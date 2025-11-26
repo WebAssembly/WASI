@@ -89,7 +89,7 @@ Preview 2 in terms of Preview 3.
 The release criteria of Preview 3 will include that performance will be measured
 and addressed.
 
-[WASI Subgroup Phase Process]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#the-phase-process
-[portability criteria]: https://github.com/WebAssembly/WASI/blob/main/Contributing.md#2-feature-description-available-wasi-subgroup
+[WASI Subgroup Phase Process]: https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md#the-phase-process
+[portability criteria]: https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md#2-feature-description-available-wasi-subgroup
 [worlds]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-worlds
 [launch criteria]: #wasi-preview-2-launch-criteria

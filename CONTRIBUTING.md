@@ -7,7 +7,7 @@ Interested in participating? Please follow
 
 Also, please be sure to read [the README.md](README.md) for this repository.
 
-To contribute to an [existing proposal](https://github.com/WebAssembly/WASI/blob/main/Proposals.md),
+To contribute to an [existing proposal](https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md),
 refer to the linked proposal repository.
 
 The start a new proposal, the first step is to file an issue in the
@@ -46,7 +46,7 @@ During this phase:
 
   1. An issue is filed on the [WASI repository](https://github.com/WebAssembly/WASI/issues) to present the idea.
   1. Discussion on the API occurs on the issue.
-  1. A champion or champions emerge. They may add the proposal to the [proposal list](https://github.com/WebAssembly/WASI/blob/main/Proposals.md) at phase 0.
+  1. A champion or champions emerge. They may add the proposal to the [proposal list](https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md) at phase 0.
   1. The champion(s) put together a description of the API in their own GitHub repository or on the issue. You can use the [proposal template] if you like, but it's not required in this phase.
 
 ### 1. Feature Proposal [WASI Subgroup]
@@ -58,7 +58,7 @@ Entry requirements:
 
 During this phase:
 
-  1. If the proposal is not already listed, it should be added to the [proposal list](https://github.com/WebAssembly/WASI/blob/main/Proposals.md) at this time.
+  1. If the proposal is not already listed, it should be added to the [proposal list](https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md) at this time.
   1. A new repository, forking the [proposal template] repo, is created by one of the SG chairs, or transferred to the WebAssembly organization by the champion.
   1. The champion will attempt to reach broad consensus in the Subgroup.
   1. Pull requests and issues are used to iterate on the design of the API. Specifically, an overview document must be produced that specifies the API with reasonably precise and complete language before attempting to move to phase 2 (meaning it is sufficiently precise to be implemented following this description, without obvious holes or ambiguities).
