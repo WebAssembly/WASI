@@ -1,0 +1,10 @@
+# WASI SG chairs are assigned when there are no other assignees
+*   @WebAssembly/wasi-chairs
+
+# Individual proposals all have their own champions
+proposals/cli           @WebAssembly/wasi-cli-champions
+proposals/clocks        @WebAssembly/wasi-clocks-champions
+proposals/filesystem    @WebAssembly/wasi-filesystem-champions
+proposals/http          @WebAssembly/wasi-http-champions
+proposals/random        @WebAssembly/wasi-random-champions
+proposals/sockets       @WebAssembly/wasi-sockets-champions
