@@ -1,8 +1,9 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4323447.svg)](https://doi.org/10.5281/zenodo.4323447)
-    
+<img width="100px" src="assets/WASI.png">
+
 # WebAssembly System Interface
 
-![WASI](assets/WASI.png)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4323447.svg)](https://doi.org/10.5281/zenodo.4323447)
+    
 
 The WebAssembly System Interface (WASI) is a set of APIs for WASI being
 developed for eventual standardization by the WASI Subgroup, which is a
