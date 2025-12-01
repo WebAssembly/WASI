@@ -1,9 +1,9 @@
 [clocks]
-url = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz"
+path = "../../clocks/wit"
 sha256 = "be1d8c61e2544e2b48d902c60df73577e293349063344ce752cda4d323f8b913"
 sha512 = "0fd7962c62b135da0e584c2b58a55147bf09873848b0bb5bd3913019bc3f8d4b5969fbd6f7f96fd99a015efaf562a3eeafe3bc13049f8572a6e13ef9ef0e7e75"
 
 [io]
-url = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
-sha256 = "9f1ad5da70f621bbd4c69e3bd90250a0c12ecfde266aa8f99684fc44bc1e7c15"
-sha512 = "6d0a9db6848f24762933d1c168a5b5b1065ba838c253ee20454afeb8dd1a049b918d25deff556083d68095dd3126ae131ac3e738774320eee5d918f5a4b5354e"
+path = "../../io/wit"
+sha256 = "ffac709ff8fb80c6decb60be7db656fac0837e0ef60c590baac1f30da6df7ea9"
+sha512 = "199614903d351845872d2e44a9a816f456593dd24823e90829a2cfe4c19047dadc1bb2d5feec48a7e47be1cbbdb491ea7021c710ec6e957045ebea769501b92a"

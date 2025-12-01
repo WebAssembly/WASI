@@ -1,5 +1,4 @@
 [clocks]
-url = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz"
-subdir = "wit-0.3.0-draft"
-sha256 = "cf61a3785c2838340ce530ee1cdc6dbee3257f1672d6000ca748dfe253808dec"
-sha512 = "f647de7d6c470595c3e5bf0dba6af98703beb9f701c66543cea5d42e81f7a1a73f199c3949035a9c2c1bd717056e5e68788f520af39b9d26480242b7626f22ce"
+path = "../../clocks/wit-0.3.0-draft"
+sha256 = "6c0d121ab51a75ad7e348129631cd721885ad994f38317af887137fdf4b0ff6d"
+sha512 = "dadf98b75fd14f67ad95dcb595eadcc21bf846ba9301b0bcec062e0a6fdad9bdacb0927927b319ef082f105433f6fa298c52687cb17e9fdb2bb21e05fb288fce"

@@ -1,3 +1,5 @@
-filesystem = "https://github.com/WebAssembly/wasi-filesystem/archive/v0.2.8.tar.gz"
-random = "https://github.com/WebAssembly/wasi-random/archive/v0.2.8.tar.gz"
-sockets = "https://github.com/WebAssembly/wasi-sockets/archive/v0.2.8.tar.gz"
+filesystem = "../../filesystem/wit"
+random = "../../random/wit"
+sockets = "../../sockets/wit"
+clocks = "../../clocks/wit"
+io = "../../io/wit"
