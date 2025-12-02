@@ -1,0 +1,43 @@
+# Configuration for actions/labeler
+# Labels PRs based on changed files
+
+# Proposal labels
+wasi-cli:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/cli/**'
+
+wasi-clocks:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/clocks/**'
+
+wasi-filesystem:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/filesystem/**'
+
+wasi-http:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/http/**'
+
+wasi-io:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/io/**'
+
+wasi-random:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/random/**'
+
+wasi-sockets:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/sockets/**'
+
+# GitHub Actions label
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+
+# Dependencies label (already exists, used by dependabot)
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/deps.toml'
+          - '**/deps.lock'
