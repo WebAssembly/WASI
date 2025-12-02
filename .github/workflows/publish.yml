@@ -134,10 +134,10 @@ jobs:
       - name: Build WIT package
         if: steps.skip_check.outputs.skip != 'true'
         shell: bash
-        working-directory: proposals/${{ matrix.proposal.name }}/${{ needs.setup.outputs.wit_dir }}
+        working-directory: proposals/${{ matrix.proposal.name }}
         run: |
           echo "Building from: $(pwd)"
-          wkg wit build -o "$GITHUB_WORKSPACE/wasi-${{ matrix.proposal.name }}.wasm"
+          wkg wit build -o "$GITHUB_WORKSPACE/wasi-${{ matrix.proposal.name }}.wasm" --wit-dir "${{ needs.setup.outputs.wit_dir }}"
 
       - name: Publish to GitHub Container Registry
         if: steps.skip_check.outputs.skip != 'true'
