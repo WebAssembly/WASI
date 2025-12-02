@@ -64,6 +64,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [TLS][wasi-tls]                                           | Joel Dice, Dave Bakker, James Sturtevant         |          |
 | [URL][wasi-url]                                           | Radu Matei                                       |          |
 | [USB][wasi-usb]                                           | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts |          |
+| [OTel][wasi-otel]                                                                | Caleb Schoepp, Andrew Steurer |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -71,8 +72,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                         | Champion      | Versions |
 | -------------------------------------------------------------------------------- | ------------- | -------- |
-| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |
-| [OTel][wasi-otel]                                                                | Caleb Schoepp, Andrew Steurer |          |
+| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |  |
 
 ## Versioning
 
