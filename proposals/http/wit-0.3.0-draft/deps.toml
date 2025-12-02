@@ -1,1 +1,2 @@
-cli = { url = "https://github.com/WebAssembly/wasi-cli/archive/main.tar.gz", subdir = "wit-0.3.0-draft" }
+cli = "../../cli/wit-0.3.0-draft"
+clocks = "../../clocks/wit-0.3.0-draft"
