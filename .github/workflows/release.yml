@@ -107,7 +107,7 @@ jobs:
         uses: ./.github/actions/install-tools
 
       - name: Setup wit-bindgen
-        uses: bytecodealliance/actions/wit-bindgen/setup@d742827944dcb656569399571a8a45261b5089f6 # v1.1.0
+        uses: bytecodealliance/actions/wit-bindgen/setup@6aecabac1eb1dcf7ed94ba9471974415ee2ebef2 # v1.1.2
         with:
           version: '0.48.1'
 
