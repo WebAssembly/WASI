@@ -1,0 +1,82 @@
+name: Publish Proposal
+
+# Reusable workflow to publish a single WASI proposal to GHCR
+
+on:
+  workflow_call:
+    inputs:
+      proposal:
+        description: 'Name of the proposal to publish'
+        required: true
+        type: string
+      description:
+        description: 'Description of the proposal'
+        required: true
+        type: string
+      version:
+        description: 'Version to publish'
+        required: true
+        type: string
+      wit_dir:
+        description: 'WIT directory (wit or wit-0.3.0-draft)'
+        required: true
+        type: string
+      wkg_version:
+        description: 'Version of wkg to install'
+        required: false
+        type: string
+        default: '0.13.0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+      attestations: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@3fc81674af4165a753833a94cae9f91d8849049f # v1.16.2
+
+      - name: Install wkg
+        shell: bash
+        run: cargo binstall -y "wkg@${{ inputs.wkg_version }}"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.ORG_PAT }}
+
+      - name: Build WIT package
+        shell: bash
+        working-directory: proposals/${{ inputs.proposal }}
+        run: |
+          echo "Building ${{ inputs.proposal }} from: $(pwd)"
+          wkg wit build -o "$GITHUB_WORKSPACE/wasi-${{ inputs.proposal }}.wasm" --wit-dir "${{ inputs.wit_dir }}"
+
+      - name: Publish to GitHub Container Registry
+        id: publish
+        uses: bytecodealliance/wkg-github-action@10b3b04b9059ba46208cd7daf7d352af14bded0f # v5
+        with:
+          oci-reference-without-tag: 'ghcr.io/webassembly/wasi/${{ inputs.proposal }}'
+          file: 'wasi-${{ inputs.proposal }}.wasm'
+          description: ${{ inputs.description }}
+          source: 'https://github.com/webassembly/wasi'
+          homepage: 'https://wasi.dev'
+          version: ${{ inputs.version }}
+          licenses: 'Apache-2.0 WITH LLVM-exception'
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-name: ghcr.io/webassembly/wasi/${{ inputs.proposal }}
+          subject-digest: ${{ steps.publish.outputs.digest }}
+          push-to-registry: true
+          github-token: ${{ secrets.ORG_PAT }}

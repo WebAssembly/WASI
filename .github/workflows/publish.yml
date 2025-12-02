@@ -68,102 +68,95 @@ jobs:
             echo "wit_dir=$WIT_DIR"
           } >> "$GITHUB_OUTPUT"
 
-  # Publish each proposal
-  publish:
+  # Publish proposals sequentially in dependency order:
+  # 1. io, random (no WASI dependencies)
+  # 2. clocks (depends on io)
+  # 3. filesystem, sockets (depend on io, clocks)
+  # 4. cli (depends on io, clocks, filesystem, random, sockets)
+  # 5. http (depends on cli, clocks, io)
+
+  publish-io:
     needs: setup
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      packages: write
-      contents: write
-      attestations: write
+    # Skip io for P3 prereleases (no wit-0.3.0-draft directory)
+    if: needs.setup.outputs.is_prerelease != 'true'
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: io
+      description: "WASI I/O interfaces for streams and poll"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-    strategy:
-      fail-fast: false
-      matrix:
-        proposal:
-          - name: io
-            description: "WASI I/O interfaces for streams and poll"
-            exclude_for_p3: true
-          - name: random
-            description: "WASI random number generation interfaces"
-          - name: clocks
-            description: "WASI clock interfaces for monotonic and wall clocks"
-          - name: filesystem
-            description: "WASI filesystem interfaces"
-          - name: sockets
-            description: "WASI socket interfaces for TCP and UDP"
-          - name: cli
-            description: "WASI CLI interfaces for command-line programs"
-          - name: http
-            description: "WASI HTTP interfaces for HTTP client and server"
+  publish-random:
+    needs: setup
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: random
+      description: "WASI random number generation interfaces"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-    steps:
-      # Skip proposals marked exclude_for_p3 when publishing prereleases (0.3.0-rc)
-      - name: Check if should skip
-        id: skip_check
-        run: |
-          if [ "${{ matrix.proposal.exclude_for_p3 }}" == "true" ] && [ "${{ needs.setup.outputs.is_prerelease }}" == "true" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "Skipping ${{ matrix.proposal.name }} for P3 prerelease"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
+  publish-clocks:
+    needs: [setup, publish-io, publish-random]
+    # For prereleases, only wait on random (io is skipped)
+    if: always() && !failure() && !cancelled()
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: clocks
+      description: "WASI clock interfaces for monotonic and system clocks"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-      - name: Checkout repository
-        if: steps.skip_check.outputs.skip != 'true'
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+  publish-filesystem:
+    needs: [setup, publish-clocks]
+    if: always() && !failure() && !cancelled()
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: filesystem
+      description: "WASI filesystem interfaces"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-      - name: Install cargo-binstall
-        if: steps.skip_check.outputs.skip != 'true'
-        uses: cargo-bins/cargo-binstall@3fc81674af4165a753833a94cae9f91d8849049f # v1.16.2
+  publish-sockets:
+    needs: [setup, publish-clocks]
+    if: always() && !failure() && !cancelled()
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: sockets
+      description: "WASI socket interfaces for TCP and UDP"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-      - name: Install wkg
-        if: steps.skip_check.outputs.skip != 'true'
-        shell: bash
-        run: cargo binstall -y wkg
+  publish-cli:
+    needs: [setup, publish-filesystem, publish-sockets]
+    if: always() && !failure() && !cancelled()
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: cli
+      description: "WASI CLI interfaces for command-line programs"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
-      - name: Login to GitHub Container Registry
-        if: steps.skip_check.outputs.skip != 'true'
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.ORG_PAT }}
-
-      - name: Build WIT package
-        if: steps.skip_check.outputs.skip != 'true'
-        shell: bash
-        working-directory: proposals/${{ matrix.proposal.name }}
-        run: |
-          echo "Building from: $(pwd)"
-          wkg wit build -o "$GITHUB_WORKSPACE/wasi-${{ matrix.proposal.name }}.wasm" --wit-dir "${{ needs.setup.outputs.wit_dir }}"
-
-      - name: Publish to GitHub Container Registry
-        if: steps.skip_check.outputs.skip != 'true'
-        id: publish
-        uses: bytecodealliance/wkg-github-action@10b3b04b9059ba46208cd7daf7d352af14bded0f # v5
-        with:
-          oci-reference-without-tag: 'ghcr.io/webassembly/wasi/${{ matrix.proposal.name }}'
-          file: 'wasi-${{ matrix.proposal.name }}.wasm'
-          description: ${{ matrix.proposal.description }}
-          source: 'https://github.com/webassembly/wasi'
-          homepage: 'https://wasi.dev'
-          version: ${{ needs.setup.outputs.version }}
-          licenses: 'Apache-2.0 WITH LLVM-exception'
-
-      - name: Attest build provenance
-        if: steps.skip_check.outputs.skip != 'true'
-        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
-        with:
-          subject-name: ghcr.io/webassembly/wasi/${{ matrix.proposal.name }}
-          subject-digest: ${{ steps.publish.outputs.digest }}
-          push-to-registry: true
-          github-token: ${{ secrets.ORG_PAT }}
+  publish-http:
+    needs: [setup, publish-cli]
+    if: always() && !failure() && !cancelled()
+    uses: ./.github/workflows/publish-proposal.yml
+    with:
+      proposal: http
+      description: "WASI HTTP interfaces for HTTP client and server"
+      version: ${{ needs.setup.outputs.version }}
+      wit_dir: ${{ needs.setup.outputs.wit_dir }}
+    secrets: inherit
 
   # Validate all packages were published successfully
   validate:
-    needs: [setup, publish]
+    needs: [setup, publish-io, publish-random, publish-clocks, publish-filesystem, publish-sockets, publish-cli, publish-http]
+    if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
     steps:
       - name: Install oras
@@ -205,7 +198,7 @@ jobs:
 
   # Create specification entry after all publishes complete
   create-specification:
-    needs: [setup, publish, validate]
+    needs: [setup, validate]
     runs-on: ubuntu-latest
     if: needs.setup.outputs.is_prerelease == 'false'
     permissions:
