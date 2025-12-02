@@ -1,0 +1,271 @@
+name: Publish
+
+# This workflow publishes all WASI proposals to GitHub Container Registry
+# when a release is created
+
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (without the v)'
+        required: true
+        type: string
+      wit_dir:
+        description: 'WIT directory to publish from (wit or wit-0.3.0-draft)'
+        required: true
+        type: choice
+        options:
+          - wit
+          - wit-0.3.0-draft
+        default: wit
+
+jobs:
+  # Determine version and configuration
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      wit_dir: ${{ steps.config.outputs.wit_dir }}
+      is_prerelease: ${{ steps.config.outputs.is_prerelease }}
+    steps:
+      - name: Get version from release tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            # Extract version from tag (remove 'v' prefix)
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing version: $VERSION"
+
+      - name: Determine configuration
+        id: config
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Determine configuration based on version:
+          # - RC versions always use wit-0.3.0-draft
+          # - Stable versions use wit (or workflow_dispatch input if provided)
+          if [[ "$VERSION" == *"-rc-"* ]]; then
+            IS_PRERELEASE="true"
+            WIT_DIR="wit-0.3.0-draft"
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.wit_dir }}" ]; then
+            IS_PRERELEASE="false"
+            WIT_DIR="${{ inputs.wit_dir }}"
+          else
+            IS_PRERELEASE="false"
+            WIT_DIR="wit"
+          fi
+
+          {
+            echo "is_prerelease=$IS_PRERELEASE"
+            echo "wit_dir=$WIT_DIR"
+          } >> "$GITHUB_OUTPUT"
+
+  # Publish each proposal
+  publish:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+      attestations: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        proposal:
+          - name: io
+            description: "WASI I/O interfaces for streams and poll"
+            exclude_for_p3: true
+          - name: random
+            description: "WASI random number generation interfaces"
+          - name: clocks
+            description: "WASI clock interfaces for monotonic and wall clocks"
+          - name: filesystem
+            description: "WASI filesystem interfaces"
+          - name: sockets
+            description: "WASI socket interfaces for TCP and UDP"
+          - name: cli
+            description: "WASI CLI interfaces for command-line programs"
+          - name: http
+            description: "WASI HTTP interfaces for HTTP client and server"
+
+    steps:
+      # Skip proposals marked exclude_for_p3 when publishing prereleases (0.3.0-rc)
+      - name: Check if should skip
+        id: skip_check
+        run: |
+          if [ "${{ matrix.proposal.exclude_for_p3 }}" == "true" ] && [ "${{ needs.setup.outputs.is_prerelease }}" == "true" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping ${{ matrix.proposal.name }} for P3 prerelease"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: steps.skip_check.outputs.skip != 'true'
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Install cargo-binstall
+        if: steps.skip_check.outputs.skip != 'true'
+        uses: cargo-bins/cargo-binstall@3fc81674af4165a753833a94cae9f91d8849049f # v1.16.2
+
+      - name: Install wkg
+        if: steps.skip_check.outputs.skip != 'true'
+        shell: bash
+        run: cargo binstall -y wkg
+
+      - name: Login to GitHub Container Registry
+        if: steps.skip_check.outputs.skip != 'true'
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.ORG_PAT }}
+
+      - name: Build WIT package
+        if: steps.skip_check.outputs.skip != 'true'
+        shell: bash
+        working-directory: proposals/${{ matrix.proposal.name }}/${{ needs.setup.outputs.wit_dir }}
+        run: |
+          echo "Building from: $(pwd)"
+          wkg wit build -o "$GITHUB_WORKSPACE/wasi-${{ matrix.proposal.name }}.wasm"
+
+      - name: Publish to GitHub Container Registry
+        if: steps.skip_check.outputs.skip != 'true'
+        id: publish
+        uses: bytecodealliance/wkg-github-action@10b3b04b9059ba46208cd7daf7d352af14bded0f # v5
+        with:
+          oci-reference-without-tag: 'ghcr.io/webassembly/wasi/${{ matrix.proposal.name }}'
+          file: 'wasi-${{ matrix.proposal.name }}.wasm'
+          description: ${{ matrix.proposal.description }}
+          source: 'https://github.com/webassembly/wasi'
+          homepage: 'https://wasi.dev'
+          version: ${{ needs.setup.outputs.version }}
+          licenses: 'Apache-2.0 WITH LLVM-exception'
+
+      - name: Attest build provenance
+        if: steps.skip_check.outputs.skip != 'true'
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-name: ghcr.io/webassembly/wasi/${{ matrix.proposal.name }}
+          subject-digest: ${{ steps.publish.outputs.digest }}
+          push-to-registry: true
+          github-token: ${{ secrets.ORG_PAT }}
+
+  # Validate all packages were published successfully
+  validate:
+    needs: [setup, publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install oras
+        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1.2.4
+
+      - name: Validate published packages
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          IS_PRERELEASE="${{ needs.setup.outputs.is_prerelease }}"
+
+          # io is excluded from RC releases
+          if [ "$IS_PRERELEASE" == "true" ]; then
+            PROPOSALS="random clocks filesystem sockets cli http"
+          else
+            PROPOSALS="io random clocks filesystem sockets cli http"
+          fi
+
+          echo "Validating packages for version $VERSION..."
+          FAILED=""
+
+          for proposal in $PROPOSALS; do
+            echo "Checking ghcr.io/webassembly/wasi/$proposal:$VERSION..."
+            if oras manifest fetch "ghcr.io/webassembly/wasi/$proposal:$VERSION" > /dev/null 2>&1; then
+              echo "  ✓ $proposal published successfully"
+            else
+              echo "  ✗ $proposal NOT FOUND"
+              FAILED="$FAILED $proposal"
+            fi
+          done
+
+          if [ -n "$FAILED" ]; then
+            echo ""
+            echo "ERROR: Failed to validate packages:$FAILED"
+            exit 1
+          fi
+
+          echo ""
+          echo "✓ All packages validated successfully!"
+
+  # Create specification entry after all publishes complete
+  create-specification:
+    needs: [setup, publish, validate]
+    runs-on: ubuntu-latest
+    if: needs.setup.outputs.is_prerelease == 'false'
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Create specification directory
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          SPEC_DIR="specifications/wasi-$VERSION"
+          mkdir -p "$SPEC_DIR"
+
+          cat > "$SPEC_DIR/Overview.md" << EOF
+          # WASI Specification v${VERSION}
+
+          This is version ${VERSION} of the WASI specification, based on the [WebAssembly
+          Component Model][cm].
+
+          ## Proposals
+
+          The [WebAssembly Interface Type (WIT)][wit] definitions for the proposals included in this
+          version of the specification are pushed to OCI based on the [Wasm OCI Artifact
+          layout][wasm-oci]:
+
+          - [wasi:io@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fio?tag=${VERSION})
+          - [wasi:random@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Frandom?tag=${VERSION})
+          - [wasi:clocks@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fclocks?tag=${VERSION})
+          - [wasi:sockets@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fsockets?tag=${VERSION})
+          - [wasi:filesystem@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Ffilesystem?tag=${VERSION})
+          - [wasi:cli@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fcli?tag=${VERSION})
+          - [wasi:http@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fhttp?tag=${VERSION})
+
+          [cm]: https://github.com/WebAssembly/component-model
+          [wit]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+          [wasm-oci]: https://tag-runtime.cncf.io/wgs/wasm/deliverables/wasm-oci-artifact
+          EOF
+
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' "$SPEC_DIR/Overview.md"
+
+      - name: Create Pull Request for specification
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
+        with:
+          commit-message: "Add specification for v${{ needs.setup.outputs.version }}"
+          branch: spec-v${{ needs.setup.outputs.version }}
+          title: "Add specification for WASI v${{ needs.setup.outputs.version }}"
+          body: |
+            This PR adds the specification entry for WASI v${{ needs.setup.outputs.version }}.
+
+            The following packages have been published to GHCR:
+            - `ghcr.io/webassembly/wasi/io:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/random:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/clocks:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/sockets:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/filesystem:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/cli:${{ needs.setup.outputs.version }}`
+            - `ghcr.io/webassembly/wasi/http:${{ needs.setup.outputs.version }}`
+          base: main
+          delete-branch: true

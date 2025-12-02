@@ -1,0 +1,211 @@
+name: Release WASI
+
+# Main workflow for creating WASI releases
+# This workflow:
+# 1. Updates version strings across all proposals
+# 2. Creates a PR for review
+# 3. After merge, a release can be created to trigger publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: true
+        type: choice
+        options:
+          - patch      # 0.2.x patch release
+          - rc         # 0.3.0-rc-YYYY-MM-DD release candidate
+      prev_version:
+        description: 'Previous version (for patch releases, e.g., 0.2.8)'
+        required: false
+        type: string
+      next_version:
+        description: 'Next version (for patch releases, e.g., 0.2.9). For RC, leave empty to auto-generate date.'
+        required: false
+        type: string
+      prev_rc_date:
+        description: 'Previous RC date (for RC releases, e.g., 2025-09-16). Leave empty for first RC.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    outputs:
+      prev_version: ${{ steps.versions.outputs.prev_version }}
+      next_version: ${{ steps.versions.outputs.next_version }}
+      wit_dir: ${{ steps.versions.outputs.wit_dir }}
+      tag: ${{ steps.versions.outputs.tag }}
+      is_prerelease: ${{ steps.versions.outputs.is_prerelease }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Determine versions
+        id: versions
+        run: |
+          DATE="$(date +'%Y-%m-%d')"
+
+          if [ "${{ inputs.release_type }}" == "patch" ]; then
+            # Patch release (0.2.x)
+            PREV_VERSION="${{ inputs.prev_version }}"
+            NEXT_VERSION="${{ inputs.next_version }}"
+            WIT_DIR="wit"
+            TAG="v$NEXT_VERSION"
+            IS_PRERELEASE="false"
+
+            if [ -z "$PREV_VERSION" ] || [ -z "$NEXT_VERSION" ]; then
+              echo "Error: prev_version and next_version are required for patch releases"
+              exit 1
+            fi
+          else
+            # RC release (0.3.0-rc-YYYY-MM-DD)
+            if [ -n "${{ inputs.prev_rc_date }}" ]; then
+              PREV_VERSION="0.3.0-rc-${{ inputs.prev_rc_date }}"
+            else
+              # First RC or unknown previous
+              PREV_VERSION="0.3.0-draft"
+            fi
+            NEXT_VERSION="0.3.0-rc-$DATE"
+            WIT_DIR="wit-0.3.0-draft"
+            TAG="v$NEXT_VERSION"
+            IS_PRERELEASE="true"
+          fi
+
+          {
+            echo "prev_version=$PREV_VERSION"
+            echo "next_version=$NEXT_VERSION"
+            echo "wit_dir=$WIT_DIR"
+            echo "tag=$TAG"
+            echo "is_prerelease=$IS_PRERELEASE"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Release configuration:"
+          echo "  Previous version: $PREV_VERSION"
+          echo "  Next version: $NEXT_VERSION"
+          echo "  WIT directory: $WIT_DIR"
+          echo "  Tag: $TAG"
+          echo "  Is prerelease: $IS_PRERELEASE"
+
+  update-versions:
+    needs: prepare-release
+    runs-on: ubuntu-latest
+    env:
+      # io is excluded for 0.3.0-rc (no wit-0.3.0-draft directory)
+      PROPOSALS: ${{ inputs.release_type == 'patch' && 'io random clocks filesystem sockets cli http' || 'random clocks filesystem sockets cli http' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+
+      - name: Setup wit-bindgen
+        uses: bytecodealliance/actions/wit-bindgen/setup@d742827944dcb656569399571a8a45261b5089f6 # v1.1.0
+        with:
+          version: '0.48.1'
+
+      - name: Update WIT versions
+        run: |
+          WIT_DIR="${{ needs.prepare-release.outputs.wit_dir }}"
+          PREV="${{ needs.prepare-release.outputs.prev_version }}"
+          NEXT="${{ needs.prepare-release.outputs.next_version }}"
+
+          echo "Updating from $PREV to $NEXT in $WIT_DIR"
+
+          for proposal in $PROPOSALS; do
+            wit_path="proposals/$proposal/$WIT_DIR"
+            if [ -d "$wit_path" ]; then
+              echo "Updating $proposal..."
+
+              # Update package declarations and use/import statements
+              find "$wit_path" -type f -name "*.wit" -exec sed -i \
+                "s/\(wasi:[a-zA-Z0-9_\/-]*@\)$PREV/\1$NEXT/g" {} + || true
+
+              # Only update @since annotations if they contain an RC version (-rc-).
+              # Stable @since versions (e.g., @since(version = 0.2.0)) mark when a feature
+              # was released and must not be changed.
+              find "$wit_path" -type f -name "*.wit" -exec sed -i \
+                "s/\(@since(version = \)\([0-9.]*-rc-[^)]*\))/\1$NEXT)/g" {} + || true
+            fi
+          done
+
+      - name: Update wit-deps
+        run: |
+          WIT_DIR="${{ needs.prepare-release.outputs.wit_dir }}"
+
+          for proposal in $PROPOSALS; do
+            wit_path="proposals/$proposal/$WIT_DIR"
+            deps_file="$wit_path/deps.toml"
+
+            if [ -f "$deps_file" ]; then
+              echo "Updating dependencies for $proposal..."
+              wit-deps -m "$deps_file" -l "$wit_path/deps.lock" -d "$wit_path/deps" update
+            fi
+          done
+
+      # Generate markdown documentation (only for 0.2.x patch releases)
+      - name: Generate markdown documentation
+        if: inputs.release_type == 'patch'
+        run: |
+          WIT_DIR="${{ needs.prepare-release.outputs.wit_dir }}"
+
+          for proposal in $PROPOSALS; do
+            wit_path="proposals/$proposal/$WIT_DIR"
+            if [ -d "$wit_path" ]; then
+              echo "Generating docs for $proposal..."
+
+              worlds=$(find "$wit_path" -maxdepth 1 -type f -name '*.wit' -exec grep -hE '^world[[:space:]]+' {} + 2>/dev/null \
+                | sed -E 's/^world[[:space:]]+([^[:space:]]+).*$/\1/' \
+                | tr '\n' ' ' || echo "")
+
+              for world in $worlds; do
+                echo "  Generating markdown for world: $world"
+                wit-bindgen markdown "$wit_path" -w "$world" --html-in-md --all-features
+              done
+            fi
+          done
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
+        with:
+          commit-message: "Release WASI v${{ needs.prepare-release.outputs.next_version }}"
+          branch: release-v${{ needs.prepare-release.outputs.next_version }}
+          title: "Release WASI v${{ needs.prepare-release.outputs.next_version }}"
+          body: |
+            ## Release v${{ needs.prepare-release.outputs.next_version }}
+
+            This PR updates all WASI proposals to version `${{ needs.prepare-release.outputs.next_version }}`.
+
+            ### Release Type
+            ${{ inputs.release_type == 'patch' && '**Patch Release** (stable 0.2.x)' || '**Release Candidate** (0.3.0-rc)' }}
+
+            ### Version Changes
+            - Previous: `${{ needs.prepare-release.outputs.prev_version }}`
+            - Next: `${{ needs.prepare-release.outputs.next_version }}`
+            - WIT directory: `${{ needs.prepare-release.outputs.wit_dir }}`
+
+            ### Proposals Updated
+            ${{ inputs.release_type == 'patch' && '- io' || '' }}
+            - random
+            - clocks
+            - filesystem
+            - sockets
+            - cli
+            - http
+
+            ### After Merging
+
+            After this PR is merged, create a GitHub release with tag `${{ needs.prepare-release.outputs.tag }}` to trigger publishing to GHCR.
+
+            ```bash
+            gh release create "${{ needs.prepare-release.outputs.tag }}" --generate-notes ${{ needs.prepare-release.outputs.is_prerelease == 'true' && '--prerelease' || '' }}
+            ```
+          base: main
+          delete-branch: true
