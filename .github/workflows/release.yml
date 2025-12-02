@@ -167,7 +167,7 @@ jobs:
 
               for world in $worlds; do
                 echo "  Generating markdown for world: $world"
-                wit-bindgen markdown "$wit_path" -w "$world" --html-in-md --all-features
+                wit-bindgen markdown "$wit_path" -w "$world" --html-in-md --all-features --out-dir "proposals/$proposal"
               done
             fi
           done
