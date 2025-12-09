@@ -489,11 +489,12 @@ interface types {
 
         /// Create a hard link.
         ///
-        /// Fails with `error-code::no-entry` if the old path does not exist,
-        /// with `error-code::exist` if the new path already exists, and
-        /// `error-code::not-permitted` if the old path is not a file.
+        /// Behavior is as described by [POSIX
+        /// `linkat`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/link.html).
         ///
-        /// Note: This is similar to `linkat` in POSIX.
+        /// Note: some platforms return `error-code::access` instead of
+        /// `error-code::not-permitted` when attempting to hard-link a
+        /// directory.
         @since(version = 0.3.0-rc-2025-09-16)
         link-at: async func(
             /// Flags determining the method of how the path is resolved.
