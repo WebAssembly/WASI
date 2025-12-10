@@ -1,0 +1,46 @@
+# Configuration for actions/labeler
+# Labels PRs based on changed files
+#
+# Proposal labels use the P- prefix to identify which WASI proposal is affected.
+# See CONTRIBUTING.md for documentation on label conventions.
+
+# Proposal labels (P-)
+P-cli:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/cli/**'
+
+P-clocks:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/clocks/**'
+
+P-filesystem:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/filesystem/**'
+
+P-http:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/http/**'
+
+P-io:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/io/**'
+
+P-random:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/random/**'
+
+P-sockets:
+  - changed-files:
+      - any-glob-to-any-file: 'proposals/sockets/**'
+
+# GitHub Actions label
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
+
+# Dependencies label (already exists, used by dependabot)
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/deps.toml'
+          - '**/deps.lock'

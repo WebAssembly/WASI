@@ -7,6 +7,31 @@ Interested in participating? Please follow
 
 Also, please be sure to read [the README.md](README.md) for this repository.
 
+## Labels
+
+This repository uses a categorized label system inspired by [the Rust project].
+Proposal labels use the `P-` prefix to identify which WASI proposal an issue or
+pull request relates to.
+
+### Proposal Labels (P-)
+
+| Label | Proposal |
+| ----- | -------- |
+| `P-cli` | [cli](proposals/cli/) |
+| `P-clocks` | [clocks](proposals/clocks/) |
+| `P-filesystem` | [filesystem](proposals/filesystem/) |
+| `P-http` | [http](proposals/http/) |
+| `P-io` | [io](proposals/io/) |
+| `P-random` | [random](proposals/random/) |
+| `P-sockets` | [sockets](proposals/sockets/) |
+
+Pull requests that modify files in a proposal directory are automatically
+labeled by the [labeler workflow](.github/workflows/labeler.yml).
+
+[the Rust project]: https://github.com/rust-lang/rust/labels
+
+## Contributing to Proposals
+
 To contribute to an [existing proposal](https://github.com/WebAssembly/WASI/blob/main/docs/Proposals.md),
 refer to the linked proposal repository.
 
