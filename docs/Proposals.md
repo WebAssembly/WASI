@@ -24,19 +24,19 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                      | Champion                                                              | Versions |
 | ----------------------------- | --------------------------------------------------------------------- | -------- |
 | [I/O][wasi-io]                | Dan Gohman                                                            |          |
-| [Clocks][wasi-clocks]         | Dan Gohman                                                            |          |
-| [Random][wasi-random]         | Dan Gohman                                                            |          |
-| [Filesystem][wasi-filesystem] | Dan Gohman                                                            |          |
+| [Clocks][wasi-clocks]         | Dan Gohman, Colin Murphy                                              |          |
+| [Random][wasi-random]         | Dan Gohman, Roman Volosatovs                                          |          |
+| [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                                             |          |
 | [Sockets][wasi-sockets]       | Dave Bakker                                                           |          |
-| [CLI][wasi-cli]               | Dan Gohman                                                            |          |
+| [CLI][wasi-cli]               | Dan Gohman, Lann Martin                                               |          |
 | [HTTP][wasi-http]             | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
 | Proposal                                           | Champion                                                              | Versions |
 | -------------------------------------------------- | --------------------------------------------------------------------- | -------- |
-| [Clocks: Timezone][wasi-clocks]                    | Dan Gohman                                                            |          |
-| [CLI: Exit With Code][wasi-cli]                    | Dan Gohman                                                            |          |
+| [Clocks: Timezone][wasi-clocks]                    | Dan Gohman, Colin Murphy                                              |          |
+| [CLI: Exit With Code][wasi-cli]                    | Dan Gohman, Lann Martin                                               |          |
 | [HTTP: Informational Outbound Response][wasi-http] | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 | [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler         |          |
 | [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
