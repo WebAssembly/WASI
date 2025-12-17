@@ -1,4 +1,0 @@
-clocks = "../../clocks/wit-0.3.0-draft"
-sockets = "../../sockets/wit-0.3.0-draft"
-random = "../../random/wit-0.3.0-draft"
-filesystem = "../../filesystem/wit-0.3.0-draft"

@@ -1,2 +1,0 @@
-# Enable some degree of syntax highlighting on GitHub:
-*.wit linguist-language=Rust

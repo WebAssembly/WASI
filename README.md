@@ -1,41 +1,33 @@
-<img width="100px" src="assets/WASI.png">
+# Legacy WASI docs
 
-# WebAssembly System Interface
+This branch documents the "preview0" and "preview1" iterations of WASI.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4323447.svg)](https://doi.org/10.5281/zenodo.4323447)
-    
+Preview0 corresponded to the import module name `wasi_unstable`. It was
+also called `snapshot_0` in some places. It was short-lived, and the changes
+to preview1 were minor, so the focus here is on preview1.
 
-The WebAssembly System Interface (WASI) is a set of APIs for WASI being
-developed for eventual standardization by the WASI Subgroup, which is a
-subgroup of the WebAssembly Community Group.
+Preview1 corresponds to the import module name `wasi_snapshot_preview1`.
 
-WASI started with launching what is now called [Preview 1], an API using
-the witx IDL, and it is now widely used. Its major influences are POSIX and
-CloudABI.
+There was some work under the name "ephemeral" towards an update of preview1
+however it is no longer being actively developed. The name "preview2" now
+refers to the new wit-based iteration of WASI instead.
 
-[WASI Preview 2] is now stable, and is a modular collection of
-APIs defined with the [Wit IDL], and it incorporates many of the lessons
-learned from Preview 1, including adding support for a wider range of
-source languages, modularity, a more expressive type system,
-virtualizability, and more.
+Preview1 was defined using the witx IDL and associated tooling. Witx was
+an s-expression-based IDL derived from WebAssembly's wat text format, adding
+several extensions. It had a low-level C-like type system that emphasized raw
+pointers, and callees were expected to have access to the caller's entire
+linear memory, exported as "memory". It also had an implied global file
+descriptor table.
 
-[Preview 1]: https://github.com/WebAssembly/WASI/tree/main/legacy/README.md
-[WASI Preview 2]: https://github.com/WebAssembly/WASI/blob/main/docs/Preview2.md
-[Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+Some features in preview1 were not widely supported by engines:
+ - The `proc_raise` function, because Wasm itself has no signal-handling
+   facilities, and a process wishing to terminate abnormally typically
+   uses a Wasm trap instead of calling `proc_raise`.
 
-## Find the APIs
+ - The `process_cputime_id` and `thread_cputime_id`, because in many
+   engines, Wasm instances are not one-to-one with host processes, so the
+   usual host APIs aren't sufficient to implement these.
 
-Development of each API happens in its own repo, which you can access
-from the [proposals list](docs/Proposals.md).
-
-This repo is for general discussion, as well as documenting how we work
-and high-level goals.
-
-## Propose a new API
-
-If you would like to create a new proposal, get started with our
-[Contributing guide](CONTRIBUTING.md).
-
-All new API proposals should use the new format and the new repo structure that is shown in the [proposal template](https://github.com/WebAssembly/wasi-proposal-template).
-
-See the [Wit in WASI](docs/WitInWasi.md) document for more information about using Wit for WASI proposals.
+One function has been added to preview1:
+ - `sock_accept`, allowing limited socket use cases to be supported.
+   Sockets support with `listen` and `connect` is being added in preview2.

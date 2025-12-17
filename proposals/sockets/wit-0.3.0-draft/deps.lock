@@ -1,4 +1,0 @@
-[clocks]
-path = "../../clocks/wit-0.3.0-draft"
-sha256 = "6c0d121ab51a75ad7e348129631cd721885ad994f38317af887137fdf4b0ff6d"
-sha512 = "dadf98b75fd14f67ad95dcb595eadcc21bf846ba9301b0bcec062e0a6fdad9bdacb0927927b319ef082f105433f6fa298c52687cb17e9fdb2bb21e05fb288fce"

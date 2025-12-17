@@ -1,5 +1,0 @@
-filesystem = "../../filesystem/wit"
-random = "../../random/wit"
-sockets = "../../sockets/wit"
-clocks = "../../clocks/wit"
-io = "../../io/wit"
