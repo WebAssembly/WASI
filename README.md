@@ -1,4 +1,4 @@
-# Legacy WASI docs
+# WASI 0.1 docs
 
 This branch documents the "preview0" and "preview1" iterations of WASI.
 
