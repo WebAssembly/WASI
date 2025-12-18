@@ -19,7 +19,7 @@ learned from Preview 1, including adding support for a wider range of
 source languages, modularity, a more expressive type system,
 virtualizability, and more.
 
-[Preview 1]: https://github.com/WebAssembly/WASI/tree/main/legacy/README.md
+[Preview 1]: https://github.com/WebAssembly/WASI/tree/wasi-0.1
 [WASI Preview 2]: https://github.com/WebAssembly/WASI/blob/main/docs/Preview2.md
 [Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 
