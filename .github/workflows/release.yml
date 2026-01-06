@@ -67,7 +67,11 @@ jobs:
           else
             # RC release (0.3.0-rc-YYYY-MM-DD)
             if [ -n "${{ inputs.prev_rc_date }}" ]; then
-              PREV_VERSION="0.3.0-rc-${{ inputs.prev_rc_date }}"
+              # Strip any accidental "0.3.0-rc-" or "v" prefix from the input
+              PREV_RC_DATE="${{ inputs.prev_rc_date }}"
+              PREV_RC_DATE="${PREV_RC_DATE#v}"
+              PREV_RC_DATE="${PREV_RC_DATE#0.3.0-rc-}"
+              PREV_VERSION="0.3.0-rc-$PREV_RC_DATE"
             else
               # First RC or unknown previous
               PREV_VERSION="0.3.0-draft"
@@ -131,7 +135,8 @@ jobs:
               # Only update @since annotations if they contain an RC version (-rc-).
               # Stable @since versions (e.g., @since(version = 0.2.0)) mark when a feature
               # was released and must not be changed.
-              find "$wit_path" -type f -name "*.wit" -exec sed -i \
+              # Exclude deps/ - those are pulled packages with their own versions.
+              find "$wit_path" -type f -name "*.wit" ! -path "*/deps/*" -exec sed -i \
                 "s/\(@since(version = \)\([0-9.]*-rc-[^)]*\))/\1$NEXT)/g" {} + || true
             fi
           done
