@@ -1,23 +1,23 @@
-package wasi:http@0.3.0-rc-2025-09-16;
+package wasi:http@0.3.0-rc-2026-01-06;
 
 /// The `wasi:http/service` world captures a broad category of HTTP services
 /// including web applications, API servers, and proxies. It may be `include`d
 /// in more specific worlds such as `wasi:http/middleware`.
 world service {
   /// HTTP services have access to time and randomness.
-  include wasi:clocks/imports@0.3.0-rc-2025-09-16;
-  include wasi:random/imports@0.3.0-rc-2025-09-16;
+  include wasi:clocks/imports@0.3.0-rc-2026-01-06;
+  include wasi:random/imports@0.3.0-rc-2026-01-06;
 
   /// Services have standard output and error streams which are expected to
   /// terminate in a developer-facing console provided by the host.
-  import wasi:cli/stdout@0.3.0-rc-2025-09-16;
-  import wasi:cli/stderr@0.3.0-rc-2025-09-16;
+  import wasi:cli/stdout@0.3.0-rc-2026-01-06;
+  import wasi:cli/stderr@0.3.0-rc-2026-01-06;
 
   /// TODO: this is a temporary workaround until component tooling is able to
   /// gracefully handle the absence of stdin. Hosts must return an eof stream
   /// for this import, which is what wasi-libc + tooling will do automatically
   /// when this import is properly removed.
-  import wasi:cli/stdin@0.3.0-rc-2025-09-16;
+  import wasi:cli/stdin@0.3.0-rc-2026-01-06;
 
   /// This is the default `client` to use when user code simply wants to make an
   /// HTTP request (e.g., via `fetch()`).
