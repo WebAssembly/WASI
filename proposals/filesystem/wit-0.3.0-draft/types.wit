@@ -167,6 +167,7 @@ interface types {
     }
 
     /// A directory entry.
+    @since(version = 0.3.0-rc-2026-01-06)
     record directory-entry {
         /// The type of the file referred to by this directory entry.
         %type: descriptor-type,
@@ -179,6 +180,7 @@ interface types {
     /// Not all of these error codes are returned by the functions provided by this
     /// API; some are used in higher-level library layers, and others are provided
     /// merely for alignment with POSIX.
+    @since(version = 0.3.0-rc-2026-01-06)
     enum error-code {
         /// Permission denied, similar to `EACCES` in POSIX.
         access,
