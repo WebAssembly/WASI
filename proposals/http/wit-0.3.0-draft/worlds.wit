@@ -3,6 +3,7 @@ package wasi:http@0.3.0-rc-2026-01-06;
 /// The `wasi:http/service` world captures a broad category of HTTP services
 /// including web applications, API servers, and proxies. It may be `include`d
 /// in more specific worlds such as `wasi:http/middleware`.
+@since(version = 0.3.0-rc-2026-01-06)
 world service {
   /// HTTP services have access to time and randomness.
   include wasi:clocks/imports@0.3.0-rc-2026-01-06;
@@ -39,6 +40,7 @@ world service {
 /// Components may implement this world to allow them to participate in handler
 /// "chains" where a `request` flows through handlers on its way to some terminal
 /// `service` and corresponding `response` flows in the opposite direction.
+@since(version = 0.3.0-rc-2026-01-06)
 world middleware {
   include service;
   import handler;
@@ -51,6 +53,7 @@ world middleware {
 ///
 /// In `wasi:http/middleware` this interface is both exported and imported as
 /// the "downstream" and "upstream" directions of the middleware chain.
+@since(version = 0.3.0-rc-2026-01-06)
 interface handler {
   use types.{request, response, error-code};
 
@@ -71,6 +74,7 @@ interface handler {
 /// (including WIT itself) is unable to represent a component importing two
 /// instances of the same interface. A `client.send` import may be linked
 /// directly to a `handler.handle` export to bypass the network.
+@since(version = 0.3.0-rc-2026-01-06)
 interface client {
   use types.{request, response, error-code};
 

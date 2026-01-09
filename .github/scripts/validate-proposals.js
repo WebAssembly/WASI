@@ -2,6 +2,7 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
+const { validateDirectory, formatErrors } = require('./validate-since');
 
 const witPath = (proposal, version) => {
   if (version === '0.2') return `proposals/${proposal}/wit`;
@@ -90,6 +91,15 @@ for (const { proposal, version } of toValidate) {
     console.log('  Validating wasm encoding...');
     if (!run(`wasm-tools component wit "${witDir}" --wasm -o /dev/null`)) {
       console.log(`::error::wasm encoding failed for ${proposal} v${version}`);
+      failed = true;
+    }
+
+    // Validate @since annotations
+    console.log('  Validating @since annotations...');
+    const sinceErrors = validateDirectory(witDir);
+    if (sinceErrors.length > 0) {
+      console.log(formatErrors(sinceErrors));
+      console.log(`::error::@since validation failed for ${proposal} v${version}: ${sinceErrors.length} missing annotation(s)`);
       failed = true;
     }
   } finally {
