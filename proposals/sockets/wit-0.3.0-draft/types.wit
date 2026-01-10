@@ -309,7 +309,7 @@ interface types {
         /// - <https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send>
         /// - <https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2>
         @since(version = 0.3.0-rc-2026-01-06)
-        send: async func(data: stream<u8>) -> result<_, error-code>;
+        send: func(data: stream<u8>) -> future<result<_, error-code>>;
 
         /// Read data from peer.
         ///
