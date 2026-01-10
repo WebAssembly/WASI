@@ -329,12 +329,12 @@ interface types {
         ///
         /// Note: This is similar to `pwrite` in POSIX.
         @since(version = 0.3.0-rc-2026-01-06)
-        write-via-stream: async func(
+        write-via-stream: func(
             /// Data to write
             data: stream<u8>,
             /// The offset within the file at which to start writing.
             offset: filesize,
-        ) -> result<_, error-code>;
+        ) -> future<result<_, error-code>>;
 
         /// Return a stream for appending to a file, if available.
         ///
@@ -345,7 +345,7 @@ interface types {
         ///
         /// Note: This is similar to `write` with `O_APPEND` in POSIX.
         @since(version = 0.3.0-rc-2026-01-06)
-        append-via-stream: async func(data: stream<u8>) -> result<_, error-code>;
+        append-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 
         /// Provide file advisory information on a descriptor.
         ///
