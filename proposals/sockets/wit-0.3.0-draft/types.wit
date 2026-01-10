@@ -276,6 +276,12 @@ interface types {
         /// In either case, the stream returned by this `listen` method remains
         /// operational.
         ///
+        /// WASI requires `listen` to perform an implicit bind if the socket
+        /// has not already been bound. Not all platforms (notably Windows)
+        /// exhibit this behavior out of the box. On platforms that require it,
+        /// the WASI implementation can emulate this behavior by performing
+        /// the bind itself if the guest hasn't already done so.
+        ///
         /// # References
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html>
         /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html>
