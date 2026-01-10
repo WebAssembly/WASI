@@ -45,7 +45,7 @@ interface stdout {
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
   @since(version = 0.3.0-rc-2026-01-06)
-  write-via-stream: async func(data: stream<u8>) -> result<_, error-code>;
+  write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }
 
 @since(version = 0.3.0-rc-2026-01-06)
@@ -61,5 +61,5 @@ interface stderr {
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
   @since(version = 0.3.0-rc-2026-01-06)
-  write-via-stream: async func(data: stream<u8>) -> result<_, error-code>;
+  write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }
