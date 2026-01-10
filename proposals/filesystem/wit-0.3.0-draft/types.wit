@@ -424,7 +424,7 @@ interface types {
         /// This function returns a future, which will resolve to an error code if
         /// reading full contents of the directory fails.
         @since(version = 0.3.0-rc-2026-01-06)
-        read-directory: async func() -> tuple<stream<directory-entry>, future<result<_, error-code>>>;
+        read-directory: func() -> tuple<stream<directory-entry>, future<result<_, error-code>>>;
 
         /// Synchronize the data and metadata of a file to disk.
         ///
