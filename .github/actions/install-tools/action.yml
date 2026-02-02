@@ -9,7 +9,7 @@ inputs:
   wasm-tools-version:
     description: 'Version of wasm-tools to install'
     required: false
-    default: '1.242.0'
+    default: '1.244.0'
 
 runs:
   using: 'composite'
