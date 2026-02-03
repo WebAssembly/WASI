@@ -30,6 +30,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       wit_dir: ${{ steps.config.outputs.wit_dir }}
       is_prerelease: ${{ steps.config.outputs.is_prerelease }}
+      proposals: ${{ steps.config.outputs.proposals }}
     steps:
       - name: Get version from release tag
         id: version
@@ -55,17 +56,21 @@ jobs:
           if [[ "$VERSION" == *"-rc-"* ]]; then
             IS_PRERELEASE="true"
             WIT_DIR="wit-0.3.0-draft"
+            PROPOSALS="random clocks filesystem sockets cli http"
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.wit_dir }}" ]; then
             IS_PRERELEASE="false"
             WIT_DIR="${{ inputs.wit_dir }}"
+            PROPOSALS="io random clocks filesystem sockets cli http"
           else
             IS_PRERELEASE="false"
             WIT_DIR="wit"
+            PROPOSALS="io random clocks filesystem sockets cli http"
           fi
 
           {
             echo "is_prerelease=$IS_PRERELEASE"
             echo "wit_dir=$WIT_DIR"
+            echo "proposals=$PROPOSALS"
           } >> "$GITHUB_OUTPUT"
 
   # Publish proposals sequentially in dependency order:
@@ -165,14 +170,7 @@ jobs:
       - name: Validate published packages
         run: |
           VERSION="${{ needs.setup.outputs.version }}"
-          IS_PRERELEASE="${{ needs.setup.outputs.is_prerelease }}"
-
-          # io is excluded from RC releases
-          if [ "$IS_PRERELEASE" == "true" ]; then
-            PROPOSALS="random clocks filesystem sockets cli http"
-          else
-            PROPOSALS="io random clocks filesystem sockets cli http"
-          fi
+          PROPOSALS="${{ needs.setup.outputs.proposals }}"
 
           echo "Validating packages for version $VERSION..."
           FAILED=""
@@ -195,6 +193,59 @@ jobs:
 
           echo ""
           echo "✓ All packages validated successfully!"
+
+  # Create and upload wit.tar.gz artifact to the GitHub release
+  upload-wit-tarball:
+    needs: [setup, validate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@ec80feb9e330418e014932e5982599255eff6dbb # v1.17.4
+
+      - name: Install wkg and wasm-tools
+        run: |
+          cargo binstall -y wkg@0.14.0
+          cargo binstall -y wasm-tools@1.244.0
+
+      - name: Create consolidated WIT directory
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          WIT_DIR="${{ needs.setup.outputs.wit_dir }}"
+          PROPOSALS="${{ needs.setup.outputs.proposals }}"
+          TARBALL_DIR="wasi-wit-$VERSION"
+
+          mkdir -p "$TARBALL_DIR"
+
+          # Build each proposal to .wasm, then extract consolidated WIT
+          for proposal in $PROPOSALS; do
+            echo "Building $proposal..."
+            (cd "proposals/$proposal" && wkg wit build -o "$GITHUB_WORKSPACE/$proposal.wasm" --wit-dir "$WIT_DIR")
+            mkdir -p "$TARBALL_DIR/$proposal"
+            wasm-tools component wit "$proposal.wasm" --out-dir "$TARBALL_DIR/$proposal/"
+            rm "$proposal.wasm"
+          done
+
+          echo "Created $TARBALL_DIR with contents:"
+          find "$TARBALL_DIR" -type f | head -20
+
+      - name: Create tarball
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          tar -czvf "wasi-wit-$VERSION.tar.gz" "wasi-wit-$VERSION"
+          echo "Created wasi-wit-$VERSION.tar.gz"
+          ls -lh "wasi-wit-$VERSION.tar.gz"
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          gh release upload "v$VERSION" "wasi-wit-$VERSION.tar.gz" --clobber
 
   # Create specification entry after all publishes complete
   create-specification:

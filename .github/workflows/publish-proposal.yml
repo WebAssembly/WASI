@@ -25,7 +25,7 @@ on:
         description: 'Version of wkg to install'
         required: false
         type: string
-        default: '0.13.0'
+        default: '0.14.0'
 
 jobs:
   publish:
@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@80aaafe04903087c333980fa2686259ddd34b2d9 # v1.16.6
+        uses: cargo-bins/cargo-binstall@ec80feb9e330418e014932e5982599255eff6dbb # v1.17.4
 
       - name: Install wkg
         shell: bash
