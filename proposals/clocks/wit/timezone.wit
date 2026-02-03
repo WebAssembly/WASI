@@ -1,4 +1,4 @@
-package wasi:clocks@0.2.9;
+package wasi:clocks@0.2.10;
 
 @unstable(feature = clocks-timezone)
 interface timezone {
