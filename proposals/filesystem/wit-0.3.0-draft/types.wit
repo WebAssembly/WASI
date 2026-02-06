@@ -3,9 +3,6 @@ package wasi:filesystem@0.3.0-rc-2026-02-05;
 /// programs that access their files on their existing filesystems, without
 /// significant overhead.
 ///
-/// It is intended to be roughly portable between Unix-family platforms and
-/// Windows, though it does not hide many of the major differences.
-///
 /// Paths are passed as interface-type `string`s, meaning they must consist of
 /// a sequence of Unicode Scalar Values (USVs). Some filesystems may contain
 /// paths which are not accessible by this API.
@@ -21,6 +18,20 @@ package wasi:filesystem@0.3.0-rc-2026-02-05;
 ///
 /// For more information about WASI path resolution and sandboxing, see
 /// [WASI filesystem path resolution].
+///
+/// Though this package presents a portable interface modelled on POSIX, it
+/// prioritizes compatibility over portability: allowing users to access their
+/// files on their machine is more important than exposing a single semantics
+/// across all platforms.  Notably, depending on the underlying operating system
+/// and file system:
+///   * Paths may be case-folded or not.
+///   * Deleting (unlinking) a file may fail if there are other file descriptors
+///     open.
+///   * Durability and atomicity of changes to underlying files when there are
+///     concurrent writers.
+///
+/// Users that need well-defined, portable semantics should use a key-value
+/// store or a database instead.
 ///
 /// [WASI filesystem path resolution]: https://github.com/WebAssembly/wasi-filesystem/blob/main/path-resolution.md
 @since(version = 0.3.0-rc-2026-02-05)
