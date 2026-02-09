@@ -1,6 +1,6 @@
-@since(version = 0.3.0-rc-2026-02-05)
+@since(version = 0.3.0-rc-2026-02-09)
 interface types {
-  @since(version = 0.3.0-rc-2026-02-05)
+  @since(version = 0.3.0-rc-2026-02-09)
   enum error-code {
     /// Input/output error
     io,
@@ -11,7 +11,7 @@ interface types {
   }
 }
 
-@since(version = 0.3.0-rc-2026-02-05)
+@since(version = 0.3.0-rc-2026-02-09)
 interface stdin {
   use types.{error-code};
 
@@ -28,11 +28,11 @@ interface stdin {
   ///
   /// Multiple streams may be active at the same time. The behavior of concurrent
   /// reads is implementation-specific.
-  @since(version = 0.3.0-rc-2026-02-05)
+  @since(version = 0.3.0-rc-2026-02-09)
   read-via-stream: func() -> tuple<stream<u8>, future<result<_, error-code>>>;
 }
 
-@since(version = 0.3.0-rc-2026-02-05)
+@since(version = 0.3.0-rc-2026-02-09)
 interface stdout {
   use types.{error-code};
 
@@ -44,11 +44,11 @@ interface stdout {
   ///
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
-  @since(version = 0.3.0-rc-2026-02-05)
+  @since(version = 0.3.0-rc-2026-02-09)
   write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }
 
-@since(version = 0.3.0-rc-2026-02-05)
+@since(version = 0.3.0-rc-2026-02-09)
 interface stderr {
   use types.{error-code};
 
@@ -60,6 +60,6 @@ interface stderr {
   ///
   /// Otherwise if there is an error the readable end of the stream will be
   /// dropped and this function will return an error-code.
-  @since(version = 0.3.0-rc-2026-02-05)
+  @since(version = 0.3.0-rc-2026-02-09)
   write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }
