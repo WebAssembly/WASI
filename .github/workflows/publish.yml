@@ -209,7 +209,7 @@ jobs:
 
       - name: Install wkg and wasm-tools
         run: |
-          cargo binstall -y wkg@0.14.0
+          cargo binstall -y wkg@0.15.0
           cargo binstall -y wasm-tools@1.244.0
 
       - name: Create consolidated WIT directory
