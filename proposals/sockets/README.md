@@ -142,7 +142,7 @@ IPv6 sockets returned by this proposal are never dualstack because that can't ea
 
 This behaviour is deemed acceptable because all existing applications that are truly cross-platform must already handle this scenario. Dualstack support can be part of a future proposal adding it as an opt-in feature.
 
-Related issue: [Emulate dualstack sockets in userspace](https://github.com/WebAssembly/wasi-sockets/issues/1)
+Related issue: [Emulate dualstack sockets in userspace](https://github.com/WebAssembly/WASI/issues/747)
 
 #### Modularity
 

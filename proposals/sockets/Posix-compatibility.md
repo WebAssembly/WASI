@@ -598,11 +598,11 @@ Legend:
 [79]: https://github.com/WebAssembly/wasi-sockets/issues/79
 [80]: https://github.com/WebAssembly/wasi-sockets/issues/80
 [81]: https://github.com/WebAssembly/wasi-sockets/issues/81
-[ip-name-lookup]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/ip-name-lookup.wit
-[tcp-create-socket]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/tcp-create-socket.wit
-[tcp]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/tcp.wit
-[udp-create-socket]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/udp-create-socket.wit
-[udp]: https://github.com/WebAssembly/wasi-sockets/blob/main/wit/udp.wit
+[ip-name-lookup]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/ip-name-lookup.wit
+[tcp-create-socket]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/tcp-create-socket.wit
+[tcp]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/tcp.wit
+[udp-create-socket]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/udp-create-socket.wit
+[udp]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/udp.wit
 [poll]: https://github.com/WebAssembly/wasi-poll/blob/main/wit/poll.wit
 [streams]: https://github.com/WebAssembly/wasi-io/blob/main/wit/streams.wit
 ****
