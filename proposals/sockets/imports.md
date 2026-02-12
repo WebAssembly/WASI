@@ -1211,7 +1211,7 @@ elapsed from the time this function is invoked.</p>
 <li><code>connect-in-progress</code></li>
 <li><code>connected</code></li>
 <li><code>closed</code>
-See <a href="https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md</a>
+See <a href="https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/TcpSocketOperationalSemantics.md">https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/TcpSocketOperationalSemantics.md</a>
 for more information.</li>
 </ul>
 <p>Note: Except where explicitly mentioned, whenever this documentation uses
@@ -1701,7 +1701,7 @@ their success or failure, after which the method can be retried.</p>
 in progress at the time of calling <code>subscribe</code> (if any). Theoretically,
 <code>subscribe</code> only has to be called once per socket and can then be
 (re)used for the remainder of the socket's lifetime.</p>
-<p>See <a href="https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness">https://github.com/WebAssembly/wasi-sockets/blob/main/TcpSocketOperationalSemantics.md#pollable-readiness</a>
+<p>See <a href="https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/TcpSocketOperationalSemantics.md#pollable-readiness">https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/TcpSocketOperationalSemantics.md#pollable-readiness</a>
 for more information.</p>
 <p>Note: this function is here for WASI 0.2 only.
 It's planned to be removed when <code>future</code> is natively supported in Preview3.</p>
