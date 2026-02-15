@@ -7,6 +7,9 @@ interface ip-name-lookup {
     @since(version = 0.3.0-rc-2026-02-09)
     enum error-code {
         /// Unknown error
+        ///
+        /// This is an escape hatch for WASI implementations to handle failures
+        /// that can not be categorized under any of the other error codes.
         unknown,
 
         /// Access denied.
@@ -37,9 +40,9 @@ interface ip-name-lookup {
 
     /// Resolve an internet host name to a list of IP addresses.
     ///
-    /// Unicode domain names are automatically converted to ASCII using IDNA encoding.
-    /// If the input is an IP address string, the address is parsed and returned
-    /// as-is without making any external requests.
+    /// Unicode domain names are automatically converted to ASCII using IDNA
+    /// encoding. If the input is an IP address string, the address is parsed
+    /// and returned as-is without making any external requests.
     ///
     /// See the wasi-socket proposal README.md for a comparison with getaddrinfo.
     ///
@@ -48,9 +51,6 @@ interface ip-name-lookup {
     /// This function never succeeds with 0 results. It either fails or succeeds
     /// with at least one address. Additionally, this function never returns
     /// IPv4-mapped IPv6 addresses.
-    ///
-    /// The returned future will resolve to an error code in case of failure.
-    /// It will resolve to success once the returned stream is exhausted.
     ///
     /// # References:
     /// - <https://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html>
