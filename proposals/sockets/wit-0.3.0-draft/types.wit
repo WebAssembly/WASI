@@ -470,9 +470,9 @@ interface types {
         /// sending keepalive packets.
         ///
         /// If the provided value is 0, an `invalid-argument` error is returned.
-        /// Any other value will never cause an error, but it might be silently
-        /// clamped and/or rounded. I.e. after setting a value, reading the same
-        /// setting back may return a different value.
+        /// All other values are accepted without error, but may be
+        /// clamped or rounded. As a result, the value read back from
+        /// this setting may differ from the value that was set.
         ///
         /// Equivalent to the TCP_KEEPIDLE socket option. (TCP_KEEPALIVE on MacOS)
         ///
