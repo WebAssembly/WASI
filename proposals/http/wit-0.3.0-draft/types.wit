@@ -116,6 +116,17 @@ interface types {
     /// This error indicates that the operation on the `fields` was not
     /// permitted because the fields are immutable.
     immutable,
+
+    /// This error indicates that the operation would exceed an
+    /// implementation-defined limit on field sizes. This may apply to
+    /// an individual `field-value`, a single `field-name` plus all its
+    /// values, or the total aggregate size of all fields.
+    ///
+    /// Implementations MUST accept individual field values of at least
+    /// 8192 bytes and total aggregate field sections of at least 16384
+    /// bytes. These minimums ensure portability across common HTTP
+    /// servers and match HTTP/2's minimum SETTINGS_MAX_FRAME_SIZE.
+    size-exceeded,
   }
 
   /// This type enumerates the different kinds of errors that may occur when
@@ -158,6 +169,12 @@ interface types {
   /// original casing used to construct or mutate the `fields` resource. The `fields`
   /// resource should use that original casing when serializing the fields for
   /// transport or when returning them from a method.
+  ///
+  /// Implementations may impose limits on individual field values and on total
+  /// aggregate field section size. Operations that would exceed these limits
+  /// fail with `header-error.size-exceeded`. Implementations MUST accept
+  /// individual field values of at least 8192 bytes and total aggregate field
+  /// sections of at least 16384 bytes.
   @since(version = 0.3.0-rc-2026-02-09)
   resource fields {
 
@@ -180,7 +197,8 @@ interface types {
     /// well-formed, so they are represented as a raw list of bytes.
     ///
     /// An error result will be returned if any header or value was
-    /// syntactically invalid, or if a header was forbidden.
+    /// syntactically invalid, if a header was forbidden, or if the
+    /// entries would exceed an implementation size limit.
     from-list: static func(
       entries: list<tuple<field-name,field-value>>
     ) -> result<fields, header-error>;
@@ -199,6 +217,9 @@ interface types {
     /// name, if they have been set.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
+    ///
+    /// Fails with `header-error.size-exceeded` if the name or values would
+    /// exceed an implementation-defined size limit.
     set: func(name: field-name, value: list<field-value>) -> result<_, header-error>;
 
     /// Delete all values for a name. Does nothing if no values for the name
@@ -219,6 +240,9 @@ interface types {
     /// values for that name.
     ///
     /// Fails with `header-error.immutable` if the `fields` are immutable.
+    ///
+    /// Fails with `header-error.size-exceeded` if the value would exceed
+    /// an implementation-defined size limit.
     append: func(name: field-name, value: field-value) -> result<_, header-error>;
 
     /// Retrieve the full set of names and values in the Fields. Like the
