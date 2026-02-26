@@ -33,7 +33,7 @@ stateDiagram-v2
     state "closed" as Closed
 
 
-    [*] --> Unbound: create-tcp-socket() -> ok
+    [*] --> Unbound: create() -> ok
     Unbound --> Bound: bind() -> ok
     Unbound --> Connecting: connect()
 
