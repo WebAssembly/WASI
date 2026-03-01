@@ -202,10 +202,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@ec80feb9e330418e014932e5982599255eff6dbb # v1.17.4
+        uses: cargo-bins/cargo-binstall@bc432b49369a3f25c8c8b19578a82060c18a5dd6 # v1.17.6
 
       - name: Install wkg and wasm-tools
         run: |
