@@ -192,7 +192,7 @@ interface types {
     /// API; some are used in higher-level library layers, and others are provided
     /// merely for alignment with POSIX.
     @since(version = 0.3.0-rc-2026-02-09)
-    enum error-code {
+    variant error-code {
         /// Permission denied, similar to `EACCES` in POSIX.
         access,
         /// Connection already in progress, similar to `EALREADY` in POSIX.
@@ -268,7 +268,7 @@ interface types {
         /// A catch-all for errors not captured by the existing variants.
         /// Implementations can use this to extend the error type without
         /// breaking existing code.
-        other,
+        other(option<string>),
     }
 
     /// File or memory access pattern advisory information.
