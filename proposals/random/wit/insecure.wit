@@ -13,6 +13,10 @@ interface insecure {
     /// There are no requirements on the values of the returned bytes, however
     /// implementations are encouraged to return evenly distributed values with
     /// a long period.
+    ///
+    /// Implementations may trap if `len` exceeds an implementation-defined
+    /// limit. Guests requiring more bytes should call this function multiple
+    /// times.
     @since(version = 0.2.0)
     get-insecure-random-bytes: func(len: u64) -> list<u8>;
 
