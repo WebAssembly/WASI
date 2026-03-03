@@ -5,6 +5,20 @@ package wasi:random@0.3.0-rc-2026-02-09;
 /// Windows.
 @since(version = 0.3.0-rc-2026-02-09)
 interface random {
+    /// An error type for random byte generation.
+    @since(version = 0.3.0-rc-2026-02-09)
+    variant error {
+        /// The requested number of bytes exceeds the host's supported limit.
+        too-many-bytes,
+
+        /// A catch-all error for anything that doesn't fit into a more
+        /// specific case. The optional string provides an unstructured
+        /// description of the error. Users should not depend on the string
+        /// for diagnosing errors, as it is not required to be consistent
+        /// between implementations.
+        other(option<string>),
+    }
+
     /// Return `len` cryptographically-secure random or pseudo-random bytes.
     ///
     /// This function must produce data at least as cryptographically secure and
@@ -17,8 +31,13 @@ interface random {
     /// This function must always return fresh data. Deterministic environments
     /// must omit this function, rather than implementing it with deterministic
     /// data.
+    ///
+    /// # Errors
+    ///
+    /// Returns `error::too-many-bytes` if `len` exceeds the host's supported
+    /// limit.
     @since(version = 0.3.0-rc-2026-02-09)
-    get-random-bytes: func(len: u64) -> list<u8>;
+    get-random-bytes: func(len: u64) -> result<list<u8>, error>;
 
     /// Return a cryptographically-secure random or pseudo-random `u64` value.
     ///

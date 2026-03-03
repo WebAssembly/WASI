@@ -50,9 +50,12 @@ The primary goals of WASI Random are:
 
 ### Non-goals
 
-WASI Random is not aiming to allow programs to handle errors or to query for
+In WASIp2, WASI Random does not allow programs to handle errors or to query for
 availability. It always succeeds (though on platforms where randomness is
-unavailable, programs may fail to be instantiated or may trap).
+unavailable, programs may fail to be instantiated or may trap). In WASIp3,
+`get-random-bytes` and `get-insecure-random-bytes` return `result` types so that
+hosts can reject oversized requests gracefully (see
+[Resource exhaustion](#resource-exhaustion) below).
 
 WASI Random is not aiming to be a full DRBG API. Such an API could be
 considered in WASI, but it should be a separate proposal.
@@ -170,6 +173,27 @@ security. However, many host platforms' CSPRNG APIs do not currently document
 their bits of security, and it doesn't seem desirable to require wasm engines to
 run their own CSPRNG on a platform which already has one, so for now, the API
 does not specify a specific number.
+
+### Resource exhaustion
+
+In WASIp2, `get-random-bytes` and `get-insecure-random-bytes` accept a `u64`
+length and return `list<u8>` with no way to signal failure. A guest can request
+up to 2^64-1 bytes, forcing hosts to either allocate unbounded memory or
+hard-trap. This was reported as [GHSA-852m-cvvp-9p4w].
+
+WASIp3 addresses this by changing both functions to return
+`result<list<u8>, error>` where `error` is a variant with a `too-many-bytes`
+case and an `other(option<string>)` catch-all. This allows hosts to reject
+oversized requests gracefully instead of trapping. Callers that need more bytes
+than the host supports can simply retry in smaller chunks.
+
+The `error` variant is defined once in the `random` interface and reused by
+`insecure` via `use random.{error}`, keeping the error type consistent.
+
+The `get-random-u64` and `get-insecure-random-u64` functions are unchanged since
+they always return exactly 8 bytes, posing no resource exhaustion risk.
+
+[GHSA-852m-cvvp-9p4w]: https://github.com/WebAssembly/WASI/security/advisories/GHSA-852m-cvvp-9p4w
 
 ### Why is insecure-random a fixed-sized return value?
 
