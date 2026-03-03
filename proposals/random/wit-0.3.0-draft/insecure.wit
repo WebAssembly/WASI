@@ -5,6 +5,9 @@ package wasi:random@0.3.0-rc-2026-02-09;
 /// Windows.
 @since(version = 0.3.0-rc-2026-02-09)
 interface insecure {
+    @since(version = 0.3.0-rc-2026-02-09)
+    use random.{error};
+
     /// Return `len` insecure pseudo-random bytes.
     ///
     /// This function is not cryptographically secure. Do not use it for
@@ -13,8 +16,13 @@ interface insecure {
     /// There are no requirements on the values of the returned bytes, however
     /// implementations are encouraged to return evenly distributed values with
     /// a long period.
+    ///
+    /// # Errors
+    ///
+    /// Returns `error::too-many-bytes` if `len` exceeds the host's supported
+    /// limit.
     @since(version = 0.3.0-rc-2026-02-09)
-    get-insecure-random-bytes: func(len: u64) -> list<u8>;
+    get-insecure-random-bytes: func(len: u64) -> result<list<u8>, error>;
 
     /// Return an insecure pseudo-random `u64` value.
     ///
