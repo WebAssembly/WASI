@@ -121,11 +121,6 @@ interface types {
     /// implementation-defined limit on field sizes. This may apply to
     /// an individual `field-value`, a single `field-name` plus all its
     /// values, or the total aggregate size of all fields.
-    ///
-    /// Implementations MUST accept individual field values of at least
-    /// 8192 bytes and total aggregate field sections of at least 16384
-    /// bytes. These minimums ensure portability across common HTTP
-    /// servers and match HTTP/2's minimum SETTINGS_MAX_FRAME_SIZE.
     size-exceeded,
 
     /// This is a catch-all error for anything that doesn't fit cleanly into a
@@ -188,9 +183,7 @@ interface types {
   ///
   /// Implementations may impose limits on individual field values and on total
   /// aggregate field section size. Operations that would exceed these limits
-  /// fail with `header-error.size-exceeded`. Implementations MUST accept
-  /// individual field values of at least 8192 bytes and total aggregate field
-  /// sections of at least 16384 bytes.
+  /// fail with `header-error.size-exceeded`
   @since(version = 0.3.0-rc-2026-02-09)
   resource fields {
 
