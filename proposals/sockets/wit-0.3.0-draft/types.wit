@@ -70,7 +70,12 @@ interface types {
         ///
         /// POSIX equivalent: ECONNREFUSED
         connection-refused,
-        
+
+        /// A write failed because the connection was broken.
+        ///
+        /// POSIX equivalent: EPIPE
+        connection-broken,
+
         /// The connection was reset.
         ///
         /// POSIX equivalent: ECONNRESET
@@ -349,6 +354,7 @@ interface types {
         /// # Typical errors
         /// - `invalid-state`:             The socket is not in the `connected` state. (ENOTCONN)
         /// - `invalid-state`:             `send` has already been called on this socket.
+        /// - `connection-broken`:         The connection is not writable anymore. (EPIPE, ECONNABORTED on Windows)
         /// - `connection-reset`:          The connection was reset. (ECONNRESET)
         /// - `remote-unreachable`:        The remote address is not reachable. (EHOSTUNREACH, EHOSTDOWN, ENETUNREACH, ENETDOWN, ENONET)
         ///
