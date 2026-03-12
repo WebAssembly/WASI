@@ -15,13 +15,7 @@ interface types {
     ///
     /// See each individual API for what the POSIX equivalents are. They sometimes differ per API.
     @since(version = 0.3.0-rc-2026-02-09)
-    enum error-code {
-        /// Unknown error.
-        ///
-        /// This is an escape hatch for WASI implementations to handle failures
-        /// that can not be categorized under any of the other error codes.
-        unknown,
-
+    variant error-code {
         /// Access denied.
         ///
         /// POSIX equivalent: EACCES, EPERM
@@ -91,6 +85,11 @@ interface types {
         ///
         /// POSIX equivalent: EMSGSIZE
         datagram-too-large,
+
+        /// A catch-all for errors not captured by the existing variants.
+        /// Implementations can use this to extend the error type without
+        /// breaking existing code.
+        other(option<string>),
     }
 
     @since(version = 0.3.0-rc-2026-02-09)
