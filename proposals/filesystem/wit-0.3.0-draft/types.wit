@@ -47,10 +47,7 @@ interface types {
     ///
     /// Note: This was called `filetype` in earlier versions of WASI.
     @since(version = 0.3.0-rc-2026-02-09)
-    enum descriptor-type {
-        /// The type of the descriptor or file is unknown or is different from
-        /// any of the other types specified.
-        unknown,
+    variant descriptor-type {
         /// The descriptor refers to a block device inode.
         block-device,
         /// The descriptor refers to a character device inode.
@@ -65,6 +62,9 @@ interface types {
         regular-file,
         /// The descriptor refers to a socket.
         socket,
+        /// The type of the descriptor or file is different from any of the
+        /// other types specified.
+        other(option<string>),
     }
 
     /// Descriptor flags.

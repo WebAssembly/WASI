@@ -8,7 +8,7 @@ interface types {
     /// In theory, every API can return any error code.
     /// In practice, API's typically only return the errors documented per API
     /// combined with a couple of errors that are always possible:
-    /// - `unknown`
+    /// - `other`
     /// - `access-denied`
     /// - `not-supported`
     /// - `out-of-memory`
