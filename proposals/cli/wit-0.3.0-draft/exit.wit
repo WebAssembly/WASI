@@ -1,7 +1,7 @@
-@since(version = 0.3.0-rc-2026-02-09)
+@since(version = 0.3.0-rc-2026-03-15)
 interface exit {
   /// Exit the current instance and any linked instances.
-  @since(version = 0.3.0-rc-2026-02-09)
+  @since(version = 0.3.0-rc-2026-03-15)
   exit: func(status: result);
 
   /// Exit the current instance and any linked instances, reporting the
