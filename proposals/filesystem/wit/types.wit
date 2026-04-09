@@ -407,6 +407,9 @@ interface types {
         ///
         /// In the future, this may change to return a `stream<u8, error-code>`.
         ///
+        /// Implementations may trap if `length` exceeds an
+        /// implementation-defined limit.
+        ///
         /// Note: This is similar to `pread` in POSIX.
         @since(version = 0.2.0)
         read: func(
@@ -423,6 +426,9 @@ interface types {
         /// the write set to zero.
         ///
         /// In the future, this may change to take a `stream<u8, error-code>`.
+        ///
+        /// Implementations may trap if the buffer size exceeds an
+        /// implementation-defined limit.
         ///
         /// Note: This is similar to `pwrite` in POSIX.
         @since(version = 0.2.0)

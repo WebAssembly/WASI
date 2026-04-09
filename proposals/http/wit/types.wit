@@ -122,6 +122,9 @@ interface types {
 
   /// This type enumerates the different kinds of errors that may occur when
   /// setting or appending to a `fields` resource.
+  ///
+  /// Note: Implementations may also trap when an operation would cause the
+  /// `fields` to exceed an implementation-defined size limit.
   @since(version = 0.2.0)
   variant header-error {
     /// This error indicates that a `field-name` or `field-value` was
@@ -149,9 +152,9 @@ interface types {
   ///
   /// Field keys should always be treated as case insensitive by the `fields`
   /// resource for the purposes of equality checking.
-  /// 
+  ///
   /// # Deprecation
-  /// 
+  ///
   /// This type has been deprecated in favor of the `field-name` type.
   @since(version = 0.2.0)
   @deprecated(version = 0.2.2)
@@ -173,6 +176,10 @@ interface types {
   /// `incoming-request.headers`, `outgoing-request.headers`) might be
   /// immutable. In an immutable fields, the `set`, `append`, and `delete`
   /// operations will fail with `header-error.immutable`.
+  ///
+  /// Implementations may impose limits on individual field values and on the
+  /// total aggregate field section size. Operations that would exceed these
+  /// limits may trap.
   @since(version = 0.2.0)
   resource fields {
 
@@ -195,6 +202,9 @@ interface types {
     ///
     /// An error result will be returned if any `field-name` or `field-value` is
     /// syntactically invalid, or if a field is forbidden.
+    ///
+    /// Implementations may trap if the entries would exceed an
+    /// implementation-defined size limit.
     @since(version = 0.2.0)
     from-list: static func(
       entries: list<tuple<field-name,field-value>>
@@ -219,6 +229,9 @@ interface types {
     ///
     /// Fails with `header-error.invalid-syntax` if the `field-name` or any of
     /// the `field-value`s are syntactically invalid.
+    ///
+    /// Implementations may trap if the name or values would exceed an
+    /// implementation-defined size limit.
     @since(version = 0.2.0)
     set: func(name: field-name, value: list<field-value>) -> result<_, header-error>;
 
@@ -239,6 +252,9 @@ interface types {
     ///
     /// Fails with `header-error.invalid-syntax` if the `field-name` or
     /// `field-value` are syntactically invalid.
+    ///
+    /// Implementations may trap if the value would exceed an
+    /// implementation-defined size limit.
     @since(version = 0.2.0)
     append: func(name: field-name, value: field-value) -> result<_, header-error>;
 
