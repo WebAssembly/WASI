@@ -66,6 +66,8 @@ interface types {
         /// Read mode: Data can be read.
         read,
         /// Write mode: Data can be written to.
+        ///
+        /// Governs file contents only; independent of `mutate-directory`.
         write,
         /// Request that writes be performed according to synchronized I/O file
         /// integrity completion. The data stored in the file and the file's
@@ -91,6 +93,9 @@ interface types {
         /// requirement.
         requested-write-sync,
         /// Mutating directories mode: Directory contents may be mutated.
+        ///
+        /// Governs directory structure (create, rename, delete entries); independent
+        /// of `write`, which governs file contents.
         ///
         /// When this flag is unset on a descriptor, operations using the
         /// descriptor which would create, rename, delete, modify the data or
