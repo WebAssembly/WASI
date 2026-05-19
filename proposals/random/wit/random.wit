@@ -17,6 +17,9 @@ interface random {
     /// This function must always return fresh data. Deterministic environments
     /// must omit this function, rather than implementing it with deterministic
     /// data.
+    ///
+    /// Implementations may trap if `len` exceeds an implementation-defined
+    /// limit.
     @since(version = 0.2.0)
     get-random-bytes: func(len: u64) -> list<u8>;
 

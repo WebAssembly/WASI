@@ -41,6 +41,11 @@ interface monotonic-clock {
 
     /// Create a `pollable` which will resolve once the specified instant
     /// has occurred.
+    ///
+    /// Each call creates a new resource handle in the component's handle
+    /// table. Implementations may trap if the handle table is full. Guests
+    /// should drop `pollable` handles promptly after use and avoid creating
+    /// unbounded numbers of subscriptions.
     @since(version = 0.2.0)
     subscribe-instant: func(
         when: instant,
@@ -48,6 +53,11 @@ interface monotonic-clock {
 
     /// Create a `pollable` that will resolve after the specified duration has
     /// elapsed from the time this function is invoked.
+    ///
+    /// Each call creates a new resource handle in the component's handle
+    /// table. Implementations may trap if the handle table is full. Guests
+    /// should drop `pollable` handles promptly after use and avoid creating
+    /// unbounded numbers of subscriptions.
     @since(version = 0.2.0)
     subscribe-duration: func(
         when: duration,
