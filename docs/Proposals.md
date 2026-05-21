@@ -36,7 +36,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 | Proposal                                           | Champion                                                              | Versions |
 | -------------------------------------------------- | --------------------------------------------------------------------- | -------- |
 | [Clocks: Timezone][wasi-clocks]                    | Dan Gohman, Colin Murphy                                              |          |
-| [CLI: Exit With Code][wasi-cli]                    | Dan Gohman, Lann Martin                                               |          |
 | [HTTP: Informational Outbound Response][wasi-http] | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 | [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler         |          |
 | [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
