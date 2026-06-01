@@ -36,27 +36,33 @@ world service {
   ///
   /// Hosts may concurrently invoke this `handler` interface multiple times,
   /// even when previous requests have yet to finish processing. This means that
-  /// the guest, if it blocks, may be required to service multiple requests at
-  /// the same time. Guests can opt-out of this behavior with component-model
-  /// backpressure to avoid sending more requests to this instance while a
-  /// previous one is being processed, however.
+  /// the guest, if it becomes idle while being blocked on I/O, may be required
+  /// to service multiple requests at the same time. Guests can opt-out of
+  /// this behavior with component-model backpressure to avoid sending more
+  /// requests to this instance while a previous one is being processed,
+  /// however.
   ///
-  /// Another requirement that hosts place on guests implementing this
-  /// interface, in addition to being able to concurrently invoke it, is that
-  /// the guest sends outgoing HTTP requests, via the `client` import above
-  /// or the `handler` import in the `middleware` world, in such a way that the
-  /// host can accurately attribute which invocation of `handler` induced the
-  /// outgoing HTTP request to be sent. This requirement enables embedders,
-  /// for example, to correctly implement the CDN-Loop header automatically and
-  /// ensure that outgoing requests correctly build on incoming requests. In
-  /// general this is not a hard requirement that embedders can rely on, but
-  /// well-behaved guests are expected to provide this guarantee. Hosts which
-  /// require a hard guarantee regardless of guest will not invoke `handler`
-  /// more than once concurrently. Guests which export `handler` are expected to
-  /// ensure that calls to imported interfaces happen on the same component
-  /// model task that the `handler` was originally invoked on. If guests cannot
-  /// provide this guarantee then they're expected to opt-out of concurrent
-  /// through the component model's backpressure mechanisms.
+  /// In some contexts, correct attribution of resource usage and I/O operations
+  /// is an important requirement. For example, correct implementation of the
+  /// CDN-Loop header in the context of a proxy server requires that outgoing
+  /// HTTP requests can be attributed to the incoming HTTP request that induced
+  /// them.
+  ///
+  /// Hosts with this requirement must associate work happening on the same
+  /// component model task that the `handler` was originally invoked on with the
+  /// same incoming HTTP request.
+  ///
+  /// Conversely, guests must ensure that calls to imported interfaces happen on
+  /// the same component model task that the `handler` was originally invoked
+  /// on. Guest runtime implementations that do not provide this guarantee are
+  /// expected to opt-out of concurrent through the component model's
+  /// backpressure mechanisms.
+  ///
+  /// Note that hosts can't rely on this guarantee being upheld by all guests,
+  /// and shouldn't treat it as part of their security model. Instead, the
+  /// combination of the above host and guest requirements enable hosts to
+  /// enforce correctness properties on behalf of the overall system a guest is
+  /// part of.
   export handler;
 }
 
