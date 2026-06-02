@@ -1,4 +1,4 @@
-package wasi:sockets@0.2.11;
+package wasi:sockets@0.2.12;
 
 @since(version = 0.2.0)
 world imports {
