@@ -25,6 +25,14 @@ const SINCE_PATTERN = /@since\s*\(\s*version\s*=\s*[0-9a-z.\-]+\s*\)/i;
 const UNSTABLE_PATTERN = /@unstable\s*\(\s*feature\s*=\s*[a-z][a-z0-9-]*\s*\)/i;
 
 /**
+ * Marker promoted by .github/scripts/stabilize-features.js during a release.
+ * It must sit immediately above an @unstable(feature = ...) gate; the release
+ * rewrites that gate to @since(version = NEXT) and drops the marker. A marker
+ * that survives (no gate below it) means a stabilization was left half-applied.
+ */
+const STABILIZE_MARKER_PATTERN = /^\s*\/\/\s*@stabilize-next\s*$/;
+
+/**
  * Check if a line has a preceding @since or @unstable annotation.
  * Looks backward through lines, skipping doc comments (///).
  */
@@ -80,6 +88,20 @@ function validateFile(filePath) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+
+    // A @stabilize-next marker must be immediately followed by an @unstable gate.
+    if (STABILIZE_MARKER_PATTERN.test(line)) {
+      const next = lines[i + 1] || '';
+      if (!UNSTABLE_PATTERN.test(next.trim())) {
+        errors.push({
+          file: filePath,
+          line: i + 1,
+          declaration: 'marker',
+          name: '@stabilize-next',
+          message: `'// @stabilize-next' must be immediately followed by an @unstable(feature = ...) gate`,
+        });
+      }
+    }
 
     for (const { name, regex } of DECLARATION_PATTERNS) {
       const match = line.match(regex);
