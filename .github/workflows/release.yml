@@ -141,6 +141,21 @@ jobs:
             fi
           done
 
+      - name: Stabilize gated features
+        run: |
+          WIT_DIR="${{ needs.prepare-release.outputs.wit_dir }}"
+          NEXT="${{ needs.prepare-release.outputs.next_version }}"
+
+          # Promote any feature gate marked `// @stabilize-next` to
+          # @since(version = NEXT). This runs after the package version is
+          # bumped to NEXT, which is the point at which @since(NEXT) is legal.
+          for proposal in $PROPOSALS; do
+            wit_path="proposals/$proposal/$WIT_DIR"
+            if [ -d "$wit_path" ]; then
+              node .github/scripts/stabilize-features.js "$wit_path" "$NEXT"
+            fi
+          done
+
       - name: Update wit-deps
         run: |
           WIT_DIR="${{ needs.prepare-release.outputs.wit_dir }}"
