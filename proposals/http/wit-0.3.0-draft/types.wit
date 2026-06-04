@@ -178,8 +178,9 @@ interface types {
   ///
   /// A `fields` resource should store `field-name`s and `field-value`s in their
   /// original casing used to construct or mutate the `fields` resource. The `fields`
-  /// resource should use that original casing when serializing the fields for
-  /// transport or when returning them from a method.
+  /// resource should use that original casing when returning them from a method.
+  /// The `fields` resource may use a different casing when serializing the value
+  /// for transmission.
   ///
   /// Implementations may impose limits on individual field values and on total
   /// aggregate field section size. Operations that would exceed these limits
