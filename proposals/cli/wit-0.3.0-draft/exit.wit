@@ -12,6 +12,6 @@ interface exit {
   ///
   /// This function does not return; the effect is analogous to a trap, but
   /// without the connotation that something bad has happened.
-  @unstable(feature = cli-exit-with-code)
+  @since(version = 0.3.0-rc-2026-03-15)
   exit-with-code: func(status-code: u8);
 }
