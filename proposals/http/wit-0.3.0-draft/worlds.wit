@@ -55,7 +55,7 @@ world service {
   /// Conversely, guests should ensure that calls to imported interfaces happen on
   /// the same component model task that the `handler` was originally invoked
   /// on. Guest runtime implementations that do not provide this guarantee are
-  /// encouraged to opt-out of concurrent through the component model's
+  /// encouraged to opt-out of concurrent reuse through the component model's
   /// backpressure mechanisms.
   ///
   /// Note that hosts can't rely on this guarantee being upheld by all guests,
