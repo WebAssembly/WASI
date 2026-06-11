@@ -4,8 +4,6 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const { validateDirectory, formatErrors } = require('./validate-since');
 
-const witPath = (proposal) => `proposals/${proposal}/wit`;
-
 const parseFiles = (filesJson) => {
   if (!filesJson || filesJson === 'null') return [];
   try {
@@ -51,7 +49,7 @@ if (toValidate.length === 0) {
 let failed = false;
 
 for (const proposal of toValidate) {
-  const witDir = witPath(proposal);
+  const witDir = ((proposal) => `proposals/${proposal}/wit`)(proposal);
   console.log(`::group::Validating ${proposal}`);
 
   try {
