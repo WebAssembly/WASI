@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Unified release script for WASI releases
+# Release script for WASI 0.3.x releases
 #
-# This script automates the release process for both patch (0.2.x) and RC (0.3.0-rc) releases:
+# This script automates the release process:
 # 1. Triggers the release.yml workflow to update versions and create PR
 # 2. Waits for PR to be filed and CI to pass
 # 3. Waits for manual PR review and merge
@@ -10,33 +10,25 @@
 # 5. Waits for publish workflow to complete (validates packages in CI)
 #
 # Usage:
-#   Patch release: ./release.sh --type patch --prev 0.2.8 --next 0.2.9
-#   RC release:    ./release.sh --type rc [--prev-rc-date 2025-09-16]
+#   ./release.sh --prev 0.3.0 --next 0.3.1
 
 set -e
 set -x
 
 # Parse arguments
-RELEASE_TYPE=""
 PREV_VERSION=""
 NEXT_VERSION=""
-PREV_RC_DATE=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --type) RELEASE_TYPE="$2"; shift 2 ;;
     --prev) PREV_VERSION="$2"; shift 2 ;;
     --next) NEXT_VERSION="$2"; shift 2 ;;
-    --prev-rc-date) PREV_RC_DATE="$2"; shift 2 ;;
     -h|--help)
       echo "Usage:"
-      echo "  Patch release: $0 --type patch --prev <prev_version> --next <next_version>"
-      echo "  RC release:    $0 --type rc [--prev-rc-date <YYYY-MM-DD>]"
+      echo "  $0 --prev <prev_version> --next <next_version>"
       echo ""
-      echo "Examples:"
-      echo "  $0 --type patch --prev 0.2.8 --next 0.2.9"
-      echo "  $0 --type rc --prev-rc-date 2025-09-16"
-      echo "  $0 --type rc  # First RC, no previous date"
+      echo "Example:"
+      echo "  $0 --prev 0.3.0 --next 0.3.1"
       exit 0
       ;;
     *)
@@ -51,35 +43,17 @@ done
 DATE="$(date +'%Y-%m-%d')"
 REPO="WebAssembly/WASI"
 
-# Configure based on release type
-if [ "$RELEASE_TYPE" == "patch" ]; then
-  if [ -z "$PREV_VERSION" ] || [ -z "$NEXT_VERSION" ]; then
-    echo "Error: Patch release requires --prev and --next"
-    echo "Example: $0 --type patch --prev 0.2.8 --next 0.2.9"
-    exit 1
-  fi
-  TAG="v$NEXT_VERSION"
-  PRERELEASE_FLAG=""
-  RELEASE_LABEL="Patch"
-elif [ "$RELEASE_TYPE" == "rc" ]; then
-  NEXT_VERSION="0.3.0-rc-$DATE"
-  TAG="v$NEXT_VERSION"
-  PRERELEASE_FLAG="--prerelease"
-  RELEASE_LABEL="RC"
-else
-  echo "Error: --type must be 'patch' or 'rc'"
-  echo "Use --help for usage information"
+if [ -z "$PREV_VERSION" ] || [ -z "$NEXT_VERSION" ]; then
+  echo "Error: release requires --prev and --next"
+  echo "Example: $0 --prev 0.3.0 --next 0.3.1"
   exit 1
 fi
+TAG="v$NEXT_VERSION"
 
 echo "============================================"
-echo "WASI $RELEASE_LABEL Release"
+echo "WASI Release"
 echo "============================================"
-if [ "$RELEASE_TYPE" == "patch" ]; then
-  echo "Previous version: $PREV_VERSION"
-else
-  echo "Previous RC date: ${PREV_RC_DATE:-'(none/first RC)'}"
-fi
+echo "Previous version: $PREV_VERSION"
 echo "Next version: $NEXT_VERSION"
 echo "Tag: $TAG"
 echo "Repository: $REPO"
@@ -100,21 +74,9 @@ fi
 echo ""
 echo "Step 1: Triggering release.yml workflow..."
 
-if [ "$RELEASE_TYPE" == "patch" ]; then
-  gh workflow run "release.yml" \
-    -f release_type="patch" \
-    -f prev_version="$PREV_VERSION" \
-    -f next_version="$NEXT_VERSION"
-else
-  if [ -n "$PREV_RC_DATE" ]; then
-    gh workflow run "release.yml" \
-      -f release_type="rc" \
-      -f prev_rc_date="$PREV_RC_DATE"
-  else
-    gh workflow run "release.yml" \
-      -f release_type="rc"
-  fi
-fi
+gh workflow run "release.yml" \
+  -f prev_version="$PREV_VERSION" \
+  -f next_version="$NEXT_VERSION"
 
 # Wait for workflow to start
 echo "Waiting for workflow to start..."
@@ -180,7 +142,7 @@ echo ""
 echo "Step 4: Creating GitHub release $TAG..."
 sleep 5
 
-gh release create "$TAG" --generate-notes $PRERELEASE_FLAG
+gh release create "$TAG" --generate-notes
 gh release view "$TAG"
 
 # Step 5: Wait for publish workflow
@@ -206,5 +168,5 @@ fi
 
 echo ""
 echo "============================================"
-echo "✓ Release $NEXT_VERSION ($RELEASE_LABEL) completed successfully!"
+echo "✓ Release $NEXT_VERSION completed successfully!"
 echo "============================================"

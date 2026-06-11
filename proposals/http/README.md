@@ -22,9 +22,11 @@ demonstrating embeddability in a production HTTP server context.
 ### Introduction
 
 The WASI-http proposal defines a collection of [interfaces] for sending and
-receiving HTTP requests and responses. WASI-http additionally defines a
-[world], `wasi:http/proxy`, that circumscribes a minimal execution environment
-for wasm HTTP [proxies].
+receiving HTTP requests and responses. WASI-http additionally defines two
+[worlds][world]: `wasi:http/service`, which circumscribes an execution
+environment for a broad category of HTTP services including web applications,
+API servers, and [proxies]; and `wasi:http/middleware`, for services that
+forward requests along a chain of handlers.
 
 [Interfaces]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-interfaces
 [World]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md#wit-worlds
@@ -37,25 +39,24 @@ choices (such as HTTP/1.1, HTTP/2 or HTTP/3) by mapping directly to the
 abstract [HTTP Semantics], allowing hosts to (mostly) transparently use any of
 these.
 
-The `wasi:http/proxy` world is meant to be implementable by a wide variety of
+The `wasi:http/service` world is meant to be implementable by a wide variety of
 hosts including Web [service workers], forward- and reverse-[proxies] and
 [origin servers] by requiring a minimal set of additional runtime support.
 
-The `wasi:http/proxy` world is meant to support flexible auto-scaling
+The `wasi:http/service` world is meant to support flexible auto-scaling
 ("serverless") execution by moving the core `accept()` loop into the host and
 allowing the host to dynamically spin up wasm instances in response to arriving
 requests.
 
-The `wasi:http/proxy` world is meant to allow the chaining of HTTP
-intermediaries to be implemented directly in terms of [Component Model] linking.
-(Fully realizing this goal will require additional features only available in
-the [Preview 3] timeframe.)
+The `wasi:http/middleware` world is meant to allow the chaining of HTTP
+intermediaries to be implemented directly in terms of [Component Model] linking,
+letting a request flow through a series of handlers on its way to a terminal
+service while the corresponding response flows back in the opposite direction.
 
 [HTTP Semantics]: https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html
 [Service Workers]: https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API
 [Origin Servers]: https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html#origin.server
 [Component Model]: https://github.com/WebAssembly/component-model/
-[Preview 3]: https://github.com/WebAssembly/WASI/blob/main/docs/WitInWasi.md#streams
 
 ### Non-goals
 
@@ -66,18 +67,17 @@ environment (for this, see the [wasi-cloud-core] proposal).
 
 ### API walk-through
 
-The proposal can be understood by first reading the comments of [`proxy.wit`],
-then [`handler.wit`] and finally [`types.wit`].
+The proposal can be understood by first reading the comments of [`worlds.wit`],
+then [`types.wit`].
 
-[`proxy.wit`]: ./wit/proxy.wit
-[`handler.wit`]: ./wit/handler.wit
+[`worlds.wit`]: ./wit/worlds.wit
 [`types.wit`]: ./wit/types.wit
 
 ### Working with the WIT
 
 Bindings can be generated from the `wit` directory via:
 ```
-wit-bindgen c wit/ --world proxy
+wit-bindgen c wit/ --world service
 ```
 and can be validated and otherwise manipulated via:
 ```

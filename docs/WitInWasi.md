@@ -23,33 +23,6 @@ so at this time some features or planned features in the component model are
 not ready for use in WASI APIs. Here's a list of those features and what to use
 for now in their place.
 
-### Streams
-
-Streams are expected to be available in the Preview 3 timeframe, as part of the
-[Component Model async proposal].
-
-As a temporary workaround for use cases that need byte streams, [use] the
-`input-stream` and `output-stream` types defined in [wasi-io].
-
-```wit
-use io.streams.{input-stream, output-stream}
-```
-
-For use cases that need typed streams, another option is to define a [resource]
-with a function returning `option<T>` or `result<option<T>, E>` for returning
-the elements with `none` indicating the end of the stream.
-
-This resource-based workaround can be used for asynchronous I/O by using
-[wasi-io] to poll for multiple streams, however it doesn't support
-composing asynchronous work across multiple components, and it has some scaling
-limitations. These limitations will be fixed when built in `stream` types are
-available.
-
-[Component Model async proposal]: https://docs.google.com/presentation/d/1MNVOZ8hdofO3tI0szg_i-Yoy0N2QPU2C--LzVuoGSlE/edit#slide=id.g1270ef7d5b6_0_662
-[use]: #Dependencies
-[wasi-io]: https://github.com/WebAssembly/wasi-io
-[resource]: #Resources
-
 ### Value Imports
 
 As a temporary workaround for the lack of value imports, link-time authority
@@ -100,7 +73,7 @@ depending on dynamic keys.
 To use types from one package in another, use a `use` declaration:
 
 ```wit
-use io.streams.{input-stream, output-stream}
+use clocks.monotonic-clock.{instant, duration}
 ```
 
 For now, the tooling requires the wit files defining types to be colocated with

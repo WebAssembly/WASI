@@ -21,7 +21,6 @@ pull request relates to.
 | `P-clocks` | [clocks](proposals/clocks/) |
 | `P-filesystem` | [filesystem](proposals/filesystem/) |
 | `P-http` | [http](proposals/http/) |
-| `P-io` | [io](proposals/io/) |
 | `P-random` | [random](proposals/random/) |
 | `P-sockets` | [sockets](proposals/sockets/) |
 

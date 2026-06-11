@@ -13,14 +13,6 @@ on:
         description: 'Version to publish (without the v)'
         required: true
         type: string
-      wit_dir:
-        description: 'WIT directory to publish from (wit or wit-0.3.0-draft)'
-        required: true
-        type: choice
-        options:
-          - wit
-          - wit-0.3.0-draft
-        default: wit
 
 jobs:
   # Determine version and configuration
@@ -29,7 +21,6 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       wit_dir: ${{ steps.config.outputs.wit_dir }}
-      is_prerelease: ${{ steps.config.outputs.is_prerelease }}
       proposals: ${{ steps.config.outputs.proposals }}
     steps:
       - name: Get version from release tag
@@ -48,49 +39,19 @@ jobs:
       - name: Determine configuration
         id: config
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
-
-          # Determine configuration based on version:
-          # - RC versions always use wit-0.3.0-draft
-          # - Stable versions use wit (or workflow_dispatch input if provided)
-          if [[ "$VERSION" == *"-rc-"* ]]; then
-            IS_PRERELEASE="true"
-            WIT_DIR="wit-0.3.0-draft"
-            PROPOSALS="random clocks filesystem sockets cli http"
-          elif [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ inputs.wit_dir }}" ]; then
-            IS_PRERELEASE="false"
-            WIT_DIR="${{ inputs.wit_dir }}"
-            PROPOSALS="io random clocks filesystem sockets cli http"
-          else
-            IS_PRERELEASE="false"
-            WIT_DIR="wit"
-            PROPOSALS="io random clocks filesystem sockets cli http"
-          fi
+          PROPOSALS="random clocks filesystem sockets cli http"
 
           {
-            echo "is_prerelease=$IS_PRERELEASE"
-            echo "wit_dir=$WIT_DIR"
+            echo "wit_dir=wit"
             echo "proposals=$PROPOSALS"
           } >> "$GITHUB_OUTPUT"
 
   # Publish proposals sequentially in dependency order:
-  # 1. io, random (no WASI dependencies)
-  # 2. clocks (depends on io)
-  # 3. filesystem, sockets (depend on io, clocks)
-  # 4. cli (depends on io, clocks, filesystem, random, sockets)
-  # 5. http (depends on cli, clocks, io)
-
-  publish-io:
-    needs: setup
-    # Skip io for P3 prereleases (no wit-0.3.0-draft directory)
-    if: needs.setup.outputs.is_prerelease != 'true'
-    uses: ./.github/workflows/publish-proposal.yml
-    with:
-      proposal: io
-      description: "WASI I/O interfaces for streams and poll"
-      version: ${{ needs.setup.outputs.version }}
-      wit_dir: ${{ needs.setup.outputs.wit_dir }}
-    secrets: inherit
+  # 1. random (no WASI dependencies)
+  # 2. clocks (depends on random)
+  # 3. filesystem, sockets (depend on clocks)
+  # 4. cli (depends on clocks, filesystem, random, sockets)
+  # 5. http (depends on cli, clocks)
 
   publish-random:
     needs: setup
@@ -103,8 +64,7 @@ jobs:
     secrets: inherit
 
   publish-clocks:
-    needs: [setup, publish-io, publish-random]
-    # For prereleases, only wait on random (io is skipped)
+    needs: [setup, publish-random]
     if: always() && !failure() && !cancelled()
     uses: ./.github/workflows/publish-proposal.yml
     with:
@@ -160,7 +120,7 @@ jobs:
 
   # Validate all packages were published successfully
   validate:
-    needs: [setup, publish-io, publish-random, publish-clocks, publish-filesystem, publish-sockets, publish-cli, publish-http]
+    needs: [setup, publish-random, publish-clocks, publish-filesystem, publish-sockets, publish-cli, publish-http]
     if: always() && !failure() && !cancelled()
     runs-on: ubuntu-latest
     steps:
@@ -251,7 +211,6 @@ jobs:
   create-specification:
     needs: [setup, validate]
     runs-on: ubuntu-latest
-    if: needs.setup.outputs.is_prerelease == 'false'
     permissions:
       contents: write
       pull-requests: write
@@ -278,7 +237,6 @@ jobs:
           version of the specification are pushed to OCI based on the [Wasm OCI Artifact
           layout][wasm-oci]:
 
-          - [wasi:io@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fio?tag=${VERSION})
           - [wasi:random@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Frandom?tag=${VERSION})
           - [wasi:clocks@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fclocks?tag=${VERSION})
           - [wasi:sockets@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fsockets?tag=${VERSION})
@@ -304,7 +262,6 @@ jobs:
             This PR adds the specification entry for WASI v${{ needs.setup.outputs.version }}.
 
             The following packages have been published to GHCR:
-            - `ghcr.io/webassembly/wasi/io:${{ needs.setup.outputs.version }}`
             - `ghcr.io/webassembly/wasi/random:${{ needs.setup.outputs.version }}`
             - `ghcr.io/webassembly/wasi/clocks:${{ needs.setup.outputs.version }}`
             - `ghcr.io/webassembly/wasi/sockets:${{ needs.setup.outputs.version }}`

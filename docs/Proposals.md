@@ -23,7 +23,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                      | Champion                                                              | Versions |
 | ----------------------------- | --------------------------------------------------------------------- | -------- |
-| [I/O][wasi-io]                | Dan Gohman                                                            |          |
 | [Clocks][wasi-clocks]         | Dan Gohman, Colin Murphy                                              |          |
 | [Random][wasi-random]         | Dan Gohman, Roman Volosatovs                                          |          |
 | [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                                             |          |
@@ -73,6 +72,17 @@ You can learn more about contributing new proposals (and other ways to contribut
 | -------------------------------------------------------------------------------- | ------------- | -------- |
 | [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |  |
 
+## Inclusion in WASI 0.3
+
+WASI 0.3 (also known as Preview 3, or WASIp3) corresponds to versions numbered
+`0.3.x` in Wit packages and related identifiers.
+
+To be included in WASI 0.3, a proposal must:
+
+ - Reach phase 3 in [the WASI Subgroup's Phase Process]
+ - Satisfy its own [portability criteria]
+ - Be voted for inclusion by the WASI Subgroup
+
 ## Versioning
 
 Once a proposal reaches Phase 3, we expect the champions to start creating releases, following the conventions of semantic versioning (semver). Releases for active proposals are linked in the chart above.
@@ -83,6 +93,7 @@ For some APIs, it makes sense to add new features after the API itself has reach
 
 Some APIs may require backwards-incompatible changes over time. In these cases, we allow proposals to increment the major version number _only if_ the old API can be implemented in terms of the new API. As part of the new version, champions are expected to provide a tool that enables this backwards-compatibility. If that is not possible, then a new API proposal with a new name should be started. The original API can then be deprecated over time if it makes sense to do so.
 
+[portability criteria]: https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md#2-feature-description-available-wasi-subgroup
 [WebAssembly CG Phases process]: https://github.com/WebAssembly/meetings/blob/master/process/phases.md
 [witx]: https://github.com/WebAssembly/WASI/blob/main/tools/witx-docs.md
 [ephemeral/snapshot/old process]: https://github.com/WebAssembly/WASI/blob/master/phases/README.md
@@ -95,7 +106,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-filesystem]: https://github.com/WebAssembly/wasi-filesystem
 [wasi-http]: https://github.com/WebAssembly/wasi-http
 [wasi-i2c]: https://github.com/WebAssembly/wasi-i2c
-[wasi-io]: https://github.com/WebAssembly/wasi-io
 [wasi-kv-store]: https://github.com/WebAssembly/wasi-kv-store
 [wasi-logging]: https://github.com/WebAssembly/wasi-logging
 [wasi-messaging]: https://github.com/WebAssembly/wasi-messaging

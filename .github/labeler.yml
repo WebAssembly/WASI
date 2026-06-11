@@ -21,10 +21,6 @@ P-http:
   - changed-files:
       - any-glob-to-any-file: 'proposals/http/**'
 
-P-io:
-  - changed-files:
-      - any-glob-to-any-file: 'proposals/io/**'
-
 P-random:
   - changed-files:
       - any-glob-to-any-file: 'proposals/random/**'
