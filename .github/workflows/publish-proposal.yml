@@ -18,7 +18,7 @@ on:
         required: true
         type: string
       wit_dir:
-        description: 'WIT directory (wit or wit-0.3.0-draft)'
+        description: 'WIT directory'
         required: true
         type: string
       wkg_version:
