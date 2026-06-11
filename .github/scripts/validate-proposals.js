@@ -71,6 +71,14 @@ for (const { proposal, version } of toValidate) {
   try {
     console.log(`  Path: ${witDir}`);
 
+    // Skip when the wit directory no longer exists. A PR that removes a wit
+    // tree (e.g. dropping the 0.3 drafts on this branch) still surfaces its
+    // deleted files in the changed-file list, but there is nothing to validate.
+    if (!fs.existsSync(witDir)) {
+      console.log(`  Skipping ${proposal} v${version}: ${witDir} no longer exists (removed)`);
+      continue;
+    }
+
     // Check wit-deps lock if deps.toml exists
     if (fs.existsSync(`${witDir}/deps.toml`)) {
       console.log('  Checking dependencies...');
