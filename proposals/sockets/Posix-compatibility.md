@@ -6,11 +6,11 @@ This document provides an overview of the POSIX interface along with common non-
 ## General
 
 ### I/O completion polling (`poll`, `select`, `pselect`, `epoll_*` (non-standard), `kqueue` (non-standard)) <a name="select"></a>
-Use the various `subscribe` methods to obtain a `pollable` handle. Then use that to wait for IO events using the [wasi:io/poll][poll] interface.
+WASI sockets use the Component Model's native `async` support. Operations such as `connect`, `send` and `receive` are `async func`s, and inbound connections and data are delivered as `stream` values. A task awaits these directly, so there is no separate readiness-polling interface to drive.
 
 ### Non-blocking mode (`FIONBIO`, `SOCK_NONBLOCK`, `O_NONBLOCK`) <a name="nonblock"></a>
 All WASI sockets are non-blocking and can not be configured to block.
-Blocking behaviour can be recreated in userland (or in wasi-libc) by calling [pollable::block][poll] on the relevant pollable.
+Blocking behaviour can be recreated in userland (or in wasi-libc) by awaiting the relevant `async` call, `stream`, or `future`.
 
 ### TCP urgent data (`sockatmark`, `MSG_OOB`, `SO_OOBINLINE`, `SIOCATMARK`) <a name="oob"></a>
 Out-of-band (OOB) data is currently not included in this proposal. Application-level usage of the TCP "urgent" flag is rare in practice and discouraged in general. Including it in WASI would probably interfere with the ability to use WASI/ComponentModel `stream`s.
@@ -97,7 +97,7 @@ None of the flags are directly present in WASI Sockets:
 Sending ancillary messages: None supported as of yet.
 
 ### `sendfile` (non-standard)
-- TCP: Part of the [wasi:io/streams][streams] proposal as `output-stream::splice`
+- TCP: Achieved by passing the source `stream<u8>` directly to `tcp-socket`'s `send`.
 - UDP: N/A
 
 ### `shutdown`
@@ -603,6 +603,4 @@ Legend:
 [tcp]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/tcp.wit
 [udp-create-socket]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/udp-create-socket.wit
 [udp]: https://github.com/WebAssembly/WASI/blob/main/proposals/sockets/wit/udp.wit
-[poll]: https://github.com/WebAssembly/wasi-poll/blob/main/wit/poll.wit
-[streams]: https://github.com/WebAssembly/wasi-io/blob/main/wit/streams.wit
 ****
