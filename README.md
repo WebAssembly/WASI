@@ -3,7 +3,7 @@
 # WebAssembly System Interface
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4323447.svg)](https://doi.org/10.5281/zenodo.4323447)
-    
+
 
 The WebAssembly System Interface (WASI) is a set of APIs for WASI being
 developed for eventual standardization by the WASI Subgroup, which is a
@@ -13,14 +13,18 @@ WASI started with launching what is now called [Preview 1], an API using
 the witx IDL, and it is now widely used. Its major influences are POSIX and
 CloudABI.
 
-[WASI Preview 2] is now stable, and is a modular collection of
-APIs defined with the [Wit IDL], and it incorporates many of the lessons
-learned from Preview 1, including adding support for a wider range of
-source languages, modularity, a more expressive type system,
-virtualizability, and more.
+[WASI 0.2] (Preview 2) is a modular collection of APIs defined with the [Wit IDL],
+incorporating many of the lessons learned from WASI 0.1, including support for
+a wider range of source languages, modularity, a more expressive type system,
+and virtualizability.
+
+[WASI 0.3] (Preview 3) is the current preview. It builds on [WASI 0.2], replacing
+the earlier explicit streams and polling interfaces with the component model's
+native, composable `async` functionality via the `future` and `stream` types.
 
 [Preview 1]: https://github.com/WebAssembly/WASI/tree/wasi-0.1
-[WASI Preview 2]: https://github.com/WebAssembly/WASI/blob/main/docs/Preview2.md
+[WASI 0.2]: https://github.com/WebAssembly/WASI/tree/wasi-0.2
+[WASI 0.3]: docs/Proposals.md#inclusion-in-wasi-03
 [Wit IDL]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
 
 ## Find the APIs

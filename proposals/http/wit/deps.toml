@@ -1,3 +1,2 @@
 cli = "../../cli/wit"
 clocks = "../../clocks/wit"
-io = "../../io/wit"

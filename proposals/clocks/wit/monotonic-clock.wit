@@ -1,4 +1,4 @@
-package wasi:clocks@0.2.12;
+package wasi:clocks@0.3.0;
 /// WASI Monotonic Clock is a clock API intended to let users measure elapsed
 /// time.
 ///
@@ -7,20 +7,15 @@ package wasi:clocks@0.2.12;
 ///
 /// A monotonic clock is a clock which has an unspecified initial value, and
 /// successive reads of the clock will produce non-decreasing values.
-@since(version = 0.2.0)
+@since(version = 0.3.0)
 interface monotonic-clock {
-    @since(version = 0.2.0)
-    use wasi:io/poll@0.2.12.{pollable};
+    use types.{duration};
 
-    /// An instant in time, in nanoseconds. An instant is relative to an
+    /// A mark on a monotonic clock is a number of nanoseconds since an
     /// unspecified initial value, and can only be compared to instances from
     /// the same monotonic-clock.
-    @since(version = 0.2.0)
-    type instant = u64;
-
-    /// A duration of time, in nanoseconds.
-    @since(version = 0.2.0)
-    type duration = u64;
+    @since(version = 0.3.0)
+    type mark = u64;
 
     /// Read the current value of the clock.
     ///
@@ -28,28 +23,26 @@ interface monotonic-clock {
     /// produce a sequence of non-decreasing values.
     ///
     /// For completeness, this function traps if it's not possible to represent
-    /// the value of the clock in an `instant`. Consequently, implementations
+    /// the value of the clock in a `mark`. Consequently, implementations
     /// should ensure that the starting time is low enough to avoid the
     /// possibility of overflow in practice.
-    @since(version = 0.2.0)
-    now: func() -> instant;
+    @since(version = 0.3.0)
+    now: func() -> mark;
 
     /// Query the resolution of the clock. Returns the duration of time
     /// corresponding to a clock tick.
-    @since(version = 0.2.0)
-    resolution: func() -> duration;
+    @since(version = 0.3.0)
+    get-resolution: func() -> duration;
 
-    /// Create a `pollable` which will resolve once the specified instant
-    /// has occurred.
-    @since(version = 0.2.0)
-    subscribe-instant: func(
-        when: instant,
-    ) -> pollable;
+    /// Wait until the specified mark has occurred.
+    @since(version = 0.3.0)
+    wait-until: async func(
+        when: mark,
+    );
 
-    /// Create a `pollable` that will resolve after the specified duration has
-    /// elapsed from the time this function is invoked.
-    @since(version = 0.2.0)
-    subscribe-duration: func(
-        when: duration,
-    ) -> pollable;
+    /// Wait for the specified duration to elapse.
+    @since(version = 0.3.0)
+    wait-for: async func(
+        how-long: duration,
+    );
 }

@@ -5,14 +5,12 @@ on:
     branches: [main]
     paths:
       - 'proposals/**/wit/**'
-      - 'proposals/**/wit-0.3.0-draft/**'
       - '.github/scripts/**'
       - '.github/workflows/ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'proposals/**/wit/**'
-      - 'proposals/**/wit-0.3.0-draft/**'
       - '.github/scripts/**'
       - '.github/workflows/ci.yml'
 
@@ -28,18 +26,15 @@ jobs:
         with:
           list-files: json
           filters: |
-            wit-02:
+            wit:
               - 'proposals/*/wit/**'
-            wit-03:
-              - 'proposals/*/wit-0.3.0-draft/**'
 
       - name: Install tools
-        if: steps.changes.outputs.wit-02 == 'true' || steps.changes.outputs.wit-03 == 'true'
+        if: steps.changes.outputs.wit == 'true'
         uses: ./.github/actions/install-tools
 
       - name: Validate changed proposals
-        if: steps.changes.outputs.wit-02 == 'true' || steps.changes.outputs.wit-03 == 'true'
+        if: steps.changes.outputs.wit == 'true'
         run: node .github/scripts/validate-proposals.js
         env:
-          WIT_02_FILES: ${{ steps.changes.outputs.wit-02_files }}
-          WIT_03_FILES: ${{ steps.changes.outputs.wit-03_files }}
+          WIT_FILES: ${{ steps.changes.outputs.wit_files }}

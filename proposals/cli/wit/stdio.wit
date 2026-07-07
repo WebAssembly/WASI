@@ -1,26 +1,65 @@
-@since(version = 0.2.0)
+@since(version = 0.3.0)
+interface types {
+  @since(version = 0.3.0)
+  enum error-code {
+    /// Input/output error
+    io,
+    /// Invalid or incomplete multibyte or wide character
+    illegal-byte-sequence,
+    /// Broken pipe
+    pipe,
+  }
+}
+
+@since(version = 0.3.0)
 interface stdin {
-  @since(version = 0.2.0)
-  use wasi:io/streams@0.2.12.{input-stream};
+  use types.{error-code};
 
-  @since(version = 0.2.0)
-  get-stdin: func() -> input-stream;
+  /// Return a stream for reading from stdin.
+  ///
+  /// This function returns a stream which provides data read from stdin,
+  /// and a future to signal read results.
+  ///
+  /// If the stream's readable end is dropped the future will resolve to success.
+  ///
+  /// If the stream's writable end is dropped the future will either resolve to
+  /// success if stdin was closed by the writer or to an error-code if reading
+  /// failed for some other reason.
+  ///
+  /// Multiple streams may be active at the same time. The behavior of concurrent
+  /// reads is implementation-specific.
+  @since(version = 0.3.0)
+  read-via-stream: func() -> tuple<stream<u8>, future<result<_, error-code>>>;
 }
 
-@since(version = 0.2.0)
+@since(version = 0.3.0)
 interface stdout {
-  @since(version = 0.2.0)
-  use wasi:io/streams@0.2.12.{output-stream};
+  use types.{error-code};
 
-  @since(version = 0.2.0)
-  get-stdout: func() -> output-stream;
+  /// Write the given stream to stdout.
+  ///
+  /// If the stream's writable end is dropped this function will either return
+  /// success once the entire contents of the stream have been written or an
+  /// error-code representing a failure.
+  ///
+  /// Otherwise if there is an error the readable end of the stream will be
+  /// dropped and this function will return an error-code.
+  @since(version = 0.3.0)
+  write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }
 
-@since(version = 0.2.0)
+@since(version = 0.3.0)
 interface stderr {
-  @since(version = 0.2.0)
-  use wasi:io/streams@0.2.12.{output-stream};
+  use types.{error-code};
 
-  @since(version = 0.2.0)
-  get-stderr: func() -> output-stream;
+  /// Write the given stream to stderr.
+  ///
+  /// If the stream's writable end is dropped this function will either return
+  /// success once the entire contents of the stream have been written or an
+  /// error-code representing a failure.
+  ///
+  /// Otherwise if there is an error the readable end of the stream will be
+  /// dropped and this function will return an error-code.
+  @since(version = 0.3.0)
+  write-via-stream: func(data: stream<u8>) -> future<result<_, error-code>>;
 }

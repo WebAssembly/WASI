@@ -171,7 +171,7 @@ if (require.main === module) {
 
   if (args.length === 0) {
     console.log('Usage: node validate-since.js <directory>');
-    console.log('Example: node validate-since.js proposals/io/wit');
+    console.log('Example: node validate-since.js proposals/clocks/wit');
     process.exit(1);
   }
 
