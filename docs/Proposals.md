@@ -40,7 +40,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
 | [Machine Learning (wasi-nn)][wasi-nn]              | Andrew Brown and Mingqiu Sun                                          |          |
 | [Runtime Config][wasi-runtime-config]              | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
-| [GFX][wasi-gfx]                                    | Mendy Berger, Sean Isom                                               |          |
+| [WebGPU][wasi-webgpu]                              | Mendy Berger, Sean Isom                                               |          |
 | [Messaging][wasi-messaging]                        | Jiaxiao Zhou, Dan Chiarlone, David Justice, Taylor Thomas             |          |
 
 ### Phase 1 - Feature Proposal (CG)
@@ -62,7 +62,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [TLS][wasi-tls]                                           | Joel Dice, Dave Bakker, James Sturtevant         |          |
 | [URL][wasi-url]                                           | Radu Matei                                       |          |
 | [USB][wasi-usb]                                           | Wouter Hennen, Warre Dujardin, Merlijn Sebrechts |          |
-| [OTel][wasi-otel]                                                                | Caleb Schoepp, Andrew Steurer |
+| [OTel][wasi-otel]                                         | Caleb Schoepp, Andrew Steurer                    |          |
 
 ### Phase 0 - Pre-Proposal (CG)
 
@@ -125,5 +125,5 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-tls]: https://github.com/WebAssembly/wasi-tls
 [wasi-url]: https://github.com/WebAssembly/wasi-url
 [wasi-usb]: https://github.com/WebAssembly/wasi-usb
-[wasi-gfx]: https://github.com/WebAssembly/wasi-gfx
+[wasi-webgpu]: https://github.com/WebAssembly/wasi-webgpu
 [wasi-cli]: https://github.com/WebAssembly/wasi-cli
