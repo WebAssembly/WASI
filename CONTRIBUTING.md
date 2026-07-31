@@ -104,8 +104,12 @@ Entry requirements:
 
    * The portability criteria are documented in the proposal.
    * Precise and complete overview document is available in a proposal repo around which a reasonably high level of consensus exists.
-   * A [wit](https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md) description of the API exists.
+   * A [wit] description of the API exists.
    * All dependencies of the wit description must have reached phase 2.
+   * The wit description must be available from an [OCI registry], with the OCI tag matching the package version string in the wit.
+
+[wit]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
+[OCI registry]: (https://tag-runtime.cncf.io/wgs/wasm/deliverables/wasm-oci-artifact/)
 
 During this phase:
 
