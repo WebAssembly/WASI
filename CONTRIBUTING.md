@@ -175,3 +175,53 @@ process should be followed:
   help the transition from the `@unstable` feature to the newly stabilized
   `@since` gate.
 8. The proposal is now ready to be released as part of the next WASI version.
+
+## Adopting Component Model features
+
+WASI APIs are defined in terms of the [Component Model] proposal, which develops its own
+features like new WIT syntax, types, and canonical ABI functionality behind
+[gated features]. When a WASI API depends on one of these features, every
+runtime and toolchain that implements that WASI release must also implement the
+underlying Component Model feature. Adding such a dependence is therefore an explicit, per-feature
+decision made by the WASI Subgroup, following a process similar to graduating
+an `@unstable` feature gate to `@since` described above.
+
+A Component Model feature is only eligible for adoption once it is **stable**:
+
+* The feature's design is complete and no further breaking changes are expected.
+* The feature has been through a phase of iteration and feedback: it has been
+  implemented in multiple runtimes and toolchains, exercised by real usage
+  (for example, by WASI proposals experimenting with it in prerelease
+  versions), and the feedback from that experience has been incorporated.
+
+To adopt a Component Model feature into WASI, the following process should be
+followed:
+
+1. While the feature is still being iterated on, WASI proposals may experiment
+  with it only in prerelease versions (such as `0.3.0-rc-*` releases) or in
+  proposals that have not yet shipped in a stable WASI release. Stable release
+  trains must remain implementable without the feature.
+1. Once the feature's champions and the WASI proposals that intend to use it
+  believe the stability criteria above are met, an issue is filed on the WASI
+  repository identifying the Component Model feature, the WASI APIs that would
+  depend on it, and the evidence of implementation experience and incorporated
+  feedback.
+1. A vote to adopt the feature for inclusion in the next WASI release is added
+  to a [WASI Subgroup meeting](https://github.com/WebAssembly/meetings/tree/main/wasi)
+  agenda through a pull request, just as with phase advancement votes. The SG
+  evaluates whether the feature is genuinely stable and whether the iteration
+  and feedback phase has been sufficient.
+1. Once the SG votes to adopt the feature, stable (`@since`-gated) WASI APIs in
+  the next release may depend on it. The release notes for that version must
+  call out the newly adopted Component Model feature.
+
+   **Note:** Not all Component Model features are surfaced in WASI WIT
+   definitions. Some, such as new canonical ABI features, have no WIT-level
+   syntax. Even in those cases, these features follow the same process.
+1. From that release onward, the feature is part of the baseline set of
+  Component Model features required to implement that WASI version, matching
+  the feature's status in the Component Model's [gated features] documentation
+  (for example, WASI 0.3 adopts the features gated by 🔀 async).
+
+[Component Model]: https://github.com/WebAssembly/component-model
+[gated features]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#gated-features

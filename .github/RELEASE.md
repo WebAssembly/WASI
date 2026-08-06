@@ -35,3 +35,10 @@ The script automates the entire release process:
 4. Creates a GitHub release
 5. Waits for `publish.yml` to publish packages to GHCR
 6. Validates all packages were published successfully
+
+## Prerequisites for what ships in a release
+
+Feature gates queued for stabilization (`@unstable` → `@since`) must have
+passed their phase 3 vote, and any new dependence on a Component Model feature
+must have been adopted by a WASI Subgroup vote, before the release is cut. Both
+processes are documented in [CONTRIBUTING.md](../CONTRIBUTING.md).
