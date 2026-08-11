@@ -1,7 +1,7 @@
 @since(version = 0.3.0)
 interface types {
     @since(version = 0.3.0)
-    use wasi:clocks/types@0.3.0.{duration};
+    use wasi:clocks/types@0.3.1.{duration};
 
     /// Error codes.
     ///
