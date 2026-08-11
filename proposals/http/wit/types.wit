@@ -1,10 +1,10 @@
-package wasi:http@0.3.0;
+package wasi:http@0.3.1;
 
 /// This interface defines all of the types and methods for implementing HTTP
 /// Requests and Responses, as well as their headers, trailers, and bodies.
 @since(version = 0.3.0)
 interface types {
-  use wasi:clocks/types@0.3.0.{duration};
+  use wasi:clocks/types@0.3.1.{duration};
 
   /// This type corresponds to HTTP standard Methods.
   @since(version = 0.3.0)

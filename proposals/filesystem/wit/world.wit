@@ -1,4 +1,4 @@
-package wasi:filesystem@0.3.0;
+package wasi:filesystem@0.3.1;
 
 @since(version = 0.3.0)
 world imports {

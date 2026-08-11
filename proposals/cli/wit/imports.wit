@@ -1,15 +1,15 @@
-package wasi:cli@0.3.0;
+package wasi:cli@0.3.1;
 
 @since(version = 0.3.0)
 world imports {
   @since(version = 0.3.0)
-  include wasi:clocks/imports@0.3.0;
+  include wasi:clocks/imports@0.3.1;
   @since(version = 0.3.0)
-  include wasi:filesystem/imports@0.3.0;
+  include wasi:filesystem/imports@0.3.1;
   @since(version = 0.3.0)
-  include wasi:sockets/imports@0.3.0;
+  include wasi:sockets/imports@0.3.1;
   @since(version = 0.3.0)
-  include wasi:random/imports@0.3.0;
+  include wasi:random/imports@0.3.1;
 
   @since(version = 0.3.0)
   import environment;
