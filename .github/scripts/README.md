@@ -1,5 +1,20 @@
 # CI Scripts
 
+## cm-features.js
+
+Reads the Component Model adoption record in `docs/ComponentModelFeatures.md`,
+which is the single source of truth for which gated features WASI requires.
+
+- `publish.yml` runs it to write the "Component Model features" section of each
+  released `specifications/wasi-<version>/Overview.md`.
+- `validate-proposals.js` imports `readRecord` from it to build the
+  `wasm-tools validate` feature flags.
+
+```bash
+# Print the section for a given version
+node .github/scripts/cm-features.js 0.3.1
+```
+
 ## validate-proposals.js
 
 Validates WIT definitions for changed proposals. Used by the CI workflow.

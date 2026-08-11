@@ -42,3 +42,7 @@ Feature gates queued for stabilization (`@unstable` → `@since`) must have
 passed their phase 3 vote, and any new dependence on a Component Model feature
 must have been adopted by a WASI Subgroup vote, before the release is cut. Both
 processes are documented in [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+Adopted Component Model features are recorded in [Component Model features in
+WASI](../docs/ComponentModelFeatures.md); features newly adopted for a release
+must be called out in that release's notes.

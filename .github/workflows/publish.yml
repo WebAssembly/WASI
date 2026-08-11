@@ -243,10 +243,18 @@ jobs:
           - [wasi:filesystem@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Ffilesystem?tag=${VERSION})
           - [wasi:cli@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fcli?tag=${VERSION})
           - [wasi:http@${VERSION}](https://github.com/WebAssembly/WASI/pkgs/container/wasi%2Fhttp?tag=${VERSION})
+          EOF
 
+          # Which Component Model gated features this version requires, from
+          # the adoption record in docs/ComponentModelFeatures.md.
+          node .github/scripts/cm-features.js "$VERSION" >> "$SPEC_DIR/Overview.md"
+
+          cat >> "$SPEC_DIR/Overview.md" << EOF
           [cm]: https://github.com/WebAssembly/component-model
           [wit]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/WIT.md
           [wasm-oci]: https://tag-runtime.cncf.io/wgs/wasm/deliverables/wasm-oci-artifact
+          [gates]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#gated-features
+          [features]: https://github.com/WebAssembly/WASI/blob/main/docs/ComponentModelFeatures.md
           EOF
 
           # Remove leading whitespace from heredoc

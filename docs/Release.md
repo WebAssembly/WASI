@@ -37,5 +37,8 @@ workflow which begin the release process. This process has the following steps:
 1. Trigger the Release WASI workflow by running `gh workflow run release.yml -f prev_version=0.3.<prev> -f next_version=0.3.<next>`.
 1. A PR updating all version numbers is created. This is blocked on CI and review ([example](https://github.com/WebAssembly/WASI/pull/924)).
 2. Create a GitHub release by running `gh release create "v0.3.<version>" --generate-notes`.
+   If the release adopts new Component Model features, the generated notes must
+   be edited to call them out. See [Component Model features in
+   WASI](ComponentModelFeatures.md).
 3. Once the release has been created, a second PR will be automatically created to populate the `specifications/` dir ([example](https://github.com/WebAssembly/WASI/pull/925)).
 4. Once this final PR is merged the release process is complete.

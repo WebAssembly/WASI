@@ -212,8 +212,10 @@ followed:
   evaluates whether the feature is genuinely stable and whether the iteration
   and feedback phase has been sufficient.
 1. Once the SG votes to adopt the feature, stable (`@since`-gated) WASI APIs in
-  the next release may depend on it. The release notes for that version must
-  call out the newly adopted Component Model feature.
+  the next release may depend on it. The adoption is recorded in
+  [Component Model features in WASI](docs/ComponentModelFeatures.md), and the
+  release notes for that version must call out the newly adopted Component
+  Model feature.
 
    **Note:** Not all Component Model features are surfaced in WASI WIT
    definitions. Some, such as new canonical ABI features, have no WIT-level
@@ -221,7 +223,9 @@ followed:
 1. From that release onward, the feature is part of the baseline set of
   Component Model features required to implement that WASI version, matching
   the feature's status in the Component Model's [gated features] documentation
-  (for example, WASI 0.3 adopts the features gated by 🔀 async).
+  (for example, WASI 0.3 adopts the features gated by 🔀 async). A PR to the
+  Component Model repository updates that documentation to record which WASI
+  release adopted the feature.
 
 [Component Model]: https://github.com/WebAssembly/component-model
 [gated features]: https://github.com/WebAssembly/component-model/blob/main/design/mvp/Explainer.md#gated-features
