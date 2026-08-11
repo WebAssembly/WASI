@@ -2,7 +2,45 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const { validateDirectory, formatErrors } = require('./validate-since');
+const { readRecord, UNGATED } = require('./cm-features');
+
+// `wasm-tools` feature name for each Component Model gate WASI has adopted.
+// Adding a row to docs/ComponentModelFeatures.md without an entry here is a
+// hard error rather than a silently un-enforced feature.
+const GATE_FEATURES = {
+  '🔀': 'cm-async',
+  '🗺️': 'cm-map',
+  '🏷️': 'cm-implements',
+};
+
+// Emoji gates carry a variation selector (U+FE0F) inconsistently across
+// sources, so compare them without it.
+const bare = (gate) => gate.replace(/\uFE0F/g, '');
+
+// The adopted Component Model features, as `wasm-tools` CLI flags. Enabling
+// them is what keeps proposals from depending on a feature the Subgroup has
+// not voted to adopt: an un-adopted gate stays off and fails validation. Note
+// these are added to whatever `wasm-tools` enables by default, so a gate that
+// is un-adopted here but on by default there is not caught.
+const adoptedFeatureFlags = () => {
+  const lookup = new Map(Object.entries(GATE_FEATURES).map(([g, f]) => [bare(g), f]));
+  const features = new Set();
+  for (const { gate, version } of readRecord()) {
+    if (gate === UNGATED) continue;
+    const feature = lookup.get(bare(gate));
+    if (!feature) {
+      throw new Error(
+        `docs/ComponentModelFeatures.md adopts '${gate}' for ${version}, but ` +
+          `GATE_FEATURES in ${path.basename(__filename)} has no wasm-tools feature name for it`
+      );
+    }
+    features.add(feature);
+  }
+  return [...features].map((feature) => `-f ${feature}`).join(' ');
+};
 
 const parseFiles = (filesJson) => {
   if (!filesJson || filesJson === 'null') return [];
@@ -48,6 +86,10 @@ if (toValidate.length === 0) {
 
 let failed = false;
 
+const featureFlags = adoptedFeatureFlags();
+const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'wasi-validate-'));
+console.log(`Component Model features: ${featureFlags || '(none adopted)'}`);
+
 for (const proposal of toValidate) {
   const witDir = ((proposal) => `proposals/${proposal}/wit`)(proposal);
   console.log(`::group::Validating ${proposal}`);
@@ -81,8 +123,15 @@ for (const proposal of toValidate) {
 
     // Validate wasm encoding
     console.log('  Validating wasm encoding...');
-    if (!run(`wasm-tools component wit "${witDir}" --wasm -o /dev/null`)) {
+    const encoded = path.join(outDir, `${proposal}.wasm`);
+    if (!run(`wasm-tools component wit "${witDir}" --wasm -o "${encoded}"`)) {
       console.log(`::error::wasm encoding failed for ${proposal}`);
+      failed = true;
+    } else if (!run(`wasm-tools validate ${featureFlags} "${encoded}"`)) {
+      // `component wit --wasm` does not enforce Component Model feature gates,
+      // so the encoded package is validated separately against the features
+      // WASI has adopted.
+      console.log(`::error::Component Model validation failed for ${proposal}`);
       failed = true;
     }
 
@@ -98,6 +147,8 @@ for (const proposal of toValidate) {
     console.log('::endgroup::');
   }
 }
+
+fs.rmSync(outDir, { recursive: true, force: true });
 
 if (failed) {
   console.log('\n❌ Validation failed');
