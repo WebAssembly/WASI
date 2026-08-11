@@ -24,7 +24,7 @@ WASI Subgroup up to and including this version:
 
 | Gate | Feature | Adopted in |
 | --- | --- | --- |
-| 🔀 | `async` lift/lower, `future` and `stream` | 0.3.0 |
+| 🔀 | `async`, `future` and `stream` | 0.3.0 |
 
 These are required whether or not an API in this version uses them. See
 [Component Model features in WASI][features] for the full adoption record.
