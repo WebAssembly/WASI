@@ -11,7 +11,6 @@ wasi-http is currently in [Phase 3](https://github.com/WebAssembly/WASI/blob/mai
 * Piotr Sikora
 * Jiaxiao Zhou
 * Dan Chiarlone
-* David Justice
 * Luke Wagner
 
 ### Portability Criteria
