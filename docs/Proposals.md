@@ -28,7 +28,7 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                                             |          |
 | [Sockets][wasi-sockets]       | Dave Bakker                                                           |          |
 | [CLI][wasi-cli]               | Dan Gohman, Lann Martin                                               |          |
-| [HTTP][wasi-http]             | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, Luke Wagner                |          |
+| [HTTP][wasi-http]             | Jiaxiao Zhou, Dan Chiarlone, Luke Wagner                              |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
@@ -70,7 +70,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                         | Champion      | Versions |
 | -------------------------------------------------------------------------------- | ------------- | -------- |
-| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |  |
 
 ## Inclusion in WASI 0.3
 
@@ -114,7 +113,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-otel]: https://github.com/calebschoepp/wasi-otel
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
-[wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-runtime-config]: https://github.com/WebAssembly/wasi-runtime-config
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
