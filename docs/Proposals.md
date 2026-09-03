@@ -21,27 +21,27 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 ### Phase 3 - Implementation Phase (CG + WG)
 
-| Proposal                      | Champion                                                              | Versions |
-| ----------------------------- | --------------------------------------------------------------------- | -------- |
-| [Clocks][wasi-clocks]         | Dan Gohman, Colin Murphy                                              |          |
-| [Random][wasi-random]         | Dan Gohman, Roman Volosatovs                                          |          |
-| [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                                             |          |
-| [Sockets][wasi-sockets]       | Dave Bakker                                                           |          |
-| [CLI][wasi-cli]               | Dan Gohman, Lann Martin                                               |          |
-| [HTTP][wasi-http]             | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
+| Proposal                      | Champion                                                | Versions |
+| ----------------------------- | ------------------------------------------------------- | -------- |
+| [Clocks][wasi-clocks]         | Dan Gohman, Colin Murphy                                |          |
+| [Random][wasi-random]         | Dan Gohman, Roman Volosatovs                            |          |
+| [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                               |          |
+| [Sockets][wasi-sockets]       | Dave Bakker                                             |          |
+| [CLI][wasi-cli]               | Dan Gohman, Lann Martin                                 |          |
+| [HTTP][wasi-http]             | Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
-| Proposal                                           | Champion                                                              | Versions |
-| -------------------------------------------------- | --------------------------------------------------------------------- | -------- |
-| [Clocks: Timezone][wasi-clocks]                    | Dan Gohman, Colin Murphy                                              |          |
-| [HTTP: Informational Outbound Response][wasi-http] | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner |          |
-| [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler         |          |
-| [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
-| [Machine Learning (wasi-nn)][wasi-nn]              | Andrew Brown and Mingqiu Sun                                          |          |
-| [Runtime Config][wasi-runtime-config]              | Jiaxiao Zhou, Dan Chiarlone, David Justice                            |          |
-| [WebGPU][wasi-webgpu]                              | Mendy Berger, Sean Isom                                               |          |
-| [Messaging][wasi-messaging]                        | Jiaxiao Zhou, Dan Chiarlone, David Justice, Taylor Thomas             |          |
+| Proposal                                           | Champion                                                      | Versions |
+| -------------------------------------------------- | ------------------------------------------------------------- | -------- |
+| [Clocks: Timezone][wasi-clocks]                    | Dan Gohman, Colin Murphy                                      |          |
+| [HTTP: Informational Outbound Response][wasi-http] | Jiaxiao Zhou, Dan Chiarlone, David Justice, Luke Wagner       |          |
+| [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler |          |
+| [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone, David Justice                    |          |
+| [Machine Learning (wasi-nn)][wasi-nn]              | Andrew Brown and Mingqiu Sun                                  |          |
+| [Runtime Config][wasi-runtime-config]              | Jiaxiao Zhou, Dan Chiarlone, David Justice                    |          |
+| [WebGPU][wasi-webgpu]                              | Mendy Berger, Sean Isom                                       |          |
+| [Messaging][wasi-messaging]                        | Jiaxiao Zhou, Dan Chiarlone, David Justice, Taylor Thomas     |          |
 
 ### Phase 1 - Feature Proposal (CG)
 
@@ -70,7 +70,6 @@ You can learn more about contributing new proposals (and other ways to contribut
 
 | Proposal                                                                         | Champion      | Versions |
 | -------------------------------------------------------------------------------- | ------------- | -------- |
-| [proxy-wasm/spec][wasi-proxy-wasm] (will advance as multiple, smaller proposals) | Piotr Sikora  |          |  |
 
 ## Inclusion in WASI 0.3
 
@@ -114,7 +113,6 @@ Some APIs may require backwards-incompatible changes over time. In these cases, 
 [wasi-otel]: https://github.com/calebschoepp/wasi-otel
 [wasi-parallel]: https://github.com/WebAssembly/wasi-parallel
 [wasi-pattern-match]: https://github.com/WebAssembly/wasi-pattern-match
-[wasi-proxy-wasm]: https://github.com/proxy-wasm/spec
 [wasi-random]: https://github.com/WebAssembly/wasi-random
 [wasi-runtime-config]: https://github.com/WebAssembly/wasi-runtime-config
 [wasi-sockets]: https://github.com/WebAssembly/wasi-sockets
