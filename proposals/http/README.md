@@ -8,9 +8,10 @@ wasi-http is currently in [Phase 3](https://github.com/WebAssembly/WASI/blob/mai
 
 ### Champions
 
-* Jiaxiao Zhou
 * Dan Chiarlone
-* Luke Wagner
+* Pat Hickey
+* Lann Martin
+* John VanEnk
 
 ### Portability Criteria
 

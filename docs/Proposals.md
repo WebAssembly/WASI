@@ -28,14 +28,14 @@ You can learn more about contributing new proposals (and other ways to contribut
 | [Filesystem][wasi-filesystem] | Dan Gohman, Victor Adossi                                             |          |
 | [Sockets][wasi-sockets]       | Dave Bakker                                                           |          |
 | [CLI][wasi-cli]               | Dan Gohman, Lann Martin                                               |          |
-| [HTTP][wasi-http]             | Jiaxiao Zhou, Dan Chiarlone, Luke Wagner                              |          |
+| [HTTP][wasi-http]             | Dan Chiarlone, Pat Hickey, Lann Martin, John VanEnk                   |          |
 
 ### Phase 2 - Proposed Spec Text Available (CG + WG)
 
 | Proposal                                           | Champion                                                              | Versions |
 | -------------------------------------------------- | --------------------------------------------------------------------- | -------- |
 | [Clocks: Timezone][wasi-clocks]                    | Dan Gohman, Colin Murphy                                              |          |
-| [HTTP: Informational Outbound Response][wasi-http] | Piotr Sikora, Jiaxiao Zhou, Dan Chiarlone, Luke Wagner                |          |
+| [HTTP: Informational Outbound Response][wasi-http] | Dan Chiarlone, Pat Hickey, Lann Martin, John VanEnk                   |          |
 | [I2C][wasi-i2c]                                    | Friedrich Vandenberghe, Merlijn Sebrechts, Maximilian Seidler         |          |
 | [Key-value Store][wasi-kv-store]                   | Jiaxiao Zhou, Dan Chiarlone                                           |          |
 | [Machine Learning (wasi-nn)][wasi-nn]              | Andrew Brown and Mingqiu Sun                                          |          |
