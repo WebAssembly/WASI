@@ -2,7 +2,7 @@
 path = "../../cli/wit"
 sha256 = "9645378e1dafc659329f0f7ff92451e7b356283996614363be5b3e0d70aba742"
 sha512 = "38e0276ae6da58d8475aa00c1db1707b01a53b38cfc96132379ab0d22c4d26c24352bf33f5316b0d33369553eaba4c2fca3a001373b6bbfabd48849f223c1702"
-deps = ["filesystem", "random", "sockets"]
+deps = ["filesystem", "sockets"]
 
 [clocks]
 path = "../../clocks/wit"
@@ -14,6 +14,7 @@ sha256 = "7e29e1b85da02279d2853dff263bbfe647b1b19105b96bb2a850ea8d201e7bbb"
 sha512 = "7cdba2ef1090aa6b83eb292dd90992df2a9db24f577728b9275e0c3eb4fe19bcb8f0e7defa914d79e7adee72029d8c9501b2cc6387723b515d0ff296c3c1acff"
 
 [random]
+path = "../../random/wit"
 sha256 = "5196da126852cb29c39790da453ec6d5f46a266283dadd69a5f93f10a9850376"
 sha512 = "4147e0f33b26cd6bf46cc1da4afed21e620fe8ede4b06199c8826fd456ed4977974ac1b6437dccdfb602f1b352d06a455717852f43ae5143fffc01e75ca3d74d"
 
