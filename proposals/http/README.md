@@ -8,7 +8,6 @@ wasi-http is currently in [Phase 3](https://github.com/WebAssembly/WASI/blob/mai
 
 ### Champions
 
-* Dan Chiarlone
 * Pat Hickey
 * Lann Martin
 * John VanEnk
