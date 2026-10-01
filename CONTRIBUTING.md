@@ -27,7 +27,72 @@ pull request relates to.
 Pull requests that modify files in a proposal directory are automatically
 labeled by the [labeler workflow](.github/workflows/labeler.yml).
 
+### Status Labels (S-)
+
+| Label | Meaning |
+| ----- | ------- |
+| `S-inactive` | No comment in over a year. This records silence for triage purposes; it is not a proposal to close, and it should be removed as soon as the thread is active again. |
+
 [the Rust project]: https://github.com/rust-lang/rust/labels
+
+## Closing Issues
+
+The issue tracker accumulates proposals and questions faster than any one
+person can act on them. Closing issues is a normal, healthy part of keeping issues
+usable. Our goal is to direct folks towards actionable steps, even when closing issues. That may be to a different project, a way to move forward in the proposal process, how to begin iterating, etc. Some best practices to follow:
+
+- **Lead with the destination.** "This belongs in X" reads
+  very differently from "this is out of scope," even when the outcome is the
+  same.
+- **Say reopening is welcome.** Closing an issue may be a statement about
+  current activity, and not a verdict on merit. Anyone, not only the reporter, may
+  reopen.
+- **Summarize before closing anything with real discussion.** Issues with
+  substantive back-and-forth, should not be closed without a summary of where the discussion landed.
+
+The templates below are a starting point. Please edit these template messages with specifics of the issue.
+
+<details>
+<summary>Close templates</summary>
+
+**Not the right venue.** Distinguish a usage question from a report that
+belongs to a specific runtime, toolchain, or another WebAssembly proposal
+(name the destination and, if relevant, why the issue should move there).
+
+> Thank you for opening this issue, and thanks to everyone who has participated in the discussion. The WASI repo only covers phase 3 APIs defined using the Wasm Component Model. That means only APIs, not ABI level features defined in both Core Wasm and the Wasm Component Model. The features being proposed here are out of scope for this repo, we instead suggest you re-open this issue on [core wasm | component model].
+
+**Superseded by a proposal.** If a proposal covers part of the request, say which part and keep the issue open, or split it.
+
+> This is now covered by [PROPOSAL](URL), currently at Phase N, championed by
+> [NAME | gh id | gh team]. {How it covers the ask, ideally naming the specific interface.}
+>
+> Closing as superseded. Discussion belongs on that repository now, where it
+> reaches the champions directly. If it doesn't actually cover your use case,
+> please reopen.
+
+**No champion.** WASI proposals advance by having someone commit to carrying
+them through the [phase process](#the-phase-process). An idea without one
+isn't rejected, but it also isn't moving forward.
+
+> Thank you for proposing this. WASI proposals need a champion to advance
+> through the phase process, and this doesn't currently have one. If you or anyone else wants to
+> champion it, then the next appropriate step is to follow [phase 0 pre-proposal process](https://github.com/WebAssembly/WASI/blob/main/CONTRIBUTING.md#0-pre-proposal-individual-contributor).
+>
+> In the meantime, this doesn't have to wait on WASI. WASI is built on the Wasm
+> [Component Model], whose `world`s and interfaces are designed to be modular.
+> An interface can be described, implemented, and shipped independently of
+> WASI itself. Building and iterating on your own is valuable.
+> It's often the fastest way to learn whether the design holds up, and is a great
+> way to build community support behind a given interface or design before pursuing standardization.
+
+**Dormant, no supersession.**
+
+> Closing as part of backlog triage. There have been no discussion since {date}.
+>
+> Closing doesn't mean this was decided against, only that no one is
+> currently working on it. Reopening is welcome and needs no permission.
+
+</details>
 
 ## Contributing to Proposals
 
