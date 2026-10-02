@@ -1,2 +1,3 @@
 cli = "../../cli/wit"
 clocks = "../../clocks/wit"
+random = "../../random/wit"
