@@ -2,37 +2,37 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_cli_environment_0_3_1"><code>wasi:cli/environment@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_exit_0_3_1"><code>wasi:cli/exit@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_types_0_3_1"><code>wasi:cli/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdin_0_3_1"><code>wasi:cli/stdin@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdout_0_3_1"><code>wasi:cli/stdout@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stderr_0_3_1"><code>wasi:cli/stderr@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_terminal_input_0_3_1"><code>wasi:cli/terminal-input@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_terminal_output_0_3_1"><code>wasi:cli/terminal-output@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_terminal_stdin_0_3_1"><code>wasi:cli/terminal-stdin@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_terminal_stdout_0_3_1"><code>wasi:cli/terminal-stdout@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_terminal_stderr_0_3_1"><code>wasi:cli/terminal-stderr@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_types_0_3_1"><code>wasi:clocks/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_1"><code>wasi:clocks/monotonic-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_system_clock_0_3_1"><code>wasi:clocks/system-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_timezone_0_3_1"><code>wasi:clocks/timezone@0.3.1</code></a></li>
-<li>interface <a href="#wasi_filesystem_types_0_3_1"><code>wasi:filesystem/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_filesystem_preopens_0_3_1"><code>wasi:filesystem/preopens@0.3.1</code></a></li>
-<li>interface <a href="#wasi_sockets_types_0_3_1"><code>wasi:sockets/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_3_1"><code>wasi:sockets/ip-name-lookup@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_random_0_3_1"><code>wasi:random/random@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_0_3_1"><code>wasi:random/insecure@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_seed_0_3_1"><code>wasi:random/insecure-seed@0.3.1</code></a></li>
+<li>interface <a href="#wasi_cli_environment_0_3_2"><code>wasi:cli/environment@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_exit_0_3_2"><code>wasi:cli/exit@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_types_0_3_2"><code>wasi:cli/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdin_0_3_2"><code>wasi:cli/stdin@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdout_0_3_2"><code>wasi:cli/stdout@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stderr_0_3_2"><code>wasi:cli/stderr@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_terminal_input_0_3_2"><code>wasi:cli/terminal-input@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_terminal_output_0_3_2"><code>wasi:cli/terminal-output@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_terminal_stdin_0_3_2"><code>wasi:cli/terminal-stdin@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_terminal_stdout_0_3_2"><code>wasi:cli/terminal-stdout@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_terminal_stderr_0_3_2"><code>wasi:cli/terminal-stderr@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_types_0_3_2"><code>wasi:clocks/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_2"><code>wasi:clocks/monotonic-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_system_clock_0_3_2"><code>wasi:clocks/system-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_3_2"><code>wasi:clocks/timezone@0.3.2</code></a></li>
+<li>interface <a href="#wasi_filesystem_types_0_3_2"><code>wasi:filesystem/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_filesystem_preopens_0_3_2"><code>wasi:filesystem/preopens@0.3.2</code></a></li>
+<li>interface <a href="#wasi_sockets_types_0_3_2"><code>wasi:sockets/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_3_2"><code>wasi:sockets/ip-name-lookup@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_random_0_3_2"><code>wasi:random/random@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_0_3_2"><code>wasi:random/insecure@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_seed_0_3_2"><code>wasi:random/insecure-seed@0.3.2</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi_cli_run_0_3_1"><code>wasi:cli/run@0.3.1</code></a></li>
+<li>interface <a href="#wasi_cli_run_0_3_2"><code>wasi:cli/run@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_cli_environment_0_3_1"></a>Import interface wasi:cli/environment@0.3.1</h2>
+<h2><a id="wasi_cli_environment_0_3_2"></a>Import interface wasi:cli/environment@0.3.2</h2>
 <hr />
 <h3>Functions</h3>
 <h4><a id="get_environment"></a><code>get-environment: func</code></h4>
@@ -59,7 +59,7 @@ directory, interpreting <code>.</code> as shorthand for this.</p>
 <ul>
 <li><a id="get_initial_cwd.0"></a> option&lt;<code>string</code>&gt;</li>
 </ul>
-<h2><a id="wasi_cli_exit_0_3_1"></a>Import interface wasi:cli/exit@0.3.1</h2>
+<h2><a id="wasi_cli_exit_0_3_2"></a>Import interface wasi:cli/exit@0.3.2</h2>
 <hr />
 <h3>Functions</h3>
 <h4><a id="exit"></a><code>exit: func</code></h4>
@@ -79,7 +79,7 @@ without the connotation that something bad has happened.</p>
 <ul>
 <li><a id="exit_with_code.status_code"></a><code>status-code</code>: <code>u8</code></li>
 </ul>
-<h2><a id="wasi_cli_types_0_3_1"></a>Import interface wasi:cli/types@0.3.1</h2>
+<h2><a id="wasi_cli_types_0_3_2"></a>Import interface wasi:cli/types@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>enum error-code</code></h4>
@@ -98,7 +98,7 @@ without the connotation that something bad has happened.</p>
 <p>Broken pipe
 </li>
 </ul>
-<h2><a id="wasi_cli_stdin_0_3_1"></a>Import interface wasi:cli/stdin@0.3.1</h2>
+<h2><a id="wasi_cli_stdin_0_3_2"></a>Import interface wasi:cli/stdin@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -120,7 +120,7 @@ reads is implementation-specific.</p>
 <ul>
 <li><a id="read_via_stream.0"></a> (stream&lt;<code>u8</code>&gt;, future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;)</li>
 </ul>
-<h2><a id="wasi_cli_stdout_0_3_1"></a>Import interface wasi:cli/stdout@0.3.1</h2>
+<h2><a id="wasi_cli_stdout_0_3_2"></a>Import interface wasi:cli/stdout@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -143,7 +143,7 @@ dropped and this function will return an error-code.</p>
 <ul>
 <li><a id="write_via_stream.0"></a> future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_stderr_0_3_1"></a>Import interface wasi:cli/stderr@0.3.1</h2>
+<h2><a id="wasi_cli_stderr_0_3_2"></a>Import interface wasi:cli/stderr@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -166,7 +166,7 @@ dropped and this function will return an error-code.</p>
 <ul>
 <li><a id="write_via_stream.0"></a> future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_terminal_input_0_3_1"></a>Import interface wasi:cli/terminal-input@0.3.1</h2>
+<h2><a id="wasi_cli_terminal_input_0_3_2"></a>Import interface wasi:cli/terminal-input@0.3.2</h2>
 <p>Terminal input.</p>
 <p>In the future, this may include functions for disabling echoing,
 disabling input buffering so that keyboard events are sent through
@@ -175,7 +175,7 @@ immediately, querying supported features, and so on.</p>
 <h3>Types</h3>
 <h4><a id="terminal_input"></a><code>resource terminal-input</code></h4>
 <p>The input side of a terminal.</p>
-<h2><a id="wasi_cli_terminal_output_0_3_1"></a>Import interface wasi:cli/terminal-output@0.3.1</h2>
+<h2><a id="wasi_cli_terminal_output_0_3_2"></a>Import interface wasi:cli/terminal-output@0.3.2</h2>
 <p>Terminal output.</p>
 <p>In the future, this may include functions for querying the terminal
 size, being notified of terminal size changes, querying supported
@@ -184,7 +184,7 @@ features, and so on.</p>
 <h3>Types</h3>
 <h4><a id="terminal_output"></a><code>resource terminal-output</code></h4>
 <p>The output side of a terminal.</p>
-<h2><a id="wasi_cli_terminal_stdin_0_3_1"></a>Import interface wasi:cli/terminal-stdin@0.3.1</h2>
+<h2><a id="wasi_cli_terminal_stdin_0_3_2"></a>Import interface wasi:cli/terminal-stdin@0.3.2</h2>
 <p>An interface providing an optional <a href="#terminal_input"><code>terminal-input</code></a> for stdin as a
 link-time authority.</p>
 <hr />
@@ -201,7 +201,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a id="get_terminal_stdin.0"></a> option&lt;own&lt;<a href="#terminal_input"><a href="#terminal_input"><code>terminal-input</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_terminal_stdout_0_3_1"></a>Import interface wasi:cli/terminal-stdout@0.3.1</h2>
+<h2><a id="wasi_cli_terminal_stdout_0_3_2"></a>Import interface wasi:cli/terminal-stdout@0.3.2</h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stdout as a
 link-time authority.</p>
 <hr />
@@ -218,7 +218,7 @@ allowing further interaction with it.</p>
 <ul>
 <li><a id="get_terminal_stdout.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_terminal_stderr_0_3_1"></a>Import interface wasi:cli/terminal-stderr@0.3.1</h2>
+<h2><a id="wasi_cli_terminal_stderr_0_3_2"></a>Import interface wasi:cli/terminal-stderr@0.3.2</h2>
 <p>An interface providing an optional <a href="#terminal_output"><code>terminal-output</code></a> for stderr as a
 link-time authority.</p>
 <hr />
@@ -235,14 +235,14 @@ allowing further interaction with it.</p>
 <ul>
 <li><a id="get_terminal_stderr.0"></a> option&lt;own&lt;<a href="#terminal_output"><a href="#terminal_output"><code>terminal-output</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_types_0_3_1"></a>Import interface wasi:clocks/types@0.3.1</h2>
+<h2><a id="wasi_clocks_types_0_3_2"></a>Import interface wasi:clocks/types@0.3.2</h2>
 <p>This interface common types used throughout wasi:clocks.</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
-<h2><a id="wasi_clocks_monotonic_clock_0_3_1"></a>Import interface wasi:clocks/monotonic-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_3_2"></a>Import interface wasi:clocks/monotonic-clock@0.3.2</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -292,7 +292,7 @@ corresponding to a clock tick.</p>
 <ul>
 <li><a id="wait_for.how_long"></a><code>how-long</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_system_clock_0_3_1"></a>Import interface wasi:clocks/system-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_system_clock_0_3_2"></a>Import interface wasi:clocks/system-clock@0.3.2</h2>
 <p>WASI System Clock is a clock API intended to let users query the current
 time. The clock is not necessarily monotonic as it may be reset.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -340,7 +340,7 @@ that the implementation permits distinguishing.</p>
 <ul>
 <li><a id="get_resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_timezone_0_3_1"></a>Import interface wasi:clocks/timezone@0.3.1</h2>
+<h2><a id="wasi_clocks_timezone_0_3_2"></a>Import interface wasi:clocks/timezone@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="instant"></a><code>type instant</code></h4>
@@ -392,7 +392,7 @@ this string is a major platform-compatibility hazard.</p>
 <ul>
 <li><a id="to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_filesystem_types_0_3_1"></a>Import interface wasi:filesystem/types@0.3.1</h2>
+<h2><a id="wasi_filesystem_types_0_3_2"></a>Import interface wasi:filesystem/types@0.3.2</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -1229,7 +1229,7 @@ to by a directory descriptor and a relative path.</p>
 <ul>
 <li><a id="method_descriptor_metadata_hash_at.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_filesystem_preopens_0_3_1"></a>Import interface wasi:filesystem/preopens@0.3.1</h2>
+<h2><a id="wasi_filesystem_preopens_0_3_2"></a>Import interface wasi:filesystem/preopens@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="descriptor"></a><code>type descriptor</code></h4>
@@ -1243,7 +1243,7 @@ to by a directory descriptor and a relative path.</p>
 <ul>
 <li><a id="get_directories.0"></a> list&lt;(own&lt;<a href="#descriptor"><a href="#descriptor"><code>descriptor</code></a></a>&gt;, <code>string</code>)&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_types_0_3_1"></a>Import interface wasi:sockets/types@0.3.1</h2>
+<h2><a id="wasi_sockets_types_0_3_2"></a>Import interface wasi:sockets/types@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
@@ -2345,7 +2345,7 @@ this setting may differ from the value that was set.</p>
 <ul>
 <li><a id="method_udp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_ip_name_lookup_0_3_1"></a>Import interface wasi:sockets/ip-name-lookup@0.3.1</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_3_2"></a>Import interface wasi:sockets/ip-name-lookup@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="ip_address"></a><code>type ip-address</code></h4>
@@ -2414,7 +2414,7 @@ IPv4-mapped IPv6 addresses.</p>
 <ul>
 <li><a id="resolve_addresses.0"></a> result&lt;list&lt;<a href="#ip_address"><a href="#ip_address"><code>ip-address</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_random_random_0_3_1"></a>Import interface wasi:random/random@0.3.1</h2>
+<h2><a id="wasi_random_random_0_3_2"></a>Import interface wasi:random/random@0.3.2</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2454,7 +2454,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a id="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_0_3_1"></a>Import interface wasi:random/insecure@0.3.1</h2>
+<h2><a id="wasi_random_insecure_0_3_2"></a>Import interface wasi:random/insecure@0.3.2</h2>
 <p>The insecure interface for insecure pseudo-random numbers.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2489,7 +2489,7 @@ list without trapping.</p>
 <ul>
 <li><a id="get_insecure_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_seed_0_3_1"></a>Import interface wasi:random/insecure-seed@0.3.1</h2>
+<h2><a id="wasi_random_insecure_seed_0_3_2"></a>Import interface wasi:random/insecure-seed@0.3.2</h2>
 <p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -2513,7 +2513,7 @@ protection.</p>
 <ul>
 <li><a id="get_insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
-<h2><a id="wasi_cli_run_0_3_1"></a>Export interface wasi:cli/run@0.3.1</h2>
+<h2><a id="wasi_cli_run_0_3_2"></a>Export interface wasi:cli/run@0.3.2</h2>
 <hr />
 <h3>Functions</h3>
 <h4><a id="run"></a><code>run: func</code></h4>

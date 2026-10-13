@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_clocks_types_0_3_1"><code>wasi:clocks/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_1"><code>wasi:clocks/monotonic-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_system_clock_0_3_1"><code>wasi:clocks/system-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_timezone_0_3_1"><code>wasi:clocks/timezone@0.3.1</code></a></li>
+<li>interface <a href="#wasi_clocks_types_0_3_2"><code>wasi:clocks/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_2"><code>wasi:clocks/monotonic-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_system_clock_0_3_2"><code>wasi:clocks/system-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_3_2"><code>wasi:clocks/timezone@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_clocks_types_0_3_1"></a>Import interface wasi:clocks/types@0.3.1</h2>
+<h2><a id="wasi_clocks_types_0_3_2"></a>Import interface wasi:clocks/types@0.3.2</h2>
 <p>This interface common types used throughout wasi:clocks.</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
-<h2><a id="wasi_clocks_monotonic_clock_0_3_1"></a>Import interface wasi:clocks/monotonic-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_3_2"></a>Import interface wasi:clocks/monotonic-clock@0.3.2</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -66,7 +66,7 @@ corresponding to a clock tick.</p>
 <ul>
 <li><a id="wait_for.how_long"></a><code>how-long</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_system_clock_0_3_1"></a>Import interface wasi:clocks/system-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_system_clock_0_3_2"></a>Import interface wasi:clocks/system-clock@0.3.2</h2>
 <p>WASI System Clock is a clock API intended to let users query the current
 time. The clock is not necessarily monotonic as it may be reset.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -114,7 +114,7 @@ that the implementation permits distinguishing.</p>
 <ul>
 <li><a id="get_resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_timezone_0_3_1"></a>Import interface wasi:clocks/timezone@0.3.1</h2>
+<h2><a id="wasi_clocks_timezone_0_3_2"></a>Import interface wasi:clocks/timezone@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="instant"></a><code>type instant</code></h4>

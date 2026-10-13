@@ -5,28 +5,28 @@ in more specific worlds such as <code>wasi:http/middleware</code>.</p>
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_cli_types_0_3_1"><code>wasi:cli/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdout_0_3_1"><code>wasi:cli/stdout@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stderr_0_3_1"><code>wasi:cli/stderr@0.3.1</code></a></li>
-<li>interface <a href="#wasi_cli_stdin_0_3_1"><code>wasi:cli/stdin@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_types_0_3_1"><code>wasi:clocks/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_http_types_0_3_1"><code>wasi:http/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_http_client_0_3_1"><code>wasi:http/client@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_1"><code>wasi:clocks/monotonic-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_system_clock_0_3_1"><code>wasi:clocks/system-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_timezone_0_3_1"><code>wasi:clocks/timezone@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_random_0_3_1"><code>wasi:random/random@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_0_3_1"><code>wasi:random/insecure@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_seed_0_3_1"><code>wasi:random/insecure-seed@0.3.1</code></a></li>
+<li>interface <a href="#wasi_cli_types_0_3_2"><code>wasi:cli/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdout_0_3_2"><code>wasi:cli/stdout@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stderr_0_3_2"><code>wasi:cli/stderr@0.3.2</code></a></li>
+<li>interface <a href="#wasi_cli_stdin_0_3_2"><code>wasi:cli/stdin@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_types_0_3_2"><code>wasi:clocks/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_http_types_0_3_2"><code>wasi:http/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_http_client_0_3_2"><code>wasi:http/client@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_monotonic_clock_0_3_2"><code>wasi:clocks/monotonic-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_system_clock_0_3_2"><code>wasi:clocks/system-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_timezone_0_3_2"><code>wasi:clocks/timezone@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_random_0_3_2"><code>wasi:random/random@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_0_3_2"><code>wasi:random/insecure@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_seed_0_3_2"><code>wasi:random/insecure-seed@0.3.2</code></a></li>
 </ul>
 </li>
 <li>Exports:
 <ul>
-<li>interface <a href="#wasi_http_handler_0_3_1"><code>wasi:http/handler@0.3.1</code></a></li>
+<li>interface <a href="#wasi_http_handler_0_3_2"><code>wasi:http/handler@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_cli_types_0_3_1"></a>Import interface wasi:cli/types@0.3.1</h2>
+<h2><a id="wasi_cli_types_0_3_2"></a>Import interface wasi:cli/types@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>enum error-code</code></h4>
@@ -45,7 +45,7 @@ in more specific worlds such as <code>wasi:http/middleware</code>.</p>
 <p>Broken pipe
 </li>
 </ul>
-<h2><a id="wasi_cli_stdout_0_3_1"></a>Import interface wasi:cli/stdout@0.3.1</h2>
+<h2><a id="wasi_cli_stdout_0_3_2"></a>Import interface wasi:cli/stdout@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -68,7 +68,7 @@ dropped and this function will return an error-code.</p>
 <ul>
 <li><a id="write_via_stream.0"></a> future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_stderr_0_3_1"></a>Import interface wasi:cli/stderr@0.3.1</h2>
+<h2><a id="wasi_cli_stderr_0_3_2"></a>Import interface wasi:cli/stderr@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -91,7 +91,7 @@ dropped and this function will return an error-code.</p>
 <ul>
 <li><a id="write_via_stream.0"></a> future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;</li>
 </ul>
-<h2><a id="wasi_cli_stdin_0_3_1"></a>Import interface wasi:cli/stdin@0.3.1</h2>
+<h2><a id="wasi_cli_stdin_0_3_2"></a>Import interface wasi:cli/stdin@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="error_code"></a><code>type error-code</code></h4>
@@ -113,14 +113,14 @@ reads is implementation-specific.</p>
 <ul>
 <li><a id="read_via_stream.0"></a> (stream&lt;<code>u8</code>&gt;, future&lt;result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;)</li>
 </ul>
-<h2><a id="wasi_clocks_types_0_3_1"></a>Import interface wasi:clocks/types@0.3.1</h2>
+<h2><a id="wasi_clocks_types_0_3_2"></a>Import interface wasi:clocks/types@0.3.2</h2>
 <p>This interface common types used throughout wasi:clocks.</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
-<h2><a id="wasi_http_types_0_3_1"></a>Import interface wasi:http/types@0.3.1</h2>
+<h2><a id="wasi_http_types_0_3_2"></a>Import interface wasi:http/types@0.3.2</h2>
 <p>This interface defines all of the types and methods for implementing HTTP
 Requests and Responses, as well as their headers, trailers, and bodies.</p>
 <hr />
@@ -804,7 +804,7 @@ acquired from it previously will remain valid.</p>
 <ul>
 <li><a id="static_response_consume_body.0"></a> (stream&lt;<code>u8</code>&gt;, future&lt;result&lt;option&lt;own&lt;<a href="#trailers"><a href="#trailers"><code>trailers</code></a></a>&gt;&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;&gt;)</li>
 </ul>
-<h2><a id="wasi_http_client_0_3_1"></a>Import interface wasi:http/client@0.3.1</h2>
+<h2><a id="wasi_http_client_0_3_2"></a>Import interface wasi:http/client@0.3.2</h2>
 <p>This interface defines an HTTP client for sending &quot;outgoing&quot; requests.</p>
 <p>Most components are expected to import this interface to provide the
 capability to send HTTP requests to arbitrary destinations on a network.</p>
@@ -837,7 +837,7 @@ network or to forward it to another component.</p>
 <ul>
 <li><a id="send.0"></a> result&lt;own&lt;<a href="#response"><a href="#response"><code>response</code></a></a>&gt;, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_clocks_monotonic_clock_0_3_1"></a>Import interface wasi:clocks/monotonic-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_monotonic_clock_0_3_2"></a>Import interface wasi:clocks/monotonic-clock@0.3.2</h2>
 <p>WASI Monotonic Clock is a clock API intended to let users measure elapsed
 time.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -887,7 +887,7 @@ corresponding to a clock tick.</p>
 <ul>
 <li><a id="wait_for.how_long"></a><code>how-long</code>: <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_system_clock_0_3_1"></a>Import interface wasi:clocks/system-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_system_clock_0_3_2"></a>Import interface wasi:clocks/system-clock@0.3.2</h2>
 <p>WASI System Clock is a clock API intended to let users query the current
 time. The clock is not necessarily monotonic as it may be reset.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -935,7 +935,7 @@ that the implementation permits distinguishing.</p>
 <ul>
 <li><a id="get_resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_clocks_timezone_0_3_1"></a>Import interface wasi:clocks/timezone@0.3.1</h2>
+<h2><a id="wasi_clocks_timezone_0_3_2"></a>Import interface wasi:clocks/timezone@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="instant"></a><code>type instant</code></h4>
@@ -987,7 +987,7 @@ this string is a major platform-compatibility hazard.</p>
 <ul>
 <li><a id="to_debug_string.0"></a> <code>string</code></li>
 </ul>
-<h2><a id="wasi_random_random_0_3_1"></a>Import interface wasi:random/random@0.3.1</h2>
+<h2><a id="wasi_random_random_0_3_2"></a>Import interface wasi:random/random@0.3.2</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -1027,7 +1027,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a id="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_0_3_1"></a>Import interface wasi:random/insecure@0.3.1</h2>
+<h2><a id="wasi_random_insecure_0_3_2"></a>Import interface wasi:random/insecure@0.3.2</h2>
 <p>The insecure interface for insecure pseudo-random numbers.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -1062,7 +1062,7 @@ list without trapping.</p>
 <ul>
 <li><a id="get_insecure_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_seed_0_3_1"></a>Import interface wasi:random/insecure-seed@0.3.1</h2>
+<h2><a id="wasi_random_insecure_seed_0_3_2"></a>Import interface wasi:random/insecure-seed@0.3.2</h2>
 <p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -1086,7 +1086,7 @@ protection.</p>
 <ul>
 <li><a id="get_insecure_seed.0"></a> (<code>u64</code>, <code>u64</code>)</li>
 </ul>
-<h2><a id="wasi_http_handler_0_3_1"></a>Export interface wasi:http/handler@0.3.1</h2>
+<h2><a id="wasi_http_handler_0_3_2"></a>Export interface wasi:http/handler@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="request"></a><code>type request</code></h4>
