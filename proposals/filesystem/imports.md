@@ -2,21 +2,21 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_clocks_types_0_3_1"><code>wasi:clocks/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_clocks_system_clock_0_3_1"><code>wasi:clocks/system-clock@0.3.1</code></a></li>
-<li>interface <a href="#wasi_filesystem_types_0_3_1"><code>wasi:filesystem/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_filesystem_preopens_0_3_1"><code>wasi:filesystem/preopens@0.3.1</code></a></li>
+<li>interface <a href="#wasi_clocks_types_0_3_2"><code>wasi:clocks/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_clocks_system_clock_0_3_2"><code>wasi:clocks/system-clock@0.3.2</code></a></li>
+<li>interface <a href="#wasi_filesystem_types_0_3_2"><code>wasi:filesystem/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_filesystem_preopens_0_3_2"><code>wasi:filesystem/preopens@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_clocks_types_0_3_1"></a>Import interface wasi:clocks/types@0.3.1</h2>
+<h2><a id="wasi_clocks_types_0_3_2"></a>Import interface wasi:clocks/types@0.3.2</h2>
 <p>This interface common types used throughout wasi:clocks.</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
-<h2><a id="wasi_clocks_system_clock_0_3_1"></a>Import interface wasi:clocks/system-clock@0.3.1</h2>
+<h2><a id="wasi_clocks_system_clock_0_3_2"></a>Import interface wasi:clocks/system-clock@0.3.2</h2>
 <p>WASI System Clock is a clock API intended to let users query the current
 time. The clock is not necessarily monotonic as it may be reset.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
@@ -64,7 +64,7 @@ that the implementation permits distinguishing.</p>
 <ul>
 <li><a id="get_resolution.0"></a> <a href="#duration"><a href="#duration"><code>duration</code></a></a></li>
 </ul>
-<h2><a id="wasi_filesystem_types_0_3_1"></a>Import interface wasi:filesystem/types@0.3.1</h2>
+<h2><a id="wasi_filesystem_types_0_3_2"></a>Import interface wasi:filesystem/types@0.3.2</h2>
 <p>WASI filesystem is a filesystem API primarily intended to let users run WASI
 programs that access their files on their existing filesystems, without
 significant overhead.</p>
@@ -901,7 +901,7 @@ to by a directory descriptor and a relative path.</p>
 <ul>
 <li><a id="method_descriptor_metadata_hash_at.0"></a> result&lt;<a href="#metadata_hash_value"><a href="#metadata_hash_value"><code>metadata-hash-value</code></a></a>, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_filesystem_preopens_0_3_1"></a>Import interface wasi:filesystem/preopens@0.3.1</h2>
+<h2><a id="wasi_filesystem_preopens_0_3_2"></a>Import interface wasi:filesystem/preopens@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="descriptor"></a><code>type descriptor</code></h4>

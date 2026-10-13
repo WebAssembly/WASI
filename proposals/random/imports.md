@@ -2,13 +2,13 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_random_random_0_3_1"><code>wasi:random/random@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_0_3_1"><code>wasi:random/insecure@0.3.1</code></a></li>
-<li>interface <a href="#wasi_random_insecure_seed_0_3_1"><code>wasi:random/insecure-seed@0.3.1</code></a></li>
+<li>interface <a href="#wasi_random_random_0_3_2"><code>wasi:random/random@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_0_3_2"><code>wasi:random/insecure@0.3.2</code></a></li>
+<li>interface <a href="#wasi_random_insecure_seed_0_3_2"><code>wasi:random/insecure-seed@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_random_random_0_3_1"></a>Import interface wasi:random/random@0.3.1</h2>
+<h2><a id="wasi_random_random_0_3_2"></a>Import interface wasi:random/random@0.3.2</h2>
 <p>WASI Random is a random data API.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -48,7 +48,7 @@ represented as a <code>u64</code>.</p>
 <ul>
 <li><a id="get_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_0_3_1"></a>Import interface wasi:random/insecure@0.3.1</h2>
+<h2><a id="wasi_random_insecure_0_3_2"></a>Import interface wasi:random/insecure@0.3.2</h2>
 <p>The insecure interface for insecure pseudo-random numbers.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>
@@ -83,7 +83,7 @@ list without trapping.</p>
 <ul>
 <li><a id="get_insecure_random_u64.0"></a> <code>u64</code></li>
 </ul>
-<h2><a id="wasi_random_insecure_seed_0_3_1"></a>Import interface wasi:random/insecure-seed@0.3.1</h2>
+<h2><a id="wasi_random_insecure_seed_0_3_2"></a>Import interface wasi:random/insecure-seed@0.3.2</h2>
 <p>The insecure-seed interface for seeding hash-map DoS resistance.</p>
 <p>It is intended to be portable at least between Unix-family platforms and
 Windows.</p>

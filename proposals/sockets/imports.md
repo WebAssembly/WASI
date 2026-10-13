@@ -2,20 +2,20 @@
 <ul>
 <li>Imports:
 <ul>
-<li>interface <a href="#wasi_clocks_types_0_3_1"><code>wasi:clocks/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_sockets_types_0_3_1"><code>wasi:sockets/types@0.3.1</code></a></li>
-<li>interface <a href="#wasi_sockets_ip_name_lookup_0_3_1"><code>wasi:sockets/ip-name-lookup@0.3.1</code></a></li>
+<li>interface <a href="#wasi_clocks_types_0_3_2"><code>wasi:clocks/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_sockets_types_0_3_2"><code>wasi:sockets/types@0.3.2</code></a></li>
+<li>interface <a href="#wasi_sockets_ip_name_lookup_0_3_2"><code>wasi:sockets/ip-name-lookup@0.3.2</code></a></li>
 </ul>
 </li>
 </ul>
-<h2><a id="wasi_clocks_types_0_3_1"></a>Import interface wasi:clocks/types@0.3.1</h2>
+<h2><a id="wasi_clocks_types_0_3_2"></a>Import interface wasi:clocks/types@0.3.2</h2>
 <p>This interface common types used throughout wasi:clocks.</p>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
 <p><code>u64</code></p>
 <p>A duration of time, in nanoseconds.
-<h2><a id="wasi_sockets_types_0_3_1"></a>Import interface wasi:sockets/types@0.3.1</h2>
+<h2><a id="wasi_sockets_types_0_3_2"></a>Import interface wasi:sockets/types@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="duration"></a><code>type duration</code></h4>
@@ -1117,7 +1117,7 @@ this setting may differ from the value that was set.</p>
 <ul>
 <li><a id="method_udp_socket_set_send_buffer_size.0"></a> result&lt;_, <a href="#error_code"><a href="#error_code"><code>error-code</code></a></a>&gt;</li>
 </ul>
-<h2><a id="wasi_sockets_ip_name_lookup_0_3_1"></a>Import interface wasi:sockets/ip-name-lookup@0.3.1</h2>
+<h2><a id="wasi_sockets_ip_name_lookup_0_3_2"></a>Import interface wasi:sockets/ip-name-lookup@0.3.2</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="ip_address"></a><code>type ip-address</code></h4>
