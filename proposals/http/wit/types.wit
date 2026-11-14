@@ -156,6 +156,11 @@ interface types {
   ///
   /// Field names should always be treated as case insensitive by the `fields`
   /// resource for the purposes of equality checking.
+  ///
+  /// The `field-name` syntax is defined by RFC 9110, which allows only ASCII
+  /// characters, and is the ground truth for what should be accepted as a
+  /// field name:
+  ///   <https://www.rfc-editor.org/rfc/rfc9110#section-5.1>
   @since(version = 0.3.0)
   type field-name = string;
 

@@ -289,6 +289,10 @@ consistent between implementations.
 <p>Field names are always strings.
 <p>Field names should always be treated as case insensitive by the <a href="#fields"><code>fields</code></a>
 resource for the purposes of equality checking.</p>
+<p>The <a href="#field_name"><code>field-name</code></a> syntax is defined by RFC 9110, which allows only ASCII
+characters, and is the ground truth for what should be accepted as a
+field name:
+<a href="https://www.rfc-editor.org/rfc/rfc9110#section-5.1">https://www.rfc-editor.org/rfc/rfc9110#section-5.1</a></p>
 <h4><a id="field_value"></a><code>type field-value</code></h4>
 <p><a href="#field_value"><a href="#field_value"><code>field-value</code></a></a></p>
 <p>Field values should always be ASCII strings. However, in
